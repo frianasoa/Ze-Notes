@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://znotes/skin/overlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://znotes/locale/overlay.dtd">
+
+<overlay id="znotes-overlay"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">	
+	
+    <stringbundleset id="stringbundleset">
+		<stringbundle id="znotes-strings"
+			src="chrome://znotes/locale/znotes.properties"/>
+	</stringbundleset>
+    
+	<menupopup id="menu_ToolsPopup">
+        <menu  id="znotes-menu" insertafter="menu_preferences" label="ZNotes">
+            <menupopup id="znotes-menu-pop">
+                <menuitem id="znotes-settings" oncommand="Zotero.ZNotes.openPreferenceWindow();" label="Show settings"/>
+                <menuitem id="znotes-settings" oncommand="Zotero.ZNotes.show();" label="Show notes"/>
+            </menupopup>
+        </menu >
+	</menupopup>
+    
+    <!-- on collection -->
+    <menupopup id="zotero-collectionmenu">
+		<menuseparator id="id-znotes-collection-separator"/>
+       	<menuitem id="znotes-showsome" label="Show notes" oncommand="Zotero.ZNotes.show('collection');"/>
+    </menupopup>
+    
+	<!-- Include the main extension logic -->
+	<script src="chrome://zotero/content/include.js"/>
+	<script src="chrome://znotes/content/include.js"/>
+</overlay>

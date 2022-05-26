@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
+<?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
+
+<!DOCTYPE window SYSTEM "chrome://znotes/locale/settings.dtd">
+
+<prefwindow id="znotes-perf" title="&znotes-preferences;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="updatePreferenceWindow('all');">
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
+	</stringbundleset>
+
+		<prefpane label="&znotes-prefpane;" id="znotes-perfpane">
+			<preferences>
+				<preference id="pref-znotes-source_dir_ff" name="extensions.znotes.source_dir_ff" type="bool"/>
+				<preference id="pref-znotes-source_dir" name="extensions.znotes.source_dir" type="string"/>
+				<preference id="pref-znotes-allFiles" name="extensions.znotes.allFiles" type="bool"/>
+				<preference id="pref-znotes-filetypes" name="extensions.znotes.filetypes" type="string"/>
+				<preference id="pref-znotes-useFileTypes" name="extensions.znotes.useFileTypes" type="bool"/>
+				<preference id="pref-znotes-import" name="extensions.znotes.import" type="bool"/>
+				<preference id="pref-znotes-automatic_renaming" name="extensions.znotes.automatic_renaming" type="int"/>
+				<preference id="pref-znotes-dest_dir" name="extensions.znotes.dest_dir" type="string"/>
+				<preference id="pref-znotes-useZoteroToRename" name="extensions.znotes.useZoteroToRename" type="bool"/>
+				<preference id="pref-znotes-renameFormat" name="extensions.znotes.renameFormat" type="string"/>
+				<preference id="pref-znotes-renameFormat_patent" name="extensions.znotes.renameFormat_patent" type="string"/>
+				<preference id="pref-znotes-truncate_title" name="extensions.znotes.truncate_title" type="bool"/>
+				<preference id="pref-znotes-truncate_smart" name="extensions.znotes.truncate_smart" type="bool"/>
+				<preference id="pref-znotes-truncate_title_max" name="extensions.znotes.truncate_title_max" type="bool"/>
+				<preference id="pref-znotes-max_titlelength" name="extensions.znotes.max_titlelength" type="int"/>
+				<preference id="pref-znotes-max_authors" name="extensions.znotes.max_authors" type="int"/>
+				<preference id="pref-znotes-truncate_authors" name="extensions.znotes.truncate_authors" type="bool"/>
+				<preference id="pref-znotes-number_truncate_authors" name="extensions.znotes.number_truncate_authors" type="int"/>
+				<preference id="pref-znotes-add_etal" name="extensions.znotes.add_etal" type="bool"/>
+				<preference id="pref-znotes-removeDiacritics" name="extensions.znotes.removeDiacritics" type="bool"/>
+				<preference id="pref-znotes-etal" name="extensions.znotes.etal" type="string"/>
+				<preference id="pref-znotes-authors_delimiter" name="extensions.znotes.authors_delimiter" type="string"/>
+				<preference id="pref-znotes-subfolder" name="extensions.znotes.subfolder" type="bool"/>
+				<preference id="pref-znotes-subfolderFormat" name="extensions.znotes.subfolderFormat" type="string"/>
+				<preference id="pref-znotes-userInput" name="extensions.znotes.userInput" type="bool"/>
+				<preference id="pref-znotes-userInput_Default" name="extensions.znotes.userInput_Default" type="string"/>
+				<preference id="pref-znotes-replace_blanks" name="extensions.znotes.replace_blanks" type="bool"/>
+				<preference id="pref-znotes-lower_case" name="extensions.znotes.lower_case" type="bool"/>
+				<preference id="pref-znotes-confirmation" name="extensions.znotes.confirmation" type="bool"/>
+				<preference id="pref-znotes-confirmation_batch_ask" name="extensions.znotes.confirmation_batch_ask" type="bool"/>
+				<preference id="pref-znotes-confirmation_batch" name="extensions.znotes.confirmation_batch" type="int"/>
+				<preference id="pref-znotes-tablet" name="extensions.znotes.tablet" type="bool"/>
+				<preference id="pref-znotes-tablet-rename" name="extensions.znotes.tablet.rename" type="bool"/>
+				<preference id="pref-znotes-tablet-dest_dir" name="extensions.znotes.tablet.dest_dir" type="string"/>
+				<preference id="pref-znotes-tablet-storeCopyOfFile" name="extensions.znotes.tablet.storeCopyOfFile" type="bool"/>
+				<preference id="pref-znotes-tablet-storeCopyOfFile_suffix" name="extensions.znotes.tablet.storeCopyOfFile_suffix" type="string"/>
+				<preference id="pref-znotes-tablet-projectFolders" name="extensions.znotes.tablet.projectFolders" type="int"/>
+				<preference id="pref-znotes-tablet-subfolder" name="extensions.znotes.tablet.subfolder" type="bool"/>
+				<preference id="pref-znotes-tablet-subfolderFormat" name="extensions.znotes.tablet.subfolderFormat" type="string"/>
+				<preference id="pref-znotes-tablet-tag" name="extensions.znotes.tablet.tag" type="string"/>
+				<preference id="pref-znotes-tablet-tagParentPush" name="extensions.znotes.tablet.tagParentPush" type="bool"/>
+				<preference id="pref-znotes-tablet-tagParentPush_tag" name="extensions.znotes.tablet.tagParentPush_tag" type="string"/>
+				<preference id="pref-znotes-tablet-tagParentPull" name="extensions.znotes.tablet.tagParentPull" type="bool"/>
+				<preference id="pref-znotes-tablet-tagParentPull_tag" name="extensions.znotes.tablet.tagParentPull_tag" type="string"/>
+				<preference id="pref-znotes-tablet-mode" name="extensions.znotes.tablet.mode" type="int"/>
+				<preference id="pref-znotes-tablet-confirmRepush" name="extensions.znotes.tablet.confirmRepush" type="bool"/>
+				<preference id="pref-znotes-pdfExtraction-UsePDFJS" name="extensions.znotes.pdfExtraction.UsePDFJS" type="bool"/>
+				<preference id="pref-znotes-pdfExtraction-Pull" name="extensions.znotes.pdfExtraction.Pull" type="bool"/>
+				<preference id="pref-znotes-pdfExtraction-NoteTruePage" name="extensions.znotes.pdfExtraction.NoteTruePage" type="bool"/>
+				<preference id="pref-znotes-pdfExtraction-NoteFullCite" name="extensions.znotes.pdfExtraction.NoteFullCite" type="bool"/>
+			</preferences>
+
+			<tabbox id="znotes-tabbox">
+				<tabs id="znotes-tabs">
+					<tab label="&general-settings;"/>
+					<tab label="&advanced-settings;"/>
+				</tabs>
+
+				<!-- GENERAL SETTINGS -->
+				<tabpanels id="znotes-tabpanels">
+					<tabpanel orient="vertical">
+						<groupbox>
+							<caption label="&output-folder;"/>
+							<description style="width: 420px">source-folder-desc;</description>
+							<separator/>
+							<hbox  style="margin: 0"  align="center">
+								<textbox id="id-znotes-source_dir" preference="pref-znotes-source_dir" flex="1" onchange="updateFolderIcon('source',false); "/>
+								<button id="id-znotes-source_dir-button" label="&choose;" oncommand="Zotero.ZotFile.chooseDirectory().then((folder) => { if(folder != '') {Zotero.ZotFile.setPref('source_dir', folder); updateFolderIcon('source', false);} });"/>
+								<image id="id-znotes-source_dir-clear" width='16' height='16' hidden="false"/>
+								<image id="id-znotes-source_dir-ok" src="chrome://znotes/skin/accept.png" hidden="true"/>
+								<image id="id-znotes-source_dir-error" src="chrome://znotes/skin/exclamation.png" hidden="true"/>
+							</hbox>
+						</groupbox>
+						<separator/>
+
+						<groupbox>
+							<caption label="&location-of-files;"/>
+							<description style="width: 420px">&target-location-desc;</description>
+							<separator/>
+
+							<radiogroup id="id-znotes-import" preference="pref-znotes-import">
+								<radio label="&attach-stored-copy;" value="true" oncommand="updatePreferenceWindow('dest'); onImportPrefChange();"/>
+								<hbox  style="margin: 0"  align="center">
+									<radio label="&custom-location;" value="false" oncommand="updatePreferenceWindow('dest'); onImportPrefChange();"/>
+									<textbox id="id-znotes-dest_dir" preference="pref-znotes-dest_dir" flex="1" onchange="updateFolderIcon('dest',false);"/>
+									<button id="id-znotes-dest_dir-button" label="&choose;" oncommand="chooseDestinationDirectory()"/>
+									<image id="id-znotes-dest_dir-clear" width='16' height='16' hidden="false"/>
+									<image id="id-znotes-dest_dir-ok" src="chrome://znotes/skin/accept.png" hidden="true"/>
+									<image id="id-znotes-dest_dir-error" src="chrome://znotes/skin/exclamation.png" hidden="true"/>
+								</hbox>
+							</radiogroup>
+							<hbox style="margin: 0"  align="center">
+								<checkbox id="id-znotes-subfolder" label="&use-subfolder;" preference="pref-znotes-subfolder"  oncommand="updatePreferenceWindow('subfolder')"/>
+								<textbox id="id-znotes-subfolderFormat" preference="pref-znotes-subfolderFormat" width="100"/>
+								<image src="chrome://znotes/skin/information.png" tooltiptext="&subfolder-information;"/>
+							</hbox>
+						</groupbox>
+
+						<hbox style="margin: 0">
+							<label style="margin-right:0px" value="&for-more-information;"/>
+							<label style="margin-left:0px; margin-right:0px" class="text-link" onclick="Zotero.ZotFile.Utils.loadURI('http://www.znotes.com');" value="&znotes-website;"/>
+							<label style="margin-left:0px; margin-right:0px" value="."/>
+						</hbox>
+						<hbox style="margin: 0">
+							<label style="margin-right:0px" value="&consider-donation;"/>
+							<label style="margin-left:0px; margin-right:0px" class="text-link" onclick="Zotero.ZotFile.Utils.loadURI('http://www.znotes.com');" value="&donation;"/>
+							<label style="margin-left:0px; margin-right:0px" value="."/>
+						</hbox>
+
+					</tabpanel>
+
+					<!-- TABLET SETTINGS -->
+					<tabpanel orient="vertical">
+
+						<description width="420px">&tablet-desc;</description>
+						<separator class="thin"/>
+						<checkbox id="id-znotes-tablet" label="&send-get-from-tablet;" preference="pref-znotes-tablet" oncommand="updatePreferenceWindow('znotes-tablet');"/>
+						<separator/>
+
+						<groupbox>
+							<caption label="&location-on-tablet;"/>
+							<label id="id-znotes-tablet-baseFolder" value="&base-folder;" control="id-znotes-tablet-dest_dir"/>
+							<hbox style="margin: 0" align="center">
+								<textbox id="id-znotes-tablet-dest_dir" preference="pref-znotes-tablet-dest_dir" flex="1" onchange="updateFolderIcon('tablet');"/>
+								<button id="id-znotes-tablet-dest_dir-button" label="&choose;" oncommand="Zotero.ZotFile.chooseDirectory().then((folder) => { if(folder!='') {Zotero.ZotFile.setPref('tablet.dest_dir', folder); updateFolderIcon('tablet',false);} });"/>
+								<button id="id-znotes-tablet-dest_dir-show" label="&show-folder;" oncommand="Zotero.ZotFile.showFolder(Zotero.ZotFile.Tablet.getTabletLocationFile());"/>
+								<image id="id-znotes-tablet-ok" src="chrome://znotes/skin/accept.png" hidden="true"/>
+								<image id="id-znotes-tablet-error" src="chrome://znotes/skin/exclamation.png" hidden="true"/>
+							</hbox>
+							<label id="id-znotes-tablet-dest_dir-des"  style="font-size: 9px; margin-right:0px" value="&dropbox;"/>
+							<separator/>
+
+							<label id="id-znotes-tablet-label-subfolders" value="&subfolders;" control="id-znotes-tablet-dest_dir"/>
+							<radiogroup id="id-znotes-tablet-projectFolders" preference="pref-znotes-tablet-projectFolders">
+								<radio label="&no-subfolders;" value="0"/>
+								<radio label="&create-subfolders;" value="1"/>
+								<hbox style="margin: 0">
+									<radio label="&custom-subfolders;" value="2"/>
+									<button id="id-znotes-tablet-projectFolders-button" label="&change-subfolders;" oncommand="Zotero.ZotFile.openSubfolderWindow();"/>
+								</hbox>
+							</radiogroup>
+							<separator class="thin"/>
+
+							<hbox style="margin: 0"  align="center">
+								<checkbox id="id-znotes-tablet-subfolder" label="&use-additional-subfolders;" preference="pref-znotes-tablet-subfolder"  oncommand="updatePreferenceWindow('subfolder-tablet')"/>
+								<textbox id="id-znotes-tablet-subfolderFormat" preference="pref-znotes-tablet-subfolderFormat" width="100"/>
+								<image src="chrome://znotes/skin/information.png" tooltiptext="&additional-subfolders;"/>
+							</hbox>
+						</groupbox>
+
+						<groupbox>
+							<caption label="&additional-options;"/>
+							<checkbox id="id-znotes-tablet-rename" label="&rename-when-sent-to-tablet;" preference="pref-znotes-tablet-rename"/>
+							<hbox style="margin: 0"  align="center">
+								<checkbox id="id-znotes-tablet-storeCopyOfFile" label="&save-annotated-file;" preference="pref-znotes-tablet-storeCopyOfFile"  oncommand="updatePreferenceWindow('storeCopyOfFile')"/>
+								<textbox id="id-znotes-tablet-storeCopyOfFile_suffix" preference="pref-znotes-tablet-storeCopyOfFile_suffix" width="130"/>
+								<image src="chrome://znotes/skin/information.png" tooltiptext="&tablet-copy-information;"/>
+							</hbox>
+							<checkbox id="id-znotes-pdfExtraction-Pull" label="&automatically-extract-annotations;" preference="pref-znotes-pdfExtraction-Pull"/>
+						</groupbox>
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
+		</prefpane>
+
+		<script src="settings.js"/>
+		<script src="chrome://zotero/content/include.js"/>
+		<script src="chrome://znotes/content/include.js"/>
+
+</prefwindow>

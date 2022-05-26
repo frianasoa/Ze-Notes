@@ -1,0 +1,52 @@
+<html>
+<head>
+<script>
+var Zotero = Components.classes["@zotero.org/Zotero;1"].getService(Components.interfaces.nsISupports).wrappedJSObject;
+
+function loaddata()
+{
+    var data = Zotero.ZNotes.data();
+    var table = document.createElement("table");
+    var trh = document.createElement("tr");
+    table.appendChild(trh);
+    data["columns"].forEach(c=>{
+
+        var tdh = document.createElement("td");
+        tdh.innerHTML = c;
+        trh.appendChild(tdh)
+    });
+    data["values"].forEach(v=>{
+        var tr = document.createElement("tr");
+        table.appendChild(tr);
+        data["columns"].forEach(c=>{
+            let td = document.createElement("td");
+            if(c in v){
+                td.innerHTML = v[c];
+            }
+            tr.appendChild(td);
+        });
+    }); 
+
+    document.getElementById("content").appendChild(table);
+
+}
+
+</script>
+
+<style>
+table {
+    width: 100%;
+}
+
+</style>
+
+</head>
+<body ondomload="loaddata">
+<div id="content" style="background-color:white; padding:0.3em; width:99%;height:96%; overflow-y:auto;" >
+
+</div>
+<script>
+loaddata();
+</script>
+</body>
+</html>

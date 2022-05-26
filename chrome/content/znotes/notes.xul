@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
+<?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
+
+<!DOCTYPE window SYSTEM "chrome://znotes/locale/notes.dtd">
+
+<window id="znotes-notewin" title="&notes-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.ZNotes.maximize(this)" width  = "1024" height = "768" >
+	
+    
+    
+    <stringbundleset id="stringbundleset">
+		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
+	</stringbundleset>
+    <toolbox>
+      <menubar id="sample-menubar">
+        <menu id="file-menu" label="File">
+          <menupopup id="file-popup">
+            <menuitem label="New"/>
+            <menuitem label="Open"/>
+            <menuitem label="Save"/>
+            <menuitem label="Reload" oncommand="Zotero.ZNotes.reload()"/>
+            <menuseparator/>
+            <menuitem label="Exit"/>
+          </menupopup>
+        </menu>
+        <menu id="edit-menu" label="Edit">
+          <menupopup id="edit-popup">
+            <menuitem label="Undo"/>
+            <menuitem label="Redo"/>
+          </menupopup>
+        </menu>
+      </menubar>
+    </toolbox>
+    
+    <groupbox flex="1">
+        <caption label="My notes"/>
+        <browser id="note-frame" flex="1" src="notes.html">
+        </browser>
+        
+    </groupbox>
+    
+
+    <menupopup id="item-context-menu">
+        <menu label="Edit" id="context-menu-edit">
+        </menu>
+        <menu label="Add" id="context-menu-add">
+        </menu>
+        <menuseparator/>
+        <menuitem label="Delete"/>
+    </menupopup>
+    
+    
+    <script src="settings.js"/>
+    <script src="chrome://zotero/content/include.js"/>
+    <script src="chrome://znotes/content/include.js"/>
+
+</window>
