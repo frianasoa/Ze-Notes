@@ -5,13 +5,14 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"].getService(Components.in
 
 function loaddata()
 {
-    var data = Zotero.ZNotes.data();
+    //var data = Zotero.ZNotes.data();
+    var data = Zotero.ZNotes.getdata();
     var table = document.createElement("table");
     var trh = document.createElement("tr");
     table.appendChild(trh);
     data["columns"].forEach(c=>{
 
-        var tdh = document.createElement("td");
+        var tdh = document.createElement("th");
         tdh.innerHTML = c;
         trh.appendChild(tdh)
     });
@@ -34,8 +35,26 @@ function loaddata()
 </script>
 
 <style>
+* {
+    font-size: 1.02em;
+    font-family: Arial;
+}
 table {
     width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+td, th {
+    border: solid 1px;
+    padding:0.3em;
+}
+
+td {
+    vertical-align: top;
+}
+
+th {
+    text-transform: capitalize;
 }
 
 </style>
