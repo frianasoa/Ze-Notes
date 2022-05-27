@@ -16,18 +16,15 @@
       <menubar id="sample-menubar">
         <menu id="file-menu" label="File">
           <menupopup id="file-popup">
-            <menuitem label="New"/>
-            <menuitem label="Open"/>
-            <menuitem label="Save"/>
-            <menuitem label="Reload" oncommand="Zotero.ZNotes.reload()"/>
+            <menuitem label="Export as *.docx"/>
             <menuseparator/>
             <menuitem label="Exit"/>
           </menupopup>
         </menu>
-        <menu id="edit-menu" label="Edit">
-          <menupopup id="edit-popup">
-            <menuitem label="Undo"/>
-            <menuitem label="Redo"/>
+        <menu id="tools-menu" label="Tools">
+          <menupopup id="tools-popup">
+            <menuitem label="Reload" oncommand="Zotero.ZNotes.reload();"/>
+            <menuitem label="Settings" oncommand="Zotero.ZNotes.openPreferenceWindow();"/>
           </menupopup>
         </menu>
       </menubar>

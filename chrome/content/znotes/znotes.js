@@ -131,6 +131,45 @@ Zotero.ZNotes = new function(){
             values: znotes
         }
     };
+    this.alltags = function()
+    {
+        var keys = Zotero.Items._objectKeys;
+        var taglist = [];
+        
+        for(id in keys)
+        {
+            try {
+                var item = Zotero.Items.get(id);           
+                var notes = item.getNotes();
+                if(notes.length>0)
+                {
+                    for(j in notes)
+                    {
+                        var noteid = notes[j];
+                        var n = Zotero.Items.get(noteid);
+                        var tags = JSON.parse(JSON.stringify(n)).tags;                
+                        
+                        if(tags.length>0)
+                        {
+                            tag = tags[0]["tag"];
+                        }
+                        
+                        if(tag=="")
+                        {
+                            tag = "Other";
+                        }
+                        taglist.push(tag)
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        return [...new Set(taglist)];
+    };
+    
     this.getalldata = function()
     {
         var items = [];
