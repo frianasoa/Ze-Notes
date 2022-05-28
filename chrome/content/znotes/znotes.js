@@ -119,15 +119,9 @@ Zotero.ZNotes = new function(){
                 }
             }
         }
-        Object.keys(znotes[0]).forEach(k=>{
-            if(!(k in taglist))
-            {
-                taglist.push(k);
-            }
-        })
         
         return {
-            columns: [...new Set(taglist)],
+            columns: Zotero.ZNotes.settings.visibletags(),
             values: znotes
         }
     };
@@ -210,33 +204,25 @@ Zotero.ZNotes = new function(){
         }
         return itemlist;
     };
-    
-    this.data = function()
-    {
-        return {
-            "columns": ["Title", "Date", "Methods", "Regions"],
-            "values":[
-                {
-                    "Title": "XUL templates ",
-                    "Date": "2022",
-                    "Methods":"Meth",
-                    "Regions": "Region",
-                },
-                {
-                    "Title": "title 2",
-                    "Date":"2022",
-                    "Methods":"Meth 2",
-                    "Regions": "Region 2",
-                }
-            ]
-        }
-    };
-    
+       
     this.clean = function(tdtext)
     {
         var re = new RegExp("&lt;&lt;.*&gt;&gt;", "g");
         tdtext = tdtext.replace(re, "");
         return tdtext;
+    };
+    
+    this.setPref = function(pref, value) {        
+        Zotero.Prefs.set('extensions.znotes.' + pref, value, true);
+    };
+    
+    this.getPref = function(pref, default_value="") {
+        var v = Zotero.Prefs.get('extensions.znotes.' + pref, true);
+        if(v==null)
+        {
+            return default_value;
+        }
+        return v;
     };
     
     this.reload = function()

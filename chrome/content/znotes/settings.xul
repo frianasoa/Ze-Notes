@@ -36,14 +36,16 @@
                                 <rows>
                                     <row>
                                         <label value="Show these tags"/>
-                                        <!-- <label preference="pref-znotes-hide"/> -->
+                                        <label id="label-test" preference="pref-znotes-hide"/>
                                         <label value="Hide these tags"/>
                                     </row>
                                     <row>
                                         <listbox id="tag-box-show"/>
                                         <vbox>
-                                            <button label="→" oncommand="Zotero.ZNotes.settings.tohide();"/>
-                                            <button label="←"/>
+                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveUp();"/>
+                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveDown();"/>
+                                            <button label="→" oncommand="Zotero.ZNotes.settings.moveRight();"/>
+                                            <button label="←" oncommand="Zotero.ZNotes.settings.moveLeft();"/>
                                         </vbox>
                                         <listbox id="tag-box-hide"/>
                                     </row>
