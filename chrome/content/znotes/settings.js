@@ -9,22 +9,47 @@ Zotero.ZNotes.settings = new function()
 {
     this.init = function()
     {
-        this.hidetags();
+        try {
+            this.inittags();
+            this.initsorttags();
+        }
+        catch {
+            
+        }
     }
     
-    this.hidetags = function()
+    this.clearlist=function(name)
+    {
+        var box = document.getElementById("tag-box-"+name);
+        while(box.getRowCount()>0)
+        {
+            box.removeItemAt(0);
+        };
+    }
+    
+    this.inittags = function()
     {
         var boxshow = document.getElementById("tag-box-show");
         var boxhide = document.getElementById("tag-box-hide");
         
-        var alltags = Zotero.ZNotes.alltags();
+        let showlisthead = document.createElement("listhead");
+        let showlistheader_value = document.createElement("listheader");
+        showlisthead.appendChild(showlistheader_value);
+        boxshow.appendChild(showlisthead);
+        showlistheader_value.setAttribute("label", "Value");
         
-        /** Add default fields */
-        defaultfields = ["id", "key", "title", "date", "journal", "author"]
-        alltags = defaultfields.concat(alltags);
+        let hidelisthead = document.createElement("listhead");
+        let hidelistheader_value = document.createElement("listheader");
+        hidelisthead.appendChild(hidelistheader_value);
+        boxhide.appendChild(hidelisthead);
+        hidelistheader_value.setAttribute("label", "Value");
         
+        /** Add default fields */   
+        var alltags = Zotero.ZNotes.settings.alltags();
+
         var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("hide-tag-list", "[]"));        
         var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]")); 
+                
         var newtags = alltags.concat(cachedhidetags).filter(x => cachedshowtags.includes(x));        
         boxshow.ondblclick = function(e){
             Zotero.ZNotes.settings.move(e.target);
@@ -39,8 +64,11 @@ Zotero.ZNotes.settings = new function()
             if(!cachedhidetags.includes(t))
             {
                 let listitem = document.createElement("listitem");
-                listitem.setAttribute("label", t);
+                let listcell = document.createElement("listcell");
                 listitem.setAttribute("parent", "show");
+                
+                listcell.setAttribute("label", t);
+                listitem.appendChild(listcell);
                 boxshow.appendChild(listitem);
             }
         });
@@ -50,8 +78,12 @@ Zotero.ZNotes.settings = new function()
             if(!cachedshowtags.includes(t) && !cachedhidetags.includes(t))
             {
                 let listitem = document.createElement("listitem");
-                listitem.setAttribute("label", t);
                 listitem.setAttribute("parent", "show");
+                
+                let listcell = document.createElement("listcell");
+                listcell.setAttribute("label", t);
+                
+                listitem.appendChild(listcell);
                 boxshow.appendChild(listitem);
             }
         });
@@ -61,39 +93,131 @@ Zotero.ZNotes.settings = new function()
             if(alltags.includes(t))
             {
                 let listitem = document.createElement("listitem");
-                listitem.setAttribute("label", t);
                 listitem.setAttribute("parent", "hide");
+                
+                let listcell = document.createElement("listcell");
+                listcell.setAttribute("label", t);
+                
+                listitem.appendChild(listcell);
                 boxhide.appendChild(listitem);
             }
         });
     }
     
-    this.moveUp = function()
+    this.alltags = function()
     {
-        var boxshow = document.getElementById("tag-box-show");
-        var listitem = boxshow._currentItem;
-        if(listitem.selected)
-        {
-            var newindex = boxshow.selectedIndex-1;
-            var item = boxshow.removeItemAt(boxshow.selectedIndex);
-            var newitem = boxshow.insertItemAt(newindex, item.getAttribute("label")); 
-            boxshow.selectedItem = newitem;
-        }
-        this.saveLists();
+        var defaultfields = ["id", "key", "title", "date", "journal", "author", "creator"];
+        return defaultfields.concat(Zotero.ZNotes.alltags());
     }
     
-    this.moveDown = function()
+    this.initsorttags = function()
     {
-        var boxshow = document.getElementById("tag-box-show");
-        var listitem = boxshow._currentItem;
-        if(listitem.selected)
+        this.clearlist("sort");
+        var boxsort = document.getElementById("tag-box-sort");
+        var cachedsorttags = JSON.parse(Zotero.ZNotes.getPref("sort-tag-list", "[]"));
+        var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));
+        var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));
+        var alltags = Zotero.ZNotes.settings.alltags();
+        
+        
+        let listhead = document.createElement("listhead");
+        let listheader_value = document.createElement("listheader");
+        let listheader_direction = document.createElement("listheader");
+        listhead.appendChild(listheader_value);
+        listhead.appendChild(listheader_direction);
+        boxsort.appendChild(listhead);
+        
+        listheader_value.setAttribute("label", "Value");
+        listheader_direction.setAttribute("label", "Direction");
+        
+        /** Add cached sort tags*/
+        cachedsorttags.forEach(t=>{
+            if(alltags.includes(t))
+            {
+                let listitem = document.createElement("listitem");
+                let listcell = document.createElement("listitem");
+                let listcell_dir = document.createElement("listitem");
+                
+                listcell.setAttribute("label", t);
+                listcell.setAttribute("parent", "sort");
+                
+                listitem.appendChild(listcell);
+                listitem.appendChild(listcell_dir);
+                boxsort.appendChild(listitem);
+            }
+        });
+        
+        /** Add cached show tags*/
+        cachedshowtags.forEach(t=>{
+            if(alltags.includes(t) && !cachedsorttags.includes(t))
+            {
+                let listitem = document.createElement("listitem");
+                listitem.setAttribute("label", t);
+                listitem.setAttribute("parent", "sort");
+                boxsort.appendChild(listitem);
+            }
+        });
+        
+        /** Add other tags*/
+        alltags.forEach(t=>{
+            if(!cachedsorttags.includes(t) && !cachedshowtags.includes(t))
+            {
+                let listitem = document.createElement("listitem");
+                listitem.setAttribute("label", t);
+                listitem.setAttribute("parent", "sort");
+                boxsort.appendChild(listitem);
+            }
+        });
+    }
+    
+    /** Move element up and down within a listbox*/
+    this.listMove = function(name, direction="down")
+    {
+        var box = document.getElementById("tag-box-"+name);
+        var listitem = box._currentItem;
+        
+        if(direction=="down")
         {
-            var newindex = boxshow.selectedIndex+1;
-            var item = boxshow.removeItemAt(boxshow.selectedIndex);
-            var newitem = boxshow.insertItemAt(newindex, item.getAttribute("label"));
-            boxshow.selectedItem = newitem;
+            var newindex = box.selectedIndex+1;
+            
+            if(listitem.selected && newindex<box.getRowCount())
+            {
+                var item = box.removeItemAt(box.selectedIndex);
+                var newitem = box.insertItemAt(newindex, "", item);
+                
+                item.childNodes.forEach(c=>{
+                    let listcell = document.createElement("listcell", c.getAttribute("label"));
+                    listcell.setAttribute("label", c.getAttribute("label"));
+                    newitem.appendChild(listcell);
+                });
+                newitem.removeChild(newitem.firstChild);
+                
+                // newitem.childNodes.forEach(c=>{
+                    // newitem.removeChild(c);
+                // });
+                // box.selectedItem.childNodes.forEach(listcell=>{
+                    // newitem.appendChild(listcell);
+                // });
+                // box.selectedItem = newitem;
+                // this.saveLists();
+            }
         }
-        this.saveLists();
+        else if(direction=="up")
+        {
+            if(listitem.selected)
+            {
+                var newindex = box.selectedIndex-1;
+                if(newindex==-1)
+                {
+                    newindex=0;
+                }
+                
+                var item = box.removeItemAt(box.selectedIndex);
+                var newitem = box.insertItemAt(newindex, item.getAttribute("label")); 
+                box.selectedItem = newitem;
+                this.saveLists();
+            }
+        }
     }
     
     this.moveRight = function()
@@ -132,35 +256,25 @@ Zotero.ZNotes.settings = new function()
         if(listitem.getAttribute("parent")=="show")
         {
             boxhide.appendChild(listitem);
-            boxhide.selectedIndex = boxhide.children.length-1;
+            boxhide.selectedIndex = boxhide.getRowCount()-1;
             listitem.click();
             listitem.setAttribute("parent", "hide");
         }
         else
         {
             boxshow.appendChild(listitem);
-            boxshow.selectedIndex = boxshow.children.length-1;
+            boxshow.selectedIndex = boxshow.getRowCount()-1;
             listitem.click();
             listitem.setAttribute("parent", "show");
         }
         this.saveLists();
     }
     
-    this.getHideList = function()
+    this.listFromBox = function(name)
     {
-        var boxhide = document.getElementById("tag-box-hide");
+        var box = document.getElementById("tag-box-"+name);
         var list = []
-        boxhide.querySelectorAll("listitem").forEach(listitem=>{
-            list.push(listitem.getAttribute("label"));
-        });
-        return list;
-    }
-    
-    this.getShowList = function()
-    {
-        var boxshow = document.getElementById("tag-box-show");
-        var list = []
-        boxshow.querySelectorAll("listitem").forEach(listitem=>{
+        box.querySelectorAll("listitem").forEach(listitem=>{
             list.push(listitem.getAttribute("label"));
         });
         return list;
@@ -168,10 +282,11 @@ Zotero.ZNotes.settings = new function()
     
     this.visibletags = function()
     {
-        var alltags = Zotero.ZNotes.alltags();
+        var alltags = Zotero.ZNotes.settings.alltags();
         var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("hide-tag-list", "[]"));        
         var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));        
         var tags = [];
+        
         /** Add cached show tag*/
         cachedshowtags.forEach(t=>{
             if(!cachedhidetags.includes(t))
@@ -190,10 +305,11 @@ Zotero.ZNotes.settings = new function()
         return tags;
     }
     
-    this.saveLists = function()
+    this.saveLists = function(names=['hide', 'show', 'sort'])
     {
-        Zotero.ZNotes.setPref("hide-tag-list", JSON.stringify(this.getHideList()));
-        Zotero.ZNotes.setPref("show-tag-list", JSON.stringify(this.getShowList()));
+        names.forEach(name=>{
+            Zotero.ZNotes.setPref(name+"-tag-list", JSON.stringify(this.listFromBox(name)));
+        });
     }
 }
 

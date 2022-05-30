@@ -17,16 +17,15 @@
 
 			<tabbox id="znotes-tabbox">
 				<tabs id="znotes-tabs">
-					<tab label="Manage notes"/>
-					<tab label="&general-settings;"/>
-					<tab label="&advanced-settings;"/>
+					<tab label="Manage tags and columns"/>
+					<!-- <tab label="Sort columns"/> -->
 				</tabs>
                 
                 <!-- NOTES MANAGER SETTINGS -->
 				<tabpanels id="znotes-tabpanels">
 					<tabpanel orient="vertical" flex="1">
 						<groupbox flex="1">
-							<caption label="Hide tags"/>
+							<caption label="Select tags to use"/>
                             <grid>
                                 <columns>
                                     <column/>
@@ -42,12 +41,36 @@
                                     <row>
                                         <listbox id="tag-box-show"/>
                                         <vbox>
-                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveUp();"/>
-                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveDown();"/>
+                                            <button label="↑" oncommand="Zotero.ZNotes.settings.listMove('show', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZNotes.settings.listMove('show', 'down');"/>
                                             <button label="→" oncommand="Zotero.ZNotes.settings.moveRight();"/>
                                             <button label="←" oncommand="Zotero.ZNotes.settings.moveLeft();"/>
                                         </vbox>
                                         <listbox id="tag-box-hide"/>
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
+                    
+                        <!-- Sort panels -->
+						<groupbox flex="1">
+							<caption label="Sort table"/>
+                            <grid>
+                                <columns>
+                                    <column/>
+                                    <column/>
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="Sort by"/>
+                                        <label id="label" />
+                                    </row>
+                                    <row>
+                                        <listbox id="tag-box-sort"/>
+                                        <vbox>
+                                            <button label="↑" oncommand="Zotero.ZNotes.settings.listMove('sort', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZNotes.settings.listMove('sort', 'down');"/>
+                                        </vbox>
                                     </row>
                                 </rows>
                             </grid>

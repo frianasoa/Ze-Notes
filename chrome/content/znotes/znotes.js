@@ -24,6 +24,23 @@ Zotero.ZNotes = new function(){
             'chrome,titlebar,toolbar,centerscreen' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
     };
+    
+    this.stringify = function(mode, variable)
+    {
+        var s = ""
+        if(mode=="creators")
+        {
+            var creators = [];
+            for(i in variable)
+            {
+                var creator = variable[i];
+                creators.push(creator.firstName+" "+creator.lastName);
+            }
+            s = creators.join(", ");
+        }
+        return s;
+    };
+    
     this.tojson = function(items)
     {
         var znotes = [];
@@ -79,7 +96,7 @@ Zotero.ZNotes = new function(){
                         date: date,
                         journal: journal,
                         author: author,
-                        //creators: Zotero.ZNotes.stringify("creators", creators),
+                        creators: Zotero.ZNotes.stringify("creators", creators),
                         file: filename,
                     }
                     
@@ -120,11 +137,39 @@ Zotero.ZNotes = new function(){
             }
         }
         
+        sorter = ["date", "-author"];
         return {
             columns: Zotero.ZNotes.settings.visibletags(),
-            values: znotes
+            values: Zotero.ZNotes.sort(znotes, sorter),
         }
     };
+    
+    this.sort_func = function(fields) 
+    {
+        return function (a, b) {
+            return fields
+                .map(function (o) {
+                    var dir = 1;
+                    if (o[0] === '-') {
+                       dir = -1;
+                       o=o.substring(1);
+                    }
+                    if (a[o] > b[o]) return dir;
+                    if (a[o] < b[o]) return -(dir);
+                    return 0;
+                })
+                .reduce(function firstNonZeroValue (p,n) {
+                    return p ? p : n;
+                }, 0);
+        };
+    };
+    
+    this.sort = function(data, sorter)
+    {
+        data = data.sort(this.sort_func(sorter));
+        return data;
+    };
+    
     this.alltags = function()
     {
         var keys = Zotero.Items._objectKeys;
