@@ -7,25 +7,11 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 
 Zotero.ZNotes.settings = new function()
 {
-    this.lists = {
-        show: [],
-        hide: [],
-        sort: [],
-    }
-    
     this.init = function()
     {
-        this.fillList("show", [{
-            "Col one": "one",
-            "Col two": "two",
-        }, {
-            "Col one": "one",
-            "Col two": "two",
-        }]);
-        
         try {
-            // this.inittags();
-            // this.initsorttags();
+            this.inittags();
+            this.initsorttags();
         }
         catch {
             
@@ -41,70 +27,8 @@ Zotero.ZNotes.settings = new function()
         };
     }
     
-    this.move = function(arr, row, d) {
-        var old_index = arr.findIndex(i => i.id === row.id);
-        
-        if(d=="down")
-        {
-            var new_index = Math.min(old_index+1, arr.length-1);
-        }
-        if(d=="up")
-        {
-            var new_index = Math.max(old_index-1, 0);
-        }
-        var o1 = arr[old_index];
-        var o2 = arr[new_index];
-        arr[new_index] = o1;
-        arr[old_index] = o2;
-    }
-    
-    this.fillList = function(name, data=[])
-    {
-        var box = document.getElementById("tag-box-"+name);
-        var listhead = document.createElement("listhead");
-        box.appendChild(listhead);
-        
-        /** add column headers*/
-        var columns = []
-        data.forEach(d=>{
-            columns = columns.concat(Object.keys(d));
-        });
-        
-        columns = [...new Set(columns)];
-        columns.forEach(c=>{
-            let listheader = document.createElement("listheader");
-            listheader.setAttribute("label", c);
-            listhead.appendChild(listheader);
-        });
-        
-        /** add rows */
-        data.forEach(d=>{
-            var listitem = document.createElement("listitem");
-            box.appendChild(listitem);
-            columns.forEach(c=>{
-                var listcell = document.createElement("listcell");
-                listitem.appendChild(listcell);
-                var value = "N/A";
-                if(Object.keys(d).includes(c))
-                {
-                    value = d[c];
-                }
-                listcell.setAttribute("label", value);
-            });
-        });
-    }
     this.inittags = function()
     {
-        this.fillList("show", [{
-            "one": "one",
-            "two": "two",
-        }]);
-    }
-    
-    this.inittags2 = function()
-    {
-        this.clearlist("show");
-        this.clearlist("hide");
         var boxshow = document.getElementById("tag-box-show");
         var boxhide = document.getElementById("tag-box-hide");
         
@@ -182,8 +106,16 @@ Zotero.ZNotes.settings = new function()
     
     this.alltags = function()
     {
+        var tags = []
         var defaultfields = ["id", "key", "title", "date", "journal", "author", "creator"];
-        return defaultfields.concat(Zotero.ZNotes.alltags());
+        var r = defaultfields.concat(Zotero.ZNotes.alltags());
+        r.forEach(v=>{
+            tags.push({
+                value: v,
+                order: "asc",
+            });
+        })
+        return tags;
     }
     
     this.initsorttags = function()
@@ -246,11 +178,11 @@ Zotero.ZNotes.settings = new function()
         });
     }
     
-    this.move = function(name, direction="down") {
-        var box = document.getElementById("tag-box-"+name);
+	this.move = function(name, direction="down") {
+		var box = document.getElementById("tag-box-"+name);
         var listitem = box._currentItem;
-    }
-    
+	}
+	
     /** Move element up and down within a listbox*/
     this.listMove = function(name, direction="down")
     {
@@ -329,8 +261,8 @@ Zotero.ZNotes.settings = new function()
         }
         this.saveLists();
     }
-    
-    
+	
+	
     
     this.move2 = function(listitem=null)
     {
