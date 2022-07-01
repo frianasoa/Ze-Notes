@@ -40,7 +40,7 @@ var notes = new function()
 
         $('.context-menu-one').on('click', function(e){
             console.log('clicked', this);
-        })   
+        }); 
     }
 
     this.loaddata = function()
@@ -49,6 +49,7 @@ var notes = new function()
         var data = Zotero.ZNotes.getdata();
         var table = document.createElement("table");
         var trh = document.createElement("tr");
+        table.id = "notes-table"
         table.appendChild(trh);
         data["columns"].forEach(c=>{
             var tdh = document.createElement("th");
@@ -77,11 +78,24 @@ var notes = new function()
                     td.className = "context-menu-one tag";
                 }
                 
+                var span = td.querySelector(".notekey");
+                
+                if(span)
+                {
+                    td.dataset.notekey = span.innerText;
+                    span.parentNode.removeChild(span);
+                }
+                else
+                {
+                    td.dataset.notekey = "";
+                }
+                
                 td.dataset.column = c;
                 td.dataset.itemid = v.itemid;
+                td.dataset.itemkey = v.key;
                 td.dataset.filename = v.filename;
-                
                 tr.appendChild(td);
+                
             });
         }); 
         document.getElementById("content").appendChild(table);
@@ -92,9 +106,11 @@ var notes = new function()
         var td = options.$trigger.get(0);
         var column = td.dataset.column;
         var itemid = td.dataset.itemid;
+        var itemkey = td.dataset.itemkey;
         var filename = td.dataset.filename;
         var notekey = td.dataset.notekey;
-        var notekey = td.dataset.notekey;
+        
+        
         if(key=="showentry")
         {
             var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
@@ -110,7 +126,14 @@ var notes = new function()
         }
         else if(key=="edit")
         {
-            this.opennote(1072);
+            if(notekey=="")
+            {
+                this.createnote(itemkey, column);
+            }
+            else
+            {
+                this.opennote(notekey);
+            }
         }
         else if(key=="showfile")
         {
@@ -141,6 +164,7 @@ var notes = new function()
     
     this.opennote = function(itemID, col, parentKey)
     {
+        var vm = this;
         var pane = Zotero.getActiveZoteroPane();
         if (!pane.canEdit()) {
 			pane.displayCannotEditLibraryMessage();
@@ -165,8 +189,19 @@ var notes = new function()
         var io = { itemID: itemID, collectionID: col, parentItemKey: parentKey };
 		var win = window.openDialog('chrome://zotero/content/note.xul', name, 'chrome,resizable,centerscreen,dialog=false', io);
         win.addEventListener("close", function(){
-            // views.display();
-        })
+            Zotero.ZNotes.reload();
+        });
+    }
+    this.createnote = function(itemid, column)
+    {
+        var vm = this;
+        var note = new Zotero.Item('note'); 
+        note.setNote('New note');
+        note.parentKey = itemid;
+        note.addTag(column);
+        note.saveTx().then(function(){
+            vm.opennote(note.id);
+        });
     }
 }
 

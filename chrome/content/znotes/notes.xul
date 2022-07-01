@@ -14,7 +14,8 @@
       <menubar id="sample-menubar">
         <menu id="file-menu" label="File">
           <menupopup id="file-popup">
-            <menuitem label="Export as *.docx"/>
+            <menuitem label="Export as MS Word document ... " oncommand="Zotero.ZNotes.download('doc')"/>
+            <menuitem label="Export as MS Excel sheet ... " oncommand="Zotero.ZNotes.download('xls')"/>
             <menuseparator/>
             <menuitem label="Exit"/>
           </menupopup>
@@ -27,14 +28,9 @@
         </menu>
       </menubar>
     </toolbox>
-    
-    <groupbox flex="1">
-        <caption label="My notes"/>
-        <browser id="note-frame" flex="1" src="notes.html">
-        </browser>
-    </groupbox>
-    
 
+    <browser id="note-frame" flex="1" src="notes.html"></browser>
+   
     <menupopup id="item-context-menu">
         <menu label="Edit" id="context-menu-edit">
         </menu>

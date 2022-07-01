@@ -6,10 +6,11 @@ table {
     width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
+    border-radius: 0.2em;
 }
 td, th {
-    border: solid 1px;
     padding:0.3em;
+    border: solid 1px; 
 }
 
 td {
@@ -22,7 +23,7 @@ td {
 }
 
 .context-menu-two {
-    background-color: lightgray;
+    background-color: #f1f1f1;
 }
 
 th {
@@ -35,4 +36,10 @@ th {
     width:99%;
     height:96%; 
     overflow-y:auto; 
+}
+
+.notekey {
+    width: 100%;
+    padding: 0.1em;
+    background-color: #a8a8a8;
 }

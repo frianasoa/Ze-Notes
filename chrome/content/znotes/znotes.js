@@ -21,7 +21,7 @@ Zotero.ZNotes = new function(){
     
     this.openPreferenceWindow = function(paneID="", action="") {
         var io = {pane: paneID, action: action};
-        window.openDialog('chrome://znotes/content/settings.xul',
+        var win = window.openDialog('chrome://znotes/content/settings.xul',
             'znote-settings',
             'chrome,titlebar,toolbar,centerscreen,dialog,width:950' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
@@ -128,7 +128,7 @@ Zotero.ZNotes = new function(){
                             // line["notes"][tag] = [];
                         // }
                         
-                        line[tag] = Zotero.ZNotes.clean(note)+"<hr>"+noteid;
+                        line[tag] = Zotero.ZNotes.clean(note)+"<span class='notekey'>"+noteid+"</span>";
                         taglist.push(tag);
                     }
                     
@@ -290,6 +290,105 @@ Zotero.ZNotes = new function(){
     {
         Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.location.reload();
     };
+    
+    this.exporthtml = function(html)
+    {
+        style = "<style>";
+        style += "td{white-space: pre-wrap;    white-space: -moz-pre-wrap;    white-space: -pre-wrap;    white-space: -o-pre-wrap;    word-wrap: break-word;border: solid 1px; vertical-align: top;padding:0.5em;padding-bottom: 1em;} table{table-layout: fixed; padding:0.5em;border-spacing: 0; border-collapse: collapse; border: solid 1px; width: 100%;}";
+        style += "</style>";
+        
+        html = "<meta http-equiv=Content-Type content='text/html; charset=utf-8'><html><head>"+style+"</head><body>"+html+"</body></html>"
+        
+        var nsIFilePicker = Components.interfaces.nsIFilePicker;
+        var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+        
+        fp.init(window, "Save to file", nsIFilePicker.modeSave);
+        fp.appendFilter("Documents (*.doc)", "*.doc");
+        fp.appendFilter("Web page (*.html; *.htm)", "*.html; *.htm");
+        fp.defaultExtension="doc";
+        
+        fp.open(function()
+        {
+            var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
+            outputStream.init(fp.file, 0x04 | 0x08 | 0x20, 420, 0 );
+            var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+            converter.init(outputStream, "UTF-8", 0, 0);
+            converter.writeString(html);
+            converter.close();
+            outputStream.close();
+        });
+    }
+    
+    this.base64toBlob = function(base64Data, contentType) {
+        contentType = contentType || '';
+        var sliceSize = 1024;
+        var byteCharacters = atob(base64Data);
+        var bytesLength = byteCharacters.length;
+        var slicesCount = Math.ceil(bytesLength / sliceSize);
+        var byteArrays = new Array(slicesCount);
+
+        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            var begin = sliceIndex * sliceSize;
+            var end = Math.min(begin + sliceSize, bytesLength);
+
+            var bytes = new Array(end - begin);
+            for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+    
+    this.exportxls = function(xls)
+    {
+        var uri = 'data:application/vnd.ms-excel;base64,';
+        var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>';
+        var base64 = function(s) { 
+            return window.btoa(unescape(encodeURIComponent(s))) 
+        }
+        var format = function(s, c) { 
+            return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) 
+        }
+        var ctx = {worksheet: "data" || 'Worksheet', table: xls}
+        // xls = base64(format(template, ctx))
+        xls = format(template, ctx)
+        
+        var nsIFilePicker = Components.interfaces.nsIFilePicker;
+        var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+        
+        fp.init(window, "Save to file", nsIFilePicker.modeSave);
+        fp.appendFilter("Documents (*.xls)", "*.xls");
+        fp.appendFilter("Web page (*.csv)", "*.csv");
+        fp.defaultExtension="xls";
+        
+        fp.open(function()
+        {
+              
+            var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
+            outputStream.init(fp.file, 0x04 | 0x08 | 0x20, 420, 0 );
+            var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+            converter.init(outputStream, "UTF-8", 0, 0);
+            converter.writeString(xls);
+            converter.close();
+            outputStream.close();
+        });
+    }
+    
+    this.download = function(type)
+    {
+        
+        if(type=="doc")
+        {
+            var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.body.innerHTML;
+            this.exporthtml(data);
+        }
+        else
+        {
+            var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table").innerHTML;
+            this.exportxls(data);
+        }
+    }
 };
 
 // Initialize the utility
