@@ -39,14 +39,14 @@
                                         <label value="Hide these tags"/>
                                     </row>
                                     <row>
-                                        <listbox id="tag-box-show"/>
+                                        <listbox id="tag-box-show"></listbox>
                                         <vbox>
-                                            <button label="↑" oncommand="Zotero.ZNotes.settings.listMove('show', 'up');"/>
-                                            <button label="↓" oncommand="Zotero.ZNotes.settings.listMove('show', 'down');"/>
+                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveitem('show', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveitem('show', 'down');"/>
                                             <button label="→" oncommand="Zotero.ZNotes.settings.moveRight();"/>
                                             <button label="←" oncommand="Zotero.ZNotes.settings.moveLeft();"/>
                                         </vbox>
-                                        <listbox id="tag-box-hide"/>
+                                        <listbox id="tag-box-hide"></listbox>
                                     </row>
                                 </rows>
                             </grid>
@@ -66,7 +66,7 @@
                                         <label id="label" />
                                     </row>
                                     <row>
-                                        <listbox id="tag-box-sort"/>
+                                        <listbox id="tag-box-sort"></listbox>
                                         <vbox>
                                             <button label="↑" oncommand="Zotero.ZNotes.settings.listMove('sort', 'up');"/>
                                             <button label="↓" oncommand="Zotero.ZNotes.settings.listMove('sort', 'down');"/>

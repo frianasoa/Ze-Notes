@@ -13,387 +13,165 @@ Zotero.ZNotes.settings = new function()
         sort: [],
     }
     
-    this.init = function()
+    this.load = function()
     {
-        this.fillList("show", [{
-            "Col one": "one",
-            "Col two": "two",
-        }, {
-            "Col one": "one",
-            "Col two": "two",
-        }]);
+        this.lists.show = [];
+        var vm = this;
+        var alltags = ["id", "key", "title", "date", "journal", "author", "creator"];
+        alltags = alltags.concat(Zotero.ZNotes.alltags());
         
-        try {
-            // this.inittags();
-            // this.initsorttags();
-        }
-        catch {
-            
-        }
-    }
-    
-    this.clearlist=function(name)
-    {
-        var box = document.getElementById("tag-box-"+name);
-        while(box.getRowCount()>0)
-        {
-            box.removeItemAt(0);
-        };
-    }
-    
-    this.move = function(arr, row, d) {
-        var old_index = arr.findIndex(i => i.id === row.id);
+        var showtagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-show", "[]")); 
+        var hidetagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-hide", "[]")); 
+        var sorttagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-sort", "[]")); 
         
-        if(d=="down")
-        {
-            var new_index = Math.min(old_index+1, arr.length-1);
-        }
-        if(d=="up")
-        {
-            var new_index = Math.max(old_index-1, 0);
-        }
-        var o1 = arr[old_index];
-        var o2 = arr[new_index];
-        arr[new_index] = o1;
-        arr[old_index] = o2;
-    }
-    
-    this.fillList = function(name, data=[])
-    {
-        var box = document.getElementById("tag-box-"+name);
-        var listhead = document.createElement("listhead");
-        box.appendChild(listhead);
+        this.lists.show = showtagscached;
+        this.lists.hide = hidetagscached;
+        this.lists.sort = sorttagscached;
         
-        /** add column headers*/
-        var columns = []
-        data.forEach(d=>{
-            columns = columns.concat(Object.keys(d));
-        });
-        
-        columns = [...new Set(columns)];
-        columns.forEach(c=>{
-            let listheader = document.createElement("listheader");
-            listheader.setAttribute("label", c);
-            listhead.appendChild(listheader);
-        });
-        
-        /** add rows */
-        data.forEach(d=>{
-            var listitem = document.createElement("listitem");
-            box.appendChild(listitem);
-            columns.forEach(c=>{
-                var listcell = document.createElement("listcell");
-                listitem.appendChild(listcell);
-                var value = "N/A";
-                if(Object.keys(d).includes(c))
-                {
-                    value = d[c];
-                }
-                listcell.setAttribute("label", value);
+        var id = 0;
+        alltags.forEach(t=>{
+            vm.lists.show.push({
+                value: t,
+                state: "active",
+                id: id,
             });
-        });
+            id++;
+        })
+        
+        this.refresh("show", this.lists.show);
+        this.refresh("hide", this.lists.hide);
+        this.refresh("sort", this.lists.sort);
     }
-    this.inittags = function()
+    
+    this.reindex = function(data)
     {
-        this.fillList("show", [{
-            "one": "one",
-            "two": "two",
-        }]);
+        var newdata = [];
+        var i = 0;
+        data.forEach(d=>{
+            d.id = i;
+            newdata.push(d);
+            i++;
+        });
+        return newdata;
     }
     
-    this.inittags2 = function()
-    {
-        this.clearlist("show");
-        this.clearlist("hide");
-        var boxshow = document.getElementById("tag-box-show");
-        var boxhide = document.getElementById("tag-box-hide");
-        
-        let showlisthead = document.createElement("listhead");
-        let showlistheader_value = document.createElement("listheader");
-        showlisthead.appendChild(showlistheader_value);
-        boxshow.appendChild(showlisthead);
-        showlistheader_value.setAttribute("label", "Value");
-        
-        let hidelisthead = document.createElement("listhead");
-        let hidelistheader_value = document.createElement("listheader");
-        hidelisthead.appendChild(hidelistheader_value);
-        boxhide.appendChild(hidelisthead);
-        hidelistheader_value.setAttribute("label", "Value");
-        
-        /** Add default fields */   
-        var alltags = Zotero.ZNotes.settings.alltags();
-
-        var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("hide-tag-list", "[]"));        
-        var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]")); 
-                
-        var newtags = alltags.concat(cachedhidetags).filter(x => cachedshowtags.includes(x));        
-        boxshow.ondblclick = function(e){
-            Zotero.ZNotes.settings.move(e.target);
-        }
-        
-        boxhide.ondblclick = function(e){
-            Zotero.ZNotes.settings.move(e.target);
-        }
-        
-        /** Add cached show tag*/
-        cachedshowtags.forEach(t=>{
-            if(!cachedhidetags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                let listcell = document.createElement("listcell");
-                listitem.setAttribute("parent", "show");
-                
-                listcell.setAttribute("label", t);
-                listitem.appendChild(listcell);
-                boxshow.appendChild(listitem);
-            }
-        });
-        
-        /** Add new tags*/
-        alltags.forEach(t=>{
-            if(!cachedshowtags.includes(t) && !cachedhidetags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                listitem.setAttribute("parent", "show");
-                
-                let listcell = document.createElement("listcell");
-                listcell.setAttribute("label", t);
-                
-                listitem.appendChild(listcell);
-                boxshow.appendChild(listitem);
-            }
-        });
-        
-        /** Add cached hide tags*/
-        cachedhidetags.forEach(t=>{
-            if(alltags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                listitem.setAttribute("parent", "hide");
-                
-                let listcell = document.createElement("listcell");
-                listcell.setAttribute("label", t);
-                
-                listitem.appendChild(listcell);
-                boxhide.appendChild(listitem);
-            }
-        });
-    }
-    
-    this.alltags = function()
-    {
-        var defaultfields = ["id", "key", "title", "date", "journal", "author", "creator"];
-        return defaultfields.concat(Zotero.ZNotes.alltags());
-    }
-    
-    this.initsorttags = function()
-    {
-        this.clearlist("sort");
-        var boxsort = document.getElementById("tag-box-sort");
-        var cachedsorttags = JSON.parse(Zotero.ZNotes.getPref("sort-tag-list", "[]"));
-        var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));
-        var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));
-        var alltags = Zotero.ZNotes.settings.alltags();
-        
-        
-        let listhead = document.createElement("listhead");
-        let listheader_value = document.createElement("listheader");
-        let listheader_direction = document.createElement("listheader");
-        listhead.appendChild(listheader_value);
-        listhead.appendChild(listheader_direction);
-        boxsort.appendChild(listhead);
-        
-        listheader_value.setAttribute("label", "Value");
-        listheader_direction.setAttribute("label", "Direction");
-        
-        /** Add cached sort tags*/
-        cachedsorttags.forEach(t=>{
-            if(alltags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                let listcell = document.createElement("listitem");
-                let listcell_dir = document.createElement("listitem");
-                
-                listcell.setAttribute("label", t);
-                listcell.setAttribute("parent", "sort");
-                
-                listitem.appendChild(listcell);
-                listitem.appendChild(listcell_dir);
-                boxsort.appendChild(listitem);
-            }
-        });
-        
-        /** Add cached show tags*/
-        cachedshowtags.forEach(t=>{
-            if(alltags.includes(t) && !cachedsorttags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                listitem.setAttribute("label", t);
-                listitem.setAttribute("parent", "sort");
-                boxsort.appendChild(listitem);
-            }
-        });
-        
-        /** Add other tags*/
-        alltags.forEach(t=>{
-            if(!cachedsorttags.includes(t) && !cachedshowtags.includes(t))
-            {
-                let listitem = document.createElement("listitem");
-                listitem.setAttribute("label", t);
-                listitem.setAttribute("parent", "sort");
-                boxsort.appendChild(listitem);
-            }
-        });
-    }
-    
-    this.move = function(name, direction="down") {
-        var box = document.getElementById("tag-box-"+name);
-        var listitem = box._currentItem;
-    }
-    
-    /** Move element up and down within a listbox*/
-    this.listMove = function(name, direction="down")
+    this.moveitem = function(name, direction)
     {
         var box = document.getElementById("tag-box-"+name);
         var listitem = box._currentItem;
+        if(listitem)
+        {
+            var row = JSON.parse(listitem.getAttribute("data-data"));
+            var index0 = this.lists[name].findIndex(i => i.id === row.id);
+            if(direction=="up")
+            {
+                var index1 = Math.max(index0-1, 0);
+            }
+            else /** Down*/
+            {
+                var index1 = Math.min(index0+1, this.lists[name].length-1);
+            }
+            var o1 = this.lists[name][index0];
+            var o2 = this.lists[name][index1];
+            this.lists[name][index1] = o1;
+            this.lists[name][index0] = o2;
+            this.refresh(name, this.lists[name]);
+            box.ensureIndexIsVisible(index1);
+            box.selectedIndex = index1;
+        }
+    }
+    
+    this.moveto = function(target_name, source_name, listitem)
+    {
+        var source = this.lists[source_name];
+        var target = this.lists[target_name];
+        var row = JSON.parse(listitem.getAttribute("data-data"));
+        var index = source.findIndex(i => i.id === row.id);
+        source.splice(index, 1);
+        target.push(row);
         
-        if(direction=="down")
-        {
-            var newindex = box.selectedIndex+1;
-            
-            if(listitem.selected && newindex<box.getRowCount())
-            {
-                var item = box.removeItemAt(box.selectedIndex);
-                var newitem = box.insertItemAt(newindex, "", item);
-                
-                item.childNodes.forEach(c=>{
-                    let listcell = document.createElement("listcell", c.getAttribute("label"));
-                    listcell.setAttribute("label", c.getAttribute("label"));
-                    newitem.appendChild(listcell);
-                });
-                newitem.removeChild(newitem.firstChild);
-                
-                // newitem.childNodes.forEach(c=>{
-                    // newitem.removeChild(c);
-                // });
-                // box.selectedItem.childNodes.forEach(listcell=>{
-                    // newitem.appendChild(listcell);
-                // });
-                // box.selectedItem = newitem;
-                // this.saveLists();
-            }
-        }
-        else if(direction=="up")
-        {
-            if(listitem.selected)
-            {
-                var newindex = box.selectedIndex-1;
-                if(newindex==-1)
-                {
-                    newindex=0;
-                }
-                
-                var item = box.removeItemAt(box.selectedIndex);
-                var newitem = box.insertItemAt(newindex, item.getAttribute("label")); 
-                box.selectedItem = newitem;
-                this.saveLists();
-            }
-        }
+        /** Reindex and data*/
+        this.lists[source_name] = this.reindex(source);
+        this.lists[target_name] = this.reindex(target);
+        
+        this.refresh("show", this.lists.show);
+        this.refresh("hide", this.lists.hide);
+        this.refresh("sort", this.lists.sort);
     }
     
     this.moveRight = function()
     {
-        var boxshow = document.getElementById("tag-box-show");
-        var boxhide = document.getElementById("tag-box-hide"); 
-        var listitem = boxshow._currentItem;
-        if(listitem.selected)
+        var box = document.getElementById("tag-box-show");
+        var listitem = box._currentItem;
+        if(listitem)
         {
-            boxhide.appendChild(listitem);
-            boxhide.selectedItem = listitem;
-            listitem.setAttribute("parent", "hide");
+            this.moveto("hide", "show", listitem)
         }
-        this.saveLists();
     }
     
     this.moveLeft = function()
     {
-        var boxshow = document.getElementById("tag-box-show");
-        var boxhide = document.getElementById("tag-box-hide"); 
-        var listitem = boxhide._currentItem;
-        if(listitem.selected)
+        var box = document.getElementById("tag-box-hide");
+        var listitem = box._currentItem;
+        if(listitem)
         {
-            boxshow.appendChild(listitem);
-            boxshow.selectedItem = listitem;
-            listitem.setAttribute("parent", "show");
-            
+            this.moveto("show", "hide", listitem)
         }
-        this.saveLists();
     }
     
-    
-    
-    this.move2 = function(listitem=null)
+    this.refresh = function(name, boxdata)
     {
-        var boxshow = document.getElementById("tag-box-show");
-        var boxhide = document.getElementById("tag-box-hide");        
-        if(listitem.getAttribute("parent")=="show")
-        {
-            boxhide.appendChild(listitem);
-            boxhide.selectedIndex = boxhide.getRowCount()-1;
-            listitem.click();
-            listitem.setAttribute("parent", "hide");
-        }
-        else
-        {
-            boxshow.appendChild(listitem);
-            boxshow.selectedIndex = boxshow.getRowCount()-1;
-            listitem.click();
-            listitem.setAttribute("parent", "show");
-        }
-        this.saveLists();
-    }
-    
-    this.listFromBox = function(name)
-    {
+        var vm = this;
         var box = document.getElementById("tag-box-"+name);
-        var list = []
-        box.querySelectorAll("listitem").forEach(listitem=>{
-            list.push(listitem.getAttribute("label"));
+        box.innerHTML = "";
+        var i = 0;
+        boxdata.forEach(data=>{
+            /** Add headers */
+            if(i==0)
+            {
+                let listhead = document.createElement("listhead");
+                let listcols  = document.createElement("listcols");
+                box.appendChild(listhead);
+                box.appendChild(listcols);
+                
+                Object.keys(data).forEach(d=>{
+                    let listheader = document.createElement("listheader");
+                    let listcol = document.createElement("listcol");
+                    listheader.setAttribute("label", d);
+                    listhead.appendChild(listheader);
+                    listcols.appendChild(listcol);
+                });
+            }
+            
+            let listitem = document.createElement("listitem");
+            
+            listitem.setAttribute("data-data", JSON.stringify(data));
+            listitem.addEventListener("dblclick", function(e){
+                if(name=="hide")
+                {
+                    vm.moveto("show", name, e.target);
+                }
+                else if(name=="show")
+                {
+                    vm.moveto("hide", name, e.target);
+                }
+            });
+
+            Object.keys(data).forEach(d=>{
+                let listcell = document.createElement("listitem");
+                listitem.appendChild(listcell);
+                listcell.setAttribute("label", data[d]);
+            });
+            box.appendChild(listitem);
+            i++;
         });
-        return list;
     }
     
-    this.visibletags = function()
+    this.init = function()
     {
-        var alltags = Zotero.ZNotes.settings.alltags();
-        var cachedhidetags = JSON.parse(Zotero.ZNotes.getPref("hide-tag-list", "[]"));        
-        var cachedshowtags = JSON.parse(Zotero.ZNotes.getPref("show-tag-list", "[]"));        
-        var tags = [];
-        
-        /** Add cached show tag*/
-        cachedshowtags.forEach(t=>{
-            if(!cachedhidetags.includes(t))
-            {
-                tags.push(t);
-            }
-        });
-        
-        /** Add new tags*/
-        alltags.forEach(t=>{
-            if(!cachedshowtags.includes(t) && !cachedhidetags.includes(t))
-            {
-                tags.push(t);
-            }
-        });
-        return tags;
+        this.load();
     }
     
-    this.saveLists = function(names=['hide', 'show', 'sort'])
-    {
-        names.forEach(name=>{
-            Zotero.ZNotes.setPref(name+"-tag-list", JSON.stringify(this.listFromBox(name)));
-        });
-    }
 }
 
 window.addEventListener('load', function(e) { Zotero.ZNotes.settings.init(); }, false);
