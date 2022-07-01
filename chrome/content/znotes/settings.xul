@@ -68,8 +68,9 @@
                                     <row>
                                         <listbox id="tag-box-sort"></listbox>
                                         <vbox>
-                                            <button label="↑" oncommand="Zotero.ZNotes.settings.listMove('sort', 'up');"/>
-                                            <button label="↓" oncommand="Zotero.ZNotes.settings.listMove('sort', 'down');"/>
+                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'down');"/>
+                                            <button label="Order" oncommand="Zotero.ZNotes.settings.toggleorder('sort');"/>
                                         </vbox>
                                     </row>
                                 </rows>

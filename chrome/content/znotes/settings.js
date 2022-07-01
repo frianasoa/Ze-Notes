@@ -13,30 +13,60 @@ Zotero.ZNotes.settings = new function()
         sort: [],
     }
     
+    this.saveLists = function()
+    {
+        Zotero.ZNotes.setPref("tag-lists", JSON.stringify(this.lists));
+    }
+    
     this.load = function()
     {
-        this.lists.show = [];
         var vm = this;
+        this.lists = JSON.parse(Zotero.ZNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+        
         var alltags = ["id", "key", "title", "date", "journal", "author", "creator"];
-        alltags = alltags.concat(Zotero.ZNotes.alltags());
         
-        var showtagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-show", "[]")); 
-        var hidetagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-hide", "[]")); 
-        var sorttagscached = JSON.parse(Zotero.ZNotes.getPref("tag-list-sort", "[]")); 
+        alltags = alltags.concat(Zotero.ZNotes.alltags()).filter((v, i, a) => a.indexOf(v) === i);
         
-        this.lists.show = showtagscached;
-        this.lists.hide = hidetagscached;
-        this.lists.sort = sorttagscached;
+        /** Get list of tags from objects */
+        var showtags = this.lists.show.map(function(i) {
+            return i.value;
+        });
         
-        var id = 0;
+        var hidetags = this.lists.hide.map(function(i) {
+            return i.value;
+        });
+        
+        var sorttags = this.lists.sort.map(function(i) {
+            return i.value;
+        }).filter((v, i, a) => a.indexOf(v) === i);
+        
+        var showhidetags = showtags.concat(hidetags).filter((v, i, a) => a.indexOf(v) === i);
+        
+        var id = this.lists.show.length;
         alltags.forEach(t=>{
-            vm.lists.show.push({
-                value: t,
-                state: "active",
-                id: id,
-            });
-            id++;
+            if(!showhidetags.includes(t))
+            {
+                vm.lists.show.push({
+                    value: t,
+                    state: "active",
+                    id: id,
+                });
+                id++;
+            }
         })
+        
+        var id = this.lists.show.length;
+        alltags.forEach(t=>{
+            if(!sorttags.includes(t))
+            {
+                vm.lists.sort.push({
+                    value: t,
+                    order: "asc",
+                    id: id,
+                });
+                id++;
+            }
+        });
         
         this.refresh("show", this.lists.show);
         this.refresh("hide", this.lists.hide);
@@ -52,6 +82,9 @@ Zotero.ZNotes.settings = new function()
             newdata.push(d);
             i++;
         });
+        
+        /** Save all lists */
+        this.saveLists();
         return newdata;
     }
     
@@ -75,6 +108,7 @@ Zotero.ZNotes.settings = new function()
             var o2 = this.lists[name][index1];
             this.lists[name][index1] = o1;
             this.lists[name][index0] = o2;
+            this.lists[name] = this.reindex(this.lists[name]);
             this.refresh(name, this.lists[name]);
             box.ensureIndexIsVisible(index1);
             box.selectedIndex = index1;
@@ -119,12 +153,38 @@ Zotero.ZNotes.settings = new function()
         }
     }
     
+    this.toggleorder = function(name)
+    {
+        var box = document.getElementById("tag-box-"+name);
+        var listitem = box._currentItem;
+        if(listitem)
+        {
+            var row = JSON.parse(listitem.getAttribute("data-data"));
+            if(row.order=="desc")
+            {
+                row.order = "asc";
+            }
+            else
+            {
+                row.order = "desc";
+            }
+            var index = this.lists[name].findIndex(i => i.id === row.id);
+            this.lists[name][index] = row;
+            
+            this.refresh(name, this.lists[name]);
+            
+            box.ensureIndexIsVisible(index);
+            box.selectedIndex = index;
+        }
+    }
+    
     this.refresh = function(name, boxdata)
     {
         var vm = this;
         var box = document.getElementById("tag-box-"+name);
         box.innerHTML = "";
         var i = 0;
+        var hidecols = ["id"];
         boxdata.forEach(data=>{
             /** Add headers */
             if(i==0)
@@ -135,11 +195,14 @@ Zotero.ZNotes.settings = new function()
                 box.appendChild(listcols);
                 
                 Object.keys(data).forEach(d=>{
-                    let listheader = document.createElement("listheader");
-                    let listcol = document.createElement("listcol");
-                    listheader.setAttribute("label", d);
-                    listhead.appendChild(listheader);
-                    listcols.appendChild(listcol);
+                    if(!hidecols.includes(d))
+                    {
+                        let listheader = document.createElement("listheader");
+                        let listcol = document.createElement("listcol");
+                        listheader.setAttribute("label", d);
+                        listhead.appendChild(listheader);
+                        listcols.appendChild(listcol);
+                    }
                 });
             }
             
@@ -155,12 +218,20 @@ Zotero.ZNotes.settings = new function()
                 {
                     vm.moveto("hide", name, e.target);
                 }
+                else if(name=="sort")
+                {
+                    vm.toggleorder("sort");
+                }
             });
-
+            
+            /** Create table cells */
             Object.keys(data).forEach(d=>{
-                let listcell = document.createElement("listitem");
-                listitem.appendChild(listcell);
-                listcell.setAttribute("label", data[d]);
+                if(!hidecols.includes(d))
+                {
+                    let listcell = document.createElement("listitem");
+                    listitem.appendChild(listcell);
+                    listcell.setAttribute("label", data[d]);
+                }
             });
             box.appendChild(listitem);
             i++;

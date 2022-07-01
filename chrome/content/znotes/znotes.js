@@ -1,8 +1,10 @@
 Zotero.ZNotes = new function(){
 	this.notewin = null;
+    
     this.init = function(){
         
     };
+    
     this.maximize = function(notewin)
     {
         Zotero.ZNotes.notewin = notewin;
@@ -21,7 +23,7 @@ Zotero.ZNotes = new function(){
         var io = {pane: paneID, action: action};
         window.openDialog('chrome://znotes/content/settings.xul',
             'znote-settings',
-            'chrome,titlebar,toolbar,centerscreen' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
+            'chrome,titlebar,toolbar,centerscreen,dialog,width:950' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
     };
     
@@ -137,9 +139,22 @@ Zotero.ZNotes = new function(){
             }
         }
         
-        sorter = ["date", "-author"];
+        var sorter = Zotero.ZNotes.settings.lists.sort.map(function(i) {
+            if(i.order=="asc")
+            {
+                return "-"+i.value;
+            }
+            else
+            {
+                return i.value;
+            }
+        });
+        var visibletags = Zotero.ZNotes.settings.lists.show.map(function(i) {
+            return i.value;
+        });
+        
         return {
-            columns: Zotero.ZNotes.settings.visibletags(),
+            columns: visibletags,
             values: Zotero.ZNotes.sort(znotes, sorter),
         }
     };
