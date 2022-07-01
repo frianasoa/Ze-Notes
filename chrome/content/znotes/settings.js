@@ -13,6 +13,8 @@ Zotero.ZNotes.settings = new function()
         sort: [],
     }
     
+    this.infotags = ["id", "key", "title", "date", "journal", "author", "creator", "itemid"]
+    
     this.saveLists = function()
     {
         Zotero.ZNotes.setPref("tag-lists", JSON.stringify(this.lists));
@@ -23,7 +25,7 @@ Zotero.ZNotes.settings = new function()
         var vm = this;
         this.lists = JSON.parse(Zotero.ZNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
         
-        var alltags = ["id", "key", "title", "date", "journal", "author", "creator"];
+        var alltags = this.infotags;
         
         alltags = alltags.concat(Zotero.ZNotes.alltags()).filter((v, i, a) => a.indexOf(v) === i);
         

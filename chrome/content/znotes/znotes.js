@@ -93,13 +93,14 @@ Zotero.ZNotes = new function(){
                     
                     var line = {
                         id: id,
+                        itemid: item.id,
                         key: key,
                         title: title,
                         date: date,
                         journal: journal,
                         author: author,
                         creators: Zotero.ZNotes.stringify("creators", creators),
-                        file: filename,
+                        filename: filename,
                     }
                     
                     
@@ -127,7 +128,7 @@ Zotero.ZNotes = new function(){
                             // line["notes"][tag] = [];
                         // }
                         
-                        line[tag] = Zotero.ZNotes.clean(note)+"<hr>key:"+noteid;
+                        line[tag] = Zotero.ZNotes.clean(note)+"<hr>"+noteid;
                         taglist.push(tag);
                     }
                     

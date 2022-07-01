@@ -6,9 +6,7 @@
 <!DOCTYPE window SYSTEM "chrome://znotes/locale/notes.dtd">
 
 <window id="znotes-notewin" title="&notes-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.ZNotes.maximize(this); Zotero.ZNotes.reload(); " width  = "1024" height = "768" >
-	
-    
-    
+
     <stringbundleset id="stringbundleset">
 		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
 	</stringbundleset>

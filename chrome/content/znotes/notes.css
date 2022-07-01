@@ -1,0 +1,38 @@
+* {
+    font-size: 1.02em;
+    font-family: Arial;
+}
+table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+td, th {
+    border: solid 1px;
+    padding:0.3em;
+}
+
+td {
+    vertical-align: top;
+    cursor: pointer;
+}
+
+.context-menu-one:hover {
+    background-color: lightyellow;
+}
+
+.context-menu-two {
+    background-color: lightgray;
+}
+
+th {
+    text-transform: capitalize;
+}
+
+#content {
+    background-color:white; 
+    padding:0.3em; 
+    width:99%;
+    height:96%; 
+    overflow-y:auto; 
+}
