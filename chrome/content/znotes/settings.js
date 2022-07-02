@@ -124,7 +124,7 @@ Zotero.ZNotes.settings = new function()
         var row = JSON.parse(listitem.getAttribute("data-data"));
         var index = source.findIndex(i => i.id === row.id);
         source.splice(index, 1);
-        target.push(row);
+        target.push(row); 
         
         /** Reindex and data*/
         this.lists[source_name] = this.reindex(source);
