@@ -5,8 +5,7 @@
 
 
 <!DOCTYPE window SYSTEM "chrome://znotes/locale/settings.dtd">
-<html:link rel="icon" href="chrome://znotes/content/img/favicon.png" style="display:none"/>
-<prefwindow buttons="accept" id="znotes-perf" title="&znotes-preferences;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZNotes.reload()" ondialogcancel="Zotero.ZNotes.reload()">
+<prefwindow buttons="accept" id="znotes-settings" title="&znotes-preferences;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZNotes.reload()" ondialogcancel="Zotero.ZNotes.reload()">
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
 	</stringbundleset>

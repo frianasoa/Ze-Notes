@@ -3,29 +3,31 @@ Zotero.ZNotes = new function(){
     
     this.init = function(){
         
-    };
+    }
     
     this.maximize = function(notewin)
     {
         Zotero.ZNotes.notewin = notewin;
         notewin.resizeTo(screen.width, screen.height);
         notewin.moveTo(0, 0);
-    };
+    }
+    
     this.show = function(paneID, action) {
-        var io = {pane: paneID, action: action};
+        Zotero.ZNotes.collection = ZoteroPane.getSelectedCollection().name;
+        var io = {pane: paneID, action: action}
         window.openDialog('chrome://znotes/content/notes.xul',
             'notewin',
             'chrome,titlebar,toolbar,centerscreen,dialog,width:900,height:900' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
-    };
+    }
     
     this.openPreferenceWindow = function(paneID="", action="") {
-        var io = {pane: paneID, action: action};
-        var win = window.openDialog('chrome://znotes/content/settings.xul',
+        var io = {pane: paneID, action: action}
+        window.openDialog('chrome://znotes/content/settings.xul',
             'znote-settings',
             'chrome,titlebar,toolbar,centerscreen,dialog,width:950' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
-    };
+    }
     
     this.stringify = function(mode, variable)
     {
@@ -41,7 +43,7 @@ Zotero.ZNotes = new function(){
             s = creators.join(", ");
         }
         return s;
-    };
+    }
     
     this.tojson = function(items)
     {
@@ -158,7 +160,7 @@ Zotero.ZNotes = new function(){
             columns: visibletags,
             values: Zotero.ZNotes.sort(znotes, sorter),
         }
-    };
+    }
     
     this.sort_func = function(fields) 
     {
@@ -177,14 +179,14 @@ Zotero.ZNotes = new function(){
                 .reduce(function firstNonZeroValue (p,n) {
                     return p ? p : n;
                 }, 0);
-        };
-    };
+        }
+    }
     
     this.sort = function(data, sorter)
     {
         data = data.sort(this.sort_func(sorter));
         return data;
-    };
+    }
     
     this.alltags = function()
     {
@@ -223,7 +225,7 @@ Zotero.ZNotes = new function(){
             }
         }
         return [...new Set(taglist)];
-    };
+    }
     
     this.getalldata = function()
     {
@@ -242,7 +244,8 @@ Zotero.ZNotes = new function(){
         var collection = ZoteroPane.getSelectedCollection();
         var items = Zotero.ZNotes.recursiveitems(collection);
         return Zotero.ZNotes.tojson(items);
-    };
+        
+    }
     
     this.recursiveitems = function(collection)
     {
@@ -264,18 +267,18 @@ Zotero.ZNotes = new function(){
             }
         }
         return itemlist;
-    };
+    }
        
     this.clean = function(tdtext)
     {
         var re = new RegExp("&lt;&lt;.*&gt;&gt;", "g");
         tdtext = tdtext.replace(re, "");
         return tdtext;
-    };
+    }
     
     this.setPref = function(pref, value) {        
         Zotero.Prefs.set('extensions.znotes.' + pref, value, true);
-    };
+    }
     
     this.getPref = function(pref, default_value="") {
         var v = Zotero.Prefs.get('extensions.znotes.' + pref, true);
@@ -284,12 +287,18 @@ Zotero.ZNotes = new function(){
             return default_value;
         }
         return v;
-    };
+    }
     
     this.reload = function()
     {
-        Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.location.reload();
-    };
+        Zotero.ZNotes.collection = ZoteroPane.getSelectedCollection().name;
+        var notewin = Zotero.ZNotes.notewin;
+        if(notewin)
+        {
+            notewin.document.title = notewin.document.title+" - "+Zotero.ZNotes.collection;
+            notewin.document.getElementById("note-frame").contentWindow.location.reload();
+        }
+    }
     
     this.exporthtml = function(html)
     {
@@ -302,7 +311,13 @@ Zotero.ZNotes = new function(){
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.init(window, "Save to file", nsIFilePicker.modeSave);
+        /**
+            Parent window 
+            Zotero.ZNotes.notewin
+        */
+        
+        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".doc";
+        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("Documents (*.doc)", "*.doc");
         fp.appendFilter("Web page (*.html; *.htm)", "*.html; *.htm");
         fp.defaultExtension="doc";
@@ -319,27 +334,43 @@ Zotero.ZNotes = new function(){
         });
     }
     
-    this.base64toBlob = function(base64Data, contentType) {
-        contentType = contentType || '';
-        var sliceSize = 1024;
-        var byteCharacters = atob(base64Data);
-        var bytesLength = byteCharacters.length;
-        var slicesCount = Math.ceil(bytesLength / sliceSize);
-        var byteArrays = new Array(slicesCount);
-
-        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-            var begin = sliceIndex * sliceSize;
-            var end = Math.min(begin + sliceSize, bytesLength);
-
-            var bytes = new Array(end - begin);
-            for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-                bytes[i] = byteCharacters[offset].charCodeAt(0);
+    this.exportcsv = function(table)
+    {
+        var rows = table.querySelectorAll('tr');
+        var csv = [];
+        var separator = ",";
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll('td, th');
+            for (var j = 0; j < cols.length; j++) {
+                var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+                data = data.replace(/"/g, '""');
+                row.push('"' + data + '"');
             }
-            byteArrays[sliceIndex] = new Uint8Array(bytes);
+            csv.push(row.join(separator));
         }
-        return new Blob(byteArrays, { type: contentType });
+        var csv_string = csv.join('\n');
+        
+        var nsIFilePicker = Components.interfaces.nsIFilePicker;
+        var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+        
+        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".csv";
+        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
+        fp.appendFilter("CSV (*.csv; *.txt)", "*.csv; *.txt");
+        fp.defaultExtension="csv";
+        
+        fp.open(function()
+        {
+            var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
+            outputStream.init(fp.file, 0x04 | 0x08 | 0x20, 420, 0 );
+            var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+            converter.init(outputStream, "UTF-8", 0, 0);
+            converter.writeString(csv_string);
+            converter.close();
+            outputStream.close();
+        });
+        
     }
-    
+        
     this.exportxls = function(xls)
     {
         var uri = 'data:application/vnd.ms-excel;base64,';
@@ -357,10 +388,12 @@ Zotero.ZNotes = new function(){
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.init(window, "Save to file", nsIFilePicker.modeSave);
+        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".xls";
+        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("Documents (*.xls)", "*.xls");
         fp.appendFilter("Web page (*.csv)", "*.csv");
         fp.defaultExtension="xls";
+
         
         fp.open(function()
         {
@@ -383,13 +416,18 @@ Zotero.ZNotes = new function(){
             var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.body.innerHTML;
             this.exporthtml(data);
         }
+        else if(type=="csv")
+        {
+            var table = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table");
+            this.exportcsv(table);
+        }
         else
         {
             var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table").innerHTML;
             this.exportxls(data);
         }
     }
-};
+}
 
 // Initialize the utility
 window.addEventListener('load', function(e) { Zotero.ZNotes.init(); }, false);

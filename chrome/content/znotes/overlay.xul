@@ -10,19 +10,18 @@
 			src="chrome://znotes/locale/znotes.properties"/>
 	</stringbundleset>
     
+    <!-- On task bar -->
+    
+    <!-- On menu bar -->
 	<menupopup id="menu_ToolsPopup">
-        <menu  id="znotes-menu" insertafter="menu_preferences" label="ZNotes">
-            <menupopup id="znotes-menu-pop">
-                <menuitem id="znotes-settings" oncommand="Zotero.ZNotes.openPreferenceWindow();" label="Show settings"/>
-                <menuitem id="znotes-settings" oncommand="Zotero.ZNotes.show();" label="Show notes"/>
-            </menupopup>
-        </menu >
+        <menuitem id="znotes-show-notes" insertafter="menu_preferences" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" oncommand="Zotero.ZNotes.show();" label="ZNotes - My notes"/>
+        <menuitem id="znotes-show-settings" insertafter="znotes-show-notes" oncommand="Zotero.ZNotes.openPreferenceWindow();" label="ZNotes - Settings"  class="menuitem-iconic" image="chrome://znotes/skin/znotes-settings.png" />
 	</menupopup>
     
     <!-- on collection -->
     <menupopup id="zotero-collectionmenu">
 		<menuseparator id="id-znotes-collection-separator"/>
-       	<menuitem id="znotes-showsome" label="Show notes" oncommand="Zotero.ZNotes.show('collection');"/>
+       	<menuitem id="znotes-showsome" label="ZNotes - My notes in collection" oncommand="Zotero.ZNotes.show('collection');" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" />
     </menupopup>
     
 	<!-- Include the main extension logic -->

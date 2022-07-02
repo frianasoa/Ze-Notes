@@ -12,7 +12,9 @@
     <em:homepageURL>http://znotes.alefa.net</em:homepageURL>
     <em:optionsURL>chrome://znotes/content/options.xul</em:optionsURL>
     <em:updateURL>https://znotes.alefa.net/options.rdf</em:updateURL>
-
+    <em:iconURL>chrome://znotes/skin/icon.png</em:iconURL>
+    <em:icon64URL>chrome://znotes/skin/icon64.png</em:icon64URL>
+    
     <em:targetApplication>
       <Description>
         <em:id>zotero@chnm.gmu.edu</em:id>

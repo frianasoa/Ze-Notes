@@ -1,6 +1,6 @@
 <!ENTITY znotes-name "ZNotes"> 
-<!ENTITY znotes-preferences "ZNotes Preferences"> 
-<!ENTITY znotes-prefpane "ZNotes Preferences"> 
+<!ENTITY znotes-preferences "ZNotes - Preferences"> 
+<!ENTITY znotes-prefpane "ZNotes - Preferences"> 
 <!ENTITY general-settings "General Settings"> 
 <!ENTITY advanced-settings "Advanced Settings"> 
 

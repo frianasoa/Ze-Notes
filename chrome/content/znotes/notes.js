@@ -207,5 +207,5 @@ var notes = new function()
 
 window.addEventListener("load", function(){
     notes.loaddata();
-    notes.loadmenu()
+    notes.loadmenu();
 })
