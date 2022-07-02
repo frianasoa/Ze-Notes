@@ -1,5 +1,5 @@
-<!ENTITY znp-title "ZNotes - Preferences"> 
-<!ENTITY znp-pane-title "ZNotes - Preferences">
+<!ENTITY znp-title "ZeNotes - Preferences"> 
+<!ENTITY znp-pane-title "ZeNotes - Preferences">
            
 <!ENTITY znp-tagman-title "Manage tags and columns">
 <!ENTITY znp-tagman-colman-title "Select tags to use">

@@ -45,8 +45,8 @@ var notes = new function()
 
     this.loaddata = function()
     {
-        var infotags = Zotero.ZNotes.settings.infotags;
-        var data = Zotero.ZNotes.getdata();
+        var infotags = Zotero.ZeNotes.settings.infotags;
+        var data = Zotero.ZeNotes.getdata();
         var table = document.createElement("table");
         var trh = document.createElement("tr");
         table.id = "notes-table"
@@ -144,17 +144,17 @@ var notes = new function()
         }
         else if(key=="hidecolumn")
         {
-            var lists = Zotero.ZNotes.settings.lists;
+            var lists = Zotero.ZeNotes.settings.lists;
             var index = lists.show.findIndex(i => i.value === column);
             var row = JSON.stringify(lists.show[index]);
             row.id = lists.hide.length;
             lists.show.splice(index, 1);
             lists.hide.push(JSON.parse(row));
-            lists.show = Zotero.ZNotes.settings.reindex(lists.show);
-            lists.hide = Zotero.ZNotes.settings.reindex(lists.hide);
-            Zotero.ZNotes.settings.lists = lists;
-            Zotero.ZNotes.settings.saveLists();
-            Zotero.ZNotes.reload();
+            lists.show = Zotero.ZeNotes.settings.reindex(lists.show);
+            lists.hide = Zotero.ZeNotes.settings.reindex(lists.hide);
+            Zotero.ZeNotes.settings.lists = lists;
+            Zotero.ZeNotes.settings.saveLists();
+            Zotero.ZeNotes.reload();
         }
         else
         {
@@ -189,7 +189,7 @@ var notes = new function()
         var io = { itemID: itemID, collectionID: col, parentItemKey: parentKey };
 		var win = window.openDialog('chrome://zotero/content/note.xul', name, 'chrome,resizable,centerscreen,dialog=false', io);
         win.addEventListener("close", function(){
-            Zotero.ZNotes.reload();
+            Zotero.ZeNotes.reload();
         });
     }
     this.createnote = function(itemid, column)

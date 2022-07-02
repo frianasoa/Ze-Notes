@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://zenotes/skin/overlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://zenotes/locale/overlay.dtd">
+
+<overlay id="zenotes-overlay"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">	
+    
+    <!-- On task bar: todo -->
+    
+    <!-- On menu bar -->
+	<menupopup id="menu_ToolsPopup">
+        <menuitem id="zenotes-show-notes" insertafter="menu_preferences" class="menuitem-iconic" image="chrome://zenotes/skin/zenotes-notes.png" oncommand="Zotero.ZeNotes.show();" label="&zno-menu-tools-show;"/>
+        <menuitem id="zenotes-show-settings" insertafter="zenotes-show-notes" oncommand="Zotero.ZeNotes.openPreferenceWindow();" label="&zno-menu-tools-settings;"  class="menuitem-iconic" image="chrome://zenotes/skin/zenotes-settings.png" />
+	</menupopup>
+    
+    <!-- on collection -->
+    <menupopup id="zotero-collectionmenu">
+		<menuseparator id="id-zenotes-collection-separator"/>
+       	<menuitem id="zenotes-showsome" label="&zno-colmenu-show;" oncommand="Zotero.ZeNotes.show('collection');" class="menuitem-iconic" image="chrome://zenotes/skin/zenotes-notes.png" />
+    </menupopup>
+    
+	<!-- Include the main extension logic -->
+	<script src="chrome://zotero/content/include.js"/>
+	<script src="chrome://zenotes/content/include.js"/>
+</overlay>

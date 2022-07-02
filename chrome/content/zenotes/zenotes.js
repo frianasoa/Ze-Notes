@@ -1,4 +1,4 @@
-Zotero.ZNotes = new function(){
+Zotero.ZeNotes = new function(){
 	this.notewin = null;
     
     this.init = function(){
@@ -7,15 +7,15 @@ Zotero.ZNotes = new function(){
     
     this.maximize = function(notewin)
     {
-        Zotero.ZNotes.notewin = notewin;
+        Zotero.ZeNotes.notewin = notewin;
         notewin.resizeTo(screen.width, screen.height);
         notewin.moveTo(0, 0);
     }
     
     this.show = function(paneID, action) {
-        Zotero.ZNotes.collection = ZoteroPane.getSelectedCollection().name;
+        Zotero.ZeNotes.collection = ZoteroPane.getSelectedCollection().name;
         var io = {pane: paneID, action: action}
-        window.openDialog('chrome://znotes/content/notes.xul',
+        window.openDialog('chrome://zenotes/content/notes.xul',
             'notewin',
             'chrome,titlebar,toolbar,centerscreen,dialog,width:900,height:900' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
@@ -23,7 +23,7 @@ Zotero.ZNotes = new function(){
     
     this.openPreferenceWindow = function(paneID="", action="") {
         var io = {pane: paneID, action: action}
-        window.openDialog('chrome://znotes/content/settings.xul',
+        window.openDialog('chrome://zenotes/content/settings.xul',
             'znote-settings',
             'chrome,titlebar,toolbar,centerscreen,dialog,width:950' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal', io
         );
@@ -47,7 +47,7 @@ Zotero.ZNotes = new function(){
     
     this.tojson = function(items)
     {
-        var znotes = [];
+        var zenotes = [];
         var taglist = [];
         for(i in items)
         {
@@ -101,7 +101,7 @@ Zotero.ZNotes = new function(){
                         date: date,
                         journal: journal,
                         author: author,
-                        creators: Zotero.ZNotes.stringify("creators", creators),
+                        creators: Zotero.ZeNotes.stringify("creators", creators),
                         filename: filename,
                     }
                     
@@ -130,11 +130,11 @@ Zotero.ZNotes = new function(){
                             // line["notes"][tag] = [];
                         // }
                         
-                        line[tag] = Zotero.ZNotes.clean(note)+"<span class='notekey'>"+noteid+"</span>";
+                        line[tag] = Zotero.ZeNotes.clean(note)+"<span class='notekey'>"+noteid+"</span>";
                         taglist.push(tag);
                     }
                     
-                    znotes.push(line);
+                    zenotes.push(line);
                 }
                 catch {
                     
@@ -142,7 +142,7 @@ Zotero.ZNotes = new function(){
             }
         }
         
-        var sorter = Zotero.ZNotes.settings.lists.sort.map(function(i) {
+        var sorter = Zotero.ZeNotes.settings.lists.sort.map(function(i) {
             if(i.order=="desc")
             {
                 return "-"+i.value;
@@ -153,13 +153,13 @@ Zotero.ZNotes = new function(){
             }
         });
 
-        var visibletags = Zotero.ZNotes.settings.lists.show.map(function(i) {
+        var visibletags = Zotero.ZeNotes.settings.lists.show.map(function(i) {
             return i.value;
         });
         
         return {
             columns: visibletags,
-            values: Zotero.ZNotes.sort(znotes, sorter),
+            values: Zotero.ZeNotes.sort(zenotes, sorter),
         }
     }
     
@@ -237,14 +237,14 @@ Zotero.ZNotes = new function(){
             var item = Zotero.Items.get(id);
             items.push(item);
         }
-        return Zotero.ZNotes.tojson(items);
+        return Zotero.ZeNotes.tojson(items);
     }
     
     this.getdata = function()
     {
         var collection = ZoteroPane.getSelectedCollection();
-        var items = Zotero.ZNotes.recursiveitems(collection);
-        return Zotero.ZNotes.tojson(items);
+        var items = Zotero.ZeNotes.recursiveitems(collection);
+        return Zotero.ZeNotes.tojson(items);
         
     }
     
@@ -264,7 +264,7 @@ Zotero.ZNotes = new function(){
             for(i in childcollections)
             {
                 var cc = childcollections[i];
-                itemlist = itemlist.concat(Zotero.ZNotes.recursiveitems(cc));
+                itemlist = itemlist.concat(Zotero.ZeNotes.recursiveitems(cc));
             }
         }
         return itemlist;
@@ -278,11 +278,11 @@ Zotero.ZNotes = new function(){
     }
     
     this.setPref = function(pref, value) {        
-        Zotero.Prefs.set('extensions.znotes.' + pref, value, true);
+        Zotero.Prefs.set('extensions.zenotes.' + pref, value, true);
     }
     
     this.getPref = function(pref, default_value="") {
-        var v = Zotero.Prefs.get('extensions.znotes.' + pref, true);
+        var v = Zotero.Prefs.get('extensions.zenotes.' + pref, true);
         if(v==null)
         {
             return default_value;
@@ -292,13 +292,13 @@ Zotero.ZNotes = new function(){
     
     this.reload = function()
     {
-        Zotero.ZNotes.collection = ZoteroPane.getSelectedCollection().name;
-        var notewin = Zotero.ZNotes.notewin;
+        Zotero.ZeNotes.collection = ZoteroPane.getSelectedCollection().name;
+        var notewin = Zotero.ZeNotes.notewin;
         if(notewin)
         {
-            if(!notewin.document.title.includes(Zotero.ZNotes.collection))
+            if(!notewin.document.title.includes(Zotero.ZeNotes.collection))
             {
-                notewin.document.title = notewin.document.title+" - "+Zotero.ZNotes.collection;
+                notewin.document.title = notewin.document.title+" - "+Zotero.ZeNotes.collection;
             }
             if(notewin.document.getElementById("note-frame").contentWindow)
             {
@@ -320,11 +320,11 @@ Zotero.ZNotes = new function(){
         
         /**
             Parent window 
-            Zotero.ZNotes.notewin
+            Zotero.ZeNotes.notewin
         */
         
-        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".doc";
-        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".doc";
+        fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("Documents (*.doc)", "*.doc");
         fp.appendFilter("Web page (*.html; *.htm)", "*.html; *.htm");
         fp.defaultExtension="doc";
@@ -360,8 +360,8 @@ Zotero.ZNotes = new function(){
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".csv";
-        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".csv";
+        fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("CSV (*.csv; *.txt)", "*.csv; *.txt");
         fp.defaultExtension="csv";
         
@@ -395,8 +395,8 @@ Zotero.ZNotes = new function(){
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.defaultString = "ZNotes - "+Zotero.ZNotes.collection+".xls";
-        fp.init(Zotero.ZNotes.notewin, "Save to file", nsIFilePicker.modeSave);
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".xls";
+        fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("Documents (*.xls)", "*.xls");
         fp.appendFilter("Web page (*.csv)", "*.csv");
         fp.defaultExtension="xls";
@@ -420,21 +420,21 @@ Zotero.ZNotes = new function(){
         
         if(type=="doc")
         {
-            var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.body.innerHTML;
+            var data = Zotero.ZeNotes.notewin.document.getElementById("note-frame").contentWindow.document.body.innerHTML;
             this.exporthtml(data);
         }
         else if(type=="csv")
         {
-            var table = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table");
+            var table = Zotero.ZeNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table");
             this.exportcsv(table);
         }
         else
         {
-            var data = Zotero.ZNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table").innerHTML;
+            var data = Zotero.ZeNotes.notewin.document.getElementById("note-frame").contentWindow.document.getElementById("notes-table").innerHTML;
             this.exportxls(data);
         }
     }
 }
 
 // Initialize the utility
-window.addEventListener('load', function(e) { Zotero.ZNotes.init(); }, false);
+window.addEventListener('load', function(e) { Zotero.ZeNotes.init(); }, false);

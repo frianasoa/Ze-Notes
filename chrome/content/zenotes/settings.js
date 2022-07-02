@@ -5,7 +5,7 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
 Components.utils.import("resource://gre/modules/osfile.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-Zotero.ZNotes.settings = new function()
+Zotero.ZeNotes.settings = new function()
 {
     this.lists = {
         show: [],
@@ -17,17 +17,17 @@ Zotero.ZNotes.settings = new function()
     
     this.saveLists = function()
     {
-        Zotero.ZNotes.setPref("tag-lists", JSON.stringify(this.lists));
+        Zotero.ZeNotes.setPref("tag-lists", JSON.stringify(this.lists));
     }
     
     this.load = function()
     {
         var vm = this;
-        this.lists = JSON.parse(Zotero.ZNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+        this.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
         
         var alltags = this.infotags;
         
-        alltags = alltags.concat(Zotero.ZNotes.alltags()).filter((v, i, a) => a.indexOf(v) === i);
+        alltags = alltags.concat(Zotero.ZeNotes.alltags()).filter((v, i, a) => a.indexOf(v) === i);
         
         /** Get list of tags from objects */
         var showtags = this.lists.show.map(function(i) {
@@ -253,6 +253,6 @@ Zotero.ZNotes.settings = new function()
     
 }
 
-window.addEventListener('load', function(e) { Zotero.ZNotes.settings.init(); }, false);
+window.addEventListener('load', function(e) { Zotero.ZeNotes.settings.init(); }, false);
 
 

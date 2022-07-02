@@ -3,26 +3,26 @@
 <?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
 <?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
 
-<!DOCTYPE window SYSTEM "chrome://znotes/locale/settings.dtd">
-<prefwindow buttons="accept" id="znotes-settings" title="&znp-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZNotes.reload()" ondialogcancel="Zotero.ZNotes.reload()">
+<!DOCTYPE window SYSTEM "chrome://zenotes/locale/settings.dtd">
+<prefwindow buttons="accept" id="zenotes-settings" title="&znp-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZeNotes.reload()" ondialogcancel="Zotero.ZeNotes.reload()">
 	
     <stringbundleset id="stringbundleset">
-		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
+		<stringbundle id="zenotes-settings" src="chrome://zenotes/locale/settings.properties"/>
 	</stringbundleset>
 
-		<prefpane label="&znp-pane-title;" id="znotes-perfpane">
+		<prefpane label="&znp-pane-title;" id="zenotes-perfpane">
 			<preferences>
-				<preference id="pref-znotes-hide" name="extensions.znotes.hide" type="string"/>
+				<preference id="pref-zenotes-hide" name="extensions.zenotes.hide" type="string"/>
 			</preferences>
 
-			<tabbox id="znotes-tabbox">
-				<tabs id="znotes-tabs">
+			<tabbox id="zenotes-tabbox">
+				<tabs id="zenotes-tabs">
 					<tab label="&znp-tagman-title;"/>
 					<!-- <tab label="Sort columns"/> -->
 				</tabs>
                 
                 <!-- NOTES MANAGER SETTINGS -->
-				<tabpanels id="znotes-tabpanels">
+				<tabpanels id="zenotes-tabpanels">
 					<tabpanel orient="vertical" flex="1">
 						<groupbox flex="1">
 							<caption label="&znp-tagman-colman-title;"/>
@@ -35,16 +35,16 @@
                                 <rows>
                                     <row>
                                         <label value="&znp-tagman-show-title;"/>
-                                        <label id="label-test" preference="pref-znotes-hide"/>
+                                        <label id="label-test" preference="pref-zenotes-hide"/>
                                         <label value="&znp-tagman-show-title;"/>
                                     </row>
                                     <row>
                                         <listbox id="tag-box-show"></listbox>
                                         <vbox>
-                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveitem('show', 'up');"/>
-                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveitem('show', 'down');"/>
-                                            <button label="→" oncommand="Zotero.ZNotes.settings.moveRight();"/>
-                                            <button label="←" oncommand="Zotero.ZNotes.settings.moveLeft();"/>
+                                            <button label="↑" oncommand="Zotero.ZeNotes.settings.moveitem('show', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZeNotes.settings.moveitem('show', 'down');"/>
+                                            <button label="→" oncommand="Zotero.ZeNotes.settings.moveRight();"/>
+                                            <button label="←" oncommand="Zotero.ZeNotes.settings.moveLeft();"/>
                                         </vbox>
                                         <listbox id="tag-box-hide"></listbox>
                                     </row>
@@ -68,9 +68,9 @@
                                     <row>
                                         <listbox id="tag-box-sort"></listbox>
                                         <vbox>
-                                            <button label="↑" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'up');"/>
-                                            <button label="↓" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'down');"/>
-                                            <button label="&znp-tagman-sortman-order;" oncommand="Zotero.ZNotes.settings.toggleorder('sort');"/>
+                                            <button label="↑" oncommand="Zotero.ZeNotes.settings.moveitem('sort', 'up');"/>
+                                            <button label="↓" oncommand="Zotero.ZeNotes.settings.moveitem('sort', 'down');"/>
+                                            <button label="&znp-tagman-sortman-order;" oncommand="Zotero.ZeNotes.settings.toggleorder('sort');"/>
                                         </vbox>
                                     </row>
                                 </rows>
@@ -83,6 +83,6 @@
 
 		<script src="settings.js"/>
 		<script src="chrome://zotero/content/include.js"/>
-		<script src="chrome://znotes/content/include.js"/>
+		<script src="chrome://zenotes/content/include.js"/>
 
 </prefwindow>
