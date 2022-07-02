@@ -1,5 +1,7 @@
 content	znotes				chrome/content/znotes/
 locale	znotes	en-US		chrome/locale/en-US/znotes/
+#add later
+#locale	znotes	ja-JP		chrome/locale/ja-JP/znotes/
 skin	znotes	default		chrome/skin/default/znotes/
 
 overlay	chrome://zotero/content/zoteroPane.xul	chrome://znotes/content/overlay.xul

@@ -3,21 +3,21 @@
 <?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
 <?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
 
-
 <!DOCTYPE window SYSTEM "chrome://znotes/locale/settings.dtd">
-<prefwindow buttons="accept" id="znotes-settings" title="&znotes-preferences;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZNotes.reload()" ondialogcancel="Zotero.ZNotes.reload()">
-	<stringbundleset id="stringbundleset">
+<prefwindow buttons="accept" id="znotes-settings" title="&znp-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZNotes.reload()" ondialogcancel="Zotero.ZNotes.reload()">
+	
+    <stringbundleset id="stringbundleset">
 		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
 	</stringbundleset>
 
-		<prefpane label="&znotes-prefpane;" id="znotes-perfpane">
+		<prefpane label="&znp-pane-title;" id="znotes-perfpane">
 			<preferences>
 				<preference id="pref-znotes-hide" name="extensions.znotes.hide" type="string"/>
 			</preferences>
 
 			<tabbox id="znotes-tabbox">
 				<tabs id="znotes-tabs">
-					<tab label="Manage tags and columns"/>
+					<tab label="&znp-tagman-title;"/>
 					<!-- <tab label="Sort columns"/> -->
 				</tabs>
                 
@@ -25,7 +25,7 @@
 				<tabpanels id="znotes-tabpanels">
 					<tabpanel orient="vertical" flex="1">
 						<groupbox flex="1">
-							<caption label="Select tags to use"/>
+							<caption label="&znp-tagman-colman-title;"/>
                             <grid>
                                 <columns>
                                     <column/>
@@ -34,9 +34,9 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="Show these tags"/>
+                                        <label value="&znp-tagman-show-title;"/>
                                         <label id="label-test" preference="pref-znotes-hide"/>
-                                        <label value="Hide these tags"/>
+                                        <label value="&znp-tagman-show-title;"/>
                                     </row>
                                     <row>
                                         <listbox id="tag-box-show"></listbox>
@@ -54,7 +54,7 @@
                     
                         <!-- Sort panels -->
 						<groupbox flex="1">
-							<caption label="Sort table"/>
+							<caption label="&znp-tagman-sortman-title;"/>
                             <grid>
                                 <columns>
                                     <column/>
@@ -62,7 +62,7 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="Sort by"/>
+                                        <label value="&znp-tagman-sort-title;"/>
                                         <label id="label" />
                                     </row>
                                     <row>
@@ -70,7 +70,7 @@
                                         <vbox>
                                             <button label="↑" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'up');"/>
                                             <button label="↓" oncommand="Zotero.ZNotes.settings.moveitem('sort', 'down');"/>
-                                            <button label="Order" oncommand="Zotero.ZNotes.settings.toggleorder('sort');"/>
+                                            <button label="&znp-tagman-sortman-order;" oncommand="Zotero.ZNotes.settings.toggleorder('sort');"/>
                                         </vbox>
                                     </row>
                                 </rows>

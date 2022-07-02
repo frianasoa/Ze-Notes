@@ -295,7 +295,10 @@ Zotero.ZNotes = new function(){
         var notewin = Zotero.ZNotes.notewin;
         if(notewin)
         {
-            notewin.document.title = notewin.document.title+" - "+Zotero.ZNotes.collection;
+            if(!notewin.document.title.includes(Zotero.ZNotes.collection))
+            {
+                notewin.document.title = notewin.document.title+" - "+Zotero.ZNotes.collection;
+            }
             notewin.document.getElementById("note-frame").contentWindow.location.reload();
         }
     }

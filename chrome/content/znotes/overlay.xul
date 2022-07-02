@@ -4,24 +4,19 @@
 
 <overlay id="znotes-overlay"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">	
-	
-    <stringbundleset id="stringbundleset">
-		<stringbundle id="znotes-strings"
-			src="chrome://znotes/locale/znotes.properties"/>
-	</stringbundleset>
     
-    <!-- On task bar -->
+    <!-- On task bar: todo -->
     
     <!-- On menu bar -->
 	<menupopup id="menu_ToolsPopup">
-        <menuitem id="znotes-show-notes" insertafter="menu_preferences" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" oncommand="Zotero.ZNotes.show();" label="ZNotes - My notes"/>
-        <menuitem id="znotes-show-settings" insertafter="znotes-show-notes" oncommand="Zotero.ZNotes.openPreferenceWindow();" label="ZNotes - Settings"  class="menuitem-iconic" image="chrome://znotes/skin/znotes-settings.png" />
+        <menuitem id="znotes-show-notes" insertafter="menu_preferences" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" oncommand="Zotero.ZNotes.show();" label="&zno-menu-tools-show;"/>
+        <menuitem id="znotes-show-settings" insertafter="znotes-show-notes" oncommand="Zotero.ZNotes.openPreferenceWindow();" label="&zno-menu-tools-settings;"  class="menuitem-iconic" image="chrome://znotes/skin/znotes-settings.png" />
 	</menupopup>
     
     <!-- on collection -->
     <menupopup id="zotero-collectionmenu">
 		<menuseparator id="id-znotes-collection-separator"/>
-       	<menuitem id="znotes-showsome" label="ZNotes - My notes in collection" oncommand="Zotero.ZNotes.show('collection');" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" />
+       	<menuitem id="znotes-showsome" label="&zno-colmenu-show;" oncommand="Zotero.ZNotes.show('collection');" class="menuitem-iconic" image="chrome://znotes/skin/znotes-notes.png" />
     </menupopup>
     
 	<!-- Include the main extension logic -->

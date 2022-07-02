@@ -5,42 +5,28 @@
 
 <!DOCTYPE window SYSTEM "chrome://znotes/locale/notes.dtd">
 
-<window id="znotes-notes" title="&notes-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.ZNotes.maximize(this); Zotero.ZNotes.reload();" width  = "1024" height = "768" >
-
-    <stringbundleset id="stringbundleset">
-		<stringbundle id="znotes-settings" src="chrome://znotes/locale/settings.properties"/>
-	</stringbundleset>
+<window id="znotes-notes" title="&zn-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.ZNotes.maximize(this); Zotero.ZNotes.reload();" width  = "1024" height = "768" >
     <toolbox>
       <menubar id="sample-menubar">
-        <menu id="file-menu" label="File">
+        <menu id="file-menu" label="&zn-file;">
           <menupopup id="file-popup">
-            <menuitem label="Export as MS Word document ... " oncommand="Zotero.ZNotes.download('doc')"/>
-            <menuitem label="Export as MS Excel sheet ... " oncommand="Zotero.ZNotes.download('xls')"/>
-            <menuitem label="Export as CSV file ... " oncommand="Zotero.ZNotes.download('csv')"/>
+            <menuitem label="&zn-file-to-doc;" oncommand="Zotero.ZNotes.download('doc')"/>
+            <menuitem label="&zn-file-to-xls;" oncommand="Zotero.ZNotes.download('xls')"/>
+            <menuitem label="&zn-file-to-csv;" oncommand="Zotero.ZNotes.download('csv')"/>
             <menuseparator/>
-            <menuitem label="Exit"/>
+            <menuitem label="&zn-exit;"/>
           </menupopup>
         </menu>
-        <menu id="tools-menu" label="Tools">
+        <menu id="tools-menu" label="&zn-tools;">
           <menupopup id="tools-popup">
-            <menuitem label="Reload" oncommand="Zotero.ZNotes.reload();"/>
-            <menuitem label="Settings" oncommand="Zotero.ZNotes.openPreferenceWindow();"/>
+            <menuitem label="&zn-tools-reload;" oncommand="Zotero.ZNotes.reload();"/>
+            <menuitem label="&zn-tools-settings;" oncommand="Zotero.ZNotes.openPreferenceWindow();"/>
           </menupopup>
         </menu>
       </menubar>
     </toolbox>
 
     <browser id="note-frame" flex="1" src="notes.html"></browser>
-   
-    <menupopup id="item-context-menu">
-        <menu label="Edit" id="context-menu-edit">
-        </menu>
-        <menu label="Add" id="context-menu-add">
-        </menu>
-        <menuseparator/>
-        <menuitem label="Delete"/>
-    </menupopup>
-    
     
     <script src="settings.js"/>
     <script src="chrome://zotero/content/include.js"/>

@@ -206,6 +206,12 @@ Zotero.ZNotes.settings = new function()
                         listcols.appendChild(listcol);
                     }
                 });
+                /** Add extra header */
+                let listheader = document.createElement("listheader");
+                let listcol = document.createElement("listcol");
+                listheader.setAttribute("label", "  ");
+                listhead.appendChild(listheader);
+                listcols.appendChild(listcol);
             }
             
             let listitem = document.createElement("listitem");
