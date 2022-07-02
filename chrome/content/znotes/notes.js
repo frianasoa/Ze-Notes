@@ -14,7 +14,7 @@ var notes = new function()
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
-                "quit": {name: "Exit", icon: "fa-xmark"},
+                // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
 
@@ -34,7 +34,7 @@ var notes = new function()
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
-                "quit": {name: "Exit", icon: "fa-xmark"},
+                // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
 
@@ -158,7 +158,7 @@ var notes = new function()
         }
         else
         {
-            alert(key);
+            // alert(key);
         }
     }
     

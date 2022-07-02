@@ -14,7 +14,7 @@
             <menuitem label="&zn-file-to-xls;" oncommand="Zotero.ZNotes.download('xls')"/>
             <menuitem label="&zn-file-to-csv;" oncommand="Zotero.ZNotes.download('csv')"/>
             <menuseparator/>
-            <menuitem label="&zn-exit;"/>
+            <menuitem label="&zn-exit;" oncommand="Zotero.ZNotes.notewin.close();"/>
           </menupopup>
         </menu>
         <menu id="tools-menu" label="&zn-tools;">

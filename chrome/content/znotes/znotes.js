@@ -143,7 +143,7 @@ Zotero.ZNotes = new function(){
         }
         
         var sorter = Zotero.ZNotes.settings.lists.sort.map(function(i) {
-            if(i.order=="asc")
+            if(i.order=="desc")
             {
                 return "-"+i.value;
             }
@@ -152,6 +152,7 @@ Zotero.ZNotes = new function(){
                 return i.value;
             }
         });
+
         var visibletags = Zotero.ZNotes.settings.lists.show.map(function(i) {
             return i.value;
         });
@@ -299,7 +300,10 @@ Zotero.ZNotes = new function(){
             {
                 notewin.document.title = notewin.document.title+" - "+Zotero.ZNotes.collection;
             }
-            notewin.document.getElementById("note-frame").contentWindow.location.reload();
+            if(notewin.document.getElementById("note-frame").contentWindow)
+            {
+                notewin.document.getElementById("note-frame").contentWindow.location.reload();
+            }
         }
     }
     
