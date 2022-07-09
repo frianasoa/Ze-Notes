@@ -1,5 +1,5 @@
 # Ze Notes
-[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+[![zotero](https://)](https://zotero.org)
 
 ### Description
 
