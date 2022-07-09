@@ -9,7 +9,7 @@
     <em:type>2</em:type>
     <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:creator>Fanantenana Rianasoa Andriariniaina</em:creator>
-    <em:homepageURL>http://zenotes.alefa.net</em:homepageURL>
+    <em:homepageURL>https://github.com/frianasoa/zenotes</em:homepageURL>
     <em:optionsURL>chrome://zenotes/content/options.xul</em:optionsURL>
     <em:updateURL>https://zenotes.alefa.net/options.rdf</em:updateURL>
     <em:iconURL>chrome://zenotes/skin/icon.png</em:iconURL>

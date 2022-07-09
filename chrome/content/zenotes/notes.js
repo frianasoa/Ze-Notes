@@ -7,13 +7,7 @@ var notes = new function()
         this.resize();
         this.loaddata();
         this.loadmenu();
-        this.loadicons();
         Zotero.ZeNotes.notewin = window;
-    }
-    
-    this.loadicons = function()
-    {
-        browser.browserAction.setIcon("chrome://zenotes/content/images/favicon.ico");
     }
     
     this.resize = function()
@@ -192,13 +186,14 @@ var notes = new function()
         }
         else if(key=="showfile")
         {
+            filename = filename.replace("\\", "/");
             if(filename=="false")
             {
                 alert("File not found!");
             }
             else
             {
-                window.open(filename);
+                window.openDialog("file:///"+filename);
             }
             
         }
