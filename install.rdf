@@ -5,13 +5,13 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>zenotes@alefa.net</em:id>
     <em:name>ZeNotes</em:name>
-    <em:version>0.2.0-alpha</em:version>
+    <em:version>0.2.0</em:version>
     <em:type>2</em:type>
     <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:creator>Fanantenana Rianasoa Andriariniaina</em:creator>
     <em:homepageURL>https://github.com/frianasoa/zenotes</em:homepageURL>
     <em:optionsURL>chrome://zenotes/content/options.xul</em:optionsURL>
-    <em:updateURL>https://zenotes.alefa.net/options.rdf</em:updateURL>
+    <em:updateURL>https://raw.githubusercontent.com/frianasoa/zenotes/main/zenote-update.rdf</em:updateURL>
     <em:iconURL>chrome://zenotes/skin/icon.png</em:iconURL>
     <em:icon64URL>chrome://zenotes/skin/icon64.png</em:icon64URL>
     <em:bootstrap>true</em:bootstrap>
