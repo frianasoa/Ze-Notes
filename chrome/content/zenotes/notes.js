@@ -16,6 +16,10 @@ var notes = new function()
                 scrollLeft: Zotero.ZeNotes.getPref("scrollleft", 0),
             }, 500);
         }
+        
+        $("#zn-body-wrapper").bind('scroll', function() {
+            notes.savescroll();
+        }); 
     }
     
     this.resize = function()
@@ -310,6 +314,12 @@ var notes = new function()
         Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
         Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
         window.location.reload();
+    }
+    
+    this.savescroll = function()
+    {
+        Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
+        Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
     }
     
     this.copy = function(elt)

@@ -66,7 +66,8 @@ Zotero.ZeNotes = new function()
         menuitem_notes.addEventListener("command", this.opennotes);
         menupopup.appendChild(menuitem_notes);
         
-        document.getElementById("main-menubar").appendChild(menu);
+        var elt = document.getElementById("main-menubar").childNodes[3];
+        document.getElementById("main-menubar").insertBefore(menu, elt);
         
         /** collection menu items */
         var menuitem_notes_c = document.createElement("menuitem");
