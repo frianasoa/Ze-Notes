@@ -4,31 +4,6 @@
     box-sizing: border-box;
 }
 
-body {
-    padding-right: 1em;
-    padding-left: 1em;
-    margin: 0;
-    border: none;
-    height: 100%;
-}
-
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    border-radius: 0.2em;
-    vertical-align: top;
-}
-
-td, th {
-    padding:0.3em;
-    border: solid 1px; 
-}
-
-td {
-    vertical-align: top;
-    cursor: pointer;
-}
-
 .context-menu-one:hover {
     background-color: lightyellow;
 }
@@ -47,16 +22,67 @@ th {
     background-color: #a8a8a8;
 }
 
-.zn-menubar#main-menu {
+body {
+    height: 100%;
+    width: 100%;
+    margin:0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#zn-menu {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
     margin-top:0;
     height: 2em;
     padding: 0.5em;
-    position: fixed;
     top: 0;
     left:0;
+    flex: 1;
+}
+
+#zn-sep-1 {
+    background-color: white;
+    height: 1.3em;
+}
+
+#zn-body-wrapper {
+    width: 100%;
+    overflow: auto;
+    flex: 30;
+}
+
+#zn-body {
+    width: 98%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.2em;
+    vertical-align: top;
+    position: relative;
+}
+
+td {
+    padding:0.3em;
+    border: solid 1px; 
+    vertical-align: top;
+    cursor: pointer;
+}
+
+th {
+    background-color: white;
+    padding:0.3em;
+    border: solid 1px;
+    position: sticky;
+    top: 0;
 }
 
 .zn-menubar {

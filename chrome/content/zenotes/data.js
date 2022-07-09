@@ -241,7 +241,21 @@ Zotero.ZeNotes.data = new function()
     this.get = function()
     {
         var collection = zp.getSelectedCollection();
-        var items = Zotero.ZeNotes.data.recursiveitems(collection);
-        return Zotero.ZeNotes.data.tojson(items);
+        var libraryid = zp.getSelectedLibraryID()
+        if(collection)
+        {
+            var items = Zotero.ZeNotes.data.recursiveitems(collection);
+            return Zotero.ZeNotes.data.tojson(items);
+        }
+        else if(libraryid)
+        {
+            var items = [];
+            var collections = Zotero.Collections.getByLibrary(libraryid);
+            collections.forEach(collection=>{
+                var items_ = Zotero.ZeNotes.data.recursiveitems(collection);
+                items = items.concat(items_);
+            });
+            return Zotero.ZeNotes.data.tojson(items);
+        }
     }
 }

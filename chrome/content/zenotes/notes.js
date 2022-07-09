@@ -8,11 +8,12 @@ var notes = new function()
         this.loaddata();
         this.loadmenu();
         Zotero.ZeNotes.notewin = window;
+        window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
     }
     
     this.resize = function()
     {
-        resizeTo(screen.width, screen.height);
+        resizeTo(screen.availWidth, screen.availHeight);
         moveTo(0, 0);
     }
     
@@ -147,7 +148,7 @@ var notes = new function()
                 tr.appendChild(td);
             });
         }); 
-        document.body.appendChild(table);
+        document.getElementById("zn-body").appendChild(table);
     }
     
     this.actions = function(key, options)

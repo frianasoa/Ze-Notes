@@ -70,7 +70,7 @@ Zotero.ZeNotes = new function()
         
         /** collection menu items */
         var menuitem_notes_c = document.createElement("menuitem");
-        menuitem_notes_c.setAttribute("label", "ZeNotes - Notes");
+        menuitem_notes_c.setAttribute("label", "ZeNotes - My notes in collection");
         menuitem_notes_c.className="menuitem-iconic";
         menuitem_notes_c.setAttribute("image", "chrome://zenotes/skin/zenotes-notes.png");
         menuitem_notes_c.addEventListener("command", this.opennotes);
@@ -80,7 +80,15 @@ Zotero.ZeNotes = new function()
     
     this.opensettings = function()
     {
-        Zotero.ZeNotes.collection = zp.getSelectedCollection().name;
+        var collection = zp.getSelectedCollection();
+        if(collection)
+        {
+            Zotero.ZeNotes.collection = collection.name;
+        }
+        else
+        {
+            Zotero.ZeNotes.collection = "All documents";
+        }
         var url = "chrome://zenotes/content/settings.xul";
         var io = {collection: Zotero.ZeNotes.collection};
         var name = "settingswin"
@@ -89,7 +97,16 @@ Zotero.ZeNotes = new function()
     
     this.opennotes = function()
     {
-        Zotero.ZeNotes.collection = zp.getSelectedCollection().name;
+        var collection = zp.getSelectedCollection();
+        if(collection)
+        {
+            Zotero.ZeNotes.collection = collection.name;
+        }
+        else
+        {
+            Zotero.ZeNotes.collection = "All documents";
+        }
+        
         var url = "chrome://zenotes/content/notes.html";
         var io = {collection: Zotero.ZeNotes.collection};
         var name = "zenotes-notes";
