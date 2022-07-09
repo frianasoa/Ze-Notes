@@ -1,3 +1,6 @@
+# Ze Notes
+[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+
 ### Description
 
 ZeNotes is a Zotero addon that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero by taking notes. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes. 
