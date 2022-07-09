@@ -1,5 +1,5 @@
 # Ze Notes
-[![zotero](https://)](https://zotero.org)
+[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/assets/images/for-zotero-6.svg)](https://zotero.org)
 
 ### Description
 
