@@ -31,7 +31,6 @@ def zipdir(path, ziph):
             ziph.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), os.path.join(path, '.')))
 
 update()
-
-# os.makedirs("build", exist_ok=True)
-# with zipfile.ZipFile('./build/zenotes-v'+getver()+'.xpi', 'w', zipfile.ZIP_DEFLATED) as zipf:
-    # zipdir('./', zipf)
+os.makedirs("build", exist_ok=True)
+with zipfile.ZipFile('./build/zenotes-v'+getver()+'.xpi', 'w', zipfile.ZIP_DEFLATED) as zipf:
+    zipdir('./', zipf)
