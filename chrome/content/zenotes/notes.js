@@ -9,6 +9,13 @@ var notes = new function()
         this.loadmenu();
         Zotero.ZeNotes.notewin = window;
         window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
+        if(Zotero.ZeNotes.getPref("scrolltop"))
+        {
+            $('#zn-body-wrapper').animate({
+                scrollTop: Zotero.ZeNotes.getPref("scrolltop", 0),
+                scrollLeft: Zotero.ZeNotes.getPref("scrollleft", 0),
+            }, 500);
+        }
     }
     
     this.resize = function()
@@ -30,6 +37,7 @@ var notes = new function()
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
+                "copycell": {name: "Copy cell", icon: "fa-eye-slash"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -51,6 +59,7 @@ var notes = new function()
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
+                "copycell": {name: "Copy cell", icon: "fa-eye-slash"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -218,7 +227,13 @@ var notes = new function()
         }
         else if(key=="copy")
         {
-            this.copy();
+            var table = document.getElementById("notes-table");
+            this.copy(table);
+        }
+        
+        else if(key=="copycell")
+        {
+            this.copy(td);
         }
         
         else if(key=="saveasxls" ){
@@ -292,14 +307,15 @@ var notes = new function()
     
     this.reload = function()
     {
+        Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
+        Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
         window.location.reload();
     }
     
-    this.copy = function()
+    this.copy = function(elt)
     {
-        var table = document.getElementById("notes-table");
         var range = document.createRange();
-        range.selectNode(table);
+        range.selectNode(elt);
         window.getSelection().addRange(range);
         document.execCommand('copy');
     }
