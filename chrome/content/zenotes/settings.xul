@@ -4,7 +4,7 @@
 <?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
 
 <!DOCTYPE window SYSTEM "chrome://zenotes/locale/settings.dtd">
-<prefwindow buttons="accept" id="zenotes-settings" title="&znp-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="" ondialogaccept="Zotero.ZeNotes.reload()" ondialogcancel="Zotero.ZeNotes.reload()">
+<prefwindow buttons="accept" id="zenotes-settings" title="&znp-title;" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero.ZeNotes.settings.load();" ondialogaccept="Zotero.ZeNotes.reload()" ondialogcancel="Zotero.ZeNotes.reload()">
 	
     <stringbundleset id="stringbundleset">
 		<stringbundle id="zenotes-settings" src="chrome://zenotes/locale/settings.properties"/>
@@ -82,6 +82,7 @@
 		</prefpane>
 
 		<script src="settings.js"/>
+		<script src="data.js"/>
 		<script src="chrome://zotero/content/include.js"/>
 		<script src="chrome://zenotes/content/include.js"/>
 

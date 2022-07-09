@@ -1,3 +1,5 @@
+var EXPORTED_SYMBOLS = ["Zotero"];
+
 var Zotero = Components.classes["@zotero.org/Zotero;1"]
     .getService(Components.interfaces.nsISupports)
     .wrappedJSObject;
@@ -27,7 +29,7 @@ Zotero.ZeNotes.settings = new function()
         
         var alltags = this.infotags;
         
-        alltags = alltags.concat(Zotero.ZeNotes.alltags()).filter((v, i, a) => a.indexOf(v) === i);
+        alltags = alltags.concat(Zotero.ZeNotes.data.alltags()).filter((v, i, a) => a.indexOf(v) === i);
         
         /** Get list of tags from objects */
         var showtags = this.lists.show.map(function(i) {
@@ -177,6 +179,7 @@ Zotero.ZeNotes.settings = new function()
             
             box.ensureIndexIsVisible(index);
             box.selectedIndex = index;
+            this.saveLists();
         }
     }
     
@@ -184,6 +187,10 @@ Zotero.ZeNotes.settings = new function()
     {
         var vm = this;
         var box = document.getElementById("tag-box-"+name);
+        if(!box)
+        {
+            return;
+        }
         box.innerHTML = "";
         var i = 0;
         var hidecols = ["id"];

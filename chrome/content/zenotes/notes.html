@@ -1,16 +1,26 @@
 <html>
 <head>
+<link rel="icon" type="image/x-icon" href="chrome://zenotes/content/images/favicon.ico" />
+
+<title>ZeNotes - My notes</title>
+
 <script src="chrome://zenotes/content/lib/jquery/3.6.0/jquery.min.js"></script>
 <link rel="stylesheet" href="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" />
 <link rel="stylesheet" href="chrome://zenotes/content/lib/fontawesome/6.1.1/css/all.min.css" />
 <script src="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js"></script>
 <script src="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.ui.position.min.js"></script>
 
-<script src="chrome://zenotes/content/notes.js"></script>
-<link rel="stylesheet" href="chrome://zenotes/content/notes.css" />
+<link rel="stylesheet" href="notes.css">
+<script src="settings.js"></script>
+<script src="data.js"></script>
+<script src="notes.js"></script>
 
 </head>
 <body>
-<div id="content"></div>
+<div class="zn-menu-spacer"></div>
+<div class="zn-menubar" id="main-menu">
+    <span class="zn-menuitem" id="zn-menu-file">File</span>
+    <span class="zn-menuitem"  id="zn-menu-edit">Edit</span>
+</div>
 </body>
 </html>

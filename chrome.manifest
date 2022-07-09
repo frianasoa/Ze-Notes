@@ -4,4 +4,4 @@ locale	zenotes	en-US		chrome/locale/en-US/zenotes/
 #locale	zenotes	ja-JP		chrome/locale/ja-JP/zenotes/
 skin	zenotes	default		chrome/skin/default/zenotes/
 
-overlay	chrome://zotero/content/zoteroPane.xul	chrome://zenotes/content/overlay.xul
+#overlay	chrome://zotero/content/zoteroPane.xul	chrome://zenotes/content/overlay.xul

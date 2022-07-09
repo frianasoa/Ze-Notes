@@ -1,13 +1,24 @@
 * {
     font-size: 1.02em;
     font-family: Arial;
+    box-sizing: border-box;
 }
+
+body {
+    padding-right: 1em;
+    padding-left: 1em;
+    margin: 0;
+    border: none;
+    height: 100%;
+}
+
 table {
-    width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
     border-radius: 0.2em;
+    vertical-align: top;
 }
+
 td, th {
     padding:0.3em;
     border: solid 1px; 
@@ -30,16 +41,62 @@ th {
     text-transform: capitalize;
 }
 
-#content {
-    background-color:white; 
-    padding:0.3em; 
-    width:99%;
-    height:96%; 
-    overflow-y:auto; 
-}
-
 .notekey {
     width: 100%;
     padding: 0.1em;
     background-color: #a8a8a8;
+}
+
+.zn-menubar#main-menu {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top:0;
+    height: 2em;
+    padding: 0.5em;
+    position: fixed;
+    top: 0;
+    left:0;
+}
+
+.zn-menubar {
+    font-size: 0.9em;
+    font-family: "Fira Sans"!important;
+    font-weight: normal!important;
+    background-color: #f2f2f2;
+}
+
+.zn-menubar li {
+    font-size: 0.9em;
+    font-family: "Fira Sans"!important;
+    font-weight: normal!important;
+    border: solid 1px #f2f2f2;
+    background-color: #f2f2f2;
+    cursor: default;
+}
+
+.zn-menubar li:hover {
+    background-color: #d8e6f2;
+    border: solid 1px #c0dcf3;
+    color: black;
+}
+
+.zn-menuitem:hover {
+    background-color: #d8e6f2;
+    border: solid 1px #c0dcf3;
+}
+
+.zn-menuitem {
+    cursor: default;
+    border: solid 1px transparent;
+    background-color: #f2f2f2;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    padding-top: 0.4em;
+    padding-bottom: 0.2em;
+}
+
+.zn-menu-spacer {
+    margin-bottom: 3em;
+    height: 1em;
 }
