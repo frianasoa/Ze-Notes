@@ -47,6 +47,7 @@ Zotero.ZeNotes = new function()
         /** Main menu items*/
         var menu = document.createElement("menu");
         menu.setAttribute("label", "ZeNotes");
+        menu.setAttribute("accesskey", "z");
         
         var menupopup = document.createElement("menupopup");
         menu.appendChild(menupopup)
@@ -56,6 +57,7 @@ Zotero.ZeNotes = new function()
         menuitem_settings.className="menuitem-iconic";
         menuitem_settings.setAttribute("image", "chrome://zenotes/skin/zenotes-settings.png");
         menuitem_settings.addEventListener("command", this.opensettings);
+        menuitem_settings.setAttribute("accesskey", "S");
         menupopup.appendChild(menuitem_settings);
         
         
@@ -64,6 +66,7 @@ Zotero.ZeNotes = new function()
         menuitem_notes.className="menuitem-iconic";
         menuitem_notes.setAttribute("image", "chrome://zenotes/skin/zenotes-notes.png");
         menuitem_notes.addEventListener("command", this.opennotes);
+        menuitem_notes.setAttribute("accesskey", "n");
         menupopup.appendChild(menuitem_notes);
         
         var elt = document.getElementById("main-menubar").childNodes[3];
