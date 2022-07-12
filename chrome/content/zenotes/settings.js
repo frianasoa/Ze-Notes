@@ -48,16 +48,22 @@ Zotero.ZeNotes.settings = new function()
         
         var id = this.lists.show.length;
         alltags.forEach(t=>{
+            var type = "tag";
+            if(this.infotags.includes(t))
+            {
+                type = "info"
+            }
+            
             if(!showhidetags.includes(t))
             {
                 vm.lists.show.push({
                     value: t,
-                    state: "active",
+                    type: type,
                     id: id,
                 });
                 id++;
             }
-        })
+        });
         
         var id = this.lists.show.length;
         alltags.forEach(t=>{

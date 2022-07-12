@@ -39,7 +39,9 @@ var notes = new function()
                 "edit": {name: "Edit", icon: "fa-edit"},
                 "showentry": {name: "Show entry", icon: "fa-file-lines"},
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
+                "sep0": "---------",
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
+                "deletenote": {name: "Delete note", icon: "fa-trash"},
                 "sep1": "---------",
                 "copycell": {name: "Copy cell", icon: "fa-eye-slash"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
@@ -100,6 +102,7 @@ var notes = new function()
             },
             items: {
                 "copy": {name: "Copy table", icon: "fa-copy"},
+                "addrow": {name: "Add row", icon: "fa-circle-plus"},
                 "sep": "-----",
                 "preferences": {name: "Preferences", icon: "fa-cog"},
             }
@@ -213,6 +216,11 @@ var notes = new function()
         }
         else if(key=="hidecolumn")
         {
+            if(!confirm("You can show hidden columns in Edit->Preferences\nDo you want to hide "+column+"?"))
+            {
+                return;
+            }
+            
             var lists = Zotero.ZeNotes.settings.lists;
             var index = lists.show.findIndex(i => i.value === column);
             var row = JSON.stringify(lists.show[index]);
@@ -225,6 +233,16 @@ var notes = new function()
             Zotero.ZeNotes.settings.saveLists();
             notes.reload();
         }
+        else if(key=="deletenote")
+        {
+            if(confirm("Are you sure you want to delete this entry?\n"+column))
+            {
+                Zotero.Items.erase(notekey).then(function(){
+                    notes.reload();
+                });
+            }
+        }
+        
         else if(key=="preferences")
         {
             Zotero.ZeNotes.opensettings();
@@ -238,6 +256,11 @@ var notes = new function()
         else if(key=="copycell")
         {
             this.copy(td);
+        }
+        
+        else if(key=="addrow")
+        {
+            this.addrow();
         }
         
         else if(key=="saveasxls" ){
@@ -263,6 +286,33 @@ var notes = new function()
         else
         {
             // alert(key);
+        }
+    }
+    
+    this.addrow = function()
+    {
+        var io = { dataIn: { search: '', name }, dataOut: null, singleSelection: true};
+        window.openDialog('chrome://zotero/content/selectItemsDialog.xul','','chrome,modal',io);
+        var itemid = io.dataOut[0];
+            
+        if(itemid!=undefined)
+        {
+            var item = Zotero.Items.get(itemid);
+            var itemkey = item.key;
+            var type = item.toJSON().itemType
+            
+            if(["note", "attachment"].includes(type))
+            {
+                alert("Cannot attach a not to '"+type+"'");
+                return;
+            }
+            var show = Zotero.ZeNotes.settings.lists.show;
+            var column = "";
+            show.some(function(c){
+                column = c.value;
+                return c.type=="tag"
+            });
+            this.createnote(itemkey, column);
         }
     }
     
