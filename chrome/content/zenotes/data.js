@@ -168,8 +168,8 @@ Zotero.ZeNotes.data = new function()
                 }
             }
         }
-        
-        var sorter = Zotero.ZeNotes.settings.lists.sort.map(function(i) {
+        var lists = Zotero.ZeNotes.settings.getpref("tag-lists", {show:[], hide:[], sort:[]});
+        var sorter = lists.sort.map(function(i) {
             if(i.order=="desc")
             {
                 return "-"+i.value;
@@ -179,7 +179,7 @@ Zotero.ZeNotes.data = new function()
                 return i.value;
             }
         });
-        var visibletags = Zotero.ZeNotes.settings.lists.show.map(function(i) {
+        var visibletags = lists.show.map(function(i) {
             return i.value;
         });
         

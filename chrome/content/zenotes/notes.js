@@ -9,14 +9,12 @@ var notes = new function()
         this.loadmenu();
         Zotero.ZeNotes.notewin = window;
         window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
-        if(Zotero.ZeNotes.getPref("scrolltop"))
-        {
-            $('#zn-body-wrapper').animate({
-                scrollTop: Zotero.ZeNotes.getPref("scrolltop", 0),
-                scrollLeft: Zotero.ZeNotes.getPref("scrollleft", 0),
-            }, 500);
-        }
         
+        $('#zn-body-wrapper').animate({
+            scrollTop: Zotero.ZeNotes.settings.getpref("scrolltop", 0),
+            scrollLeft: Zotero.ZeNotes.settings.getpref("scrollleft", 0)
+        });
+                
         $("#zn-body-wrapper").bind('scroll', function() {
             notes.savescroll();
         }); 
@@ -216,22 +214,23 @@ var notes = new function()
         }
         else if(key=="hidecolumn")
         {
-            if(!confirm("You can show hidden columns in Edit->Preferences\nDo you want to hide "+column+"?"))
-            {
-                return;
-            }
+            // if(!confirm("You can show hidden columns in Edit->Preferences\nDo you want to hide "+column+"?"))
+            // {
+                // return;
+            // }
             
-            var lists = Zotero.ZeNotes.settings.lists;
+            var lists = Zotero.ZeNotes.settings.getpref("tag-lists", {"show": [], "hide": [], "sort": []});
             var index = lists.show.findIndex(i => i.value === column);
-            var row = JSON.stringify(lists.show[index]);
+            var row = lists.show[index];
+            
             row.id = lists.hide.length;
             lists.show.splice(index, 1);
-            lists.hide.push(JSON.parse(row));
+            lists.hide.push(row);
             lists.show = Zotero.ZeNotes.settings.reindex(lists.show);
             lists.hide = Zotero.ZeNotes.settings.reindex(lists.hide);
-            Zotero.ZeNotes.settings.lists = lists;
-            Zotero.ZeNotes.settings.saveLists();
-            notes.reload();
+            Zotero.ZeNotes.settings.setpref("tag-lists", lists).then(()=>{
+                notes.reload();
+            });
         }
         else if(key=="deletenote")
         {
@@ -306,9 +305,9 @@ var notes = new function()
                 alert("Cannot attach a not to '"+type+"'");
                 return;
             }
-            var show = Zotero.ZeNotes.settings.lists.show;
+            var lists = Zotero.ZeNotes.settings.getpref("tag-lists", {"show": [], "hide": [], "sort": []});
             var column = "";
-            show.some(function(c){
+            lists.show.some(function(c){
                 column = c.value;
                 return c.type=="tag"
             });
@@ -361,15 +360,15 @@ var notes = new function()
     
     this.reload = function()
     {
-        Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
-        Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
+        Zotero.ZeNotes.settings.setpref("scrolltop", $('#zn-body-wrapper').scrollTop());
+        Zotero.ZeNotes.settings.setpref("scrollleft", $('#zn-body-wrapper').scrollLeft());
         window.location.reload();
     }
     
     this.savescroll = function()
     {
-        Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
-        Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
+        Zotero.ZeNotes.settings.setpref("scrolltop", $('#zn-body-wrapper').scrollTop());
+        Zotero.ZeNotes.settings.setpref("scrollleft", $('#zn-body-wrapper').scrollLeft());
     }
     
     this.copy = function(elt)

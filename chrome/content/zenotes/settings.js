@@ -19,13 +19,13 @@ Zotero.ZeNotes.settings = new function()
     
     this.saveLists = function()
     {
-        Zotero.ZeNotes.setPref("tag-lists", JSON.stringify(this.lists));
+        Zotero.ZeNotes.settings.setpref("tag-lists", this.lists);
     }
     
-    this.load = function()
+    this.load = async function()
     {
         var vm = this;
-        this.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+        this.lists = this.getpref("tag-lists", {"show": [], "hide": [], "sort": []});
         
         var alltags = this.infotags;
         
@@ -257,6 +257,63 @@ Zotero.ZeNotes.settings = new function()
             box.appendChild(listitem);
             i++;
         });
+    }
+    
+    // this.setpref2 = async function(name, data)
+    // {
+        // var path = Zotero.Profile.dir+'/zenotes-prefs.json'
+        // var prefdata = {};
+        // var olddata = Zotero.File.getContentsAsync(path);
+        // olddata.then(d=>{
+            // try {
+                // prefdata = JSON.parse(d);
+            // }
+            // catch {
+            // }
+            // prefdata[name] = data;
+            // return await Zotero.File.putContentsAsync(path, JSON.stringify(prefdata, null, 2));
+        // }).catch((error)=>{
+            // prefdata["error"] = error;
+            // prefdata[name] = data;
+            // return await Zotero.File.putContentsAsync(path, JSON.stringify(prefdata, null, 2));
+        // });
+    // }
+    
+    this.setpref = function(name, data)
+    {
+        var path = Zotero.Profile.dir+'/zenotes-prefs.json'
+        var prefdata = {};
+        var olddata = await Zotero.File.getContentsAsync(path);
+        try {
+            prefdata = JSON.parse(olddata);
+        }
+        catch {
+        }
+        prefdata[name] = data;
+        return Zotero.File.putContentsAsync(path, JSON.stringify(prefdata, null, 2));
+    }
+    
+    this.getpref = function(name, def={})
+    {
+        /** Adapt \ to other OS later */
+        var path = Zotero.Profile.dir+'\\zenotes-prefs.json';
+        var data = {}
+        try {
+            data = JSON.parse(Zotero.File.getContents(path));
+        }
+        catch(error)
+        {
+            // Zotero.ZeNotes.notewin.alert(error);
+        }
+        
+        if(Object.keys(data).includes(name))
+        {
+            return data[name];
+        }
+        else
+        {
+            return def;
+        }
     }
     
     this.init = function()
