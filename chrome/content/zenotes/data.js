@@ -149,20 +149,26 @@ Zotero.ZeNotes.data = new function()
             var tag = "";
             var tags = JSON.parse(JSON.stringify(n)).tags;                
             
-            if(tags.length>0)
+            for(let i in tags)
             {
-                tag = tags[0]["tag"];
+                tag = tags[i]["tag"];
+                if(tag=="")
+                {
+                    tag = "Other";
+                }
+                if(Object.keys(r).includes(tag))
+                {
+                    r[tag]+="<hr/>"+Zotero.ZeNotes.data.clean(note)+ "<span class='notekey'>"+noteid+"</span>";
+                }
+                else
+                {
+                    r[tag] = Zotero.ZeNotes.data.clean(note)+ "<span class='notekey'>"+noteid+"</span>";
+                }
+                
             }
-            
-            if(tag=="")
-            {
-                tag = "Other";
-            }
-            r[tag] = Zotero.ZeNotes.data.clean(note)+ "<span class='notekey'>"+noteid+"</span>";
         }
         
         /** Add pdf tags */
-        
         var pdfnotes = Zotero.ZeNotes.data.pdfnotes(item);
         for(j in pdfnotes)
         {
@@ -172,19 +178,23 @@ Zotero.ZeNotes.data = new function()
             var note = n["annotationComment"]+"<h1>Direct quote</h1><div style='background-color:"+n["annotationColor"]+";'>“"+n["annotationText"]+"”</div>("+authors+" "+year+", p. "+n["annotationPageLabel"]+")";
             
             var tags = n.getTags();                
-            
-            if(tags.length>0)
+            for(let i in tags)
             {
-                tag = tags[0]["tag"];
+                tag = tags[i]["tag"];
+                if(tag=="")
+                {
+                    tag = "Other";
+                }
+                if(Object.keys(r).includes(tag))
+                {
+                    r[tag]+="<hr/>"+Zotero.ZeNotes.data.clean(note);
+                }
+                else
+                {
+                    r[tag] = Zotero.ZeNotes.data.clean(note);
+                }
             }
-            
-            if(tag=="")
-            {
-                tag = "Other";
-            }
-            r[tag] = Zotero.ZeNotes.data.clean(note)+"<span class='notekey'>"+n["key"]+"</span>";
         }
-        
         return r;
     }
     
@@ -235,131 +245,6 @@ Zotero.ZeNotes.data = new function()
             columns: visibletags,
             values: Zotero.ZeNotes.data.sort(zenotes, sorter),
         }
-    }
-    
-    this.tojson_2 = function(items)
-    {
-        var zenotes = [];
-        var taglist = [];
-        for(i in items)
-        {
-            var item = items[i];
-            var pdfnotes = Zotero.ZeNotes.data.pdfnotes(item);
-            var notes = item.getNotes();
-            notes = notes.concat(pdfnotes);
-            console.log(pdfnotes.length);
-            
-            if(notes.length>0)
-            {
-                try {
-                    var author = "";
-                    var creators = item.getCreatorsJSON();
-                    var date = item.getField("date", true).substr(0, 4);
-                    var journal = item.getField("publicationTitle");
-                    var title = item.getField("title");
-                    var key = item.getField("key");
-                    var id = item.getID();
-                    var filename = "";
-                    
-                    var attachmentIDs = item.getAttachments();
-                    if(attachmentIDs.length>0)
-                    {
-                        var attachment = Zotero.Items.get(attachmentIDs[0]);
-                        var path = attachment.attachmentPath;
-                        filename = Zotero.Attachments.resolveRelativePath(path);
-                    }
-                    
-                    if(creators.length==1)
-                    {
-                        author = creators[0].lastName;
-                        
-                    }
-                    else if(creators.length==2)
-                    {
-                        author = creators[0].lastName+" and "+creators[1].lastName;
-                    }
-                    else if(creators.length>0)
-                    {
-                        author = creators[0].lastName+" et al."
-                    }
-                    
-                    if(date.length>0)
-                    {
-                        author+=" ("+date+")";
-                    }
-                    
-                    var line = {
-                        id: id,
-                        itemid: item.id,
-                        key: key,
-                        title: title,
-                        date: date,
-                        journal: journal,
-                        author: Zotero.ZeNotes.data.creatorshort(item),
-                        creators: Zotero.ZeNotes.data.creatorshort(item)+" ("+Zotero.ZeNotes.data.year(item)+")",
-                        filename: filename,
-                    }
-                    
-                    
-                    for(j in notes)
-                    {
-                        var noteid = notes[j];
-                        var n = Zotero.Items.get(noteid);
-                        var note = n.getNote();
-                        var tag = "";
-                        var tags = JSON.parse(JSON.stringify(n)).tags;                
-                        
-                        if(tags.length>0)
-                        {
-                            tag = tags[0]["tag"];
-                        }
-                        
-                        if(tag=="")
-                        {
-                            tag = "Other";
-                        }
-                        
-                        // if(!(tag in line["notes"]))
-                        // {
-                            // taglist.push(tag);
-                            // line["notes"][tag] = [];
-                        // }
-                        
-                        line[tag] = Zotero.ZeNotes.data.clean(note)+"<span class='notekey'>"+noteid+"</span>";
-                        taglist.push(tag);
-                    }
-                    
-                    zenotes.push(line);
-                }
-                catch {
-                    
-                }
-            }
-        }
-        
-        var sorter = Zotero.ZeNotes.settings.lists.sort.map(function(i) {
-            if(i.order=="desc")
-            {
-                return "-"+i.value;
-            }
-            else
-            {
-                return i.value;
-            }
-        });
-        var visibletags = Zotero.ZeNotes.settings.lists.show.map(function(i) {
-            return i.value;
-        });
-        
-        return {
-            columns: visibletags,
-            values: Zotero.ZeNotes.data.sort(zenotes, sorter),
-        }
-    }
-    
-    this.stringify = function(mode, variable)
-    {
-        
     }
     
     this.clean = function(tdtext)
