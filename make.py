@@ -11,7 +11,7 @@ def getver():
 
 def update():
     v = getver()
-    link = "https://github.com/frianasoa/zenotes/releases/download/v"+v+"/zenotes-v"+v+".xpi"
+    link = "https://github.com/frianasoa/Ze-Notes/releases/download/v"+v+"/zenotes-v"+v+".xpi"
     et = ET.parse('zenote-update.rdf')
     root = et.getroot()
     for child in root.iter("{http://www.mozilla.org/2004/em-rdf#}version"):
