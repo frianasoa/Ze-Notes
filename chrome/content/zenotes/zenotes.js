@@ -16,21 +16,18 @@ Zotero.ZeNotes = new function()
         this.addmenu();
     }
     
-    // this.getPref = function(pref, default_value="") {
-        // var v = Zotero.Prefs.get('extensions.zenotes.' + pref, true);
-        // var v2 = Zotero.ZeNotes.settings.getpref(pref);
-        
-        // if(v==null)
-        // {
-            // return default_value;
-        // }
-        // return v;
-    // }
+    this.getPref = function(pref, default_value="") {
+        var v = Zotero.Prefs.get('extensions.zenotes.' + pref, true);
+        if(v==null)
+        {
+            return default_value;
+        }
+        return v;
+    }
     
-    // this.setPref = function(pref, value) {        
-        // Zotero.Prefs.set('extensions.zenotes.' + pref, JSON.stringify(value), true);
-        // Zotero.ZeNotes.settings.setpref(pref, value);
-    // }
+    this.setPref = function(pref, value) {        
+        Zotero.Prefs.set('extensions.zenotes.' + pref, value, true);
+    }
     
     this.openwindow = function(url, name, io)
     {
