@@ -4,7 +4,7 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
     .getService(Components.interfaces.nsISupports)
     .wrappedJSObject;
 
-var zp = Zotero.getActiveZoteroPane()
+var zp = Zotero.getActiveZoteroPane();
 var document = zp.document;
 var window = document.defaultView;
 var alert = window.alert;
@@ -132,7 +132,10 @@ Zotero.ZeNotes.data = new function()
         for(let id of ids)
         {
             let attachment = Zotero.Items.get(id);
-            notes = notes.concat(attachment.getAnnotations());
+            if(attachment.isPDFAttachment())
+            {
+                notes = notes.concat(attachment.getAnnotations());
+            }
         }
         return notes;
     }
