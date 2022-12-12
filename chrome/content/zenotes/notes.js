@@ -7,6 +7,7 @@ var notes = new function()
         this.resize();
         this.loaddata();
         this.loadmenu();
+        this.initdb();
         Zotero.ZeNotes.notewin = window;
         window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
         if(Zotero.ZeNotes.getPref("scrolltop"))
@@ -26,6 +27,11 @@ var notes = new function()
     {
         resizeTo(screen.availWidth, screen.availHeight);
         moveTo(0, 0);
+    }
+    
+    this.initdb = function()
+    {
+        Zotero.ZeNotes.database.create();
     }
     
     this.loadmenu = function(){
