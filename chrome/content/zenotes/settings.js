@@ -7,6 +7,16 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
 Components.utils.import("resource://gre/modules/osfile.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
 
+var alert = function(message)
+{
+    Services.prompt.alert(null, "Message from Ze Notes", message);
+}
+
+var confirm = function(message)
+{
+    return Services.prompt.confirm(null, "Message from Ze Notes", message);
+}
+
 Zotero.ZeNotes.settings = new function()
 {
     this.lists = {
@@ -16,10 +26,11 @@ Zotero.ZeNotes.settings = new function()
     }
     
     this.infotags = ["id", "key", "title", "date", "journal", "author", "creator", "itemid"]
-    
+
     this.saveLists = function()
     {
         Zotero.ZeNotes.setPref("tag-lists", JSON.stringify(this.lists));
+        Zotero.ZeNotes.database.updatesetting(0, JSON.stringify(this.lists));
     }
     
     this.load = function()
@@ -96,6 +107,88 @@ Zotero.ZeNotes.settings = new function()
         /** Save all lists */
         this.saveLists();
         return newdata;
+    }
+    
+    this.savetodb = function()
+    {
+        var settings = Zotero.ZeNotes.database.getsettings();
+        settings.then(r=>{
+            /**
+            First check if the layout exist.
+            */
+            var label = document.getElementById("saveman-save-textbox").value;
+            var exists=false;
+            for(i in r)
+            {
+                if(r[i].label==label)
+                {
+                    exists = true;
+                }
+            }
+            
+            if(exists)
+            {
+                var yes = confirm("The layout already exists. I will be overwritten!")
+                if(!yes)
+                {
+                    return;
+                }
+            }
+
+            var value = JSON.stringify(this.lists);
+            if(label.length==0)
+            {
+                alert("Please input a name for your layout!");
+                return
+            }
+            if(value.length==0)
+            {
+                alert("The value is invalid!");
+                return
+            }
+            Zotero.ZeNotes.database.addsetting(label, value).then(v=>{
+                this.fillsaveman();
+                document.getElementById("saveman-save-textbox").value = "";
+                alert(label+" saved!");
+            });
+        });
+        return setting;
+    }
+    
+    this.fillsaveman = function()
+    {
+        Zotero.ZeNotes.database.getsettings().then(r=>{
+            Zotero.log("Filling select");
+            var loadbox = document.getElementById("saveman-load-select");
+            var delbox = document.getElementById("saveman-delete-select");
+            
+            /* Remove children */
+            while (loadbox.firstChild) {
+                loadbox.firstChild.remove()
+            }
+            
+            while (delbox.firstChild) {
+                delbox.firstChild.remove()
+            }
+            
+            for(let i in r)
+            {
+               var e1 = document.createElement("menuitem");
+               var e2 = document.createElement("menuitem");
+               var label = r[i].label;
+               var id = r[i].id;
+               
+               e1.setAttribute("label", label);
+               e1.setAttribute("id", id);
+               
+               e2.setAttribute("label", label);
+               e2.setAttribute("id", id);
+               
+               Zotero.log(label);
+               loadbox.appendChild(e1);
+               delbox.appendChild(e2);
+            }
+        });
     }
     
     this.moveitem = function(name, direction)
@@ -262,8 +355,8 @@ Zotero.ZeNotes.settings = new function()
     this.init = function()
     {
         this.load();
+        this.fillsaveman();
     }
-    
 }
 
 window.addEventListener('load', function(e) { Zotero.ZeNotes.settings.init(); }, false);

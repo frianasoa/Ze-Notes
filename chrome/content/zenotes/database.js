@@ -13,7 +13,7 @@ Zotero.ZeNotes.database = new function()
             this.DB.tableExists('settings').then(v=>{
                 if(!v)
                 {
-                    var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT, contents TEXT)";
+                    var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT UNIQUE, contents TEXT)";
                     this.DB.queryAsync(sql).then(v2=>{
                         resolve(this.DB);
                     })
@@ -43,10 +43,25 @@ Zotero.ZeNotes.database = new function()
     
     this.updatesetting = function(id, value)
     {
-        return this.execute(
-            "UPDATE `settings` SET contents=? WHERE id=?", 
-            [value, id]
-        );
+        var p = new Promise(function(resolve, reject) {
+            Zotero.ZeNotes.database.getsetting(id).then(v=>{
+                if(v.length>0)
+                {
+                    return Zotero.ZeNotes.database.execute(
+                        "UPDATE `settings` SET contents=? WHERE id=?", 
+                        [value, id]
+                    )
+                }
+                else
+                {
+                    return Zotero.ZeNotes.database.execute(
+                        "INSERT INTO `settings`(id, label, contents) VALUES(?, ?, ?)", 
+                        [id, "default", value]
+                    )
+                }
+            })
+        });
+        return p;
     }
     
     this.deletesetting = function(id)
@@ -60,7 +75,7 @@ Zotero.ZeNotes.database = new function()
     this.addsetting = function(label, value)
     {
         return this.execute(
-            "INSERT INTO `settings`(label, contents) VALUES(?, ?)", 
+            "INSERT OR REPLACE INTO `settings`(label, contents) VALUES(?, ?)", 
             [label, value]
         )
     }
@@ -70,6 +85,13 @@ Zotero.ZeNotes.database = new function()
         return this.execute(
             "SELECT * FROM  `settings` WHERE id=?",
             [id]
+        )
+    }
+    
+    this.getsettings = function()
+    {
+        return this.execute(
+            "SELECT * FROM  `settings`"
         )
     }
 }

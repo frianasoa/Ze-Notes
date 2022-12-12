@@ -36,7 +36,7 @@
                                     <row>
                                         <label value="&znp-tagman-show-title;"/>
                                         <label id="label-test" preference="pref-zenotes-hide"/>
-                                        <label value="&znp-tagman-show-title;"/>
+                                        <label value="&znp-tagman-hide-title;"/>
                                     </row>
                                     <row>
                                         <listbox id="tag-box-show"></listbox>
@@ -76,11 +76,51 @@
                                 </rows>
                             </grid>
                         </groupbox>
+                        <groupbox>
+							<caption label="&znp-tagman-saveman-title;"/>
+                            <grid>
+                                <columns>
+                                    <column flex="1"/>
+                                    <column flex="1"/>
+                                    <column flex="1"/>
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="&znp-tagman-saveman-save;"/>
+                                        <label value="&znp-tagman-saveman-load;"/>
+                                        <label value="&znp-tagman-saveman-delete;"/>
+                                    </row>
+                                    <row>  
+                                        <groupbox>
+                                            <textbox id="saveman-save-textbox" placeholder='Layout name'></textbox>
+                                            <button label="Save" oncommand="Zotero.ZeNotes.settings.savetodb();"/>
+                                        </groupbox>    
+                                        <groupbox>
+                                            <menulist>
+                                                <menupopup id="saveman-load-select">
+                                                </menupopup>
+                                            </menulist>
+                                            <button label="Load"/>
+                                        </groupbox>    
+                                        <groupbox>
+                                            <menulist>
+                                                <menupopup id="saveman-delete-select">
+                                                </menupopup>
+                                            </menulist>
+                                            <button label="Delete"/>
+                                        </groupbox>    
+                                    </row>
+                                </rows>
+                            </grid>
+                            
+                        </groupbox>
+                        
                     </tabpanel>
 				</tabpanels>
 			</tabbox>
 		</prefpane>
 
+		<script src="database.js"/>
 		<script src="settings.js"/>
 		<script src="data.js"/>
 		<script src="chrome://zotero/content/include.js"/>
