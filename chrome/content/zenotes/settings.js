@@ -7,14 +7,19 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
 Components.utils.import("resource://gre/modules/osfile.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
 
+var znstr = function(name, params)
+{
+    return Zotero.ZeNotes.ZNStr(name, params);
+}
+
 var alert = function(message)
 {
-    Services.prompt.alert(null, "Message from Ze Notes", message);
+    Services.prompt.alert(null, znstr("general.alert.title"), message);
 }
 
 var confirm = function(message)
 {
-    return Services.prompt.confirm(null, "Message from Ze Notes", message);
+    return Services.prompt.confirm(null, znstr("general.confirm.title"), message);
 }
 
 Zotero.ZeNotes.settings = new function()
@@ -115,18 +120,18 @@ Zotero.ZeNotes.settings = new function()
         
         if(id.length==0)
         {
-            alert("Please select the layout to delete from the list!");
+            alert(znstr("settings.delete.error.noselection"));
             return;
         }
         
-        if(!confirm("Layout '"+label+"' is being deleted. This action is irreversible. Do you want to proceed?"))
+        if(!confirm(znstr("settings.delete.deleting", [label])))
         {
             return;
         }
         
         Zotero.ZeNotes.database.deletesetting(id).then(r=>{
             this.fillsaveman();
-            alert("Layout '"+label+"' deleted!");
+            alert(znstr("settings.delete.deleted", [label]));
         });
     }
     
@@ -136,7 +141,7 @@ Zotero.ZeNotes.settings = new function()
         var label = document.getElementById("saveman-load-select").parentNode.label;
         if(id.length==0)
         {
-            alert("Please select the layout to load from the list!");
+            alert(znstr("settings.load.select"));
             return;
         }
         
@@ -151,11 +156,11 @@ Zotero.ZeNotes.settings = new function()
                     this.refresh("show", this.lists.show);
                     this.refresh("hide", this.lists.hide);
                     this.refresh("sort", this.lists.sort);
-                    alert("Layout '"+label+"' loaded!");
+                    alert(znstr("settings.load.loaded", [label]));
                 }
                 else
                 {
-                    alert("Layout data corrupted. Try another layout!");
+                    alert(znstr("settings.load.datacorrupted"));
                 }
             }
         });
@@ -180,7 +185,7 @@ Zotero.ZeNotes.settings = new function()
             
             if(exists)
             {
-                var yes = confirm("The layout already exists. I will be overwritten!")
+                var yes = confirm(znstr("settings.save.overwritten"))
                 if(!yes)
                 {
                     return;
@@ -190,18 +195,18 @@ Zotero.ZeNotes.settings = new function()
             var value = JSON.stringify(this.lists);
             if(label.length==0)
             {
-                alert("Please input a name for your layout!");
+                alert(znstr("settings.save.inputname"));
                 return
             }
             if(value.length==0)
             {
-                alert("The value is invalid!");
+                alert(znstr("settings.save.datainvalid"));
                 return
             }
             Zotero.ZeNotes.database.addsetting(label, value).then(v=>{
                 this.fillsaveman();
                 document.getElementById("saveman-save-textbox").value = "";
-                alert("Layout '"+label+"' saved!");
+                alert(znstr("settings.save.saved", [label]));
             });
         });
         return settings;

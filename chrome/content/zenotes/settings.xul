@@ -92,22 +92,22 @@
                                     </row>
                                     <row>  
                                         <groupbox>
-                                            <textbox id="saveman-save-textbox" placeholder='Layout name'></textbox>
-                                            <button label="Save" oncommand="Zotero.ZeNotes.settings.savetodb();"/>
+                                            <textbox id="saveman-save-textbox" placeholder='&znp-tagman-saveman-save-placeholder;'></textbox>
+                                            <button label="&znp-tagman-saveman-save-label;" oncommand="Zotero.ZeNotes.settings.savetodb();"/>
                                         </groupbox>    
                                         <groupbox>
                                             <menulist>
                                                 <menupopup id="saveman-load-select">
                                                 </menupopup>
                                             </menulist>
-                                            <button label="Load" oncommand="Zotero.ZeNotes.settings.loadfromdb();"/>
+                                            <button label="&znp-tagman-saveman-load-label;" oncommand="Zotero.ZeNotes.settings.loadfromdb();"/>
                                         </groupbox>    
                                         <groupbox>
                                             <menulist>
                                                 <menupopup id="saveman-delete-select">
                                                 </menupopup>
                                             </menulist>
-                                            <button label="Delete" oncommand="Zotero.ZeNotes.settings.deletefromdb();"/>
+                                            <button label="&znp-tagman-saveman-delete-label;" oncommand="Zotero.ZeNotes.settings.deletefromdb();"/>
                                         </groupbox>    
                                     </row>
                                 </rows>

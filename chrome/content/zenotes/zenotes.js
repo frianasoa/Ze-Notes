@@ -16,6 +16,32 @@ Zotero.ZeNotes = new function()
         this.addmenu();
     }
     
+    /**
+        Localization
+        Code from ZotFile, originally from Zotero
+    */
+    this.ZNStr = function (name, params){
+        var l10n = '';
+		this.stringsBundle = Components.classes['@mozilla.org/intl/stringbundle;1']
+			.getService(Components.interfaces.nsIStringBundleService)
+			.createBundle('chrome://zenotes/locale/zenotes.properties');
+		try {
+			if (params !== undefined){
+				if (typeof params != 'object'){
+					params = [params];
+				}
+				l10n = this.stringsBundle.formatStringFromName(name, params, params.length);
+			}
+			else {
+				l10n = this.stringsBundle.GetStringFromName(name);
+			}
+		}
+		catch (e){
+			throw ('Localized string not available for ' + name);
+		}
+		return l10n;
+	}
+    
     this.getPref = function(pref, default_value="") {
         var v = Zotero.Prefs.get('extensions.zenotes.' + pref, true);
         if(v==null)

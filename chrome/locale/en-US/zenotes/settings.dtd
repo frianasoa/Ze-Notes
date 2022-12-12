@@ -9,6 +9,15 @@
 <!ENTITY znp-tagman-saveman-load "Load layout">
 <!ENTITY znp-tagman-saveman-save "Save current layout">
 <!ENTITY znp-tagman-saveman-delete "Delete saved layout">
+<!ENTITY znp-tagman-saveman-save-placeholder "Layout name">
+<!ENTITY znp-tagman-saveman-save-label "Save">
+
+<!ENTITY znp-tagman-saveman-load-label "Load">
+<!ENTITY znp-tagman-saveman-delete-label "Delete">
+
+<!ENTITY znp-tagman-saveman-js-alert "Message from Ze Notes!">
+
+
 
 <!ENTITY znp-tagman-show-title "Show these tags">
 <!ENTITY znp-tagman-hide-title "Hide these tags">
