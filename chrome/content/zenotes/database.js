@@ -55,7 +55,7 @@ Zotero.ZeNotes.database = new function()
                 else
                 {
                     return Zotero.ZeNotes.database.execute(
-                        "INSERT INTO `settings`(id, label, contents) VALUES(?, ?, ?)", 
+                        "INSERT OR REPLACE INTO `settings`(id, label, contents) VALUES(?, ?, ?)", 
                         [id, "default", value]
                     )
                 }

@@ -100,14 +100,14 @@
                                                 <menupopup id="saveman-load-select">
                                                 </menupopup>
                                             </menulist>
-                                            <button label="Load"/>
+                                            <button label="Load" oncommand="Zotero.ZeNotes.settings.loadfromdb();"/>
                                         </groupbox>    
                                         <groupbox>
                                             <menulist>
                                                 <menupopup id="saveman-delete-select">
                                                 </menupopup>
                                             </menulist>
-                                            <button label="Delete"/>
+                                            <button label="Delete" oncommand="Zotero.ZeNotes.settings.deletefromdb();"/>
                                         </groupbox>    
                                     </row>
                                 </rows>

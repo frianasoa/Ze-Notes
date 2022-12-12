@@ -30,7 +30,6 @@ Zotero.ZeNotes.settings = new function()
     this.saveLists = function()
     {
         Zotero.ZeNotes.setPref("tag-lists", JSON.stringify(this.lists));
-        Zotero.ZeNotes.database.updatesetting(0, JSON.stringify(this.lists));
     }
     
     this.load = function()
@@ -109,6 +108,59 @@ Zotero.ZeNotes.settings = new function()
         return newdata;
     }
     
+    this.deletefromdb = function()
+    {
+        var id = document.getElementById("saveman-delete-select").parentNode.value;
+        var label = document.getElementById("saveman-delete-select").parentNode.label;
+        
+        if(id.length==0)
+        {
+            alert("Please select the layout to delete from the list!");
+            return;
+        }
+        
+        if(!confirm("Layout '"+label+"' is being deleted. This action is irreversible. Do you want to proceed?"))
+        {
+            return;
+        }
+        
+        Zotero.ZeNotes.database.deletesetting(id).then(r=>{
+            this.fillsaveman();
+            alert("Layout '"+label+"' deleted!");
+        });
+    }
+    
+    this.loadfromdb = function()
+    {
+        var id = document.getElementById("saveman-load-select").parentNode.value;
+        var label = document.getElementById("saveman-load-select").parentNode.label;
+        if(id.length==0)
+        {
+            alert("Please select the layout to load from the list!");
+            return;
+        }
+        
+        Zotero.ZeNotes.database.getsetting(id).then(r=>{
+            for(i in r)
+            {
+                var value = r[i].contents;
+                if(value.length>0)
+                {
+                    Zotero.ZeNotes.setPref("tag-lists", value);
+                    this.lists = JSON.parse(value);
+                    this.refresh("show", this.lists.show);
+                    this.refresh("hide", this.lists.hide);
+                    this.refresh("sort", this.lists.sort);
+                    alert("Layout '"+label+"' loaded!");
+                }
+                else
+                {
+                    alert("Layout data corrupted. Try another layout!");
+                }
+            }
+        });
+    }
+    
     this.savetodb = function()
     {
         var settings = Zotero.ZeNotes.database.getsettings();
@@ -149,16 +201,15 @@ Zotero.ZeNotes.settings = new function()
             Zotero.ZeNotes.database.addsetting(label, value).then(v=>{
                 this.fillsaveman();
                 document.getElementById("saveman-save-textbox").value = "";
-                alert(label+" saved!");
+                alert("Layout '"+label+"' saved!");
             });
         });
-        return setting;
+        return settings;
     }
     
     this.fillsaveman = function()
     {
         Zotero.ZeNotes.database.getsettings().then(r=>{
-            Zotero.log("Filling select");
             var loadbox = document.getElementById("saveman-load-select");
             var delbox = document.getElementById("saveman-delete-select");
             
@@ -166,10 +217,12 @@ Zotero.ZeNotes.settings = new function()
             while (loadbox.firstChild) {
                 loadbox.firstChild.remove()
             }
+            loadbox.parentNode.value = "";
             
             while (delbox.firstChild) {
                 delbox.firstChild.remove()
             }
+            delbox.parentNode.value = "";
             
             for(let i in r)
             {
@@ -179,12 +232,11 @@ Zotero.ZeNotes.settings = new function()
                var id = r[i].id;
                
                e1.setAttribute("label", label);
-               e1.setAttribute("id", id);
+               e1.setAttribute("value", id);
                
                e2.setAttribute("label", label);
-               e2.setAttribute("id", id);
-               
-               Zotero.log(label);
+               e2.setAttribute("value", id);
+
                loadbox.appendChild(e1);
                delbox.appendChild(e2);
             }
