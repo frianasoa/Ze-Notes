@@ -36,14 +36,19 @@ var notes = new function()
                 vm.actions(key, options)
             },
             items: {
-                "edit": {name: "Edit", icon: "fa-edit"},
-                "showentry": {name: "Show entry", icon: "fa-file-lines"},
-                "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
+                "edit": {name: "Edit note", icon: "fa-pencil-alt"},
+                "editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
                 "sep0": "---------",
+                "showentry": {name: "Show entry", icon: "fa-file-lines"},
+                "showfile": {name: "Show attached file (External reader)", icon: "fa-file-pdf"},
+                "showfilezotero": {name: "Show attached file (Zotero reader)", icon: "fa-file-pdf"},
+                "sep2": "---------",
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "deletenote": {name: "Delete note", icon: "fa-trash"},
-                "sep1": "---------",
-                "copycell": {name: "Copy cell", icon: "fa-eye-slash"},
+                "sep3": "---------",
+                "copycell": {name: "Copy entire cell", icon: "fa-clone"},
+                "copyquote": {name: "Copy direct quote", icon: "fa-copy"},
+                "copysel": {name: "Copy selection", icon: "fa-copy"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -65,7 +70,8 @@ var notes = new function()
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
-                "copycell": {name: "Copy cell", icon: "fa-eye-slash"},
+                "copycell": {name: "Copy entire cell", icon: "fa-clone"},
+                "copysel": {name: "Copy selection", icon: "fa-copy"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -161,6 +167,15 @@ var notes = new function()
                 td.dataset.itemid = v.itemid;
                 td.dataset.itemkey = v.key;
                 td.dataset.filename = v.filename;
+                td.dataset.filekey = v.filekey;
+                td.querySelectorAll(".annotation").forEach(a=>{
+                    a.addEventListener("mouseover", function(e){
+                        e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
+                        e.target.parentNode.dataset.attachmentpage = e.target.dataset.page;
+                        e.target.parentNode.dataset.annotationkey = e.target.dataset.key;
+                        e.target.parentNode.dataset.annotationdomid = e.target.id;
+                    });
+                });
                 tr.appendChild(td);
             });
         }); 
@@ -173,9 +188,13 @@ var notes = new function()
         var column = td.dataset.column;
         var itemid = td.dataset.itemid;
         var itemkey = td.dataset.itemkey;
+        var attachmentkey = td.dataset.attachmentkey
+        var annotationkey = td.dataset.annotationkey;
+        var annotationpage = td.dataset.annotationpage;
+        var annotationdomid = td.dataset.annotationdomid;
         var filename = td.dataset.filename;
+        var filekey = td.dataset.filekey;
         var notekey = td.dataset.notekey;
-        
         
         if(key=="showentry")
         {
@@ -201,9 +220,15 @@ var notes = new function()
                 this.opennote(notekey);
             }
         }
+        else if(key=="editpdfnote")
+        {
+            var uri = "zotero://open-pdf/library/items/"+attachmentkey+"?page="+annotationpage+"&annotation="+annotationkey;
+            Zotero.launchURL(uri);
+        }
         else if(key=="showfile")
         {
             filename = filename.replace("\\", "/");
+            filename = filename.replace("\\\\", "/");
             if(filename=="false")
             {
                 alert("File not found!");
@@ -212,7 +237,11 @@ var notes = new function()
             {
                 window.openDialog("file:///"+filename);
             }
-            
+        }
+        else if(key=="showfilezotero")
+        {
+            var uri = "zotero://open-pdf/library/items/"+filekey;
+            Zotero.launchURL(uri); 
         }
         else if(key=="hidecolumn")
         {
@@ -257,7 +286,20 @@ var notes = new function()
         {
             this.copy(td);
         }
-        
+        else if(key=="copyquote")
+        {
+            var quote = document.getElementById(annotationdomid);
+            var range = document.createRange();
+            range.selectNode(quote);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+        }
+        else if(key=="copysel")
+        {
+            document.execCommand('copy');
+        }
         else if(key=="addrow")
         {
             this.addrow();
@@ -303,7 +345,7 @@ var notes = new function()
             
             if(["note", "attachment"].includes(type))
             {
-                alert("Cannot attach a not to '"+type+"'");
+                alert("Cannot attach a note to '"+type+"'");
                 return;
             }
             var show = Zotero.ZeNotes.settings.lists.show;

@@ -7,7 +7,11 @@ var Zotero = Components.classes["@zotero.org/Zotero;1"]
 var zp = Zotero.getActiveZoteroPane();
 var document = zp.document;
 var window = document.defaultView;
-var alert = window.alert;
+
+var znstr = function(name, params)
+{
+    return Zotero.ZeNotes.ZNStr(name, params);
+}
 
 Zotero.ZeNotes.data = new function()
 {
@@ -122,7 +126,19 @@ Zotero.ZeNotes.data = new function()
             var path = attachment.attachmentPath;
             filename = Zotero.Attachments.resolveRelativePath(path);
         }
-        return filename
+        return filename;
+    }
+    
+    this.filekey = function(item)
+    {                   
+        var attachmentIDs = item.getAttachments();
+        var key = "";
+        if(attachmentIDs.length>0)
+        {
+            var attachment = Zotero.Items.get(attachmentIDs[0]);
+            key = attachment.key;
+        }
+        return key;
     }
      
     this.pdfnotes = function(item)
@@ -178,7 +194,14 @@ Zotero.ZeNotes.data = new function()
             var n = pdfnotes[j];
             var authors = Zotero.ZeNotes.data.creatorshort(item);
             var year = Zotero.ZeNotes.data.year(item);
-            var note = n["annotationComment"]+"<h1>Direct quote</h1><div style='background-color:"+n["annotationColor"]+";'>“"+n["annotationText"]+"”</div>("+authors+" "+year+", p. "+n["annotationPageLabel"]+")";
+            var contents = "“"+n["annotationText"]+"” ("+authors+" "+year+", p. "+n["annotationPageLabel"]+")";
+            
+            if(n["annotationText"]==null)
+            {
+                contents = "(p. "+n["annotationPageLabel"]+")"
+            }
+            
+            var note = n["annotationComment"]+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
             
             var tags = n.getTags();                
             for(let i in tags)
@@ -220,6 +243,7 @@ Zotero.ZeNotes.data = new function()
                 author: Zotero.ZeNotes.data.creatorshort(item)+" ("+Zotero.ZeNotes.data.year(item)+")",
                 creators: Zotero.ZeNotes.data.creators(item),
                 filename: Zotero.ZeNotes.data.filename(item),
+                filekey: Zotero.ZeNotes.data.filekey(item),
             }
             line = Object.assign({},line, tags);
             if(Object.keys(tags).length>0)

@@ -142,9 +142,7 @@ Zotero.ZeNotes = new function()
         var name = "zenotes-notes";
         Zotero.ZeNotes.openwindow(url, name, io);
     }
-    
-    
-    
+
     this.download = function(type)
     {
         
