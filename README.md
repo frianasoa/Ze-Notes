@@ -2,7 +2,6 @@
 [![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/assets/images/for-zotero-6.svg)](https://zotero.org)
 
 ## Description
-
 ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes.
 
 # Instructions
@@ -18,21 +17,29 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 ## Use
 ### Adding notes
 * Add notes to an entry
+![Adding notes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/00.add-a-note.png "Adding notes")
+![Adding notes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/01.label-note-tag.png "Adding notes")
 
 * Or add annotations directly on an attached pdf file [You need to use Zotero pdf reader if you want to use annotations].
+![Adding annotations to pdf](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/02.pdf-annotation.png "Adding annotations to pdf")
+![Adding annotations to pdf](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/03.pdf-annotation-results.png "Adding annotations to pdf")
 
 * To each note or annotation, add a tag.
 
-### Display notes
+### Displaying notes
 * Right click on a particular collection or on "My Library". Then, click "ZeNotes - My notes in collection" from the context menu.
 * Alternatively, select a particular collection or "My Library", then on the menu "ZeNotes > Notes".
+![Opening ZeNotes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/04.open-zenotes.png "Opening ZeNotes")
 * A table should be displayed.
+
 
 ### Edit notes
 * You can edit your notes normally in Zotero or right click on an item in the table to see your options.
+![Editing notes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/05.zenotes-interface.png "Editing notes")
 
 ### Preferences
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
+![Opening settings](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/assets/images/06.zenotes-interface-settings.png "Opening settings")
 * Select the tags you will be using as columns. You can hide the ones you do not need.
 * You can choose the tags on which you want to sort the results. Double click on an entry or click on order with the entry selected if you want the sort to be desc or asc.
 * You can save the current layout, load or delete saved layouts.
