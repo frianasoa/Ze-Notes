@@ -5,21 +5,22 @@ var notes = new function()
     this.init = function()
     {
         this.resize();
-        this.loaddata();
-        this.loadmenu();
-        Zotero.ZeNotes.notewin = window;
-        window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
-        if(Zotero.ZeNotes.getPref("scrolltop"))
-        {
-            $('#zn-body-wrapper').animate({
-                scrollTop: Zotero.ZeNotes.getPref("scrolltop", 0),
-                scrollLeft: Zotero.ZeNotes.getPref("scrollleft", 0),
-            }, 500);
-        }
-        
-        $("#zn-body-wrapper").bind('scroll', function() {
-            notes.savescroll();
-        }); 
+        this.loaddata().then(()=>{
+            this.loadmenu();
+            Zotero.ZeNotes.notewin = window;
+            window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
+            if(Zotero.ZeNotes.getPref("scrolltop"))
+            {
+                $('#zn-body-wrapper').animate({
+                    scrollTop: Zotero.ZeNotes.getPref("scrolltop", 0),
+                    scrollLeft: Zotero.ZeNotes.getPref("scrollleft", 0),
+                }, 500);
+            }
+            
+            $("#zn-body-wrapper").bind('scroll', function() {
+                notes.savescroll();
+            }); 
+        });
     }
     
     this.resize = function()
@@ -40,8 +41,7 @@ var notes = new function()
                 "editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
                 "sep0": "---------",
                 "showentry": {name: "Show entry", icon: "fa-file-lines"},
-                "showfile": {name: "Show attached file (External reader)", icon: "fa-file-pdf"},
-                "showfilezotero": {name: "Show attached file (Zotero reader)", icon: "fa-file-pdf"},
+                "showfile": {name: "Show attached files", icon: "fa-file-pdf"},
                 "sep2": "---------",
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "deletenote": {name: "Delete note", icon: "fa-trash"},
@@ -115,10 +115,10 @@ var notes = new function()
         });
     }
 
-    this.loaddata = function()
+    this.loaddata = async function()
     {
         var infotags = Zotero.ZeNotes.settings.infotags;
-        var data = Zotero.ZeNotes.data.get();
+        var data = await Zotero.ZeNotes.data.get();
         var table = document.createElement("table");
         var trh = document.createElement("tr");
         table.id = "notes-table"
@@ -166,7 +166,7 @@ var notes = new function()
                 td.dataset.column = c;
                 td.dataset.itemid = v.itemid;
                 td.dataset.itemkey = v.key;
-                td.dataset.filename = v.filename;
+                td.dataset.filenames = JSON.stringify(v.filenames);
                 td.dataset.filekey = v.filekey;
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
@@ -182,6 +182,69 @@ var notes = new function()
         document.getElementById("zn-body").appendChild(table);
     }
     
+    this.choosefile = function(filenames)
+    {
+        var ol = document.createElement("ol");
+        for(i in filenames)
+        {
+            var li = document.createElement("li");
+            var span = document.createElement("span");
+            span.innerHTML = " "+filenames[i].path.split(/[\\/]/).pop()+" ";
+            
+            var i1 = document.createElement("i");
+            var i2 = document.createElement("i");
+            
+            var extern = document.createElement("button");
+            var zot = document.createElement("button");
+            
+            i1.className = "fa fa-file-pdf";
+            i2.className = "fa fa-z";
+            
+            extern.innerHTML = "External PDF App ";
+            extern.appendChild(i1);
+            
+            zot.innerHTML = "Zotero PDF App ";
+            zot.appendChild(i2);
+            
+            extern.dataset.url = filenames[i].path;
+            zot.dataset.url = "zotero://open-pdf/library/items/"+filenames[i].key;
+            
+            extern.onclick = function(e){
+                $("#dialog-message").dialog("close");
+                window.openDialog("file:///"+e.target.dataset.url);
+            }
+            zot.onclick = function(e){
+                $("#dialog-message").dialog("close");
+                Zotero.launchURL(e.target.dataset.url);
+            }
+            
+            li.appendChild(span);
+            li.appendChild(document.createTextNode(" "));
+            li.appendChild(extern);
+            li.appendChild(document.createTextNode(" "));
+            li.appendChild(zot);
+            ol.appendChild(li);
+        };
+        this.dialog("Choose file", ol); 
+    }
+    
+    this.dialog = function(title, message)
+    {
+        document.getElementById("dialog-message").querySelector("#dialog-message-content").innerHTML = "";
+        document.getElementById("dialog-message").querySelector("#dialog-message-content").appendChild(message)
+        return $("#dialog-message").dialog({
+            modal: true,
+            title: title,
+            width: 700,
+            height: 300,
+            buttons: {
+                Ok: function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+    
     this.actions = function(key, options)
     {
         var td = options.$trigger.get(0);
@@ -192,7 +255,7 @@ var notes = new function()
         var annotationkey = td.dataset.annotationkey;
         var annotationpage = td.dataset.annotationpage;
         var annotationdomid = td.dataset.annotationdomid;
-        var filename = td.dataset.filename;
+        var filenames = JSON.parse(td.dataset.filenames);
         var filekey = td.dataset.filekey;
         var notekey = td.dataset.notekey;
         
@@ -227,21 +290,7 @@ var notes = new function()
         }
         else if(key=="showfile")
         {
-            filename = filename.replace("\\", "/");
-            filename = filename.replace("\\\\", "/");
-            if(filename=="false")
-            {
-                alert("File not found!");
-            }
-            else
-            {
-                window.openDialog("file:///"+filename);
-            }
-        }
-        else if(key=="showfilezotero")
-        {
-            var uri = "zotero://open-pdf/library/items/"+filekey;
-            Zotero.launchURL(uri); 
+            this.choosefile(filenames);
         }
         else if(key=="hidecolumn")
         {

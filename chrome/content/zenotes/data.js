@@ -116,17 +116,40 @@ Zotero.ZeNotes.data = new function()
         return y;
     }
     
-    this.filename = function(item)
+    this.filenames = async function(item)
     {
-        var filename = "";                    
-        var attachmentIDs = item.getAttachments();
-        if(attachmentIDs.length>0)
+        var filenames = [];
+        
+        if(item.itemType=="attachment")
         {
-            var attachment = Zotero.Items.get(attachmentIDs[0]);
-            var path = attachment.attachmentPath;
-            filename = Zotero.Attachments.resolveRelativePath(path);
+            return filenames;
         }
-        return filename;
+        
+        var attachmentIDs = item.getAttachments();
+        for(let id in attachmentIDs)
+        {
+            var attachment = Zotero.Items.get(attachmentIDs[id]);
+            var path = attachment.attachmentPath;
+            var key = attachment.key;
+            
+            if(!Zotero.Attachments.resolveRelativePath(path))
+            {
+                path = await attachment.getFilePathAsync();
+            }
+            else
+            {
+                path = Zotero.Attachments.resolveRelativePath(path);
+            }
+            
+            filenames.push({
+                "key": key,
+                "path": path,
+                "id": attachment.id,
+            })
+        }
+        
+        // alert(JSON.stringify(filenames));
+        return filenames;
     }
     
     this.filekey = function(item)
@@ -144,6 +167,11 @@ Zotero.ZeNotes.data = new function()
     this.pdfnotes = function(item)
     {
         var notes = [];
+        if(item.itemType=="attachment")
+        {
+            return notes;
+        }
+        
         var ids = item.getAttachments();
         for(let id of ids)
         {
@@ -224,7 +252,7 @@ Zotero.ZeNotes.data = new function()
         return r;
     }
     
-    this.tojson = function(items)
+    this.tojson = async function(items)
     {
         var zenotes = [];
         var taglist = [];
@@ -242,7 +270,7 @@ Zotero.ZeNotes.data = new function()
                 journal: item.getField("publicationTitle"),
                 author: Zotero.ZeNotes.data.creatorshort(item)+" ("+Zotero.ZeNotes.data.year(item)+")",
                 creators: Zotero.ZeNotes.data.creators(item),
-                filename: Zotero.ZeNotes.data.filename(item),
+                filenames: await Zotero.ZeNotes.data.filenames(item),
                 filekey: Zotero.ZeNotes.data.filekey(item),
             }
             line = Object.assign({},line, tags);
@@ -307,14 +335,14 @@ Zotero.ZeNotes.data = new function()
         return data;
     }
     
-    this.get = function()
+    this.get = async function()
     {
         var collection = zp.getSelectedCollection();
         var libraryid = zp.getSelectedLibraryID()
         if(collection)
         {
             var items = Zotero.ZeNotes.data.recursiveitems(collection);
-            return Zotero.ZeNotes.data.tojson(items);
+            return await Zotero.ZeNotes.data.tojson(items);
         }
         else if(libraryid)
         {
@@ -324,7 +352,7 @@ Zotero.ZeNotes.data = new function()
                 var items_ = Zotero.ZeNotes.data.recursiveitems(collection);
                 items = items.concat(items_);
             });
-            return Zotero.ZeNotes.data.tojson(items);
+            return await Zotero.ZeNotes.data.tojson(items);
         }
     }
 }
