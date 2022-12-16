@@ -485,6 +485,8 @@ var notes = new function()
     
     this.reload = function()
     {
+        var fromdb = false;
+        Zotero.ZeNotes.settings.load();
         Zotero.ZeNotes.setPref("scrolltop", $('#zn-body-wrapper').scrollTop());
         Zotero.ZeNotes.setPref("scrollleft", $('#zn-body-wrapper').scrollLeft());
         window.location.reload();
@@ -505,7 +507,7 @@ var notes = new function()
     }
 }
 
-window.addEventListener("load", function(){
+window.addEventListener("load", function(e){
     notes.init();
 });
 

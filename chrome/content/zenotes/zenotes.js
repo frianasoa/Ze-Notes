@@ -143,6 +143,7 @@ Zotero.ZeNotes = new function()
         var url = "chrome://zenotes/content/notes.html";
         var io = {collection: collection};
         var name = "zenotes-notes";
+        Zotero.ZeNotes.openfromdb=true;
         Zotero.ZeNotes.openwindow(url, name, io);
     }
 

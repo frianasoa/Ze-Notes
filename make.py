@@ -26,7 +26,7 @@ def zipdir(path, ziph):
     for root, dirs, files in os.walk(path):
         for file in files:
             fullpath = os.path.join(root, file)
-            if fullpath.startswith("./.git") or fullpath.startswith("./make.py")  or fullpath.startswith("./upload.sh") or fullpath.startswith("./build"):
+            if fullpath.startswith("./.git") or fullpath.startswith("./make.py")  or fullpath.startswith("./upload.sh") or fullpath.startswith("./build") or fullpath.startswith("./docs"):
                 continue
             ziph.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), os.path.join(path, '.')))
 

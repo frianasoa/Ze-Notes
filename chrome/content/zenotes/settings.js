@@ -42,14 +42,16 @@ Zotero.ZeNotes.settings = new function()
         var vm = this;
         var collection = Zotero.ZeNotes.currentCollection();
         return Zotero.ZeNotes.database.getsettingbycolumn("folder", collection).then(r=>{
-            if(r.length>0)
+            if(r.length>0 && Zotero.ZeNotes.openfromdb==true)
             {
-                vm.lists = JSON.parse(r[0].contents); 
+                vm.lists = JSON.parse(r[0].contents);
+                Zotero.ZeNotes.openfromdb=false;
             }
             else
             {
                 vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
             }
+            
             vm.fillsaveman();
             var alltags = vm.infotags;
 
