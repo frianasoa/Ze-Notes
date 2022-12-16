@@ -13,14 +13,27 @@ Zotero.ZeNotes.database = new function()
             this.DB.tableExists('settings').then(v=>{
                 if(!v)
                 {
-                    var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT UNIQUE, contents TEXT)";
+                    var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT UNIQUE, contents TEXT, folder TEXT)";
                     this.DB.queryAsync(sql).then(v2=>{
                         resolve(this.DB);
                     })
                 }
                 else
                 {
-                    resolve(this.DB);
+                    this.DB.columnExists('settings', 'folder').then(e=>{
+                        if(!e)
+                        {
+                            var sql = "ALTER TABLE settings ADD COLUMN folder TEXT"
+                            this.DB.queryAsync(sql).then(v3=>{
+                                resolve(this.DB);
+                            });
+                        }
+                        else
+                        {
+                            resolve(this.DB);
+                        }
+                    });
+                    
                 }
             })
         });
@@ -34,29 +47,35 @@ Zotero.ZeNotes.database = new function()
                 db.queryAsync(sql, values).then(v=>{
                     db.closeDatabase().then(()=>{
                         resolve(v);
+                    }).catch(e=>{
+                        alert("database.execute: "+e);
                     })
+                }).catch(e=>{
+                    alert("database.execute :"+e);
                 })
+            }).catch(e=>{
+                alert("database.execute: "+e);
             })
         });
         return p;
     }
     
-    this.updatesetting = function(id, value)
+    this.updatesetting = function(id, contents, folder)
     {
         var p = new Promise(function(resolve, reject) {
             Zotero.ZeNotes.database.getsetting(id).then(v=>{
                 if(v.length>0)
                 {
                     return Zotero.ZeNotes.database.execute(
-                        "UPDATE `settings` SET contents=? WHERE id=?", 
-                        [value, id]
+                        "UPDATE `settings` SET contents=?, folder=? WHERE id=?", 
+                        [contents, folder, id]
                     )
                 }
                 else
                 {
                     return Zotero.ZeNotes.database.execute(
-                        "INSERT OR REPLACE INTO `settings`(id, label, contents) VALUES(?, ?, ?)", 
-                        [id, "default", value]
+                        "INSERT OR REPLACE INTO `settings`(id, label, contents, folder) VALUES(?, ?, ?, ?)", 
+                        [id, "default", contents, folder]
                     )
                 }
             })
@@ -72,11 +91,11 @@ Zotero.ZeNotes.database = new function()
         );
     }
     
-    this.addsetting = function(label, value)
+    this.addsetting = function(label, contents, folder)
     {
         return this.execute(
-            "INSERT OR REPLACE INTO `settings`(label, contents) VALUES(?, ?)", 
-            [label, value]
+            "INSERT OR REPLACE INTO `settings`(label, contents, folder) VALUES(?, ?, ?)", 
+            [label, contents, folder]
         )
     }
     
@@ -85,6 +104,14 @@ Zotero.ZeNotes.database = new function()
         return this.execute(
             "SELECT * FROM  `settings` WHERE id=?",
             [id]
+        )
+    }
+    
+    this.getsettingbycolumn = function(column, value)
+    {
+        return this.execute(
+            "SELECT * FROM  `settings` WHERE "+column+"=?",
+            [value]
         )
     }
     

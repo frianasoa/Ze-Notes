@@ -40,62 +40,74 @@ Zotero.ZeNotes.settings = new function()
     this.load = function()
     {
         var vm = this;
-        this.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
-        
-        var alltags = this.infotags;
-        
-        alltags = alltags.concat(Zotero.ZeNotes.data.alltags()).filter((v, i, a) => a.indexOf(v) === i);
-        
-        /** Get list of tags from objects */
-        var showtags = this.lists.show.map(function(i) {
-            return i.value;
-        });
-        
-        var hidetags = this.lists.hide.map(function(i) {
-            return i.value;
-        });
-        
-        var sorttags = this.lists.sort.map(function(i) {
-            return i.value;
-        }).filter((v, i, a) => a.indexOf(v) === i);
-        
-        var showhidetags = showtags.concat(hidetags).filter((v, i, a) => a.indexOf(v) === i);
-        
-        var id = this.lists.show.length;
-        alltags.forEach(t=>{
-            var type = "tag";
-            if(this.infotags.includes(t))
+        var collection = Zotero.ZeNotes.currentCollection();
+        return Zotero.ZeNotes.database.getsettingbycolumn("folder", collection).then(r=>{
+            if(r.length>0)
             {
-                type = "info"
+                vm.lists = JSON.parse(r[0].contents); 
             }
+            else
+            {
+                vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+            }
+            vm.fillsaveman();
+            var alltags = vm.infotags;
+
+            alltags = alltags.concat(Zotero.ZeNotes.data.alltags()).filter((v, i, a) => a.indexOf(v) === i);
             
-            if(!showhidetags.includes(t))
-            {
-                vm.lists.show.push({
-                    value: t,
-                    type: type,
-                    id: id,
-                });
-                id++;
-            }
+            /** Get list of tags from objects */
+            var showtags = vm.lists.show.map(function(i) {
+                return i.value;
+            });
+            
+            var hidetags = vm.lists.hide.map(function(i) {
+                return i.value;
+            });
+            
+            var sorttags = vm.lists.sort.map(function(i) {
+                return i.value;
+            }).filter((v, i, a) => a.indexOf(v) === i);
+            
+            var showhidetags = showtags.concat(hidetags).filter((v, i, a) => a.indexOf(v) === i);
+            
+            var id = vm.lists.show.length;
+            alltags.forEach(t=>{
+                var type = "tag";
+                if(vm.infotags.includes(t))
+                {
+                    type = "info"
+                }
+                
+                if(!showhidetags.includes(t))
+                {
+                    vm.lists.show.push({
+                        value: t,
+                        type: type,
+                        id: id,
+                    });
+                    id++;
+                }
+            });
+            
+            var id = vm.lists.show.length;
+            alltags.forEach(t=>{
+                if(!sorttags.includes(t))
+                {
+                    vm.lists.sort.push({
+                        value: t,
+                        order: "asc",
+                        id: id,
+                    });
+                    id++;
+                }
+            });
+            
+            vm.refresh("show", vm.lists.show);
+            vm.refresh("hide", vm.lists.hide);
+            vm.refresh("sort", vm.lists.sort);
+        }).catch(e=>{
+            alert("settings.load: "+e);
         });
-        
-        var id = this.lists.show.length;
-        alltags.forEach(t=>{
-            if(!sorttags.includes(t))
-            {
-                vm.lists.sort.push({
-                    value: t,
-                    order: "asc",
-                    id: id,
-                });
-                id++;
-            }
-        });
-        
-        this.refresh("show", this.lists.show);
-        this.refresh("hide", this.lists.hide);
-        this.refresh("sort", this.lists.sort);
     }
     
     this.reindex = function(data)
@@ -135,34 +147,62 @@ Zotero.ZeNotes.settings = new function()
         });
     }
     
-    this.loadfromdb = function()
+    this.loadsetting = function(column, value)
     {
-        var id = document.getElementById("saveman-load-select").parentNode.value;
-        var label = document.getElementById("saveman-load-select").parentNode.label;
-        if(id.length==0)
+        var st = this;
+        if(value.length==0)
         {
             alert(znstr("settings.load.select"));
-            return;
+            return new Promise(function(resolve, reject) {
+                resolve(false);
+            });
         }
         
-        Zotero.ZeNotes.database.getsetting(id).then(r=>{
-            for(i in r)
+        return new Promise(function(resolve, reject) {
+            Zotero.ZeNotes.database.getsettingbycolumn(column, value).then(r=>{
+                for(i in r)
+                {
+                    var value = r[i].contents;
+                    var label = r[i].label+" ("+r[i].folder+")";
+                    if(value.length>0)
+                    {
+                        Zotero.ZeNotes.setPref("tag-lists", value);
+                        st.lists = JSON.parse(value);
+                        st.refresh("show", st.lists.show);
+                        st.refresh("hide", st.lists.hide);
+                        st.refresh("sort", st.lists.sort);
+                        resolve(label);
+                    }
+                    else
+                    {
+                        alert(znstr("settings.load.datacorrupted"));
+                        resolve(false);
+                    }
+                }
+            }).catch(e=>{
+                resolve(false);
+            });
+        });
+    }
+    
+    this.loadfromdb = function()
+    {
+        if(!confirm(znstr("setting.load.confirm")))
+        {
+            return;
+        }
+        var id = document.getElementById("saveman-load-select").parentNode.value;
+        this.loadsetting("id", id).then(label=>{
+            if(label)
             {
-                var value = r[i].contents;
-                if(value.length>0)
-                {
-                    Zotero.ZeNotes.setPref("tag-lists", value);
-                    this.lists = JSON.parse(value);
-                    this.refresh("show", this.lists.show);
-                    this.refresh("hide", this.lists.hide);
-                    this.refresh("sort", this.lists.sort);
-                    alert(znstr("settings.load.loaded", [label]));
-                }
-                else
-                {
-                    alert(znstr("settings.load.datacorrupted"));
-                }
+                alert(znstr("settings.load.loaded", [label]));
             }
+            else
+            {
+                alert("No loading!");
+            }
+        }).catch(e=>{
+            alert("settings.loadfromdb: "+e);
         });
     }
     
@@ -174,6 +214,7 @@ Zotero.ZeNotes.settings = new function()
             First check if the layout exist.
             */
             var label = document.getElementById("saveman-save-textbox").value;
+            var folder = document.getElementById("saveman-folder-textbox").value;
             var exists=false;
             for(i in r)
             {
@@ -192,18 +233,18 @@ Zotero.ZeNotes.settings = new function()
                 }
             }
 
-            var value = JSON.stringify(this.lists);
+            var contents = JSON.stringify(this.lists);
             if(label.length==0)
             {
                 alert(znstr("settings.save.inputname"));
                 return
             }
-            if(value.length==0)
+            if(contents.length==0)
             {
                 alert(znstr("settings.save.datainvalid"));
                 return
             }
-            Zotero.ZeNotes.database.addsetting(label, value).then(v=>{
+            Zotero.ZeNotes.database.addsetting(label, contents, folder).then(v=>{
                 this.fillsaveman();
                 document.getElementById("saveman-save-textbox").value = "";
                 alert(znstr("settings.save.saved", [label]));
@@ -217,34 +258,60 @@ Zotero.ZeNotes.settings = new function()
         Zotero.ZeNotes.database.getsettings().then(r=>{
             var loadbox = document.getElementById("saveman-load-select");
             var delbox = document.getElementById("saveman-delete-select");
+            var folderbox = document.getElementById("saveman-folder-textbox");
+            if(folderbox)
+            {
+                folderbox.value = Zotero.ZeNotes.currentCollection();
+            }
             
             /* Remove children */
-            while (loadbox.firstChild) {
-                loadbox.firstChild.remove()
+            if(loadbox)
+            {
+                while (loadbox.firstChild) {
+                    loadbox.firstChild.remove()
+                }
+                loadbox.parentNode.value = "";
             }
-            loadbox.parentNode.value = "";
             
-            while (delbox.firstChild) {
-                delbox.firstChild.remove()
+            if(delbox)
+            {
+                while (delbox.firstChild) {
+                    delbox.firstChild.remove()
+                }
+                delbox.parentNode.value = "";
             }
-            delbox.parentNode.value = "";
             
             for(let i in r)
             {
-               var e1 = document.createElement("menuitem");
-               var e2 = document.createElement("menuitem");
-               var label = r[i].label;
-               var id = r[i].id;
-               
-               e1.setAttribute("label", label);
-               e1.setAttribute("value", id);
-               
-               e2.setAttribute("label", label);
-               e2.setAttribute("value", id);
-
-               loadbox.appendChild(e1);
-               delbox.appendChild(e2);
+                var e1 = document.createElement("menuitem");
+                var e2 = document.createElement("menuitem");
+                var folder = r[i].folder;
+                var label = r[i].label;
+                var id = r[i].id;
+                
+                if(!folder)
+                {
+                    folder="default";
+                }
+                
+                e1.setAttribute("label", label+" ("+folder+")");
+                e1.setAttribute("value", id);
+                
+                e2.setAttribute("label", label+" ("+folder+")");
+                e2.setAttribute("value", id);
+                
+                if(loadbox)
+                {
+                    loadbox.appendChild(e1);
+                }
+                
+                if(delbox)
+                {
+                    delbox.appendChild(e2);
+                }
             }
+        }).catch(e=>{
+            alert("settings.fillsaveman :"+e);
         });
     }
     
@@ -409,13 +476,28 @@ Zotero.ZeNotes.settings = new function()
         });
     }
     
-    this.init = function()
+    this.initializesettings = function()
     {
-        this.load();
-        this.fillsaveman();
+        var vm = this;
+        var folder = Zotero.ZeNotes.currentCollection();
+        return new Promise(function(resolve, reject) {
+            vm.loadsetting("folder", folder).then(label=>{
+                if(label)
+                {
+                    alert(znstr("settings.load.loaded", [label]));
+                    resolve(true);
+                }
+                else
+                {
+                    alert("No loading!");
+                    resolve(false);
+                }
+            }).catch(e=>{
+                alert("settings.initializesettings :"+e);
+                resolve(false);
+            });
+        });
     }
 }
-
-window.addEventListener('load', function(e) { Zotero.ZeNotes.settings.init(); }, false);
 
 

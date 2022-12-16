@@ -125,20 +125,23 @@ Zotero.ZeNotes = new function()
         Zotero.ZeNotes.openwindow(url, name, io);
     }
     
-    this.opennotes = function()
+    this.currentCollection = function()
     {
+        var c = "All documents"
         var collection = zp.getSelectedCollection();
+        
         if(collection)
         {
-            Zotero.ZeNotes.collection = collection.name;
+            c = collection.name;
         }
-        else
-        {
-            Zotero.ZeNotes.collection = "All documents";
-        }
-        
+        return c;
+    }
+    
+    this.opennotes = function()
+    {
+        var collection = Zotero.ZeNotes.currentCollection();
         var url = "chrome://zenotes/content/notes.html";
-        var io = {collection: Zotero.ZeNotes.collection};
+        var io = {collection: collection};
         var name = "zenotes-notes";
         Zotero.ZeNotes.openwindow(url, name, io);
     }

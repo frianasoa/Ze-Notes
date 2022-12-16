@@ -131,6 +131,12 @@ Zotero.ZeNotes.data = new function()
             var attachment = Zotero.Items.get(attachmentIDs[id]);
             var path = attachment.attachmentPath;
             var key = attachment.key;
+            var zpath = "zotero://open-pdf/library/items/"+key;
+            var library =  Zotero.Libraries.get(item.libraryID);
+            if(library.isGroup)
+            {
+                zpath = "zotero://open-pdf/library/"+item.libraryID+"/item/"+key;
+            }
             
             if(!Zotero.Attachments.resolveRelativePath(path))
             {
@@ -144,6 +150,7 @@ Zotero.ZeNotes.data = new function()
             filenames.push({
                 "key": key,
                 "path": path,
+                "zpath": zpath,
                 "id": attachment.id,
             })
         }
@@ -153,9 +160,14 @@ Zotero.ZeNotes.data = new function()
     }
     
     this.filekey = function(item)
-    {                   
-        var attachmentIDs = item.getAttachments();
+    {   
         var key = "";
+        if(item.itemType=="attachment")
+        {
+            return key;
+        }
+        var attachmentIDs = item.getAttachments();
+        
         if(attachmentIDs.length>0)
         {
             var attachment = Zotero.Items.get(attachmentIDs[0]);
@@ -229,7 +241,7 @@ Zotero.ZeNotes.data = new function()
                 contents = "(p. "+n["annotationPageLabel"]+")"
             }
             
-            var note = n["annotationComment"]+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
+            var note = n["annotationComment"]+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
             
             var tags = n.getTags();                
             for(let i in tags)

@@ -1,14 +1,20 @@
 var Zotero = Components.classes["@zotero.org/Zotero;1"].getService(Components.interfaces.nsISupports).wrappedJSObject;
 
+var znstr = function(name, params)
+{
+    return Zotero.ZeNotes.ZNStr(name, params);
+}
+
 var notes = new function()
 {
     this.init = function()
     {
-        this.resize();
-        this.loaddata().then(()=>{
-            this.loadmenu();
+        var vm = this;
+        vm.resize();
+        vm.loaddata().then(d=>{
+            vm.loadmenu();
             Zotero.ZeNotes.notewin = window;
-            window.document.title+=" - in \""+Zotero.ZeNotes.collection+"\"";
+            window.document.title+=" - in \""+Zotero.ZeNotes.currentCollection()+"\"";
             if(Zotero.ZeNotes.getPref("scrolltop"))
             {
                 $('#zn-body-wrapper').animate({
@@ -19,7 +25,9 @@ var notes = new function()
             
             $("#zn-body-wrapper").bind('scroll', function() {
                 notes.savescroll();
-            }); 
+            });
+        }).catch(e=>{
+            alert("notes.init: "+e);
         });
     }
     
@@ -40,8 +48,8 @@ var notes = new function()
                 "edit": {name: "Edit note", icon: "fa-pencil-alt"},
                 "editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
                 "sep0": "---------",
-                "showentry": {name: "Show entry", icon: "fa-file-lines"},
                 "showfile": {name: "Show attached files", icon: "fa-file-pdf"},
+                "showentry": {name: "Show entry", icon: "fa-file-lines"},
                 "sep2": "---------",
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "deletenote": {name: "Delete note", icon: "fa-trash"},
@@ -117,13 +125,16 @@ var notes = new function()
 
     this.loaddata = async function()
     {
+        var loaded = await Zotero.ZeNotes.settings.load().catch(e=>{
+            alert("notes.loaddata: "+e);
+        })
         var infotags = Zotero.ZeNotes.settings.infotags;
         var data = await Zotero.ZeNotes.data.get();
         var table = document.createElement("table");
         var trh = document.createElement("tr");
         table.id = "notes-table"
         table.appendChild(trh);
-        
+
         data["columns"].forEach(c=>{
             var tdh = document.createElement("th");
             tdh.innerHTML = c;
@@ -170,6 +181,7 @@ var notes = new function()
                 td.dataset.filekey = v.filekey;
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
+                        e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
                         e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
                         e.target.parentNode.dataset.attachmentpage = e.target.dataset.page;
                         e.target.parentNode.dataset.annotationkey = e.target.dataset.key;
@@ -180,6 +192,8 @@ var notes = new function()
             });
         }); 
         document.getElementById("zn-body").appendChild(table);
+        
+        return loaded;
     }
     
     this.choosefile = function(filenames)
@@ -207,17 +221,18 @@ var notes = new function()
             zot.appendChild(i2);
             
             extern.dataset.url = filenames[i].path;
-            zot.dataset.url = "zotero://open-pdf/library/items/"+filenames[i].key;
-            
+            zot.dataset.id = filenames[i].id;
+                        
             extern.onclick = function(e){
                 $("#dialog-message").dialog("close");
                 window.openDialog("file:///"+e.target.dataset.url);
             }
             zot.onclick = function(e){
-                $("#dialog-message").dialog("close");
-                Zotero.launchURL(e.target.dataset.url);
+                var attachment = Zotero.Items.get(e.target.dataset.id)
+                Zotero.OpenPDF.openToPage(attachment).then(()=>{
+                    $("#dialog-message").dialog("close");
+                });
             }
-            
             li.appendChild(span);
             li.appendChild(document.createTextNode(" "));
             li.appendChild(extern);
@@ -238,7 +253,7 @@ var notes = new function()
             width: 700,
             height: 300,
             buttons: {
-                Ok: function() {
+                Close: function() {
                     $(this).dialog("close");
                 }
             }
@@ -251,13 +266,23 @@ var notes = new function()
         var column = td.dataset.column;
         var itemid = td.dataset.itemid;
         var itemkey = td.dataset.itemkey;
-        var attachmentkey = td.dataset.attachmentkey
+        var attachmentid = td.dataset.attachmentid;
+        var attachmentkey = td.dataset.attachmentkey;
         var annotationkey = td.dataset.annotationkey;
         var annotationpage = td.dataset.annotationpage;
         var annotationdomid = td.dataset.annotationdomid;
-        var filenames = JSON.parse(td.dataset.filenames);
+        
         var filekey = td.dataset.filekey;
         var notekey = td.dataset.notekey;
+        
+        try
+        {
+            var filenames = JSON.parse(td.dataset.filenames);
+        }
+        catch(e)
+        {
+            var filenames=[];
+        }
         
         if(key=="showentry")
         {
@@ -285,8 +310,16 @@ var notes = new function()
         }
         else if(key=="editpdfnote")
         {
-            var uri = "zotero://open-pdf/library/items/"+attachmentkey+"?page="+annotationpage+"&annotation="+annotationkey;
-            Zotero.launchURL(uri);
+            var attachment = Zotero.Items.get(attachmentid);
+            if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+            Zotero.OpenPDF.openToPage(attachment, annotationpage, annotationkey).then(opened=>{
+            }).catch(e=>{
+                alert("notes.actions :"+e);
+            });
         }
         else if(key=="showfile")
         {
@@ -475,3 +508,7 @@ var notes = new function()
 window.addEventListener("load", function(){
     notes.init();
 });
+
+window.addEventListener("unload", function(){
+    Zotero.ZeNotes.notewin=undefined;
+})
