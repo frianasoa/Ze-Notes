@@ -25,6 +25,11 @@ Zotero.ZeNotes = new function()
         Zotero_Tabs.close(this.tab.id);
     }
     
+    this.reload = function()
+    {
+        this.iframe.reload(true);
+    }
+    
     /**
         Localization
         Code from ZotFile, originally from Zotero
@@ -73,34 +78,34 @@ Zotero.ZeNotes = new function()
     {
         var vm = this;
         var icon = "chrome://zenotes/skin/icon.png";
-        if(this.tab==null)
+        if(vm.tab==null)
         {
-            this.tab = Zotero_Tabs.add({
-                title: "Ze Notes",
+            vm.tab = Zotero_Tabs.add({
+                title: "Ze Notes - "+Zotero.ZeNotes.currentCollection(),
                 data: {},
                 iconBackgroundImage:"url(\""+icon+"\")",
                 onClose: function(){vm.tab=null;}
             });
-            this.iframe = document.createElement("browser");
-            this.iframe.setAttribute("class", "reader");
-            this.iframe.setAttribute("flex", "1");
-            this.iframe.setAttribute("type", "content");
-            this.tab.container.appendChild(this.iframe);
+            vm.iframe = document.createElement("browser");
+            vm.iframe.setAttribute("class", "reader");
+            vm.iframe.setAttribute("flex", "1");
+            vm.iframe.setAttribute("type", "content");
+            vm.tab.container.appendChild(vm.iframe);
             
             /*Set icon: check this with Zotero update*/
-            var index = Zotero_Tabs._getTab(this.tab.id).tabIndex;
+            var index = Zotero_Tabs._getTab(vm.tab.id).tabIndex;
             Zotero_Tabs._tabs[index]["iconBackgroundImage"] = "url(\""+icon+"\")";
+            vm.iframe.setAttribute("src", url);
         }
-        this.iframe.setAttribute("src", url);
-        Zotero_Tabs.select(this.tab.id);
-    }
-    
-    this.reload = function()
-    {
-        if(Zotero.ZeNotes.notewin)
+        else
         {
-            Zotero.ZeNotes.notewin.location.reload();
+            var index = Zotero_Tabs._getTab(vm.tab.id).tabIndex;
+            Zotero_Tabs._tabs[index]["title"] = "Ze Notes - "+Zotero.ZeNotes.currentCollection();
+            vm.iframe.setAttribute("src", url);
+            vm.iframe.reload(true);
         }
+        
+        Zotero_Tabs.select(vm.tab.id);
     }
     
     this.addmenu = function()

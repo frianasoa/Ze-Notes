@@ -57,6 +57,8 @@ var notes = new function()
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copyquote": {name: "Copy direct quote", icon: "fa-copy"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "sep4": "---------",
+                "reload": {name: "Refresh page", icon: "fa-sync"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -80,6 +82,8 @@ var notes = new function()
                 "sep1": "---------",
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "sep4": "---------",
+                "reload": {name: "Refresh page", icon: "fa-sync"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -324,6 +328,10 @@ var notes = new function()
         else if(key=="showfile")
         {
             this.choosefile(filenames);
+        }
+        else if(key=="reload")
+        {
+            Zotero.ZeNotes.reload();
         }
         else if(key=="hidecolumn")
         {
