@@ -8,32 +8,41 @@ Zotero.ZeNotes.database = new function()
 {
     this.create = function()
     {
+        var vm = this;
         var p = new Promise(function(resolve, reject) {
-            this.DB = new Zotero.DBConnection("zenotes");
-            this.DB.tableExists('settings').then(v=>{
+            vm.DB = new Zotero.DBConnection("zenotes");
+            vm.DB.tableExists('settings').then(v=>{
                 if(!v)
                 {
                     var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT UNIQUE, contents TEXT, folder TEXT)";
-                    this.DB.queryAsync(sql).then(v2=>{
-                        resolve(this.DB);
+                    vm.DB.queryAsync(sql).then(v2=>{
+                        resolve(vm.DB);
+                    }).catch(e=>{
+                        alert("database.create: "+e);
+                        resolve(vm.DB);
                     })
                 }
                 else
                 {
-                    this.DB.columnExists('settings', 'folder').then(e=>{
+                    vm.DB.columnExists('settings', 'folder').then(e=>{
                         if(!e)
                         {
                             var sql = "ALTER TABLE settings ADD COLUMN folder TEXT"
-                            this.DB.queryAsync(sql).then(v3=>{
-                                resolve(this.DB);
+                            vm.DB.queryAsync(sql).then(v3=>{
+                                resolve(vm.DB);
+                            }).catch(e=>{
+                                alert("database.create: "+e);
+                                resolve(vm.DB);
                             });
                         }
                         else
                         {
-                            resolve(this.DB);
+                            resolve(vm.DB);
                         }
+                    }).catch(e=>{
+                        alert("database.create: "+e);
+                        resolve(vm.DB);
                     });
-                    
                 }
             })
         });
