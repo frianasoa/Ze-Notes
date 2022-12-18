@@ -1,28 +1,19 @@
-Components.utils.import("resource://gre/modules/Services.jsm");
+// var EXPORTED_SYMBOLS = ["Zotero"];
 
-var alert = function(message)
-{
-    Services.prompt.alert(null, znstr("general.alert.title"), message);
-}
+// var Zotero = Components.classes["@zotero.org/Zotero;1"]
+    // .getService(Components.interfaces.nsISupports)
+    // .wrappedJSObject;
 
-var znstr = function(name, params)
-{
-    return Zotero.ZeNotes.ZNStr(name, params);
-}
+var zp = Zotero.getActiveZoteroPane()
+var document = zp.document;
+var window = document.defaultView;
+var alert = window.alert;
 
 Zotero.ZeNotes = new function()
 {
     this.initdisplay = function()
     {
         this.addmenu();
-    }
-    
-    this.tab = null;
-    this.iframe = null;
-    
-    this.closetab = function()
-    {
-        Zotero_Tabs.close(this.tab.id);
     }
     
     /**
@@ -71,28 +62,7 @@ Zotero.ZeNotes = new function()
     
     this.opentab = function(url, name, io)
     {
-        var vm = this;
-        var icon = "chrome://zenotes/skin/icon.png";
-        if(this.tab==null)
-        {
-            this.tab = Zotero_Tabs.add({
-                title: "Ze Notes",
-                data: {},
-                iconBackgroundImage:"url(\""+icon+"\")",
-                onClose: function(){vm.tab=null;}
-            });
-            this.iframe = document.createElement("browser");
-            this.iframe.setAttribute("class", "reader");
-            this.iframe.setAttribute("flex", "1");
-            this.iframe.setAttribute("type", "content");
-            this.tab.container.appendChild(this.iframe);
-            
-            /*Set icon: check this with Zotero update*/
-            var index = Zotero_Tabs._getTab(this.tab.id).tabIndex;
-            Zotero_Tabs._tabs[index]["iconBackgroundImage"] = "url(\""+icon+"\")";
-        }
-        this.iframe.setAttribute("src", url);
-        Zotero_Tabs.select(this.tab.id);
+        alert(url);
     }
     
     this.reload = function()
@@ -145,7 +115,7 @@ Zotero.ZeNotes = new function()
     
     this.opensettings = function()
     {
-        var collection = ZoteroPane.getSelectedCollection();
+        var collection = zp.getSelectedCollection();
         if(collection)
         {
             Zotero.ZeNotes.collection = collection.name;
@@ -163,7 +133,7 @@ Zotero.ZeNotes = new function()
     this.currentCollection = function()
     {
         var c = "All documents"
-        var collection = ZoteroPane.getSelectedCollection();
+        var collection = zp.getSelectedCollection();
         
         if(collection)
         {
@@ -222,13 +192,13 @@ Zotero.ZeNotes = new function()
         fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         if(type=="doc")
         {
-            fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.currentCollection()+".doc";
+            fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".doc";
             fp.appendFilter("Documents (*.doc)", "*.doc");
             fp.defaultExtension="doc";
         }
         else if(type=="html")
         {
-            fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.currentCollection()+".html";
+            fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".html";
             fp.appendFilter("Web page (*.html; *.htm)", "*.html; *.htm");
             fp.defaultExtension="html";
         }
@@ -264,7 +234,7 @@ Zotero.ZeNotes = new function()
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.currentCollection()+".csv";
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".csv";
         fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("CSV (*.csv; *.txt)", "*.csv; *.txt");
         fp.defaultExtension="csv";
@@ -299,7 +269,7 @@ Zotero.ZeNotes = new function()
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
-        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.currentCollection()+".xls";
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.collection+".xls";
         fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
         fp.appendFilter("Documents (*.xls)", "*.xls");
         fp.appendFilter("Web page (*.csv)", "*.csv");

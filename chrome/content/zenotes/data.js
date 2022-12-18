@@ -235,13 +235,19 @@ Zotero.ZeNotes.data = new function()
             var authors = Zotero.ZeNotes.data.creatorshort(item);
             var year = Zotero.ZeNotes.data.year(item);
             var contents = "“"+n["annotationText"]+"” ("+authors+" "+year+", p. "+n["annotationPageLabel"]+")";
+            var comment = n["annotationComment"];
+            
+            if(comment==null)
+            {
+                comment = "";
+            }
             
             if(n["annotationText"]==null)
             {
                 contents = "(p. "+n["annotationPageLabel"]+")"
             }
             
-            var note = n["annotationComment"]+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
+            var note = comment+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
             
             var tags = n.getTags();                
             for(let i in tags)

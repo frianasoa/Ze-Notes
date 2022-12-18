@@ -405,7 +405,7 @@ var notes = new function()
 
         else if(key=="close")
         {
-            window.close();
+            Zotero.ZeNotes.closetab();
         }
         else
         {

@@ -1,65 +1,133 @@
-'use strict';
-var Zotero;
-var window;
-var document;
+/* Copyright 2012 Will Shanks.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-function loadZotero () {
-    let callback = function (resolve, reject) {
-        if (!Zotero) {
-            if (!("@zotero.org/Zotero;1" in Components.classes)) {
-                let timer = Components.classes["@mozilla.org/timer;1"].createInstanceComponents.interfaces.nsITimer;
-                return timer.initWithCallback(function () {
-                    return callback(resolve, reject);
-                }, 10000, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-            } else {
-                Zotero = Components.classes["@zotero.org/Zotero;1"]
-                    .getService(Components.interfaces.nsISupports).wrappedJSObject;
-                return resolve(Zotero);
-            }
-        } else {
-            return resolve(Zotero);
-        }
-    };
-    return new Promise(callback);
+if (typeof Zotero == "undefined") {
+  var Zotero;
+  var Zotero_Tabs;
 }
 
-function makeStartupObserver(addonData) {
-    var vm = this;
-    var scope = {};
-    return {
-        'observe': function(subject, topic, data) {
-            loadZotero().then(function () {
-                Components.utils.import('resource://gre/modules/FileUtils.jsm');
-                Components.utils.import('resource://gre/modules/NetUtil.jsm');
-                if(Zotero)
-                {
-                    var zp = Zotero.getActiveZoteroPane()
-                    document = zp.document;
-                    window = document.defaultView
-                    Components.utils.import('chrome://zenotes/content/zenotes.js', scope);
-                    Zotero = scope.Zotero;
-                    Zotero.ZeNotes.initdisplay();
-                }
-            });
-        }
-    };
+var chromeHandle;
+
+// In Zotero 6, bootstrap methods are called before Zotero is initialized, and using include.js
+// to get the Zotero XPCOM service would risk breaking Zotero startup. Instead, wait for the main
+// Zotero window to open and get the Zotero object from there.
+//
+// In Zotero 7, bootstrap methods are not called until Zotero is initialized, and the 'Zotero' is
+// automatically made available.
+async function waitForZotero() {
+  if (typeof Zotero != "undefined") {
+    await Zotero.initializationPromise;
+  }
+
+  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+  var windows = Services.wm.getEnumerator("navigator:browser");
+  var found = false;
+  while (windows.hasMoreElements()) {
+    let win = windows.getNext();
+    if (win.Zotero) {
+      Zotero = win.Zotero;
+      Zotero_Tabs = win.Zotero_Tabs;
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    await new Promise((resolve) => {
+      var listener = {
+        onOpenWindow: function (aWindow) {
+          // Wait for the window to finish loading
+          let domWindow = aWindow
+            .QueryInterface(Ci.nsIInterfaceRequestor)
+            .getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+          domWindow.addEventListener(
+            "load",
+            function () {
+              domWindow.removeEventListener("load", arguments.callee, false);
+              if (domWindow.Zotero) {
+                Services.wm.removeListener(listener);
+                Zotero = domWindow.Zotero;
+                Zotero_Tabs = domWindow.Zotero_Tabs;
+                resolve();
+              }
+            },
+            false
+          );
+        },
+      };
+      Services.wm.addListener(listener);
+    });
+  }
+  await Zotero.initializationPromise;
 }
 
-function startup(data, reason) {
-    Components.utils.import('resource://gre/modules/Services.jsm');
-    const observerService = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
-    
-    /* wait until after zotero is loaded */
-    // observerService.addObserver(makeStartupObserver(data), 'final-ui-startup', false);
-    observerService.addObserver(makeStartupObserver(data), 'zotero-loaded', false);
+function install(data, reason) {}
+
+async function startup({ id, version, resourceURI, rootURI }, reason) {
+  await waitForZotero();
+
+  // String 'rootURI' introduced in Zotero 7
+  if (!rootURI) {
+    rootURI = resourceURI.spec;
+  }
+
+  const window = Zotero.getMainWindow();
+  
+  // Global variables for plugin code
+  const ctx = {
+    Zotero,
+    Zotero_Tabs: Zotero_Tabs,
+    rootURI,
+    window,
+    document: window.document,
+    ZoteroPane: Zotero.getActiveZoteroPane(),
+  };
+
+  
+  
+  Services.scriptloader.loadSubScript(
+    `chrome://zenotes/content/zenotes.js`,
+    ctx
+  );
+  
+  Zotero.ZeNotes.initdisplay();
+
+  if (Zotero.platformMajorVersion >= 102) 
+  {
+    var aomStartup = Components.classes[
+      "@mozilla.org/addons/addon-manager-startup;1"
+    ].getService(Components.interfaces.amIAddonManagerStartup);
+    var manifestURI = Services.io.newURI(rootURI + "manifest.json");
+    chromeHandle = aomStartup.registerChrome(manifestURI, [
+      ["content", "__addonRef__", rootURI + "chrome/content/"],
+      ["locale", "__addonRef__", "en-US", rootURI + "chrome/locale/en-US/"],
+      ["locale", "__addonRef__", "ja-JA", rootURI + "chrome/locale/ja-JA/"],
+    ]);
+  }
 }
 
-function shutdown (data, reason) {
+function shutdown({ id, version, resourceURI, rootURI }, reason) {
+  if (reason === APP_SHUTDOWN) {
+    return;
+  }
+  if (typeof Zotero === "undefined") {
+    Zotero = Components.classes["@zotero.org/Zotero;1"].getService(
+      Components.interfaces.nsISupports
+    ).wrappedJSObject;
+  }
+  Zotero.AddonTemplate.events.onUnInit(Zotero);
+
+  Cc["@mozilla.org/intl/stringbundle;1"]
+    .getService(Components.interfaces.nsIStringBundleService)
+    .flushBundles();
+
+  Cu.unload(`chrome://zenotes/content/zenotes.js`);
+
+  if (chromeHandle) {
+    chromeHandle.destruct();
+    chromeHandle = null;
+  }
 }
 
-function uninstall(data, reason) {
-}
-
-function install(data, reason) {
-    
-}
+function uninstall(data, reason) {}
