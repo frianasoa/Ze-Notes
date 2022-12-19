@@ -1,5 +1,3 @@
-var Zotero = Components.classes["@zotero.org/Zotero;1"].getService(Components.interfaces.nsISupports).wrappedJSObject;
-
 var znstr = function(name, params)
 {
     return Zotero.ZeNotes.ZNStr(name, params);
@@ -29,6 +27,19 @@ var notes = new function()
         }).catch(e=>{
             alert("notes.init: "+e);
         });
+        
+        if(Zotero.ZeNotes.openfromdb==true)
+        {
+            var collection = Zotero.ZeNotes.currentCollection();
+            Zotero.ZeNotes.database.getsettingbycolumn("folder", collection).then(r=>{
+                if(r.length>0)
+                {
+                    Zotero.ZeNotes.setPref("tag-lists", r[0].contents);
+                }
+            }).catch(e=>{
+                alert("notes.init: "+e);
+            });
+        }
     }
     
     this.resize = function()
@@ -38,6 +49,23 @@ var notes = new function()
     }
     
     this.loadmenu = function(){
+        $.contextMenu({
+            selector: '.context-menu-header', 
+            className: "zn-menubar",
+            callback: function(key, options) {
+                vm.actions(key, options)
+            },
+            items: {
+                "copycell": {name: "Copy entire cell", icon: "fa-clone"},
+                "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "sep0": "---------",
+                "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
+                "sep1": "---------",
+                "reload": {name: "Refresh page", icon: "fa-sync"},
+                "settings": {name: "Open settings", icon: "fa-cog"},
+            }
+        });
+        
         $.contextMenu({
             selector: '.context-menu-one', 
             className: "zn-menubar",
@@ -59,6 +87,7 @@ var notes = new function()
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
                 "sep4": "---------",
                 "reload": {name: "Refresh page", icon: "fa-sync"},
+                "settings": {name: "Open settings", icon: "fa-cog"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -84,6 +113,7 @@ var notes = new function()
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
                 "sep4": "---------",
                 "reload": {name: "Refresh page", icon: "fa-sync"},
+                "settings": {name: "Open settings", icon: "fa-cog"},
                 // "quit": {name: "Exit", icon: "fa-xmark"},
             }
         });
@@ -142,6 +172,8 @@ var notes = new function()
         data["columns"].forEach(c=>{
             var tdh = document.createElement("th");
             tdh.innerHTML = c;
+            tdh.className = "context-menu-header";
+            tdh.dataset.column = c;
             trh.appendChild(tdh)
         });
 
@@ -332,6 +364,10 @@ var notes = new function()
         else if(key=="reload")
         {
             Zotero.ZeNotes.reload();
+        }
+        else if(key=="settings")
+        {
+            Zotero.ZeNotes.opensettings();
         }
         else if(key=="hidecolumn")
         {

@@ -27,7 +27,10 @@ Zotero.ZeNotes = new function()
     
     this.reload = function()
     {
-        this.iframe.reload(true);
+        if(this.iframe)
+        {
+            this.iframe.reload(true);
+        }
     }
     
     /**

@@ -44,12 +44,25 @@ Zotero.ZeNotes.settings = new function()
         return Zotero.ZeNotes.database.getsettingbycolumn("folder", collection).then(r=>{
             if(r.length>0 && Zotero.ZeNotes.openfromdb==true)
             {
-                vm.lists = JSON.parse(r[0].contents);
+                try {
+                    vm.lists = JSON.parse(r[0].contents);
+                }
+                catch(e)
+                {
+                    vm.lists = JSON.parse("{\"show\": [], \"hide\": [], \"sort\": []}");
+                    alert(e);
+                }
                 Zotero.ZeNotes.openfromdb=false;
             }
             else
             {
-                vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+                try {
+                    vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+                }
+                catch(e)
+                {
+                    vm.lists = JSON.parse("{\"show\": [], \"hide\": [], \"sort\": []}");
+                }
             }
             
             vm.fillsaveman();

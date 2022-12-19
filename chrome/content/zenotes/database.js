@@ -9,39 +9,39 @@ Zotero.ZeNotes.database = new function()
     this.create = function()
     {
         var vm = this;
+        var DB = new Zotero.DBConnection("zenotes");
         var p = new Promise(function(resolve, reject) {
-            vm.DB = new Zotero.DBConnection("zenotes");
-            vm.DB.tableExists('settings').then(v=>{
+            DB.tableExists('settings').then(v=>{
                 if(!v)
                 {
                     var sql = "CREATE TABLE settings (id INTEGER PRIMARY KEY, label TEXT UNIQUE, contents TEXT, folder TEXT)";
-                    vm.DB.queryAsync(sql).then(v2=>{
-                        resolve(vm.DB);
+                    DB.queryAsync(sql).then(v2=>{
+                        resolve(DB);
                     }).catch(e=>{
                         alert("database.create: "+e);
-                        resolve(vm.DB);
+                        resolve(DB);
                     })
                 }
                 else
                 {
-                    vm.DB.columnExists('settings', 'folder').then(e=>{
+                    DB.columnExists('settings', 'folder').then(e=>{
                         if(!e)
                         {
                             var sql = "ALTER TABLE settings ADD COLUMN folder TEXT"
-                            vm.DB.queryAsync(sql).then(v3=>{
-                                resolve(vm.DB);
+                            DB.queryAsync(sql).then(v3=>{
+                                resolve(DB);
                             }).catch(e=>{
                                 alert("database.create: "+e);
-                                resolve(vm.DB);
+                                resolve(DB);
                             });
                         }
                         else
                         {
-                            resolve(vm.DB);
+                            resolve(DB);
                         }
                     }).catch(e=>{
                         alert("database.create: "+e);
-                        resolve(vm.DB);
+                        resolve(DB);
                     });
                 }
             })
