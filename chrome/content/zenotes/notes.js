@@ -8,7 +8,9 @@ var notes = new function()
     this.init = function()
     {
         var vm = this;
-        vm.resize();
+        /** Not resize for tab*/
+        // vm.resize();
+        
         vm.loaddata().then(d=>{
             vm.loadmenu();
             Zotero.ZeNotes.notewin = window;
@@ -58,6 +60,7 @@ var notes = new function()
             items: {
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "copy": {name: "Copy table", icon: "fa-copy"},
                 "sep0": "---------",
                 "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
                 "sep1": "---------",
@@ -85,6 +88,7 @@ var notes = new function()
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copyquote": {name: "Copy direct quote", icon: "fa-copy"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "copy": {name: "Copy table", icon: "fa-copy"},
                 "sep4": "---------",
                 "reload": {name: "Refresh page", icon: "fa-sync"},
                 "settings": {name: "Open settings", icon: "fa-cog"},
@@ -111,6 +115,7 @@ var notes = new function()
                 "sep1": "---------",
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
+                "copy": {name: "Copy table", icon: "fa-copy"},
                 "sep4": "---------",
                 "reload": {name: "Refresh page", icon: "fa-sync"},
                 "settings": {name: "Open settings", icon: "fa-cog"},

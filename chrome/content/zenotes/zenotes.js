@@ -113,9 +113,17 @@ Zotero.ZeNotes = new function()
     
     this.addmenu = function()
     {
+        /** Check if menu already exists*/
+        var menuexists = document.getElementById("zenotes-menuitem-main")!=null;
+        if(menuexists)
+        {
+            return;
+        }
+        
         /** Main menu items*/
         var menu = document.createElement("menu");
-        menu.setAttribute("label", "ZeNotes");
+        menu.setAttribute("id", "zenotes-menuitem-main");
+        menu.setAttribute("label", "Ze Notes");
         menu.setAttribute("accesskey", "z");
         
         var menupopup = document.createElement("menupopup");
@@ -143,6 +151,7 @@ Zotero.ZeNotes = new function()
         
         /** collection menu items */
         var menuitem_notes_c = document.createElement("menuitem");
+        menuitem_notes_c.setAttribute("id", "zenotes-menuitem-contextmenu");
         menuitem_notes_c.setAttribute("label", "ZeNotes - My notes in collection");
         menuitem_notes_c.className="menuitem-iconic";
         menuitem_notes_c.setAttribute("image", "chrome://zenotes/skin/zenotes-notes.png");

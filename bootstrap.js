@@ -84,8 +84,6 @@ async function startup({ id, version, resourceURI, rootURI }, reason) {
     ZoteroPane: Zotero.getActiveZoteroPane(),
   };
 
-  
-  
   Services.scriptloader.loadSubScript(
     `chrome://zenotes/content/zenotes.js`,
     ctx
