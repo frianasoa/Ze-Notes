@@ -195,7 +195,7 @@ Zotero.ZeNotes.data = new function()
         }
         return notes;
     }
-    
+        
     this.tags = function(item)
     {
         var notes = item.getNotes();
@@ -247,7 +247,7 @@ Zotero.ZeNotes.data = new function()
                 contents = "(p. "+n["annotationPageLabel"]+")"
             }
             
-            var note = comment+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+";'>"+contents+"</div>";
+            var note = comment+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+"77;'>"+contents+"</div>";
             
             var tags = n.getTags();                
             for(let i in tags)

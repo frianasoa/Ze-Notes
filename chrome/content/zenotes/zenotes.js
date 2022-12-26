@@ -123,7 +123,7 @@ Zotero.ZeNotes = new function()
         /** Main menu items*/
         var menu = document.createElement("menu");
         menu.setAttribute("id", "zenotes-menuitem-main");
-        menu.setAttribute("label", "Ze Notes");
+        menu.setAttribute("label", "ZeNotes");
         menu.setAttribute("accesskey", "z");
         
         var menupopup = document.createElement("menupopup");

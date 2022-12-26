@@ -270,7 +270,7 @@ var notes = new function()
             }
             zot.onclick = function(e){
                 var attachment = Zotero.Items.get(e.target.dataset.id)
-                Zotero.OpenPDF.openToPage(attachment).then(()=>{
+                Zotero.OpenPDF.openToPage(attachment, 0).then(()=>{
                     $("#dialog-message").dialog("close");
                 });
             }
