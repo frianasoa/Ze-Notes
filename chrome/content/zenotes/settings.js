@@ -30,7 +30,7 @@ Zotero.ZeNotes.settings = new function()
         sort: [],
     }
     
-    this.opacity = "00";
+    this.opacity = "7F";
     
     this.infotags = ["id", "key", "title", "date", "journal", "author", "creator", "itemid"]
 
