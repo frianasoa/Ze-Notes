@@ -1,7 +1,8 @@
 <!ENTITY znp-title "ZeNotes - Preferences"> 
 <!ENTITY znp-pane-title "ZeNotes - Preferences">
            
-<!ENTITY znp-tagman-title "Manage tags and columns">
+<!ENTITY znp-tagman-title "Tags and columns">
+<!ENTITY znp-text-title "Text display">
 <!ENTITY znp-tagman-saveman-title "Manage saved layout">
 <!ENTITY znp-tagman-colman-title "Select tags to use">
 <!ENTITY znp-tagman-sortman-title "Sorting output table">

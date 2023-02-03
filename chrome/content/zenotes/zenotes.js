@@ -84,7 +84,7 @@ Zotero.ZeNotes = new function()
         if(vm.tab==null)
         {
             vm.tab = Zotero_Tabs.add({
-                title: "Ze Notes - "+Zotero.ZeNotes.currentCollection(),
+                title: "Ze Notes - "+name,
                 data: {},
                 iconBackgroundImage:"url(\""+icon+"\")",
                 onClose: function(){vm.tab=null;}
@@ -194,7 +194,7 @@ Zotero.ZeNotes = new function()
         var collection = Zotero.ZeNotes.currentCollection();
         var url = "chrome://zenotes/content/notes.html";
         var io = {collection: collection};
-        var name = "zenotes-notes";
+        var name = Zotero.ZeNotes.currentCollection();
         Zotero.ZeNotes.openfromdb=true;
         // Zotero.ZeNotes.openwindow(url, name, io);
         Zotero.ZeNotes.opentab(url, name, io);

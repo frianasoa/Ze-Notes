@@ -23,8 +23,14 @@ Zotero.ZeNotes.data = new function()
         for(id in keys)
         {
             try {
-                var item = Zotero.Items.get(id);           
-                var notes = item.getNotes();
+                var item = Zotero.Items.get(id);   
+                var notes = []
+                
+                if(item.getType()!=1)
+                {
+                    notes = item.getNotes();
+                }
+                
                 if(notes.length>0)
                 {
                     for(j in notes)
@@ -197,8 +203,14 @@ Zotero.ZeNotes.data = new function()
     }
         
     this.tags = function(item)
-    {
-        var notes = item.getNotes();
+    {   
+        var notes = []
+        
+        if(item.getType()!=1)
+        {
+            notes = item.getNotes();
+        }
+        
         var r = {};
         for(j in notes)
         {
@@ -247,7 +259,7 @@ Zotero.ZeNotes.data = new function()
                 contents = "(p. "+n["annotationPageLabel"]+")"
             }
             
-            var note = comment+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+"77;'>"+contents+"</div>";
+            var note = comment+"<div id='annotation-"+n["parentItem"].key+"-"+n["key"]+"' class='annotation' data-attachmentkey='"+n["parentItem"].key+"' data-attachmentid='"+n["parentItem"].id+"' data-page='"+n["annotationPageLabel"]+"' data-key='"+n["key"]+"' style='background-color:"+n["annotationColor"]+Zotero.ZeNotes.settings.opacity+";'>"+contents+"</div>";
             
             var tags = n.getTags();                
             for(let i in tags)

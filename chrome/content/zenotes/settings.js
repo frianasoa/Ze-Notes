@@ -30,6 +30,8 @@ Zotero.ZeNotes.settings = new function()
         sort: [],
     }
     
+    this.opacity = "00";
+    
     this.infotags = ["id", "key", "title", "date", "journal", "author", "creator", "itemid"]
 
     this.saveLists = function()
@@ -50,13 +52,14 @@ Zotero.ZeNotes.settings = new function()
                 catch(e)
                 {
                     vm.lists = JSON.parse("{\"show\": [], \"hide\": [], \"sort\": []}");
-                    alert(e);
+                    alert("settings.load "+e);
                 }
                 Zotero.ZeNotes.openfromdb=false;
             }
             else
             {
                 try {
+                    vm.loadopacity();
                     vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
                 }
                 catch(e)
@@ -512,6 +515,30 @@ Zotero.ZeNotes.settings = new function()
                 resolve(false);
             });
         });
+    }
+    
+    this.tohex = function(d)
+    {
+        var hex = "0123456789ABCDEF";
+        return hex.charAt((d - d % 16)/16) + hex.charAt(d % 16)
+    }
+    
+    this.loadopacity = function()
+    {
+        var op = Zotero.ZeNotes.getPref("bg-opacity", "ff");
+        Zotero.ZeNotes.settings.opacity = op;
+        document.getElementById("bg-opacity").value = Zotero.ZeNotes.settings.opacity;
+    }
+    
+    this.setopacity = function()
+    {
+        Zotero.ZeNotes.settings.opacity = this.tohex(document.getElementById("bg-opacity").value);
+        this.saveopacity();
+    }
+    
+    this.saveopacity = function()
+    {
+        Zotero.ZeNotes.setPref("bg-opacity", Zotero.ZeNotes.settings.opacity);
     }
 }
 

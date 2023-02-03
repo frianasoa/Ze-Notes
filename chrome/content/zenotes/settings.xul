@@ -18,6 +18,7 @@
 			<tabbox id="zenotes-tabbox">
 				<tabs id="zenotes-tabs">
 					<tab label="&znp-tagman-title;"/>
+					<tab label="&znp-text-title;"/>
 					<!-- <tab label="Sort columns"/> -->
 				</tabs>
                 
@@ -113,9 +114,29 @@
                                     </row>
                                 </rows>
                             </grid>
-                            
                         </groupbox>
-                        
+                    </tabpanel>
+                    <tabpanel orient="vertical" flex="1">
+                        <groupbox flex="1">
+                            <caption label="Background opacity"/>
+                            <grid>
+                                <columns>
+                                    <column flex="1"/>
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <groupbox>
+                                            <scale min="0" max="255" id="bg-opacity" onchange="Zotero.ZeNotes.settings.setopacity();"/>
+                                            <groupbox>
+                                            <textnode class='bg-sample' style='background-color: yellow'>
+                                                Text
+                                            </textnode>
+                                            </groupbox>  
+                                        </groupbox>  
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
                     </tabpanel>
 				</tabpanels>
 			</tabbox>

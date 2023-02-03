@@ -27,7 +27,7 @@ var notes = new function()
                 notes.savescroll();
             });
         }).catch(e=>{
-            alert("notes.init: "+e);
+            alert("notes.init 1: "+e);
         });
         
         if(Zotero.ZeNotes.openfromdb==true)
@@ -39,7 +39,7 @@ var notes = new function()
                     Zotero.ZeNotes.setPref("tag-lists", r[0].contents);
                 }
             }).catch(e=>{
-                alert("notes.init: "+e);
+                alert("notes.init 2: "+e);
             });
         }
     }
