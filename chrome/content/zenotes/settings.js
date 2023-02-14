@@ -60,10 +60,18 @@ Zotero.ZeNotes.settings = new function()
             {
                 try {
                     vm.loadopacity();
-                    vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
                 }
                 catch(e)
                 {
+                    
+                }
+                try {
+                    vm.lists = JSON.parse(Zotero.ZeNotes.getPref("tag-lists", "{\"show\": [], \"hide\": [], \"sort\": []}"));
+                    
+                }
+                catch(e)
+                {
+                    alert(e);
                     vm.lists = JSON.parse("{\"show\": [], \"hide\": [], \"sort\": []}");
                 }
             }
