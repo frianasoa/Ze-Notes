@@ -200,7 +200,7 @@ Zotero.ZeNotes = new function()
         Zotero.ZeNotes.opentab(url, name, io);
     }
 
-    this.download = function(type)
+    this.download = function(type, options=null)
     {
         
         if(type=="doc" || type=="html")
@@ -212,6 +212,11 @@ Zotero.ZeNotes = new function()
         {
             var table = Zotero.ZeNotes.notewin.document.getElementById("notes-table");
             this.exportcsv(table);
+        }
+        else if(type=="markdown")
+        {
+            var table = Zotero.ZeNotes.notewin.document.getElementById("notes-table");
+            this.exportmarkdown(table, options);
         }
         else
         {
@@ -257,6 +262,73 @@ Zotero.ZeNotes = new function()
             var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
             converter.init(outputStream, "UTF-8", 0, 0);
             converter.writeString(html);
+            converter.close();
+            outputStream.close();
+        });
+    }
+    
+    this.cleantable = function(table)
+    {
+        var newtable = table.cloneNode(true);
+        var children = newtable.querySelectorAll("td");
+        children.forEach(td=>{
+            var data = "";
+            td.childNodes.forEach(c=>{
+                var value = "";
+                if(c.innerText!=undefined)
+                {
+                    if(c.tagName=="DIV")
+                    {
+                        value = "<div>"+c.innerText+"</div>";
+                    }
+                    else
+                    {
+                        value = c.innerText;
+                    }
+                }
+                else if(c.textContent!=undefined)
+                {
+                    value = c.textContent;
+                }
+                data+=value;
+            });
+            td.innerHTML = data;
+        });
+        return newtable;
+    }
+    
+    this.exportmarkdown = function(table, highlight="")
+    { 
+        Zotero.ZeNotes.turndownPluginGfm.tables(Zotero.ZeNotes.turndownService);
+        Zotero.ZeNotes.turndownService.addRule('linebreak', {
+          filter: ['br'],
+          replacement: function (content) {
+            return "<br/>"
+          }
+        })
+        Zotero.ZeNotes.turndownService.addRule('div', {
+          filter: ['div'],
+          replacement: function (content) {
+            return "<br/>"+highlight+content+highlight+"<br/>"
+          }
+        })
+        
+        var markdown = Zotero.ZeNotes.turndownService.turndown(this.cleantable(table)); 
+        var nsIFilePicker = Components.interfaces.nsIFilePicker;
+        var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+        
+        fp.defaultString = "ZeNotes - "+Zotero.ZeNotes.currentCollection()+".md";
+        fp.init(Zotero.ZeNotes.notewin, "Save to file", nsIFilePicker.modeSave);
+        fp.appendFilter("Markdown (*.md; *.MD)", "*.md; *.MD");
+        fp.defaultExtension="MD";
+        
+        fp.open(function()
+        {
+            var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
+            outputStream.init(fp.file, 0x04 | 0x08 | 0x20, 420, 0 );
+            var converter = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+            converter.init(outputStream, "UTF-8", 0, 0);
+            converter.writeString(markdown);
             converter.close();
             outputStream.close();
         });

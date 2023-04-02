@@ -140,6 +140,13 @@ var notes = new function()
                 "saveascsv": {name: "Export as csv...", icon: "fa-file-csv"},
                 "saveasdoc": {name: "Export as doc...", icon: "fa-file-word"},
                 "saveashtml": {name: "Export as html...", icon: "fa-file-code"},
+                "saveasmarkdown": {name: "Export as markdown", icon: "fa-markdown", items: {
+                    "saveasmarkdown": {name: "No Highlight ...", icon: "fa-markdown"},
+                    "saveasmarkdownbold": {name: "Use bold ...", icon: "fa-markdown"},
+                    "saveasmarkdownitalic": {name: "Use italic ...", icon: "fa-markdown"},
+                    "saveasmarkdownbolditalic": {name: "Use bold and italic ...", icon: "fa-markdown"},
+                    },
+                },
                 "sep": "-----",
                 "close": {name: "Exit", icon: "fa-xmark"},
             }
@@ -448,6 +455,22 @@ var notes = new function()
             Zotero.ZeNotes.download("html");
         }
         
+        else if(key=="saveasmarkdown"){
+            Zotero.ZeNotes.download("markdown", "");
+        }
+        
+        else if(key=="saveasmarkdownbold"){
+            Zotero.ZeNotes.download("markdown", "**");
+        }
+        
+        else if(key=="saveasmarkdownitalic"){
+            Zotero.ZeNotes.download("markdown", "*");
+        }
+        
+        else if(key=="saveasmarkdownbolditalic"){
+            Zotero.ZeNotes.download("markdown", "***");
+        }
+        
         else if(key=="saveasdoc"){
             Zotero.ZeNotes.download("doc");
         }
@@ -558,6 +581,8 @@ var notes = new function()
 
 window.addEventListener("load", function(e){
     notes.init();
+    Zotero.ZeNotes.turndownService = new TurndownService();
+    Zotero.ZeNotes.turndownPluginGfm = TurndownPluginGfmService;
 });
 
 window.addEventListener("unload", function(){
