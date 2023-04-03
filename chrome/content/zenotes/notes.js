@@ -141,10 +141,13 @@ var notes = new function()
                 "saveasdoc": {name: "Export as doc...", icon: "fa-file-word"},
                 "saveashtml": {name: "Export as html...", icon: "fa-file-code"},
                 "saveasmarkdown": {name: "Export as markdown", icon: "fa-markdown", items: {
-                    "saveasmarkdown": {name: "No Highlight ...", icon: "fa-markdown"},
-                    "saveasmarkdownbold": {name: "Use bold ...", icon: "fa-markdown"},
-                    "saveasmarkdownitalic": {name: "Use italic ...", icon: "fa-markdown"},
-                    "saveasmarkdownbolditalic": {name: "Use bold and italic ...", icon: "fa-markdown"},
+                    "saveasmarkdownnoicon": {name: "Simple", icon: "fa-markdown"},
+                    "saveasmarkdown": {name: "With icon", icon: "fa-markdown"},
+                    "sep": "---",
+                    "saveasmarkdownhtml": {name: "With html [full]", icon: "fa-markdown"},
+                    "saveasmarkdownhtmlicon": {name: "With html [icon]", icon: "fa-markdown"},
+                    "saveasmarkdownhtmlnoicon": {name: "With html [no icon]", icon: "fa-markdown"},
+                    
                     },
                 },
                 "sep": "-----",
@@ -455,20 +458,24 @@ var notes = new function()
             Zotero.ZeNotes.download("html");
         }
         
+        else if(key=="saveasmarkdownnoicon"){
+            Zotero.ZeNotes.download("markdown", []);
+        }
+        
         else if(key=="saveasmarkdown"){
-            Zotero.ZeNotes.download("markdown", "");
+            Zotero.ZeNotes.download("markdown", ["link-icon"]);
         }
         
-        else if(key=="saveasmarkdownbold"){
-            Zotero.ZeNotes.download("markdown", "**");
+        else if(key=="saveasmarkdownhtml"){
+            Zotero.ZeNotes.download("markdown", ["html", "style", "link-icon"]);
         }
         
-        else if(key=="saveasmarkdownitalic"){
-            Zotero.ZeNotes.download("markdown", "*");
+        else if(key=="saveasmarkdownhtmlicon"){
+            Zotero.ZeNotes.download("markdown", ["html", "link-icon"]);
         }
         
-        else if(key=="saveasmarkdownbolditalic"){
-            Zotero.ZeNotes.download("markdown", "***");
+        else if(key=="saveasmarkdownhtmlnoicon"){
+            Zotero.ZeNotes.download("markdown", ["html"]);
         }
         
         else if(key=="saveasdoc"){

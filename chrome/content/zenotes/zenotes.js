@@ -200,7 +200,7 @@ Zotero.ZeNotes = new function()
         Zotero.ZeNotes.opentab(url, name, io);
     }
 
-    this.download = function(type, options=null)
+    this.download = function(type, options=[])
     {
         
         if(type=="doc" || type=="html")
@@ -267,7 +267,7 @@ Zotero.ZeNotes = new function()
         });
     }
     
-    this.cleantable = function(table)
+    this.cleantable = function(table, options=[])
     {
         var newtable = table.cloneNode(true);
         var children = newtable.querySelectorAll("td");
@@ -279,7 +279,28 @@ Zotero.ZeNotes = new function()
                 {
                     if(c.tagName=="DIV")
                     {
-                        value = "<div>"+c.innerText+"</div>";
+                        if(options.includes("style"))
+                        {
+                            if(options.includes("link-icon"))
+                            {
+                                value = "<div style='"+c.style.cssText+"'>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>&#128279;</a></div><br/>";
+                            }
+                            else
+                            {
+                                value = "<div style='"+c.style.cssText+"'><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>"+c.innerText+"</a></div><br/>";
+                            }
+                        }
+                        else
+                        {
+                            if(options.includes("link-icon"))
+                            {
+                                value = "<div>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>&#128279;</a></div><br/>";
+                            }
+                            else
+                            {
+                                value = "<div><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>"+c.innerText+"</a></div><br/>";
+                            }
+                        }
                     }
                     else
                     {
@@ -297,23 +318,43 @@ Zotero.ZeNotes = new function()
         return newtable;
     }
     
-    this.exportmarkdown = function(table, highlight="")
-    { 
+    this.markdown = function(table, options=[])
+    {
         Zotero.ZeNotes.turndownPluginGfm.tables(Zotero.ZeNotes.turndownService);
-        Zotero.ZeNotes.turndownService.addRule('linebreak', {
-          filter: ['br'],
-          replacement: function (content) {
-            return "<br/>"
-          }
-        })
-        Zotero.ZeNotes.turndownService.addRule('div', {
-          filter: ['div'],
-          replacement: function (content) {
-            return "<br/>"+highlight+content+highlight+"<br/>"
-          }
-        })
-        
-        var markdown = Zotero.ZeNotes.turndownService.turndown(this.cleantable(table)); 
+        var markdown = "";
+        if(options.includes("html"))
+        {
+            Zotero.ZeNotes.turndownService.keep(['div', 'hr', 'br', 'a']);
+            Zotero.ZeNotes.turndownService.addRule('divs', {
+              filter: ['div'],
+              replacement: function (content, node) {
+                return "<div style='"+node.style.cssText+"'>"+content+"</div><br/>";
+              }
+            });
+        }
+        else
+        {
+            Zotero.ZeNotes.turndownService.keep(['br']);
+            Zotero.ZeNotes.turndownService.addRule('links', {
+              filter: ['a'],
+              replacement: function (content, node) {
+                return "["+content+"]("+node.href+")";
+              }
+            });
+            Zotero.ZeNotes.turndownService.addRule('divs', {
+              filter: ['div', 'hr'],
+              replacement: function (content, node) {
+                return " <br/>**"+content+"**<br/><br/>";
+              }
+            });
+        }
+        markdown = Zotero.ZeNotes.turndownService.turndown(this.cleantable(table, options)).replace(/https\:\/\/zotero\//g, "zotero://");
+        return markdown
+    }
+    
+    this.exportmarkdown = function(table, options=[])
+    { 
+        var markdown = this.markdown(table, options)
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp =Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         
