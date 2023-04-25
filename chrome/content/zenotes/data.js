@@ -51,6 +51,22 @@ Zotero.ZeNotes.data = new function()
                         taglist.push(tag)
                     }
                 }
+                
+                attachments = item.getAttachments();
+                for(let id of attachments)
+                {
+                    attachment = Zotero.Items.get(id);
+                    if(attachment.isPDFAttachment()){
+                        annotations = attachment.getAnnotations();
+                        for(let n of annotations)
+                        {
+                            for(let t of n.getTags())
+                            {
+                                taglist.push(t.tag)
+                            }
+                        }
+                    }
+                }
             }
             catch
             {
@@ -58,6 +74,66 @@ Zotero.ZeNotes.data = new function()
             }
         }
         return [...new Set(taglist)];
+    }
+    
+    this.alltagsrecursive = function(collection)
+    {
+        var tags = [];
+        var children = collection.getChildItems();
+        for(i in children)
+        {
+            var child = children[i];
+            
+            if(child.itemType=="note")
+            {
+                tags = tags.concat(child.getTags());
+            }
+            
+            attachments = child.getAttachments();
+            for(let id of attachments)
+            {
+                attachment = Zotero.Items.get(id);
+                if(attachment.isPDFAttachment()){
+                    annotations = attachment.getAnnotations();
+                    for(let n of annotations)
+                    {
+                        tags = tags.concat(n.getTags())
+                    }
+                }
+            }
+        }
+        
+        if(collection.hasChildCollections())
+        {
+            var childcollections = collection.getChildCollections();
+            for(i in childcollections)
+            {
+                var cc = childcollections[i];
+                tags = tags.concat(Zotero.ZeNotes.data.alltagsrecursive(cc));
+            }
+        }
+        return tags;
+    }
+    
+    this.alltags_new = function()
+    {
+        var zp = Zotero.getActiveZoteroPane();
+        var collection = zp.getSelectedCollection();
+        var libraryid = zp.getSelectedLibraryID()
+        var tags = [];
+        if(collection)
+        {
+            tags = tags.concat(Zotero.ZeNotes.data.alltagsrecursive(collection));
+        }
+        else if(libraryid)
+        {
+            var tags = [];
+            var collections = Zotero.Collections.getByLibrary(libraryid);
+            collections.forEach(collection=>{
+                tags = tags.concat(Zotero.ZeNotes.data.alltagsrecursive(collection));
+            });
+        }
+        return [...new Set(tags.map(v=>v.tag))];
     }
     
     this.recursiveitems = function(collection)
