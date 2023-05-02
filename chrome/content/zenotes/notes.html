@@ -22,9 +22,14 @@
 
 </head>
 <body>
-    <div id="zn-menu" class="zn-menubar">
+    <div id="zn-menu" class="zn-menubar" style="display: flex; flex-direction: row">
+        <div style="flex: 10">
         <span class="zn-menuitem" id="zn-menu-file">File</span>
         <span class="zn-menuitem"  id="zn-menu-edit">Edit</span>
+        </div>
+        <div>
+        <input id="zn-menuitem-search" tabindex="0" style="height: 1.3em;" placeholder="Input then CTRL+F"/> <button style='height: 100%; font-size: 1.1em;' class='fas fa-magnifying-glass' id="zn-menuitem-search-go"tabindex="1" ></button>
+        </div>
     </div>
     <div class="zn-sep" id="zn-sep-1">
     </div>

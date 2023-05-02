@@ -42,6 +42,44 @@ var notes = new function()
                 alert("notes.init 2: "+e);
             });
         }
+        
+        this.initsearch();
+        
+    }
+    
+    this.initsearch = function()
+    {
+        var vm=this;
+        $("#zn-menuitem-search").on("keyup", function(e){
+            if(e.keyCode==13)
+            {
+                vm.find(e.target.value);
+            }
+        })
+        
+        $(document).keydown(function (event) {
+            if (event.ctrlKey && event.which === 70) 
+            {
+                event.preventDefault();
+                vm.find($("#zn-menuitem-search").val());
+            }
+        });
+                
+        $("#zn-menuitem-search-go").on("click", function(e){
+            vm.find($("#zn-menuitem-search").val());
+        })
+    }
+    
+    this.find = function(keyword)
+    {
+        $("#zn-menuitem-search").prop('disabled', true);
+        var found = window.find(keyword, 0, 0, 0, 0, 0, 0);
+        $("#zn-menuitem-search").prop('disabled', false);
+        if(!found)
+        {
+            alert("Not found! Starting from the beginning!");
+            $("#zn-menuitem-search").focus();
+        }
     }
     
     this.resize = function()
