@@ -2,4 +2,4 @@ echo Uploading all changes
 git checkout zotero7
 git add -A
 git commit -a
-git push origin zotero7
+git push zotero7
