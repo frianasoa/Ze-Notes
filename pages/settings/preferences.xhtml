@@ -1,0 +1,32 @@
+<vbox id="zenotes-prefpane-zenotes" onload="Zotero_Preferences.ZeNotes.init()">
+	<html:h1 id='zn-settings-main-title'></html:h1>
+	<vbox class="main-section">
+		<html:fieldset>
+			<html:legend class='zn-legend'>Tag display</html:legend>
+			<div class="zn-include" src="manage-tags.xhtml"> </div>
+		</html:fieldset>
+	
+		<html:fieldset>
+			<html:legend class='zn-legend'>Tag sorting</html:legend>
+			<div class="zn-include" src="sort-tags.xhtml"> </div>
+		</html:fieldset>
+	
+		<html:fieldset>
+			<html:legend class='zn-legend'>Load and save</html:legend>
+			<box >
+				<menulist native="true" oncommand="Zotero_Preferences.ZeNotes.updateprefimport(event);">
+				<menupopup id="zn-load-settings">
+				</menupopup>
+				</menulist>
+				<html:button onclick="Zotero_Preferences.ZeNotes.importpref(event);">Import preferences</html:button>
+			</box>
+
+			
+		</html:fieldset>
+	
+		<html:fieldset>
+			<html:legend class='zn-legend'>Page actions</html:legend>
+			<html:button id="zn-refresh">Refresh</html:button>
+		</html:fieldset>
+	</vbox>
+</vbox>

@@ -1,0 +1,15 @@
+{
+	"manifest_version": 2,
+	"name": "ZeNotes",
+	"version": "0.4.0-beta",
+	"description": "Advanced Notes Manager for Zotero",
+	"homepage_url": "https://github.com/frianasoa/Ze-Notes",
+	"applications": {
+		"zotero": {
+			"id": "zenotes@alefa.net",
+			"update_url": "https://raw.githubusercontent.com/frianasoa/zenotes/main/updates.json",
+			"strict_min_version": "6.999",
+			"strict_max_version": "7.0.*"
+		}
+	}
+}

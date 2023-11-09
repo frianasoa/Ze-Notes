@@ -1,7 +1,7 @@
 # Ze Notes
 [![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/assets/images/for-zotero-6.svg)](https://zotero.org)
 
-Start working on Zotero 7. Could take some time.
+Start working on Zotero 7. Still has some bugs. No auto update yet.
 
 ## Description
 ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes.

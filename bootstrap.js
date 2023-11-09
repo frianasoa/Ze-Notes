@@ -1,131 +1,97 @@
-/* Copyright 2012 Will Shanks.
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
-if (typeof Zotero == "undefined") {
-  var Zotero;
-  var Zotero_Tabs;
-}
-
+var ZeNotes;
+var Zotero_Tabs;
+var Menu;
+var Prefs;
+var Data;
+var Database;
+var Ui;
+var Format;
 var chromeHandle;
 
-// In Zotero 6, bootstrap methods are called before Zotero is initialized, and using include.js
-// to get the Zotero XPCOM service would risk breaking Zotero startup. Instead, wait for the main
-// Zotero window to open and get the Zotero object from there.
-//
-// In Zotero 7, bootstrap methods are not called until Zotero is initialized, and the 'Zotero' is
-// automatically made available.
-async function waitForZotero() {
-  if (typeof Zotero != "undefined") {
-    await Zotero.initializationPromise;
-  }
+const ANNOTATION = 1;
+const ATTACHMENT = 3;
+const NOTE = 28;
 
-  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
-  var windows = Services.wm.getEnumerator("navigator:browser");
-  var found = false;
-  while (windows.hasMoreElements()) {
-    let win = windows.getNext();
-    if (win.Zotero) {
-      Zotero = win.Zotero;
-      Zotero_Tabs = win.Zotero_Tabs;
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
-    await new Promise((resolve) => {
-      var listener = {
-        onOpenWindow: function (aWindow) {
-          // Wait for the window to finish loading
-          let domWindow = aWindow
-            .QueryInterface(Ci.nsIInterfaceRequestor)
-            .getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
-          domWindow.addEventListener(
-            "load",
-            function () {
-              domWindow.removeEventListener("load", arguments.callee, false);
-              if (domWindow.Zotero) {
-                Services.wm.removeListener(listener);
-                Zotero = domWindow.Zotero;
-                Zotero_Tabs = domWindow.Zotero_Tabs;
-                resolve();
-              }
-            },
-            false
-          );
-        },
-      };
-      Services.wm.addListener(listener);
-    });
-  }
-  await Zotero.initializationPromise;
+
+function log(msg) {
+	Zotero.debug("ZeNotes: " + msg);
 }
 
-function install(data, reason) {}
+function install() {
+	log("Installed 2.0");
+}
 
-async function startup({ id, version, resourceURI, rootURI }, reason) {
-  await waitForZotero();
-
-  // String 'rootURI' introduced in Zotero 7
-  if (!rootURI) {
-    rootURI = resourceURI.spec;
-  }
-
-  const window = Zotero.getMainWindow();
-  
-  // Global variables for plugin code
-  const ctx = {
-    Zotero,
-    Zotero_Tabs: Zotero_Tabs,
-    rootURI,
-    window,
-    document: window.document,
-    ZoteroPane: Zotero.getActiveZoteroPane(),
-  };
-
-  Services.scriptloader.loadSubScript(
-    `chrome://zenotes/content/zenotes.js`,
-    ctx
-  );
-  
-  Zotero.ZeNotes.initdisplay();
-
-  if (Zotero.platformMajorVersion >= 102) 
-  {
-    var aomStartup = Components.classes[
-      "@mozilla.org/addons/addon-manager-startup;1"
-    ].getService(Components.interfaces.amIAddonManagerStartup);
-    var manifestURI = Services.io.newURI(rootURI + "manifest.json");
-    chromeHandle = aomStartup.registerChrome(manifestURI, [
-      ["content", "__addonRef__", rootURI + "chrome/content/"],
-      ["locale", "__addonRef__", "en-US", rootURI + "chrome/locale/en-US/"],
-      ["locale", "__addonRef__", "ja-JA", rootURI + "chrome/locale/ja-JA/"],
+function registerchrome(rootURI){
+	var aomStartup = Cc["@mozilla.org/addons/addon-manager-startup;1"].getService(Ci.amIAddonManagerStartup);
+	
+    var manifestURI = Services.io.newURI(rootURI + "manifest.json");	
+	chromeHandle = aomStartup.registerChrome(manifestURI, [
+        ["content", "ze-notes-7", "pages/"],
     ]);
-  }
 }
 
-function shutdown({ id, version, resourceURI, rootURI }, reason) {
-  if (reason === APP_SHUTDOWN) {
-    return;
-  }
-  if (typeof Zotero === "undefined") {
-    Zotero = Components.classes["@zotero.org/Zotero;1"].getService(
-      Components.interfaces.nsISupports
-    ).wrappedJSObject;
-  }
-  Zotero.AddonTemplate.events.onUnInit(Zotero);
-
-  Cc["@mozilla.org/intl/stringbundle;1"]
-    .getService(Components.interfaces.nsIStringBundleService)
-    .flushBundles();
-
-  Cu.unload(`chrome://zenotes/content/zenotes.js`);
-
-  if (chromeHandle) {
-    chromeHandle.destruct();
-    chromeHandle = null;
-  }
+async function startup({ id, version, rootURI }) {
+	log("Starting 2.0");
+	registerchrome(rootURI);
+	Zotero.PreferencePanes.register({
+		pluginID: 'zenotes@alefa.net',
+		id: 'zenotes@alefa.net',
+		stylesheets: [
+			rootURI + 'pages/settings/preferences.css',
+			rootURI + 'pages/lib/fontawesome/6.1.1/css/all.min.css',
+		],
+		src: rootURI + 'pages/settings/preferences.xhtml',
+		scripts: [
+			rootURI + 'pages/settings/zntable.js',
+			rootURI + 'pages/settings/preferences.js',
+		],
+		image: rootURI+"/assets/zenotes-settings.png"
+	});
+	
+	Services.scriptloader.loadSubScript(rootURI + 'core/ui.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/menu.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/data.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
+	
+	ZeNotes.init({ id, version, rootURI});
+	ZeNotes.addToAllWindows();
+	Menu.addToAllWindows();
+	
+	// Zotero_Tabs is set in addToAllWindows in Menu
+	Zotero_Tabs = ZeNotes.window.Zotero_Tabs;
+	ZeNotes.Menu = Menu;
+	ZeNotes.Ui = Ui;
+	// ZeNotes.browser = browser;
+	ZeNotes.Data = Data;
+	ZeNotes.Database = Database;
+	ZeNotes.Prefs = Prefs;
+	ZeNotes.Format = Format;
+	Zotero.ZeNotes = ZeNotes;
+	
+	Database.create();
+	
+	await Zotero.ZeNotes.main();
 }
 
-function uninstall(data, reason) {}
+function onMainWindowLoad({ window }) {
+	ZeNotes.addToWindow(window);
+}
+
+function onMainWindowUnload({ window }) {
+	ZeNotes.removeFromWindow(window);
+}
+
+function shutdown() {
+	log("Shutting down 2.0");
+	ZeNotes.removeFromAllWindows();
+	ZeNotes = undefined;
+	chromeHandle.destruct();
+	chromeHandle = null;
+}
+
+function uninstall() {
+	log("Uninstalled 2.0");
+}
