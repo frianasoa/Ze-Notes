@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title> Ze Notes </title>
+
+<script src="chrome://ze-notes/content/lib/turndown/7.1.2/turndown.js"></script> 
+<script src="chrome://ze-notes/content/lib/turndown/7.1.2/turndown-plugin-gfm.js"></script> 
+<script src="chrome://ze-notes/content/lib/jquery/3.6.0/jquery.min.js"></script>
+<script src="chrome://ze-notes/content/lib/jquery-ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" />
+<link rel="stylesheet" href="chrome://ze-notes/content/lib/fontawesome/6.1.1/css/all.min.css" />
+<link rel="stylesheet" href="chrome://ze-notes/content/lib/jquery-ui/1.13.2/jquery-ui.min.css" />
+<script src="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js"></script>
+<script src="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.ui.position.min.js"></script>
+
+<link rel="stylesheet" href="chrome://ze-notes/content/notes/notes.css"/>
+
+<script src="zotero.js"></script>
+<script src="io.js"></script>
+<script src="find.js"></script>
+<script src="menus.js"></script>
+<script src="notes.js"></script>
+<script src="../settings/zntable.js"></script>
+
+</head>
+<body style="height: 100vh;" id="zn-page-body">
+	<div id="zn-menu" class="zn-menubar" style="display: flex; flex-direction: row">
+        <div style="flex: 10">
+        <span class="zn-menuitem" id="zn-menu-file">File</span>
+        <span class="zn-menuitem"  id="zn-menu-edit">Edit</span>
+        </div>
+    </div>
+    <div class="zn-sep" id="zn-sep-1">
+    </div>
+    <div id="zn-body-wrapper">
+        <div id="zn-body" tabindex="0">
+        </div>
+    </div>
+	<div id="zn-status-bar"  class="zn-status-bar" style="display: flex; flex-direction: row">
+		<div style="display: none" id="zn-status-bar-message">Status: </div>
+		<div id="zn-search-bar" style="flex:1; display:none; flex-direction: row">
+			<div style="flex:1;">
+				<input id="zn-search-box" /> <button id="zn-search-up" class="fa-solid fa-chevron-up"></button><button id="zn-search-down" class="fa-solid fa-chevron-down"></button>
+			</div>
+			<div style="display: flex; flex-direction: row;">
+				<div style="flex: 1;"></div>
+				<button class="fa-solid fa-xmark" onclick="Find.hide();"></button>
+			</div>
+		</div>
+	</div>
+    
+    <div id="dialog-message" title="Choose file" style="display:none;">
+        <div id="dialog-message-content">
+            
+        </div>
+    </div>
+</body>
+</html>

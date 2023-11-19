@@ -1,0 +1,26 @@
+* {
+	font-size: 1em!important;
+}
+
+.zn-type-table {
+	margin-right: 1.2em!mportant;
+	min-width: 80vw!important;
+}
+
+.zn-table-holder {
+	height: 15em!important;
+}
+
+.zn-legend {
+	font-size: 1.02em!important;
+	
+}
+
+.zn-include {
+	padding-top: 0.5em!important;
+	width: 100%!important;
+}
+
+fieldset {
+	width: 100%!important;
+}

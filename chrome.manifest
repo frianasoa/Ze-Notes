@@ -1,7 +1,3 @@
-content	zenotes				chrome/content/zenotes/
-locale	zenotes	en-US		chrome/locale/en-US/zenotes/
-#add later
-#locale	zenotes	ja-JP		chrome/locale/ja-JP/zenotes/
-skin	zenotes	default		chrome/skin/default/zenotes/
-
-#overlay	chrome://zotero/content/zoteroPane.xul	chrome://zenotes/content/overlay.xul
+locale    Ze-Notes   en-US     chrome/locale/en-US/
+content    Ze-Notes    pages/
+skin     Ze-Notes    chrome/skin/

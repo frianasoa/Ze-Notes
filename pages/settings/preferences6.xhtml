@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html:html xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html:head>
+<html:title> Ze Notes - Settings </html:title>
+<html:link rel="stylesheet" ></html:link>
+
+<html:link rel="stylesheet" type="text/css" href="preferences.css" />
+<html:link rel="stylesheet" type="text/css" href="preferences6.css" />
+<html:link rel="stylesheet" type="text/css" href="../lib/fontawesome/6.1.1/css/all.min.css" />
+
+<html:script src="zotero.js"></html:script>
+<html:script src="zntable.js"></html:script>
+<html:script src="preferences.js"></html:script>
+<html:script>
+
+window.addEventListener("focus", function(){
+	document.body.innerHTML = "";
+	Zotero_Preferences.ZeNotes.readxhtml(document.body, "preferences.xhtml").then(u=>{
+		Zotero_Preferences.ZeNotes.init();
+	});
+})
+
+window.addEventListener("keyup", function(e){
+	if(e.ctrlKey &amp;&amp; e.keyCode == 87) { 
+		window.close();
+	}
+})
+
+</html:script>
+</html:head>
+<html:body>
+
+</html:body>
+</html:html>

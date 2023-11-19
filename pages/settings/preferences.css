@@ -1,0 +1,78 @@
+* {
+	font-size: 1.01em;
+}
+
+.zn-type-table {
+	background-color: white;
+	margin-left: 0.6em;
+	margin-right: 0.9em;
+	border-spacing: 0;
+	height: 100%;
+	min-width: 450px;
+}
+
+.zn-type-table thead{
+	position: sticky;
+	top: 0;
+	background-color: white;
+	z-index: 1;
+}
+
+.zn-type-table td, .zn-type-table th {
+	border: solid 1px;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+}
+
+.zn-type-table tr:hover{
+	background-color: #eaeaea;
+}
+
+.status-hidden {
+	color: red;
+}	
+
+.zn-table-holder {
+	height: 15em;
+	overflow-y: auto;
+	display: flex;
+}
+
+.zn-legend {
+	font-size: 1.3em;
+	color: red;
+	
+}
+
+.zn-include {
+	padding-top: 0.5em;
+}
+
+.red-icon {
+	color: red;
+}
+
+.blue-icon {
+	color: blue;
+}
+
+.direction-up {
+	color: blue;
+}
+
+fieldset {
+	margin-bottom: 1.2em;
+}
+
+.tag-width {
+	width: 2.1em;
+}
+
+#table-sort-tags td, 
+#table-sort-tags tr, 
+#table-manage-tags td, 
+#table-manage-tags tr  {
+	max-width: 15em;
+}

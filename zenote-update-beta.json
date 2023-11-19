@@ -1,0 +1,18 @@
+{
+  "addons": {
+    "zenotes@alefa.net": {
+      "updates": [
+        {
+          "version": "0.4.1-beta",
+          "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v0.4.1-beta/zenotes-v0.4.1-beta.xpi",
+          "update_hash": "sha256:021b5e1db5a4f71aca2177e1b49e4fb7cbcd5c3872f52520c2f957ca3136b9f0",
+          "applications": {
+            "gecko": {
+              "strict_min_version": "60.0"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
