@@ -62,11 +62,17 @@ Database =
 		this.exec(q, values);
     },
 
-    async getsetting(collectionid)
+    async getsetting(collectionid, label="Default")
     {
 		var q = "SELECT * FROM  `default` WHERE collectionid=?";
 		var values = [collectionid];
-        return this.exec(q, values);
+        var r = await this.exec(q, values);
+		
+		if(typeof r=="undefined")
+		{
+			return this.adddefault(collectionid, label);
+		}
+		return r;
     },
 
     async getsettings()
