@@ -30,5 +30,67 @@ Utils = {
 	rgba2hex(rgba)
 	{
 		m = rgba.replace("rgba(", "").replace(")", "").replace(" ", "").split(",");
+	},
+	
+	escapeXml(unsafe) 
+	{
+		return unsafe.replace(/[<>&'"]/g, function (c) {
+			switch (c) {
+				case '<': return '&lt;';
+				case '>': return '&gt;';
+				case '&': return '&amp;';
+				case '\'': return '&apos;';
+				case '"': return '&quot;';
+			}
+		});
+	},
+	
+	array_index(arr, value)
+	{
+		var index = -1;
+		arr.some(function(elt, i){
+			if(value.toLowerCase()===elt.toLowerCase())
+			{
+				index=i;
+				return true;
+			}
+		})
+		return index;
+	},
+	
+	array_move(arr, source, destination)
+	{
+		var sindex = Utils.array_index(arr, source);
+		var dindex = Utils.array_index(arr, destination);
+		
+		if(dindex==-1)
+		{
+			if(sindex==-1)
+			{
+				arr.push(source);
+			}
+			arr.push(destination);
+		}
+		else
+		{
+			if(sindex==-1)
+			{
+				arr.push(source);
+			}
+			
+			sindex = Utils.array_index(arr, source);
+			dindex = Utils.array_index(arr, destination);
+			
+			if(dindex>=arr.length)
+			{
+				var k = dindex - arr.length + 1;
+				while(k--)
+				{
+					arr.push(undefined);
+				}
+			}
+			arr.splice(dindex, 0, arr.splice(sindex, 1)[0]);
+		}
+		return arr;
 	}
 }

@@ -125,7 +125,14 @@ Data = {
 	
 	attachmenttags(item){
 		var taglist = [];
-		var attachments = item.getAttachments();
+		var attachments = [];
+		try {
+			attachments = item.getAttachments();
+		}
+		catch(e)
+		{
+			
+		}
 		for(let id of attachments)
 		{
 			attachment = Zotero.Items.get(id);

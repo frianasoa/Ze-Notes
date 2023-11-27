@@ -17,7 +17,7 @@ Zotero_Preferences.ZNTable = {
 	
 	simplesortfunc(order){
 		return (a, b) => {
-		return order.indexOf(a) - order.indexOf(b);
+			return order.indexOf(a) - order.indexOf(b);
 	  };
 	},
 	
@@ -77,7 +77,15 @@ Zotero_Preferences.ZNTable = {
 			}
 		}
 		
-		tags.sort(this.simplesortfunc(usersettings["order"]));
+		var order = usersettings["order"];
+		for(o of tags) {
+			if(!order.includes(o))
+			{
+				order.push(o);
+			}
+		}
+		
+		tags.sort(this.simplesortfunc(order));
 		return tags;
 	},
 	
@@ -128,10 +136,12 @@ Zotero_Preferences.ZNTable = {
 			
 			for(i in columns)
 			{
+				
 				var c = columns[i];
+				var value = this.toxml(tag[c]);
 				var td = document.createElementNS("http://www.w3.org/1999/xhtml", 'td');
 				tr.appendChild(td);
-				const doc = parser.parseFromString("<span xmlns='http://www.w3.org/1999/xhtml' class='"+statusclass+" tag-"+c+"'>"+tag[c]+"</span>", 'application/xhtml+xml');
+				const doc = parser.parseFromString("<span xmlns='http://www.w3.org/1999/xhtml' class='"+statusclass+" tag-"+c+"'>"+value+"</span>", 'application/xhtml+xml');
 				const importedNode = document.importNode(doc.documentElement, true);
 				td.appendChild(importedNode);
 			}
@@ -325,7 +335,7 @@ Zotero_Preferences.ZNTable = {
 		var ipts = table.querySelectorAll("input.tag-width");
 		for(ipt of ipts)
 		{
-			if(ipt.value!=null)
+			if(ipt.value!=null && ipt.dataset.tag!=null)
 			{
 				widths[ipt.dataset.tag] = ipt.value;
 			}
@@ -353,5 +363,20 @@ Zotero_Preferences.ZNTable = {
 			order.push(span.textContent);
 		};
 		return order;
+	},
+	
+	toxml(txt)
+	{
+		if (Zotero.platformMajorVersion >= 102) {
+			var parser = new DOMParser();
+			var doc = parser.parseFromString(txt, "text/html").body;
+			html = new XMLSerializer().serializeToString(doc);
+		}
+		else {
+			const parser = Components.classes['@mozilla.org/xmlextras/domparser;1'].createInstance(Components.interfaces.nsIDOMParser);
+			var doc = parser.parseFromString(txt, 'text/html').documentElement;
+			html = new XMLSerializer().serializeToString(doc);
+		}
+		return html;
 	}
 }

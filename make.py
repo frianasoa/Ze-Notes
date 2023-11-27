@@ -3,6 +3,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 import json
 import hashlib
+import shutil
 
 
 suffix = "-beta"
@@ -62,9 +63,14 @@ def zipdir(path, ziph):
                 continue
             ziph.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), os.path.join(path, '.')))
 
-manifest()
+def install(source):
+    dest = "C:/ETOOLS/apps/Zotero_win-x64/distribution/extensions/zenotes@alefa.net.xpi"
+    shutil.copy(source, dest)
+    
+manifest()  
 os.makedirs("build", exist_ok=True)
 filename = './build/zenotes-v'+getver()+'.xpi'
 with zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
     zipdir('./', zipf)
 update(filename)
+install(filename)

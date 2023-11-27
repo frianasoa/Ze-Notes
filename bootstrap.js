@@ -10,6 +10,7 @@ var Database;
 var Ui;
 var Format;
 var Utils
+var Filter;
 
 const ANNOTATION = 1;
 const ATTACHMENT = 3;
@@ -28,6 +29,7 @@ function log(msg) {
 // In Zotero 7, bootstrap methods are not called until Zotero is initialized, and the 'Zotero' is
 // automatically made available.
 async function waitForZotero() {
+		
 	if (typeof Zotero != 'undefined') {
 		await Zotero.initializationPromise;
 		return;
@@ -124,13 +126,14 @@ function setDefaultPrefs(rootURI) {
 }
 
 function registerchrome(rootURI){
-	var aomStartup = Cc["@mozilla.org/addons/addon-manager-startup;1"].getService(Ci.amIAddonManagerStartup);
-	
-    var manifestURI = Services.io.newURI(rootURI + "manifest.json");	
+	var aomStartup = Cc["@mozilla.org/addons/addon-manager-startup;1"].getService(Ci.amIAddonManagerStartup);    
+	var manifestURI = Services.io.newURI(rootURI + "manifest.json");	
+
 	chromeHandle = aomStartup.registerChrome(manifestURI, [
-        ["content", "ze-notes", "pages/"],
-        ["assets", "ze-notes", "assets/"],
+        ["content", "ze-notes", "content/"],
+        ["locale", "ze-notes", "en-US", "chrome/locale/en-US"],
     ]);
+	
 }
 
 function initPreferences(rootURI) {
@@ -152,15 +155,15 @@ function initPreferences(rootURI) {
 			pluginID: 'zenotes@alefa.net',
 			id: 'zenotes@alefa.net',
 			stylesheets: [
-				rootURI + 'pages/settings/preferences.css',
-				rootURI + 'pages/lib/fontawesome/6.1.1/css/all.min.css',
+				rootURI + 'content/settings/preferences.css',
+				rootURI + 'content/lib/fontawesome/6.1.1/css/all.min.css',
 			],
-			src: rootURI + 'pages/settings/preferences.xhtml',
+			src: rootURI + 'content/settings/preferences.xhtml',
 			scripts: [
-				rootURI + 'pages/settings/zntable.js',
-				rootURI + 'pages/settings/preferences.js',
+				rootURI + 'content/settings/zntable.js',
+				rootURI + 'content/settings/preferences.js',
 			],
-			image: rootURI+"/assets/zenotes-settings.png"
+			image: rootURI+"/content/images/zenotes-settings.png"
 		});
 	}
 }
@@ -193,6 +196,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		setDefaultPrefs(rootURI);
 	}
 
+	Services.scriptloader.loadSubScript(rootURI + 'core/filter.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/utils.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ui.js');
@@ -212,6 +216,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Ui = Ui; 
 	ZeNotes.Menu = Menu;
 	ZeNotes.Utils = Utils;
+	ZeNotes.Filter = Filter;
 
 	ZeNotes.Data = Data;
 	ZeNotes.Database = Database;

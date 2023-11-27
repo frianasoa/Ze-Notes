@@ -100,22 +100,22 @@ Io = {
                         {
                             if(options.includes("link-icon"))
                             {
-                                value = "<div style='"+c.style.cssText+"'>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>&#128279;</a></div><br/>";
+                                value = "<div style='"+c.style.cssText+"'>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.annotationkey+"'>&#128279;</a></div><br/>";
                             }
                             else
                             {
-                                value = "<div style='"+c.style.cssText+"'><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>"+c.innerText+"</a></div><br/>";
+                                value = "<div style='"+c.style.cssText+"'><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.annotationkey+"'>"+c.innerText+"</a></div><br/>";
                             }
                         }
                         else
                         {
                             if(options.includes("link-icon"))
                             {
-                                value = "<div>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>&#128279;</a></div><br/>";
+                                value = "<div>"+c.innerText+" <a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.annotationkey+"'>&#128279;</a></div><br/>";
                             }
                             else
                             {
-                                value = "<div><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.key+"'>"+c.innerText+"</a></div><br/>";
+                                value = "<div><a href='https://zotero/open-pdf/library/items/"+c.dataset.attachmentkey+"?annotation="+c.dataset.annotationkey+"'>"+c.innerText+"</a></div><br/>";
                             }
                         }
                     }

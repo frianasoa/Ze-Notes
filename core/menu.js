@@ -17,7 +17,7 @@ Menu = {
 	},
 	mainmenu(w){
 		let stringBundle = Services.strings.createBundle(
-			'chrome://Ze-Notes/locale/zenotes.properties'
+			'chrome://ze-notes/locale/zenotes.properties'
 		);
 		let document = w.document;
 		
@@ -51,7 +51,7 @@ Menu = {
 		menuitem_settings.setAttribute("data-l10n-id", "ze-notes-settings1");
 		
         menuitem_settings.className="menuitem-iconic";
-        menuitem_settings.setAttribute("image", ZeNotes.rootURI+"/assets/zenotes-settings.png");
+        menuitem_settings.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-settings.png");
         menuitem_settings.addEventListener("command", function(){
 			Ui.openpreferences();
 		});
@@ -68,7 +68,7 @@ Menu = {
         menuitem_notes.setAttribute("id", "zenotes-menuitem-notes");
         menuitem_notes.setAttribute("label", "Notes");
         menuitem_notes.className="menuitem-iconic";
-        menuitem_notes.setAttribute("image", ZeNotes.rootURI+"/assets/zenotes-notes.png");
+        menuitem_notes.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-notes.png");
         menuitem_notes.addEventListener("command", function(){
 			Menu.opentab();
 			
@@ -82,7 +82,7 @@ Menu = {
         menuitem_notes_c.setAttribute("id", "zenotes-menuitem-contextmenu");
         menuitem_notes_c.setAttribute("label", "ZeNotes - My notes in collection");
         menuitem_notes_c.className="menuitem-iconic";
-        menuitem_notes_c.setAttribute("image", ZeNotes.rootURI+"/assets/zenotes-notes.png");
+        menuitem_notes_c.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-notes.png");
         menuitem_notes_c.addEventListener("command", function(){
 			Menu.opentab();
 		});

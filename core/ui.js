@@ -27,7 +27,7 @@ Ui = {
         var url = "chrome://ze-notes/content/settings/preferences6.xhtml";
         var io = {collection: Zotero.ZeNotes.collection};
         var name = "settingswin"
-                Zotero.getMainWindow().openDialog(url, name, 'chrome,titlebar,toolbar,centerscreen,dialog,modal=no,resize,width=900,height=900px', io);
+                Zotero.getMainWindow().openDialog(url, name, 'chrome,titlebar,toolbar,centerscreen,dialog,modal=no,resize,resizable=yes,width=900,height=600px', io);
 	},
 	
 	reload(){

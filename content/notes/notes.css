@@ -161,3 +161,7 @@ th {
 .z-button:hover {
 	border: solid 1px red;
 }
+
+.draggable-header {
+	cursor: pointer;
+}

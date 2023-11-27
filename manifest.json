@@ -5,8 +5,8 @@
     "description": "Advanced notes manager",
     "homepage_url": "https://github.com/frianasoa/zenotes",
     "icons": {
-        "48": "chrome://Ze-Notes/skin/icon.png",
-        "64": "chrome://Ze-Notes/skin/icon64.png"
+        "48": "content/images/icon.png",
+        "64": "content/images/icon64.png"
     },
     "applications": {
         "zotero": {

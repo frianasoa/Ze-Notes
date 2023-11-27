@@ -1,3 +1,2 @@
 locale    Ze-Notes   en-US     chrome/locale/en-US/
-content    Ze-Notes    pages/
-skin     Ze-Notes    chrome/skin/
+content    Ze-Notes    content/

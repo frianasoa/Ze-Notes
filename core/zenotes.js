@@ -15,7 +15,7 @@ ZeNotes = {
 		this.version = version;
 		this.rootURI = rootURI;
 		this.initialized = true;
-		this.icon = rootURI+"/assets/zenotes-notes.png";
+		this.icon = rootURI+"/content/images/zenotes-notes.png";
 	},
 	
 	log(msg) {
@@ -49,7 +49,7 @@ ZeNotes = {
 		// Use strings from zenotes.properties (legacy properties format) in Zotero 6
 		else {
 			let stringBundle = Services.strings.createBundle(
-				'chrome://Ze-Notes/locale/zenotes.properties'
+				'chrome://ze-notes/locale/zenotes.properties'
 			);
 		}
 	},

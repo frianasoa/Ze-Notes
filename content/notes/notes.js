@@ -6,6 +6,20 @@ Notes = {
 		this.body.focus();
 	},
 	
+	async savesettings(settings)
+	{
+		var usersettings = {};
+		var c = Zotero.getActiveZoteroPane().getSelectedCollection();
+		this.collection = "All documents";
+		this.collectionid = "all-documents";
+		if(c!=undefined && c.name!=undefined)
+		{
+			this.collection = c.name;
+			this.collectionid = c.id;
+		}
+		return Zotero.ZeNotes.Database.updatesetting(Notes.collectionid, Notes.collection, JSON.stringify(settings));
+	},
+	
 	async getsettings()
 	{
 		var usersettings = {};
@@ -24,7 +38,7 @@ Notes = {
 		}
 		catch(e){
 			var dbdata = await Zotero.ZeNotes.Data.get();
-			usersettings ={
+			usersettings = {
 				hidden: [],
 				order: dbdata["info_columns"].concat(dbdata["selected_tags"]),
 				sort: dbdata["info_columns"].concat(dbdata["selected_tags"]),
@@ -32,6 +46,20 @@ Notes = {
 			}
 		}
 		return usersettings;
+	},
+	
+	async insertcolumn(source, destination) {
+		if(source.toLowerCase()==destination.toLowerCase())
+		{
+			return;
+		}
+		var settings = await Notes.getsettings();
+		var order = settings["order"];
+		order = Zotero.ZeNotes.Utils.array_move(order, source, destination);
+		settings["order"] = order;
+		Notes.savesettings(settings).then(r=>{
+			Zotero.ZeNotes.Ui.reload();
+		});
 	},
 	
 	async loaddata ()
@@ -57,15 +85,28 @@ Notes = {
 		table.style.tableLayout = "fixed";
 
         columns.forEach(c=>{
-			
-			
-			
             var tdh = document.createElement("th");
-            tdh.innerHTML = c;
-            tdh.className = "context-menu-header";
+            Notes.innerHTML(tdh, c);
+            tdh.className = "context-menu-header draggable-header";
+			tdh.setAttribute("draggable", "true");
             tdh.dataset.column = c;
 			tdh.style.minWidth = width+"px";
-            trh.appendChild(tdh)
+			tdh.style.userSelect = "none";
+            trh.appendChild(tdh);
+			
+			tdh.addEventListener("dragstart", function(e){
+				e.dataTransfer.setData('text/plain', e.target.dataset.column);
+			})
+			
+			tdh.addEventListener("dragover", function(e){
+				e.preventDefault();
+			})
+			
+			tdh.addEventListener("drop", function(e){
+				var source = e.dataTransfer.getData("text/plain");
+				var destination = e.target.dataset.column;
+				Notes.insertcolumn(source, destination);
+			})
 			
 			if(Object.keys(widths).includes(c))
 			{
@@ -74,7 +115,6 @@ Notes = {
 					tdh.style.minWidth = widths[c]+"px";
 				}
 			}
-			
         });
 				
         items.forEach(v=>{
@@ -88,20 +128,11 @@ Notes = {
                 if(c in v){
 					
 					try {
-						td.innerHTML = v[c];
+						Notes.innerHTML(td, v[c]);
 					}
 					catch(e)
 					{
 						alert(e+"=>"+c+": "+v[c]+" : ");
-					}
-					td.style.minWidth = width+"px";
-					
-					if(Object.keys(widths).includes(c))
-					{
-						if(widths[c]!="")
-						{
-							td.style.minWidth = widths[c]+"px";
-						}
 					}
                 }
                 
@@ -144,11 +175,32 @@ Notes = {
                     });
                 });
 				td.style.minWidth = width+"px";
+				if(Object.keys(widths).includes(c))
+				{
+					if(widths[c]!="")
+					{
+						td.style.minWidth = widths[c]+"px";
+					}
+				}
                 
             });
         }); 
         document.getElementById("zn-body").appendChild(table);
     },
+	innerHTML(elt, txt)
+	{
+		if (Zotero.platformMajorVersion >= 102) {
+			var parser = new DOMParser();
+			var doc = parser.parseFromString(txt, "text/html").body;
+			html = new XMLSerializer().serializeToString(doc);
+		}
+		else {
+			const parser = Components.classes['@mozilla.org/xmlextras/domparser;1'].createInstance(Components.interfaces.nsIDOMParser);
+			var doc = parser.parseFromString(txt, 'text/html').documentElement;
+			html = new XMLSerializer().serializeToString(doc);
+		}
+		elt.innerHTML = html;
+	}
 }
 
 window.addEventListener("load", function(){

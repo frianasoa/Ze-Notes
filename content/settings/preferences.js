@@ -20,6 +20,8 @@ Zotero_Preferences.ZeNotes = {
 		document.getElementById("zn-refresh").addEventListener("click", function(){
 			Zotero.ZeNotes.Ui.reload();
 		});
+		
+		
 	},
 	
 	initcolumnwidth()
@@ -34,18 +36,25 @@ Zotero_Preferences.ZeNotes = {
 		}
 	},
 	
+	loadpreference(prefid, elid)
+	{
+		var el = document.getElementById(elid)
+		if(el!=null) {
+			el.value = Zotero.ZeNotes.Prefs.get(prefid);
+		}
+	},
+	
+	setpreference(e, id) {
+		Zotero.ZeNotes.Prefs.set(id, e.target.value);
+		Zotero.ZeNotes.Ui.reload();
+	},
+	
 	updatecolumnwidth(e)
 	{
 		var sample = document.getElementById("zn-column-width-val");
 		sample.value = e.target.value;
 	},
 	
-	setcolumnwidth(e)
-	{
-		Zotero.ZeNotes.Prefs.set("column-width", e.target.value);
-		Zotero.ZeNotes.Ui.reload();
-	},
-
 	initopacity()
 	{
 		var sample = document.getElementById("zn-bg-sample");
@@ -65,11 +74,7 @@ Zotero_Preferences.ZeNotes = {
 		var color = Zotero.ZeNotes.Utils.addopacity(sample.style.backgroundColor, e.target.value);
 		sample.style.backgroundColor = color;
 	},
-	
-	setopacity(e)
-	{
-		Zotero.ZeNotes.Prefs.set("bg-opacity", e.target.value);
-	},
+
 	
 	importpref(e)
 	{
@@ -178,7 +183,7 @@ Zotero_Preferences.ZeNotes = {
 	
 	async readxhtml(include, filename)
 	{
-		return fetch(Zotero.ZeNotes.rootURI+"pages/settings/"+filename)
+		return fetch(Zotero.ZeNotes.rootURI+"content/settings/"+filename)
 		.then(response => response.text())
 		.then(content => {
 			const parser = new DOMParser();
@@ -189,6 +194,7 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreferences();
 			Zotero_Preferences.ZeNotes.initopacity();
 			Zotero_Preferences.ZeNotes.initcolumnwidth();
+			Zotero_Preferences.ZeNotes.	loadpreference("html-filter", "zn-html-filter");
 		})
 		.catch(error => {
 			alert('Error loading content: ' + error);
@@ -242,6 +248,7 @@ Zotero_Preferences.ZeNotes = {
 	saveandreload()
 	{
 		this.saveusersettings().then(()=>{
+			Zotero.ZeNotes.Ui.reload();
 		});
 	},
 		
@@ -302,9 +309,10 @@ Zotero_Preferences.ZeNotes = {
 					value: t,
 					status: status,
 					direction: direction,
-					width: "<input onchange=\"Zotero_Preferences.ZeNotes.saveusersettings();\" value=\""+width+"\" class=\"tag-width\" data-tag=\""+t+"\"/>",
+					width: "<input onchange=\"Zotero_Preferences.ZeNotes.saveandreload();\" value=\""+width+"\" class=\"tag-width\" data-tag=\""+t+"\"/>",
 					actions: this.tableutils.actions(t, status, direction, buttonlist),
 				});
+				width = "";
 			}
 			
 			for(t of data["info_columns"])
@@ -331,9 +339,10 @@ Zotero_Preferences.ZeNotes = {
 					value: t,
 					status: status,
 					direction: direction,
-					width: "<input onchange=\"Zotero_Preferences.ZeNotes.saveandreload();\"  value=\""+width+"\" class=\"tag-width\" />",
+					width: "<input onchange=\"Zotero_Preferences.ZeNotes.saveandreload();\" value=\""+width+"\" class=\"tag-width\" data-tag=\""+t+"\"/>",
 					actions: this.tableutils.actions(t, status, direction, buttonlist),
 				});
+				width = "";
 			}
 			this.tableutils.rendertags(table, tags, columns, usersettings);
 		});

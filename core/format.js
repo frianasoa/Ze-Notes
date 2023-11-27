@@ -7,14 +7,13 @@ Format = {
 		{
 			var notes = Format.notes(item);
 			lines.push(await Format.formatitem(item, notes));
-			
 		}
 		
 		for(line of lines)
 		{
 			// Add if item has tags
 			if(Object.keys(line).some(r=> tags.includes(r)))
-			{
+			{	
 				tagged_items.push(line);
 			}
 		}
@@ -48,9 +47,10 @@ Format = {
 		}
 		for(c in notes)
 		{
-			notes[c] = this.xmlescape(notes[c]);
+			// Check later
+			// notes[c] = this.xmlescape(notes[c]);
 		}		
-		return Object.assign({},line, notes);
+		return Object.assign({}, line, notes);
 	},
 	
 	year(item) {
@@ -64,8 +64,16 @@ Format = {
         {
             return key;
         }
-        var attachmentIDs = item.getAttachments();
-        
+		
+        var attachmentIDs = [];
+		try {
+			attachmentIDs = item.getAttachments();
+        }
+		catch(e)
+		{
+			
+		}
+		
         if(attachmentIDs.length>0)
         {
             var attachment = Zotero.Items.get(attachmentIDs[0]);
@@ -111,8 +119,17 @@ Format = {
             return filenames;
         }
         
-        var attachmentIDs = item.getAttachments();
-        for(let id in attachmentIDs)
+		
+        var attachmentIDs = [];
+        try {
+			attachmentIDs = item.getAttachments();
+        }
+		catch(e)
+		{
+			
+		}
+		
+		for(let id in attachmentIDs)
         {
             var attachment = Zotero.Items.get(attachmentIDs[id]);
             var path = attachment.attachmentPath;
@@ -145,10 +162,20 @@ Format = {
 	
 	notes(item){
 		var values = []
+		var selectors = Zotero.ZeNotes.Prefs.get("html-filter");
+
 		if(![ANNOTATION, ATTACHMENT, NOTE].includes(item.itemTypeID))
 		{
 			var nids = item.getNotes(false);
-			var pdfids = item.getAttachments();
+			var pdfids = [];
+			try {
+				pdfids = item.getAttachments();
+			}
+			catch(e)
+			{
+				
+			}
+			
 			var notes = []
 			for(id of nids)
 			{
@@ -176,8 +203,10 @@ Format = {
 					
 					if(note.isAnnotation())
 					{
-						var contents = "“"+note["annotationText"]+"” ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+						var contents = "&#x201F;"+note["annotationText"]+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
 						var comment = note["annotationComment"];
+						comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
+						
 						if(comment==null)
 						{
 							comment = "";
@@ -185,15 +214,16 @@ Format = {
 						
 						var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
 						
-						var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));						
+						var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
 						
-						let note_ = comment+"<div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div>";
+						let note_ = comment+"<div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
 						notetext+=note_;
 					}
 					else
 					{
 						note_ = note.getNote();
-						notetext+= Format.clean(note_)+ "<span class='notekey'>"+note.id+"</span><hr/>";
+						note_ = Zotero.ZeNotes.Filter.apply(note_, selectors);
+						notetext+=note_+ "<span class='notekey'>"+note.id+"</span><hr/>";
 					}
 					values[tag.tag]+= notetext;
 				})
@@ -201,11 +231,4 @@ Format = {
 		}
 		return values;
 	},
-	clean(tdtext)
-    {
-        var re = new RegExp("&lt;&lt;.*&gt;&gt;", "g");
-        tdtext = tdtext.replace(re, "");
-        tdtext = tdtext.replace("<br>", "<br/>")
-		return tdtext;
-    }
 }

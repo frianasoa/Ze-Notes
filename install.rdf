@@ -26,8 +26,8 @@
 
         <em:creator>Fanantenana Rianasoa Andriariniaina</em:creator>
         <em:type>2</em:type> <!-- type=extension -->
-        <em:iconURL>chrome://Ze-Notes/skin/icon.png</em:iconURL>
-        <em:icon64URL>chrome://Ze-Notes/skin/icon64.png</em:icon64URL>
+        <em:iconURL>chrome://ze-notes/content/images/icon.png</em:iconURL>
+        <em:icon64URL>chrome://ze-notes/content/images/icon64.png</em:icon64URL>
         <em:bootstrap>true</em:bootstrap>
 
         <em:targetApplication>
