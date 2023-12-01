@@ -59,7 +59,7 @@ Zotero_Preferences.ZeNotes = {
 		
 		Zotero.ZeNotes.Prefs.set(id, value);
 		
-		if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true"){
+		if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true" || Zotero.ZeNotes.Prefs.get("load-on-change")==true){
 			Zotero.ZeNotes.Ui.reload();
 		}
 	},
@@ -274,7 +274,7 @@ Zotero_Preferences.ZeNotes = {
 	saveandreload()
 	{
 		this.saveusersettings().then(()=>{
-			if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true"){
+			if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true" || Zotero.ZeNotes.Prefs.get("load-on-change")==true){
 				Zotero.ZeNotes.Ui.reload();
 			}
 		});
