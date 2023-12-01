@@ -1,5 +1,6 @@
 * {
 	font-size: 1.01em;
+	box-sizing: border-box;
 }
 
 .zn-type-table {
@@ -9,6 +10,7 @@
 	border-spacing: 0;
 	height: 100%;
 	min-width: 450px;
+	display: none;
 }
 
 .zn-type-table thead{

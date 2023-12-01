@@ -15,8 +15,7 @@
 <html:script>
 
 window.addEventListener("focus", function(){
-	document.body.innerHTML = "";
-	Zotero_Preferences.ZeNotes.readxhtml(document.body, "preferences.xhtml").then(u=>{
+	document.getElementById("zn-pref-body").innerHTML = "";	Zotero_Preferences.ZeNotes.readxhtml(document.getElementById("zn-pref-body"), "preferences.xhtml").then(u=>{
 		Zotero_Preferences.ZeNotes.init();
 	});
 })
@@ -30,6 +29,7 @@ window.addEventListener("keyup", function(e){
 </html:script>
 </html:head>
 <html:body>
-
+<html:div id="zn-pref-body">
+</html:div>
 </html:body>
 </html:html>

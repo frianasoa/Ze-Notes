@@ -9,16 +9,20 @@ Data = {
 		var selected = Data.collectionchildren(Zotero.getActiveZoteroPane().getSelectedCollection());
 		
 		var ids = [];
-		keys.forEach(key=>{
-			ids.push(Zotero.Items.getIDFromLibraryAndKey(libraryID, key))
-		});
+		/**
+		Remove the access to all items to speed up
+		*/
+		
+		// keys.forEach(key=>{
+			// ids.push(Zotero.Items.getIDFromLibraryAndKey(libraryID, key))
+		// });
 		var selected_tags = Data.idstotags(selected["ids"])
 		var formatted = await Format.formatitems(selected["items"], selected_tags)
 		var selecteditems = formatted["data"];
 		var taggeditems = formatted["tagged_items"];
-		
+
 		return {
-			"all_tags": Data.idstotags(ids),
+			// "all_tags": Data.idstotags(ids),
 			"selected_tags": selected_tags,
 			"info_columns": formatted["columns"],
 			"selected_items": selecteditems,

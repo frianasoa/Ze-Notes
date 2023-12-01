@@ -1,27 +1,23 @@
 
 Zotero_Preferences.ZeNotes = {
-	init(){
-		this.saveloadcomplete = false;
+	async init(){
+		if(!Zotero.getMainWindow())
+		{
+			window.close();
+		}
 		this.savevalues = [];
 		this.tableutils = Zotero_Preferences.ZNTable;
 		this.defaulthiddentags = ["Id", "itemid", "key", "filekey"];
 		var includes = document.getElementsByClassName("zn-include");
 		
-		for (include of includes)
+		for(include of includes)
 		{
-			Zotero_Preferences.ZeNotes.readxhtml(include, include.src);
-		}
-		
-		if(!Zotero.getMainWindow())
-		{
-			window.close();
+			await Zotero_Preferences.ZeNotes.readxhtml(include, include.src);
 		}
 		
 		document.getElementById("zn-refresh").addEventListener("click", function(){
 			Zotero.ZeNotes.Ui.reload();
-		});
-		
-		
+		});	
 	},
 	
 	initcolumnwidth()
@@ -40,13 +36,32 @@ Zotero_Preferences.ZeNotes = {
 	{
 		var el = document.getElementById(elid)
 		if(el!=null) {
-			el.value = Zotero.ZeNotes.Prefs.get(prefid);
+			if(el.type.toUpperCase()=="CHECKBOX")
+			{
+				el.checked = Zotero.ZeNotes.Prefs.get(prefid)=="true";
+			}
+			else {
+				el.value = Zotero.ZeNotes.Prefs.get(prefid);
+			}
 		}
 	},
 	
 	setpreference(e, id) {
-		Zotero.ZeNotes.Prefs.set(id, e.target.value);
-		Zotero.ZeNotes.Ui.reload();
+		var value = "";
+		if(e.target.type.toUpperCase()=="CHECKBOX")
+		{
+			value = e.target.checked;
+		}
+		else
+		{
+			value = e.target.value;
+		}
+		
+		Zotero.ZeNotes.Prefs.set(id, value);
+		
+		if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true"){
+			Zotero.ZeNotes.Ui.reload();
+		}
 	},
 	
 	updatecolumnwidth(e)
@@ -75,7 +90,6 @@ Zotero_Preferences.ZeNotes = {
 		sample.style.backgroundColor = color;
 	},
 
-	
 	importpref(e)
 	{
 		var lsettings = document.getElementById("zn-load-settings");
@@ -90,7 +104,7 @@ Zotero_Preferences.ZeNotes = {
 		
 		if(typeof collectionid=="undefined")
 		{
-			alert("Please choose a source collection first!");
+			console.log("Please choose a source collection first!");
 			return;
 		}
 		
@@ -99,7 +113,7 @@ Zotero_Preferences.ZeNotes = {
 			return;
 		}
 		Zotero.ZeNotes.Database.copysettings(collectionid, this.collectionid, this.collection).then(()=>{
-			alert("Collection settings imported!");
+			console.log("Collection settings imported!");
 		})
 	},
 	
@@ -111,7 +125,7 @@ Zotero_Preferences.ZeNotes = {
 	},
 	
 	loadpreferences()
-	{
+	{		
 		var lsettings = document.getElementById("zn-load-settings");
 		
 		if (Zotero.platformMajorVersion < 102)
@@ -124,26 +138,22 @@ Zotero_Preferences.ZeNotes = {
 				p.insertBefore(sel, p.firstChild);
 				sel.setAttribute("id", "zn-load-settings");
 				lsettings = sel;
-				
 			}
 			else
 			{
 				lsettings.innerHTML="";
 			}
 		}
+		else
+		{
+			lsettings.innerHTML="";
+		}
 		
 		if(lsettings==undefined)
 		{
 			return;
 		}
-				
-		if(this.saveloadcomplete==true)
-		{
-			return;
-		}
-		
-		this.saveloadcomplete = true;
-				
+								
 		Zotero.ZeNotes.Database.getsettings().then(settings=>{
 			settings = settings.sort(function(a, b) {
 			   return a.label.localeCompare(b.label);
@@ -151,7 +161,7 @@ Zotero_Preferences.ZeNotes = {
 			
 			for(s of settings)
 			{
-				if(Zotero_Preferences.ZeNotes.savevalues.includes(s.label))
+				if(this.combovalues(lsettings).includes(s.label))
 				{
 					continue;
 				}
@@ -175,10 +185,25 @@ Zotero_Preferences.ZeNotes = {
 					opt.setAttribute("value", s.collectionid);
 					lsettings.appendChild(opt);
 				}
-				Zotero_Preferences.ZeNotes.savevalues.push(s.label);
 			}
-			
 		})
+	},
+	
+	combovalues(combo){
+		var values = [];
+		if(combo.tagName.toUpperCase()=="SELECT")
+		{
+			combo.childNodes.forEach(n=>{
+				values.push(n.innerHTML)
+			})
+		}
+		else
+		{
+			combo.childNodes.forEach(n=>{
+				values.push(n.label)
+			})
+		}
+		return values;
 	},
 	
 	async readxhtml(include, filename)
@@ -194,10 +219,11 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreferences();
 			Zotero_Preferences.ZeNotes.initopacity();
 			Zotero_Preferences.ZeNotes.initcolumnwidth();
-			Zotero_Preferences.ZeNotes.	loadpreference("html-filter", "zn-html-filter");
+			Zotero_Preferences.ZeNotes.loadpreference("html-filter", "zn-html-filter");
+			Zotero_Preferences.ZeNotes.loadpreference("load-on-change", "zn-reload-on-change");
 		})
 		.catch(error => {
-			alert('Error loading content: ' + error);
+			console.log('Error loading content: ' + error);
 		});
 	},
 	
@@ -248,7 +274,9 @@ Zotero_Preferences.ZeNotes = {
 	saveandreload()
 	{
 		this.saveusersettings().then(()=>{
-			Zotero.ZeNotes.Ui.reload();
+			if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true"){
+				Zotero.ZeNotes.Ui.reload();
+			}
 		});
 	},
 		
@@ -356,6 +384,7 @@ Refresh after losing focus
 this.addEventListener("focus", function() 
 {
 	Zotero_Preferences.ZeNotes.loadtables();
+	Zotero_Preferences.ZeNotes.loadpreferences();
 });
 
 this.addEventListener("blur", function() 

@@ -99,9 +99,7 @@ Zotero_Preferences.ZNTable = {
 		// Clean table first
 		table.innerHTML = '';
 		// table.replaceChildren();
-		
 		// check if it is sort table
-		
 		var tablename = "display";
 		if(table.id=="table-sort-tags-body")
 		{
@@ -136,16 +134,18 @@ Zotero_Preferences.ZNTable = {
 			
 			for(i in columns)
 			{
-				
 				var c = columns[i];
-				var value = this.toxml(tag[c]);
+				var classname = statusclass+" tag-"+c;
+				var xml = this.toxml(tag[c], classname);
 				var td = document.createElementNS("http://www.w3.org/1999/xhtml", 'td');
 				tr.appendChild(td);
-				const doc = parser.parseFromString("<span xmlns='http://www.w3.org/1999/xhtml' class='"+statusclass+" tag-"+c+"'>"+value+"</span>", 'application/xhtml+xml');
+				// const doc = parser.parseFromString("<span xmlns='http://www.w3.org/1999/xhtml' class='"+statusclass+" tag-"+c+"' style='padding:0; margin:0;'>"+value+"</span>", 'application/xhtml+xml');
+				const doc = parser.parseFromString(xml, 'application/xhtml+xml');
 				const importedNode = document.importNode(doc.documentElement, true);
 				td.appendChild(importedNode);
 			}
 		}
+		table.closest("table").style.display = "table";
 	},
 	
 	
@@ -195,7 +195,7 @@ Zotero_Preferences.ZNTable = {
 		{
 			a+=this.tableactions(b, tag, status, direction);
 		}
-		return a
+		return "<span>"+a+"</span>";
 	},
 	
 	moveup(e)
@@ -365,17 +365,30 @@ Zotero_Preferences.ZNTable = {
 		return order;
 	},
 	
-	toxml(txt)
+	toxml(txt, classname)
 	{
+
 		if (Zotero.platformMajorVersion >= 102) {
 			var parser = new DOMParser();
-			var doc = parser.parseFromString(txt, "text/html").body;
-			html = new XMLSerializer().serializeToString(doc);
+			var doc = parser.parseFromString(txt, "text/html");
+			var span = doc.createElement("span");
+			span.className = classname;
+			doc.querySelector("body").childNodes.forEach(child=>{
+				span.appendChild(child);
+			});
+			html = new XMLSerializer().serializeToString(span);
 		}
 		else {
 			const parser = Components.classes['@mozilla.org/xmlextras/domparser;1'].createInstance(Components.interfaces.nsIDOMParser);
 			var doc = parser.parseFromString(txt, 'text/html').documentElement;
-			html = new XMLSerializer().serializeToString(doc);
+			
+			var span = document.createElement("span");
+			span.className = classname;
+			doc.querySelector("body").childNodes.forEach(child=>{
+				span.appendChild(child);
+			});
+			
+			html = new XMLSerializer().serializeToString(span);
 		}
 		return html;
 	}
