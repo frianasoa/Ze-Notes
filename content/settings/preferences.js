@@ -38,7 +38,7 @@ Zotero_Preferences.ZeNotes = {
 		if(el!=null) {
 			if(el.type.toUpperCase()=="CHECKBOX")
 			{
-				el.checked = Zotero.ZeNotes.Prefs.get(prefid)=="true";
+				el.checked = Zotero.ZeNotes.Prefs.get(prefid)=="true" || Zotero.ZeNotes.Prefs.get(prefid)==true;
 			}
 			else {
 				el.value = Zotero.ZeNotes.Prefs.get(prefid);
