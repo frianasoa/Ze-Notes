@@ -1,6 +1,6 @@
 # Ze Notes
-[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-6.svg)](https://zotero.org)
-[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-7.png)](https://zotero.org)
+[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-6.svg)](https://zotero.org) <br/>
+<a href="https://zotero.org"><img src="https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-7.png" width="182" /></a>
 
 Now works with Zotero 7 Beta.
 
