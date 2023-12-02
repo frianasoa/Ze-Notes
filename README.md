@@ -1,11 +1,20 @@
 # Ze Notes
-[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/assets/images/for-zotero-6.svg)](https://zotero.org)
+[![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-6.svg)](https://zotero.org)
 
 Now works with Zotero 7 Beta.
 
-Limitations
+## Transition to version 0.4.* (Supporting Zotero 6 & 7 beta)
+* After installing the plugin, restart Zotero (This will import your preferences from previous versions)
+* Select the collection you are working on
+* Head to ZeNotes -> Settings
+* In settings, scroll down to "Load and save"
+* Click on the dropdown and choose the preference you want to apply to the current collection
+	* Preferences from Zotero 6 are imported automatically and their names will start with Z6. "Z6 default" will be your last preference
+* Click "Import preferences" to apply the selected preference to the current collection
 
-Opening annotation does not open to the page with highlight. 
+## Limitations & bugs for current version
+* Opening annotation does not open to the page with highlight, especially on Zotero 7.
+* If it is of concern for you, please download and install a previous version.
 
 ## Description
 ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes.
@@ -44,6 +53,7 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 ![Editing notes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/05.zenotes-interface.png "Editing notes")
 
 ### Preferences
+(The preference window has changed. Will update this part later)
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
 ![Opening settings](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/06.zenotes-interface-settings.png "Opening settings")
 * Select the tags you will be using as columns. You can hide the ones you do not need.
