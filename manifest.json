@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Ze Notes",
-    "version": "0.4.2-beta",
+    "version": "0.4.2",
     "description": "Advanced notes manager",
     "homepage_url": "https://github.com/frianasoa/zenotes",
     "author": "Fanantenana Rianasoa Andriariniaina",
@@ -12,7 +12,7 @@
     "applications": {
         "zotero": {
             "id": "zenotes@alefa.net",
-            "update_url": "https://raw.githubusercontent.com/frianasoa/zenotes/main/zenote-update-beta.json",
+            "update_url": "https://raw.githubusercontent.com/frianasoa/zenotes/main/zenote-update.json",
             "strict_min_version": "6.0",
             "strict_max_version": "7.0.*"
         }

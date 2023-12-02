@@ -5,9 +5,7 @@ import json
 import hashlib
 import shutil
 
-
-suffix = "-beta"
-
+suffix = ""
 def getver():
     description = ET.parse('install.rdf').getroot()[0]
     for child in description:
