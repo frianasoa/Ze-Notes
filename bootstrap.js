@@ -148,7 +148,7 @@ function initPreferences(rootURI) {
 		registerchrome(rootURI);
 	*/
 	
-	if (Zotero.platformMajorVersion < 102) {
+	if(Zotero.platformMajorVersion < 102) {
 		/*
 		Try to implement native preference in Zotero 6
 		*/

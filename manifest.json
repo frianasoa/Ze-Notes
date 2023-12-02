@@ -4,6 +4,7 @@
     "version": "0.4.2-beta",
     "description": "Advanced notes manager",
     "homepage_url": "https://github.com/frianasoa/zenotes",
+    "author": "Fanantenana Rianasoa Andriariniaina",
     "icons": {
         "48": "content/images/icon.png",
         "64": "content/images/icon64.png"

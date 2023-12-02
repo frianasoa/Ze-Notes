@@ -35,7 +35,6 @@ Database =
 		}
 		catch
 		{
-			
 		}
 		return contents;
 	},

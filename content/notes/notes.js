@@ -200,10 +200,23 @@ Notes = {
 			html = new XMLSerializer().serializeToString(doc);
 		}
 		elt.innerHTML = html;
+	},
+	
+	initscroll(){
+		$('#zn-body-wrapper').animate({
+			scrollTop: Zotero.ZeNotes.Prefs.get("scrolltop", 0),
+			scrollLeft: Zotero.ZeNotes.Prefs.get("scrollleft", 0),
+		}, 500);
+		
+		$("#zn-body-wrapper").bind('scroll', function() {
+			Zotero.ZeNotes.Prefs.set("scrolltop", $('#zn-body-wrapper').scrollTop());
+			Zotero.ZeNotes.Prefs.set("scrollleft", $('#zn-body-wrapper').scrollLeft());
+		});
 	}
 }
 
 window.addEventListener("load", function(){
 	Notes.init();
 	Notes.loaddata();
+	Notes.initscroll();
 })
