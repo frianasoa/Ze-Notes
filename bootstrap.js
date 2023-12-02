@@ -22,6 +22,11 @@ function log(msg) {
 	Zotero.debug("ZeNotes: " + msg);
 }
 
+function alert(msg)
+{
+	Zotero.getMainWindow().alert(msg);
+}
+
 // In Zotero 6, bootstrap methods are called before Zotero is initialized, and using include.js
 // to get the Zotero XPCOM service would risk breaking Zotero startup. Instead, wait for the main
 // Zotero window to open and get the Zotero object from there.
@@ -223,6 +228,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Prefs = Prefs;
 	ZeNotes.Format = Format;
 	Database.create();
+	Database.z6transition(Prefs.get("tag-lists"));
 	await ZeNotes.main();
 }
 
