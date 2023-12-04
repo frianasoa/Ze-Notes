@@ -6,6 +6,14 @@ Menus = {
 		this.veil.style = "width: 0; height: 0; background-color: rgba(255, 255, 255, 0.7); z-index:1000; position: absolute; top:0; left: 0; text-align: center; vertical-align: middle; display: none;";
 		document.getElementById("zn-page-body").appendChild(this.veil);
 		
+		/**
+		Element to hide (row or column)
+		*/
+		var tohide = "column";
+		if(Zotero.ZeNotes.Prefs.get("vertical-table")=="true" || Zotero.ZeNotes.Prefs.get("vertical-table")==true)
+		{
+			tohide = "row";
+		}
 		
 		$.contextMenu({
             selector: '.context-menu-header', 
@@ -18,7 +26,7 @@ Menus = {
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
                 "copy": {name: "Copy table", icon: "fa-copy"},
                 "sep0": "---------",
-                "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
+                "hidecolumn": {name: "Hide "+tohide, icon: "fa-eye-slash"},
                 "sep1": "---------",
                 "reload": {name: "Refresh page", icon: "fa-sync"},
                 "settings": {name: "Open settings", icon: "fa-cog"},
@@ -38,7 +46,7 @@ Menus = {
                 "showfile": {name: "Show attached files", icon: "fa-file-pdf"},
                 "showentry": {name: "Show entry", icon: "fa-file-lines"},
                 "sep2": "---------",
-                "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
+                "hidecolumn": {name: "Hide "+tohide, icon: "fa-eye-slash"},
                 "deletenote": {name: "Delete note", icon: "fa-trash"},
                 "sep3": "---------",
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
@@ -65,7 +73,7 @@ Menus = {
             items: {
                 "showentry": {name: "Show entry", icon: "fa-file-lines"},
                 "showfile": {name: "Show attached file", icon: "fa-file-pdf"},
-                "hidecolumn": {name: "Hide column", icon: "fa-eye-slash"},
+                "hidecolumn": {name: "Hide "+tohide, icon: "fa-eye-slash"},
                 "sep1": "---------",
                 "copycell": {name: "Copy entire cell", icon: "fa-clone"},
                 "copysel": {name: "Copy selection", icon: "fa-copy"},
@@ -119,7 +127,7 @@ Menus = {
             },
             items: {
                 "copy": {name: "Copy table", icon: "fa-copy"},
-                "addrow": {name: "Add row", icon: "fa-circle-plus"},
+                "addrow": {name: "Add item", icon: "fa-circle-plus"},
                 "sep": "-----",
 				"find-in-page": {name: "Find in page", icon: "fas fa-magnifying-glass"},
                 "sep2": "-----",
@@ -148,6 +156,12 @@ Menus = {
 	
 	actions (key, options)
     {
+		var tohide = "column";
+		if(Zotero.ZeNotes.Prefs.get("vertical-table")=="true" || Zotero.ZeNotes.Prefs.get("vertical-table")==true)
+		{
+			tohide = "row";
+		}
+		
 		var td = options.$trigger.get(0);
         var column = td.dataset.column;
         var itemid = td.dataset.itemid;
@@ -220,7 +234,7 @@ Menus = {
         }
         else if(key=="hidecolumn")
         {
-            if(!confirm("You can show hidden columns in Edit->Preferences\nDo you want to hide "+column+"?"))
+            if(!confirm("You can show hidden "+tohide+" in Edit->Preferences\nDo you want to hide "+column+"?"))
             {
                 return;
             }
