@@ -20,18 +20,6 @@ Zotero_Preferences.ZeNotes = {
 		});	
 	},
 	
-	initcolumnwidth()
-	{
-		var sample = document.getElementById("zn-column-width-val");
-		var value = Zotero.ZeNotes.Prefs.get("column-width");
-		var el = document.getElementById("zn-column-width");
-		if(el!=null)
-		{
-			sample.value = value;
-			el.value = value;
-		}
-	},
-	
 	loadpreference(prefid, elid)
 	{
 		var el = document.getElementById(elid)
@@ -66,7 +54,13 @@ Zotero_Preferences.ZeNotes = {
 	
 	updatecolumnwidth(e)
 	{
-		var sample = document.getElementById("zn-column-width-val");
+		var sample = document.getElementById("zn-header-size-val");
+		sample.value = e.target.value;
+	},
+	
+	updatedisplay(e, id)
+	{
+		var sample = document.getElementById(id);
 		sample.value = e.target.value;
 	},
 	
@@ -218,9 +212,15 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadtables();
 			Zotero_Preferences.ZeNotes.loadpreferences();
 			Zotero_Preferences.ZeNotes.initopacity();
-			Zotero_Preferences.ZeNotes.initcolumnwidth();
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter", "zn-html-filter");
 			Zotero_Preferences.ZeNotes.loadpreference("load-on-change", "zn-reload-on-change");
+			Zotero_Preferences.ZeNotes.loadpreference("vertical-table", "zn-vertical-table");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("header-size", "zn-header-size-val");
+			Zotero_Preferences.ZeNotes.loadpreference("header-size", "zn-header-size");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width-val");
+			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width");
 		})
 		.catch(error => {
 			console.log('Error loading content: ' + error);

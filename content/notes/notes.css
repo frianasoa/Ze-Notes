@@ -78,12 +78,32 @@ td {
     cursor: pointer;
 }
 
-th {
+tr:first-child td {
     background-color: white;
     padding:0.3em;
     border: solid 1px;
     position: sticky;
     top: 0;
+	/* z-index: 100!important; */
+	font-weight: bolder;
+}
+
+tr:first-child td:first-letter, td:first-child:first-letter {
+	text-transform: capitalize;
+}
+
+td:first-child {
+    background-color: white;
+    padding:0.3em;
+    border: solid 1px;
+    position: sticky;
+	left: 0;
+	/* z-index: 100!important; */
+	font-weight: bolder;
+}
+
+tr:first-child > td:first-child {
+	z-index: 1!important;
 }
 
 .zn-menubar {

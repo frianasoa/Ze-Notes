@@ -6,6 +6,11 @@ Notes = {
 		this.body.focus();
 	},
 	
+	isvertical()
+	{
+		return (Zotero.ZeNotes.Prefs.get("vertical-table")=="true" || Zotero.ZeNotes.Prefs.get("vertical-table")==true);
+	},
+	
 	async savesettings(settings)
 	{
 		var usersettings = {};
@@ -61,36 +66,56 @@ Notes = {
 			Zotero.ZeNotes.Ui.reload();
 		});
 	},
-	
-	async loaddata ()
+		
+	async loaddata()
     {
 		var notes = await Zotero.ZeNotes.Data.get();
 		var usersettings = await this.getsettings();
 		var columns = notes["info_columns"].concat(notes["selected_tags"]);
 		columns = this.tableutils.removehiddenandsort(columns, usersettings);
 		
-		var width = Zotero.ZeNotes.Prefs.get("column-width");
+		var hsize = Zotero.ZeNotes.Prefs.get("header-size");
 		
-		var widths = usersettings["width"];
+		var hsizes = usersettings["width"]; // Keep "width" in the database
 				
 		// Only "tagged_items" instead of "selected_items"
 		var items = notes["tagged_items"];
 		items = items.sort(this.tableutils.custommultiplesortfunc(usersettings));
 
 		var table = document.createElement("table");
-        var trh = document.createElement("tr");
         table.id = "notes-table"
-        table.appendChild(trh);
-		
 		table.style.tableLayout = "fixed";
-
-        columns.forEach(c=>{
-            var tdh = document.createElement("th");
+		if(this.isvertical())
+		{
+			this.vtable(table, columns, items, hsizes, hsize);
+		}
+		else
+		{
+			this.htable(table, columns, items, hsizes, hsize);
+		}
+    },
+	
+	vtable(table, columns, items, hsizes, hsize)
+	{
+		var trs = {};
+		var i = 0;
+		var width = Zotero.ZeNotes.Prefs.get("column-width");
+		columns.forEach(c=>{
+			i+=1;
+			var trh = document.createElement("tr");
+            var tdh = document.createElement("td");
+			table.appendChild(trh);
+			trs[c] = trh;
             Notes.innerHTML(tdh, c);
             tdh.className = "context-menu-header draggable-header";
 			tdh.setAttribute("draggable", "true");
             tdh.dataset.column = c;
-			tdh.style.minWidth = width+"px";
+			
+			if(i>1)
+			{
+				tdh.style.height = hsize+"px";
+			}
+			
 			tdh.style.userSelect = "none";
             trh.appendChild(tdh);
 			
@@ -108,23 +133,134 @@ Notes = {
 				Notes.insertcolumn(source, destination);
 			})
 			
-			if(Object.keys(widths).includes(c))
+			if(Object.keys(hsizes).includes(c))
 			{
-				if(widths[c]!="")
+				if(hsizes[c]!="")
 				{
-					tdh.style.minWidth = widths[c]+"px";
+					tdh.style.height = hsizes[c]+"px";
 				}
 			}
         });
 				
         items.forEach(v=>{
-            
+			var i = 0;
+            columns.forEach(c=>{
+                i+=1;
+				let td = document.createElement("td");
+				var tr = trs[c];
+				tr.appendChild(td);
+				if(c in v) {
+					try {
+						Notes.innerHTML(td, v[c]);
+					}
+					catch(e)
+					{
+						alert(e+"=>"+c+": "+v[c]+" : ");
+					}
+                }
+                
+                if(Notes.infotags.includes(c))
+                {
+                    td.dataset.type = "info";
+                    td.className = "context-menu-two info";
+                }
+                else
+                {
+                    td.dataset.type = "tag";
+                    td.className = "context-menu-one tag";
+                }
+                
+                var span = td.querySelector(".notekey");
+                
+                if(span)
+                {
+                    td.dataset.notekey = span.innerText;
+                    span.parentNode.removeChild(span);
+                }
+                else
+                {
+                    td.dataset.notekey = "";
+                }
+                
+                td.dataset.column = c;
+                td.dataset.itemid = v.itemid;
+                td.dataset.itemkey = v.key;
+                td.dataset.filenames = JSON.stringify(v.filenames);
+                td.dataset.filekey = v.filekey;
+
+                td.querySelectorAll(".annotation").forEach(a=>{
+                    a.addEventListener("mouseover", function(e){
+                        e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
+                        e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
+                        e.target.parentNode.dataset.annotationpage = e.target.dataset.annotationpage;
+                        e.target.parentNode.dataset.annotationkey = e.target.dataset.annotationkey;
+                        e.target.parentNode.dataset.annotationdomid = e.target.id;
+                    });
+                });
+				
+				if(i>1)
+				{
+					td.style.height = hsize+"px";
+				}
+				
+				td.style.minWidth = width+"px";
+				
+				if(Object.keys(hsizes).includes(c))
+				{
+					if(hsizes[c]!="")
+					{
+						td.style.height = hsizes[c]+"px";
+					}
+				}
+                
+            });
+        }); 
+        document.getElementById("zn-body").appendChild(table);
+	},
+	
+	htable(table, columns, items, hsizes, hsize)
+	{
+		var trh = document.createElement("tr");
+		table.appendChild(trh);
+		columns.forEach(c=>{
+            var tdh = document.createElement("td");
+            Notes.innerHTML(tdh, c);
+            tdh.className = "context-menu-header draggable-header";
+			tdh.setAttribute("draggable", "true");
+            tdh.dataset.column = c;
+			tdh.style.minWidth = hsize+"px";
+			tdh.style.userSelect = "none";
+            trh.appendChild(tdh);
+			
+			tdh.addEventListener("dragstart", function(e){
+				e.dataTransfer.setData('text/plain', e.target.dataset.column);
+			})
+			
+			tdh.addEventListener("dragover", function(e){
+				e.preventDefault();
+			})
+			
+			tdh.addEventListener("drop", function(e){
+				var source = e.dataTransfer.getData("text/plain");
+				var destination = e.target.dataset.column;
+				Notes.insertcolumn(source, destination);
+			})
+			
+			if(Object.keys(hsizes).includes(c))
+			{
+				if(hsizes[c]!="")
+				{
+					tdh.style.minWidth = hsizes[c]+"px";
+				}
+			}
+        });
+				
+        items.forEach(v=>{
 			var tr = document.createElement("tr");
             table.appendChild(tr);
             columns.forEach(c=>{
                 let td = document.createElement("td");
 				tr.appendChild(td);
-				
                 if(c in v){
 					
 					try {
@@ -174,19 +310,20 @@ Notes = {
                         e.target.parentNode.dataset.annotationdomid = e.target.id;
                     });
                 });
-				td.style.minWidth = width+"px";
-				if(Object.keys(widths).includes(c))
+				td.style.minWidth = hsize+"px";
+				if(Object.keys(hsizes).includes(c))
 				{
-					if(widths[c]!="")
+					if(hsizes[c]!="")
 					{
-						td.style.minWidth = widths[c]+"px";
+						td.style.minWidth = hsizes[c]+"px";
 					}
 				}
                 
             });
         }); 
         document.getElementById("zn-body").appendChild(table);
-    },
+	},
+	
 	innerHTML(elt, txt)
 	{
 		if (Zotero.platformMajorVersion >= 102) {
