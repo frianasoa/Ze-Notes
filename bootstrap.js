@@ -198,7 +198,11 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		// get called
 		listenForMainWindowEvents();
 		// Read prefs from prefs.js in Zotero 6
-		setDefaultPrefs(rootURI);
+		
+		/*
+			Does not work on Zotero 6 on certain machines
+		*/
+		// setDefaultPrefs(rootURI);
 	}
 
 	Services.scriptloader.loadSubScript(rootURI + 'core/filter.js');
