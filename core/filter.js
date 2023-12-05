@@ -1,5 +1,6 @@
 Filter = {
-	apply(txt, selectors = ""){
+	apply(txt, selectors = "", replacement=""){
+		this.replacement = replacement
 		txt = Filter.legacy(txt);
 		txt = Filter.userdefined(txt, selectors);
 		return txt;
@@ -43,13 +44,21 @@ Filter = {
 		{
 			if(this.validselector(selector))
 			{
-				html.querySelectorAll(selector).forEach(e => e.parentNode.removeChild(e));
+				if(this.replacement!="")
+				{
+					html.querySelectorAll(selector).forEach(e => e.outerHTML=this.replacement);
+				}
+				else
+				{
+					html.querySelectorAll(selector).forEach(e => e.parentNode.removeChild(e));
+				}
 			}
 		}
 		
 		var data = html.innerHTML.split("<br>").join("<br/>").split("<hr>").join("<hr/>");
 		return data;
 	},
+	
 	validselector(s){
 		var document = Zotero.getMainWindow().document;
 		try {document.createDocumentFragment().querySelector(s);} catch(e) {return false}

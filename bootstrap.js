@@ -11,6 +11,7 @@ var Ui;
 var Format;
 var Utils
 var Filter;
+var Image;
 
 const ANNOTATION = 1;
 const ATTACHMENT = 3;
@@ -205,6 +206,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		// setDefaultPrefs(rootURI);
 	}
 
+	Services.scriptloader.loadSubScript(rootURI + 'core/image.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/filter.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/utils.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
@@ -226,6 +228,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Menu = Menu;
 	ZeNotes.Utils = Utils;
 	ZeNotes.Filter = Filter;
+	ZeNotes.Image = Image;
 
 	ZeNotes.Data = Data;
 	ZeNotes.Database = Database;

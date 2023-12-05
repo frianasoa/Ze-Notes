@@ -213,6 +213,8 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreferences();
 			Zotero_Preferences.ZeNotes.initopacity();
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter", "zn-html-filter");
+			Zotero_Preferences.ZeNotes.loadpreference("html-filter-replacement", "zn-html-filter-replacement");
+			
 			Zotero_Preferences.ZeNotes.loadpreference("load-on-change", "zn-reload-on-change");
 			Zotero_Preferences.ZeNotes.loadpreference("vertical-table", "zn-vertical-table");
 			

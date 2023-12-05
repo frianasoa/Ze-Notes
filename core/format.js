@@ -5,7 +5,7 @@ Format = {
 		var tagged_items = [];
 		for(item of items)
 		{
-			var notes = Format.notes(item);
+			var notes = await Format.notes(item);
 			lines.push(await Format.formatitem(item, notes));
 		}
 		
@@ -160,9 +160,10 @@ Format = {
         return filenames;
     },
 	
-	notes(item){
+	async notes(item){
 		var values = []
 		var selectors = Zotero.ZeNotes.Prefs.get("html-filter");
+		var replacement = Zotero.ZeNotes.Prefs.get("html-filter-replacement");
 
 		if(![ANNOTATION, ATTACHMENT, NOTE].includes(item.itemTypeID))
 		{
@@ -195,7 +196,7 @@ Format = {
 			{
 				var notetext = "";
 				var tags = note.getTags();
-				tags.forEach(tag=>{
+				for(tag of tags){
 					if(!Object.keys(values).includes(tag.tag))
 					{
 						values[tag.tag] = "";
@@ -222,11 +223,13 @@ Format = {
 					else
 					{
 						note_ = note.getNote();
-						note_ = Zotero.ZeNotes.Filter.apply(note_, selectors);
+						note_ = Zotero.ZeNotes.Filter.apply(note_, selectors, replacement);
+						note_ = await Zotero.ZeNotes.Image.render(note_, item);
+						
 						notetext+=note_+ "<span class='notekey'>"+note.id+"</span><hr/>";
 					}
 					values[tag.tag]+= notetext;
-				})
+				};
 			}
 		}
 		return values;
