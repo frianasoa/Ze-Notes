@@ -225,7 +225,9 @@ Format = {
 						{
 							comment = "";
 						}
-						var comment = this.escapehtml(comment);
+						
+						comment = this.escapehtml(comment);
+						comment = comment.split("\n").join("<br/>\n");
 						
 						var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
 						
