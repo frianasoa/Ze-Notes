@@ -12,6 +12,8 @@ var Format;
 var Utils
 var Filter;
 var Image;
+var Ai;
+var CryptoJS;
 
 const ANNOTATION = 1;
 const ATTACHMENT = 3;
@@ -217,6 +219,9 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
+	
+	Services.scriptloader.loadSubScript(rootURI + '3rdparty/CryptoJS 3.1.2/aes.js');
 	
 	ZeNotes.init({ id, version, rootURI });
 	Zotero.ZeNotes = ZeNotes;
@@ -229,6 +234,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Utils = Utils;
 	ZeNotes.Filter = Filter;
 	ZeNotes.Image = Image;
+	ZeNotes.Ai = Ai;
+	ZeNotes.CryptoJS = CryptoJS;
 
 	ZeNotes.Data = Data;
 	ZeNotes.Database = Database;

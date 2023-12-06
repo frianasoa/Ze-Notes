@@ -8,6 +8,7 @@ ZeNotes = {
 	rootURI: null,
 	initialized: false,
 	addedElementIDs: [],
+	znkey: "W0phdmFTY3JpcHQgRXJyb3I6ICJSZWZlcmVuY2VFcnJvcjogZmV0Y2ggaXMgbm90IGRlZmluZWQiIHtmaWxlOiAicmVzb3VyY2U6Ly9ncm",
 	
 	init({ id, version, rootURI }) {
 		if (this.initialized) return;
@@ -16,6 +17,17 @@ ZeNotes = {
 		this.rootURI = rootURI;
 		this.initialized = true;
 		this.icon = rootURI+"/content/images/zenotes-notes.png";
+	},
+	
+	encrypt(value)
+	{
+		var bvalue = Zotero.ZeNotes.CryptoJS.AES.encrypt(value, this.znkey);
+		return bvalue.toString();
+	},
+	
+	decrypt(value)
+	{
+		return Zotero.ZeNotes.CryptoJS.AES.decrypt(value, this.znkey).toString(Zotero.ZeNotes.CryptoJS.enc.Utf8);
 	},
 	
 	log(msg) {

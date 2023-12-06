@@ -20,7 +20,7 @@ Zotero_Preferences.ZeNotes = {
 		});	
 	},
 	
-	loadpreference(prefid, elid)
+	loadpreference(prefid, elid, mode="")
 	{
 		var el = document.getElementById(elid)
 		if(el!=null) {
@@ -29,12 +29,20 @@ Zotero_Preferences.ZeNotes = {
 				el.checked = Zotero.ZeNotes.Prefs.get(prefid)=="true" || Zotero.ZeNotes.Prefs.get(prefid)==true;
 			}
 			else {
-				el.value = Zotero.ZeNotes.Prefs.get(prefid);
+				if(mode=="encrypt")
+				{
+					var v = Zotero.ZeNotes.Prefs.getb(prefid);
+					el.value = v;
+				}
+				else
+				{
+					el.value = Zotero.ZeNotes.Prefs.get(prefid);
+				}
 			}
 		}
 	},
 	
-	setpreference(e, id) {
+	setpreference(e, id, mode="") {
 		var value = "";
 		if(e.target.type.toUpperCase()=="CHECKBOX")
 		{
@@ -45,7 +53,14 @@ Zotero_Preferences.ZeNotes = {
 			value = e.target.value;
 		}
 		
-		Zotero.ZeNotes.Prefs.set(id, value);
+		if(mode=="encrypt")
+		{
+			Zotero.ZeNotes.Prefs.setb(id, value);
+		}
+		else
+		{
+			Zotero.ZeNotes.Prefs.set(id, value);
+		}
 		
 		if(Zotero.ZeNotes.Prefs.get("load-on-change")=="true" || Zotero.ZeNotes.Prefs.get("load-on-change")==true){
 			Zotero.ZeNotes.Ui.reload();
@@ -223,6 +238,8 @@ Zotero_Preferences.ZeNotes = {
 			
 			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width-val");
 			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("bard-api-key", "zn-bard-api-key", "encrypt");
 		})
 		.catch(error => {
 			console.log('Error loading content: ' + error);

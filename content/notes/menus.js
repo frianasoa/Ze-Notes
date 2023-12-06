@@ -32,6 +32,40 @@ Menus = {
                 "settings": {name: "Open settings", icon: "fa-cog"},
             }
         });
+		
+		var items0 = {
+			"edit": {name: "Edit note", icon: "fa-pencil-alt"},
+			"editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
+			"sep": "---------",
+		}
+		
+		var items_ai = {}
+		
+		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
+		{
+			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-language"},
+			items_ai["sep-ai-01"] = "---------";
+		}
+		
+		var items1 = {
+			"showfile": {name: "Show attached files", icon: "fa-file-pdf"},
+			"showentry": {name: "Show entry", icon: "fa-file-lines"},
+			"sep2": "---------",
+			"hidecolumn": {name: "Hide "+tohide, icon: "fa-eye-slash"},
+			"deletenote": {name: "Delete note", icon: "fa-trash"},
+			"sep3": "---------",
+			"copycell": {name: "Copy entire cell", icon: "fa-clone"},
+			"copyquote": {name: "Copy direct quote", icon: "fa-copy"},
+			"copysel": {name: "Copy selection", icon: "fa-copy"},
+			"copy": {name: "Copy table", icon: "fa-copy"},
+			"sep4": "---------",
+			"reload": {name: "Refresh page", icon: "fa-sync"},
+			"settings": {name: "Open settings", icon: "fa-cog"},
+			// "quit": {name: "Exit", icon: "fa-xmark"},
+		}
+		
+		var items = Object.assign({}, items0, items_ai);
+		items = Object.assign({}, items, items1);
         
         $.contextMenu({
             selector: '.context-menu-one', 
@@ -39,25 +73,7 @@ Menus = {
             callback: function(key, options) {
                 Menus.actions(key, options)
             },
-            items: {
-                "edit": {name: "Edit note", icon: "fa-pencil-alt"},
-                "editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
-                "sep0": "---------",
-                "showfile": {name: "Show attached files", icon: "fa-file-pdf"},
-                "showentry": {name: "Show entry", icon: "fa-file-lines"},
-                "sep2": "---------",
-                "hidecolumn": {name: "Hide "+tohide, icon: "fa-eye-slash"},
-                "deletenote": {name: "Delete note", icon: "fa-trash"},
-                "sep3": "---------",
-                "copycell": {name: "Copy entire cell", icon: "fa-clone"},
-                "copyquote": {name: "Copy direct quote", icon: "fa-copy"},
-                "copysel": {name: "Copy selection", icon: "fa-copy"},
-                "copy": {name: "Copy table", icon: "fa-copy"},
-                "sep4": "---------",
-                "reload": {name: "Refresh page", icon: "fa-sync"},
-                "settings": {name: "Open settings", icon: "fa-cog"},
-                // "quit": {name: "Exit", icon: "fa-xmark"},
-            }
+            items: items,
         });
 
         $('.context-menu-one').on('click', function(e){
@@ -171,6 +187,7 @@ Menus = {
         var annotationkey = td.dataset.annotationkey;
         var annotationpage = td.dataset.annotationpage;
         var annotationpagelabel = td.dataset.pagelabel;
+        var annotationid = td.dataset.annotationid;
         var annotationdomid = td.dataset.annotationdomid;
         
         var filekey = td.dataset.filekey;
@@ -220,6 +237,31 @@ Menus = {
 			
             
         }
+		else if(key=="paraphrase-bard")
+		{
+			if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+			
+			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
+			{
+				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+				return;
+			}
+			
+			var annotation = Zotero.Items.get(annotationid);
+			var currentcomment = annotation.annotationComment;
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+			Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
+				annotation.annotationComment = currentcomment+"\n\n"+r+"\n";
+				annotation.saveTx({skipSelect:true}).then(e=>{Zotero.ZeNotes.Ui.reload();});
+			});
+		}
         else if(key=="showfile")
         {
             this.choosefile(filenames);

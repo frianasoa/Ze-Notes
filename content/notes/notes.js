@@ -190,6 +190,7 @@ Notes = {
 
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
+                        e.target.parentNode.dataset.annotationid = e.target.dataset.annotationid;
                         e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
                         e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
                         e.target.parentNode.dataset.annotationpage = e.target.dataset.annotationpage;
@@ -303,6 +304,7 @@ Notes = {
 
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
+                        e.target.parentNode.dataset.annotationid = e.target.dataset.annotationid;
                         e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
                         e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
                         e.target.parentNode.dataset.annotationpage = e.target.dataset.annotationpage;

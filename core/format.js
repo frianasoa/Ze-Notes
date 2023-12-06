@@ -204,20 +204,34 @@ Format = {
 					
 					if(note.isAnnotation())
 					{
-						var contents = "&#x201F;"+note["annotationText"]+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+						var annotationtext = note["annotationText"];
+						if(annotationtext==null)
+						{
+							annotationtext = "";
+						}
+						annotationtext = this.escapehtml(annotationtext);
+						
+						var contents = "&#x201F;"+annotationtext+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+						
+						/**
+						Not allow html in comments from pdf for now;
+						*/
+						// comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
+						
 						var comment = note["annotationComment"];
-						comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
+						
 						
 						if(comment==null)
 						{
 							comment = "";
 						}
+						var comment = this.escapehtml(comment);
 						
 						var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
 						
 						var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
 						
-						let note_ = comment+"<div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
+						let note_ = comment+"<hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
 						notetext+=note_;
 					}
 					else
@@ -233,5 +247,14 @@ Format = {
 			}
 		}
 		return values;
+	},
+	escapehtml(s)
+	{
+		return s
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 	},
 }
