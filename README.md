@@ -53,6 +53,13 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 * You can edit your notes normally in Zotero or right click on an item in the table to see your options.
 ![Editing notes](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/05.zenotes-interface.png "Editing notes")
 
+### AI Assisted paraphrasing
+* Go to ZeNotes > Settings > Global Settings > AI API Settings
+* Insert your API Key (Only Bard, because it's free ☺ for the moment?)
+* Display your notes and right click on an annotation. The menu "Paraphrase annotation" will be available. Click. It will paraphrase the excerpt selected in the PDF file.
+* Here is a link to the discussion on Bard API [If it does not work, search the internet. These things move so fast]. https://www.googlecloudcommunity.com/gc/forums/forumtopicprintpage/board-id/cloud-ai-ml/message-id/1705/print-single-message/true/page/1
+
+
 ### Preferences
 (The preference window has changed. Will update this part later)
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
