@@ -29,7 +29,11 @@ Filter = {
 		}
 		
 		var html = null;
-		selectors = [...new Set(selectors.map(v => v.toLowerCase()).concat(selectors.map(v => v.toUpperCase())))];
+		/*
+		No need to repeat selectors
+		*/
+		// selectors = [...new Set(selectors.map(v => v.toLowerCase()).concat(selectors.map(v => v.toUpperCase())))];
+		
 		
 		if (Zotero.platformMajorVersion >= 102) {
 			var parser = new DOMParser();
@@ -46,17 +50,27 @@ Filter = {
 			{
 				if(this.replacement!="")
 				{
-					html.querySelectorAll(selector).forEach(e => e.outerHTML=this.replacement);
+					html.querySelectorAll("body "+selector).forEach(e => e.outerHTML="<div>"+this.escapehtml(this.replacement))+"</div>";
 				}
 				else
 				{
-					html.querySelectorAll(selector).forEach(e => e.parentNode.removeChild(e));
+					html.querySelectorAll("body "+selector).forEach(e => e.parentNode.removeChild(e));
 				}
 			}
 		}
 		
 		var data = html.innerHTML.split("<br>").join("<br/>").split("<hr>").join("<hr/>");
 		return data;
+	},
+	
+	escapehtml(s)
+	{
+		return s
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 	},
 	
 	validselector(s){
