@@ -1,8 +1,16 @@
 Filter = {
 	apply(txt, selectors = "", replacement=""){
-		this.replacement = replacement
 		txt = Filter.legacy(txt);
-		txt = Filter.userdefined(txt, selectors);
+		
+		selectors = this.processselectors(selectors);
+		if(typeof selectors=="string")
+		{
+			txt = Filter.userdefined(txt, selectors, replacement);
+		}
+		else {
+			txt = Filter.userdefinedmultiple(txt, selectors);
+		}
+		
 		return txt;
 	},
 	legacy(txt){
@@ -16,7 +24,25 @@ Filter = {
 		return txt;
 	},
 	
-	userdefined(txt, selectors)
+	processselectors(s)
+	{
+		try {
+			return JSON.parse(s);
+		}
+		catch {}
+		return s
+	},
+
+	userdefinedmultiple(txt, selectors) {
+		for(selector in selectors)
+		{
+			var replacement = selectors[selector];
+			txt = this.userdefined(txt, selector, replacement);
+		}
+		return txt;
+	},
+	
+	userdefined(txt, selectors, replacement)
 	{
 		if(selectors)
 		{
@@ -48,9 +74,9 @@ Filter = {
 		{
 			if(this.validselector(selector))
 			{
-				if(this.replacement!="")
+				if(replacement!="")
 				{
-					html.querySelectorAll("body "+selector).forEach(e => e.outerHTML="<div>"+this.escapehtml(this.replacement))+"</div>";
+					html.querySelectorAll("body "+selector).forEach(e => e.outerHTML="<div>"+this.escapehtml(replacement))+"</div>";
 				}
 				else
 				{
