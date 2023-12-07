@@ -41,7 +41,7 @@ Data = {
 			var collections = collection.getChildCollections();
 			
 			items.forEach(item=>{
-				if(![ANNOTATION, ATTACHMENT, NOTE].includes(item.itemTypeID))
+				if(![ANNOTATION_LABEL, ATTACHMENT_LABEL, NOTE_LABEL].includes(item.itemType))
 				{
 					ids.push(item.id);
 				}
@@ -90,7 +90,7 @@ Data = {
 			var item = Zotero.Items.get(id);
 			if(item!==false)
 			{
-				if(![ANNOTATION, ATTACHMENT, NOTE].includes(item.itemTypeID))
+				if(![ANNOTATION_LABEL, ATTACHMENT_LABEL, NOTE_LABEL].includes(item.itemType))
 				{
 					taglist = taglist.concat(Data.notetags(item));
 					taglist = taglist.concat(Data.attachmenttags(item));

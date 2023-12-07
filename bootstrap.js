@@ -16,8 +16,11 @@ var Ai;
 var CryptoJS;
 
 const ANNOTATION = 1;
+const ANNOTATION_LABEL = "annotation";
 const ATTACHMENT = 3;
+const ATTACHMENT_LABEL = "attachment";
 const NOTE = 28;
+const NOTE_LABEL = "note";
 
 let mainWindowListener;
 
