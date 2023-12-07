@@ -28,7 +28,7 @@ Ai.Bard = {
 	
 	async paraphrase(sentence)
 	{
-		var prompts = "This task is a literature review. Paraphrase the passage below. Tell with an academic writing tone. Do not add additional explanation."
+		var prompts = "Paraphrase the passage below. Tell with an academic writing tone. Do not add additional explanation."
 		return this.sendprompt(sentence, prompts)
 	},
 	
