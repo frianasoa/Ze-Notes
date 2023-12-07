@@ -18,11 +18,17 @@ Format = {
 					
 					if(!Object.keys(tagged_items[item.id]).includes(tag))
 					{
-						tagged_items[item.id][tag] = itemnotes[tag].join("");
+						if(Object.keys(itemnotes).includes(tag))
+						{
+							tagged_items[item.id][tag] = itemnotes[tag].join("");
+						}
 					}
 					else
 					{
-						tagged_items[item.id][tag]+=itemnotes[tag].join("");
+						if(Object.keys(itemnotes).includes(tag))
+						{
+							tagged_items[item.id][tag]+=itemnotes[tag].join("");
+						}
 					}
 				}
 			}
