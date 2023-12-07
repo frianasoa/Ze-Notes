@@ -1,28 +1,110 @@
 Format = {
 	async formatitems(items, tags)
 	{
-		var lines = [];
-		var tagged_items = [];
+		var tagged_items = {};
+		var itemlist = {};
 		for(item of items)
 		{
-			var notes = await Format.notes(item);
-			lines.push(await Format.formatitem(item, notes));
-		}
-		
-		for(line of lines)
-		{
-			// Add if item has tags
-			if(Object.keys(line).some(r=> tags.includes(r)))
-			{	
-				tagged_items.push(line);
+			var itemnotes = await Format.itemnotes(item);
+			itemlist[item.id] = await Format.formatitem(item);			
+			for(const tag of tags)
+			{
+				if(this.hastag(item, tag))
+				{
+					if(!Object.keys(tagged_items).includes(item.id))
+					{
+						tagged_items[item.id] = itemlist[item.id];
+					}
+					
+					if(!Object.keys(tagged_items[item.id]).includes(tag))
+					{
+						tagged_items[item.id][tag] = itemnotes[tag].join("");
+					}
+					else
+					{
+						tagged_items[item.id][tag]+=itemnotes[tag].join("");
+					}
+				}
 			}
 		}
-		
 		return {
-			data: lines,
+			data: Object.values(itemlist),
 			columns: ["id", "itemid", "key", "title", "date", "journal", "author", "creators", "filekey"],
-			tagged_items: tagged_items,
+			tagged_items: Object.values(tagged_items),
 		}
+	},
+	
+	
+	async itemnotes(item)
+	{
+		var allnotes = item.getNotes().map(function(id){return Zotero.Items.get(id);});
+		try {
+			var pdfids = item.getAttachments();
+			for(let id of pdfids)
+			{
+				let attachment = Zotero.Items.get(id);
+				if(attachment.isPDFAttachment())
+				{
+					allnotes = allnotes.concat(attachment.getAnnotations());
+				}
+			}
+		}
+		catch(e){}
+		var r = {};
+		for(note of allnotes)
+		{
+			var n = await this.formatnote(note);
+			for(tag of note.getTags())
+			{
+				if(!Object.keys(r).includes(tag.tag))
+				{
+					r[tag.tag] = [n];
+				}
+				else
+				{
+					r[tag.tag].push(n);
+				}
+			}
+		}
+		return r;
+	},
+	
+	itemtags(item)
+	{
+		var alltags = []
+		var noteids = item.getNotes();
+		var pdfids = [];
+		try {
+			pdfids = item.getAttachments();
+		}
+		catch(e)
+		{
+		}
+		
+		for(let id of pdfids)
+		{
+			let attachment = Zotero.Items.get(id);
+			if(attachment.isPDFAttachment())
+			{
+				noteids = noteids.concat(attachment.getAnnotations().map(function(e){return e.id}));
+			}
+		}		
+		
+		for(id of noteids)
+		{
+			var note = Zotero.Items.get(id);
+			var tags = note.getTags(false);
+			for(tag of tags)
+			{
+				alltags.push(tag.tag);
+			}
+		}
+		return alltags;
+	},
+	
+	hastag(item, tag)
+	{
+		return this.itemtags(item).includes(tag)
 	},
 	
 	xmlescape(txt){
@@ -32,7 +114,58 @@ Format = {
 		return txt;
 	},
 	
-	async formatitem(item, notes) {
+	async formatnote(note)
+	{
+		var selectors = Zotero.ZeNotes.Prefs.get("html-filter");
+		var replacement = Zotero.ZeNotes.Prefs.get("html-filter-replacement");
+		var notetext = "";
+		if(note.isAnnotation())
+		{
+			var annotationtext = note["annotationText"];
+			if(annotationtext==null)
+			{
+				annotationtext = "";
+			}
+			annotationtext = this.escapehtml(annotationtext);
+			
+			var contents = "&#x201F;"+annotationtext+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+			
+			/**
+			Not allow html in comments from pdf for now;
+			*/
+			// comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
+			
+			var comment = note["annotationComment"];
+			
+			
+			
+			if(comment==null)
+			{
+				comment = "";
+			}
+			
+			// comment = this.escapehtml(comment);
+			comment = comment.split("\n").join("<br/>\n");
+			
+			var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
+			
+			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
+			
+			let note_ = comment+"<hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
+			notetext+=note_;
+		}
+		else
+		{
+			note_ = note.getNote();
+			note_ = Zotero.ZeNotes.Filter.apply(note_, selectors, replacement);
+			note_ = await Zotero.ZeNotes.Image.render(note_, item);
+			
+			notetext+=note_+ "<span class='notekey'>"+note.id+"</span><hr/>";
+		}
+		return notetext;
+	},
+	
+	async formatitem(item) {
 		var line = {
 			id: item.getID(),
 			itemid: item.id,
@@ -45,12 +178,15 @@ Format = {
 			filenames: await Format.filenames(item),
 			filekey: Format.filekey(item),
 		}
-		for(c in notes)
-		{
+		return line;
+		
+		// for(c in notes)
+		// {
 			// Check later
 			// notes[c] = this.xmlescape(notes[c]);
-		}		
-		return Object.assign({}, line, notes);
+		// }	
+		
+		// return Object.assign({}, line, notes);
 	},
 	
 	year(item) {
@@ -160,96 +296,6 @@ Format = {
         return filenames;
     },
 	
-	async notes(item){
-		var values = []
-		var selectors = Zotero.ZeNotes.Prefs.get("html-filter");
-		var replacement = Zotero.ZeNotes.Prefs.get("html-filter-replacement");
-
-		if(![ANNOTATION, ATTACHMENT, NOTE].includes(item.itemTypeID))
-		{
-			var nids = item.getNotes(false);
-			var pdfids = [];
-			try {
-				pdfids = item.getAttachments();
-			}
-			catch(e)
-			{
-				
-			}
-			
-			var notes = []
-			for(id of nids)
-			{
-				notes.push(Zotero.Items.get(id));
-			}
-			for(let id of pdfids)
-			{
-				let attachment = Zotero.Items.get(id);
-				if(attachment.isPDFAttachment())
-				{
-					notes = notes.concat(attachment.getAnnotations());
-				}
-			}
-			
-			
-			for(note of notes)
-			{
-				var notetext = "";
-				var tags = note.getTags();
-				for(tag of tags){
-					if(!Object.keys(values).includes(tag.tag))
-					{
-						values[tag.tag] = "";
-					}
-					
-					if(note.isAnnotation())
-					{
-						var annotationtext = note["annotationText"];
-						if(annotationtext==null)
-						{
-							annotationtext = "";
-						}
-						annotationtext = this.escapehtml(annotationtext);
-						
-						var contents = "&#x201F;"+annotationtext+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
-						
-						/**
-						Not allow html in comments from pdf for now;
-						*/
-						// comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
-						
-						var comment = note["annotationComment"];
-						
-						
-						if(comment==null)
-						{
-							comment = "";
-						}
-						
-						comment = this.escapehtml(comment);
-						comment = comment.split("\n").join("<br/>\n");
-						
-						var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
-						
-						var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
-						
-						let note_ = comment+"<hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
-						notetext+=note_;
-					}
-					else
-					{
-						note_ = note.getNote();
-						note_ = Zotero.ZeNotes.Filter.apply(note_, selectors, replacement);
-						note_ = await Zotero.ZeNotes.Image.render(note_, item);
-						
-						notetext+=note_+ "<span class='notekey'>"+note.id+"</span><hr/>";
-					}
-					values[tag.tag]+= notetext;
-				};
-			}
-		}
-		return values;
-	},
 	escapehtml(s)
 	{
 		return s

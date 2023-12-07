@@ -112,16 +112,21 @@ Data = {
 				var n = Zotero.Items.get(noteid);
 				var tags = JSON.parse(JSON.stringify(n)).tags;                
 				var tag = "";
-				if(tags.length>0)
+				if(tags.length==0)
 				{
-					tag = tags[0]["tag"];
+					taglist.push("Other")
 				}
-				
-				if(tag=="")
+				else if(tags.length==1)
 				{
-					tag = "Other";
+					taglist.push(tags[0]["tag"]);
 				}
-				taglist.push(tag)
+				else
+				{
+					for(tag of tags)
+					{
+						taglist.push(tag["tag"]);
+					}
+				}
 			}
 		}
 		return taglist;
@@ -134,8 +139,7 @@ Data = {
 			attachments = item.getAttachments();
 		}
 		catch(e)
-		{
-			
+		{	
 		}
 		for(let id of attachments)
 		{
