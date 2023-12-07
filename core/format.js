@@ -126,25 +126,26 @@ Format = {
 			{
 				annotationtext = "";
 			}
-			annotationtext = this.escapehtml(annotationtext);
+			
+			if(!this.isvalidxhtml(annotationtext))
+			{
+				annotationtext = this.escapehtml(annotationtext);
+			}
 			
 			var contents = "&#x201F;"+annotationtext+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
 			
-			/**
-			Not allow html in comments from pdf for now;
-			*/
-			// comment = Zotero.ZeNotes.Filter.apply(comment, selectors);
-			
 			var comment = note["annotationComment"];
-			
-			
-			
+
 			if(comment==null)
 			{
 				comment = "";
 			}
 			
-			// comment = this.escapehtml(comment);
+			if(!this.isvalidxhtml(comment))
+			{
+				comment = this.escapehtml(comment);
+			}
+			
 			comment = comment.split("\n").join("<br/>\n");
 			
 			var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
@@ -179,14 +180,6 @@ Format = {
 			filekey: Format.filekey(item),
 		}
 		return line;
-		
-		// for(c in notes)
-		// {
-			// Check later
-			// notes[c] = this.xmlescape(notes[c]);
-		// }	
-		
-		// return Object.assign({}, line, notes);
 	},
 	
 	year(item) {
@@ -295,6 +288,34 @@ Format = {
         }
         return filenames;
     },
+	
+	isvalidxhtml(txt)
+	{
+		txt = "<div>"+txt+"</div>"
+		var r = true;
+		var parser = null;
+		if (Zotero.platformMajorVersion >= 102) {
+			parser = new DOMParser();
+		}
+		else
+		{
+			parser = Components.classes['@mozilla.org/xmlextras/domparser;1'].createInstance(Components.interfaces.nsIDOMParser);
+		}
+		
+		try {
+			var doc = parser.parseFromString(txt, 'application/xhtml+xml');
+			const errorNode = doc.querySelector("parsererror");
+			if(errorNode)
+			{
+				r = false;
+			}
+        }
+        catch (error) {
+			alert(error);
+			r = false
+        }
+		return r;
+	},
 	
 	escapehtml(s)
 	{
