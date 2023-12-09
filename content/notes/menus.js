@@ -258,7 +258,7 @@ Menus = {
 				currentcomment = "";
 			}
 			Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
-				annotation.annotationComment = currentcomment+"\n\n[Paraphrase]\n"+r+"\n";
+				annotation.annotationComment = currentcomment+"\n\n<b>[Paraphrase]</b>\n"+r+"\n";
 				annotation.saveTx({skipSelect:true}).then(e=>{Zotero.ZeNotes.Ui.reload();});
 			});
 		}

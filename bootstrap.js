@@ -224,7 +224,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
 	
-	Services.scriptloader.loadSubScript(rootURI + '3rdparty/CryptoJS 3.1.2/aes.js');
+	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
 	
 	ZeNotes.init({ id, version, rootURI });
 	Zotero.ZeNotes = ZeNotes;
