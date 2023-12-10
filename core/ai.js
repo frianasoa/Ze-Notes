@@ -7,28 +7,34 @@ Ai={
 		})
 		.then(data => {
 			try {
-				return Promise.resolve(data.candidates[0].output);
+				return Promise.resolve(data.candidates.map(function(v){return v.output}));
 			}
-			catch {
-				return Promise.resolve("");
+			catch(e) {
+				return Promise.resolve(["Error: "+e]);
 			}
 		}).catch(e=>{
-			return Promise.reject("error: "+e);
+			return Promise.reject(["Error: "+e]);
 		});
 	}
 }
 
 Ai.Bard = {
-	
 	async translate(sentence)
 	{
 		var prompts = "Translate the following sentence.";
 		return this.sendprompt(sentence, prompts)
 	},
 	
+	async summarize(sentence, ratio=1/4)
+	{
+		var prompts = "Summarize the following in about "+Math.round(sentence.split(" ").length*ratio)+" words:"
+		alert(prompts);
+		return this.sendprompt(sentence, prompts);
+	},
+	
 	async paraphrase(sentence)
 	{
-		var prompts = "Paraphrase the passage below. Tell with an academic writing tone. Do not add additional explanation."
+		var prompts = "Paraphrase the following:"
 		return this.sendprompt(sentence, prompts)
 	},
 	
@@ -43,7 +49,7 @@ Ai.Bard = {
 				"text": p,	
 			},
 			"temperature": 1.0,
-			"candidate_count": 1 
+			"candidate_count": 3 
 		}
 		
 		var options = {

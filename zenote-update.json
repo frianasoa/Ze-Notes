@@ -3,9 +3,9 @@
     "zenotes@alefa.net": {
       "updates": [
         {
-          "version": "0.5.1",
-          "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v0.5.1/zenotes-v0.5.1.xpi",
-          "update_hash": "sha256:981f84678d6651853137369980b244f193ec464899e0fb6236f82c993dd676fc",
+          "version": "0.5.2",
+          "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v0.5.2/zenotes-v0.5.2.xpi",
+          "update_hash": "sha256:8dec1a1fdba6ba5c511366139e29dcf23ab88fccb63437cd723752faba165914",
           "applications": {
             "gecko": {
               "strict_min_version": "60.0"
