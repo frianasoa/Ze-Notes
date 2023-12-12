@@ -43,7 +43,16 @@ Format = {
 	
 	async itemnotes(item)
 	{
-		var allnotes = item.getNotes().map(function(id){return Zotero.Items.get(id);});
+		var allnotes = [];
+		if(![NOTE_LABEL].includes(item.itemType))
+		{
+			allnotes = item.getNotes().map(function(id){return Zotero.Items.get(id);});
+		}
+		else
+		{
+			allnotes.push(item);
+		}
+		
 		try {
 			var pdfids = item.getAttachments();
 			for(let id of pdfids)
@@ -78,7 +87,16 @@ Format = {
 	itemtags(item)
 	{
 		var alltags = []
-		var noteids = item.getNotes();
+		var noteids = [];
+		if(![NOTE_LABEL].includes(item.itemType))
+		{
+			noteids = item.getNotes();
+		}
+		else
+		{
+			noteids.push(item.id);
+		}
+		
 		var pdfids = [];
 		try {
 			pdfids = item.getAttachments();

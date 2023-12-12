@@ -345,7 +345,7 @@ Notes = {
 		$('#zn-body-wrapper').animate({
 			scrollTop: Zotero.ZeNotes.Prefs.get("scrolltop", 0),
 			scrollLeft: Zotero.ZeNotes.Prefs.get("scrollleft", 0),
-		}, 500);
+		}, 200);
 		
 		$("#zn-body-wrapper").bind('scroll', function() {
 			Zotero.ZeNotes.Prefs.set("scrolltop", $('#zn-body-wrapper').scrollTop());

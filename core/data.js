@@ -103,7 +103,16 @@ Data = {
 	
 	notetags(item){
 		var taglist = [];
-		notes = item.getNotes();
+		var notes = [];
+		if(![NOTE_LABEL].includes(item.itemType))
+		{
+			notes = item.getNotes();
+		}
+		else
+		{
+			notes.push(item.id)
+		}
+		
 		if(notes.length>0)
 		{
 			for(j in notes)
