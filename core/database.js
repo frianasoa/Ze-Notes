@@ -1,5 +1,16 @@
 Database = 
 {
+	async init(){
+		this.DB = new Zotero.DBConnection("zenotes");
+		await this.create();
+		await this.z6transition(Prefs.get("tag-lists"));
+	},
+	
+	async close()
+	{
+		await this.DB.closeDatabase(true);
+	},
+	
     async create(){
 		var sql1 = "CREATE TABLE IF NOT EXISTS `default` (id INTEGER PRIMARY KEY, collectionid TEXT UNIQUE, label TEXT, contents TEXT)";
 		var sql2 = "CREATE TABLE IF NOT EXISTS `preferences` (id INTEGER PRIMARY KEY, collectionid TEXT UNIQUE, label TEXT, contents TEXT)";
@@ -40,9 +51,7 @@ Database =
 	},
 	
 	z6read(q, values){
-		var DB = new Zotero.DBConnection("zenotes");
-		return DB.queryAsync(q, values).then(r=>{
-			DB.closeDatabase();
+		return this.DB.queryAsync(q, values).then(r=>{
 			var data = [];
 			for(v of r){
 				data.push({
@@ -50,7 +59,7 @@ Database =
 				})
 			}
 			return Promise.resolve(data);
-		}).catch(e=>{DB.closeDatabase()});
+		}).catch(e=>{log(e)});
 	},
 	
 	async z6transition(prefsdata){
@@ -74,9 +83,7 @@ Database =
 	},
 	
 	async execget(q, values){
-		var DB = new Zotero.DBConnection("zenotes");
-		return DB.queryAsync(q, values).then(r=>{
-			DB.closeDatabase();
+		return this.DB.queryAsync(q, values).then(r=>{
 			var data = [];
 			for(i in r){
 				data.push({
@@ -86,15 +93,13 @@ Database =
 				});
 			}
 			return Promise.resolve(data);
-		}).catch(e=>{DB.closeDatabase(); return Promise.resolve("error")});
+		}).catch(e=>{return Promise.resolve("error")});
 	},
 	
 	async exec(q, values, columns=null){
-		var DB = new Zotero.DBConnection("zenotes");
-		return DB.queryAsync(q, values).then(r=>{
-			DB.closeDatabase();
+		return this.DB.queryAsync(q, values).then(r=>{
 			return Promise.resolve(r[0].contents);
-		}).catch(e=>{DB.closeDatabase()});
+		}).catch(e=>{log(e)});
 	},
 	
     async addsetting(collectionid, label, contents)

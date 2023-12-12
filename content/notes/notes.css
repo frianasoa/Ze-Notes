@@ -186,11 +186,11 @@ body {
 	cursor: pointer;
 }
 
-#zn-bard-table {
+#zn-ai-table {
 
 }
 
-#zn-bard-table td{
+#zn-ai-table td{
 	border-bottom: solid 1px;
 	padding: 0.6em;
 }

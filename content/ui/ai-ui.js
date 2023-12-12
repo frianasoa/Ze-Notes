@@ -11,19 +11,32 @@ AiUi = {
 		c.contentEditable = "false";
 		c.style.backgroundColor = "";
 	},
-	acceptcandidate(id, currentcomment, annotation)
+	
+	acceptcandidate(id, currentcomment, annotation, mode="bard")
 	{
 		var c = document.getElementById(id);
 		var comment = c.innerText;
 		annotation.annotationComment = currentcomment+"\n\n<b>[Paraphrase]</b>\n"+comment+"\n";
+		
+		if(mode=="g-translate")
+		{
+			annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+comment+"\n";
+		}
+		
 		annotation.saveTx({skipSelect:true}).then(e=>{
 			Zotero.ZeNotes.Ui.reload();
 		});
 	},
-	createdialog(candidates)
+	
+	createdialog(annotation, currentcomment, candidates, mode="bard")
 	{
+		var confirm_message = "Do you want to use this paraprase?";
+		if(mode=="g-translate")
+		{
+			confirm_message = "Do you want to use this translation?"
+		}
 		var table = document.createElement("table");
-		table.id = "zn-bard-table";
+		table.id = "zn-ai-table";
 		var th = document.createElement("tr");
 		table.appendChild(th);
 		for(h of ["Candidate", "Content", ""])
@@ -46,7 +59,7 @@ AiUi = {
 			
 			let candidate = document.createElement("td");
 			
-			candidate.id = "bard-paraphrase-"+i;
+			candidate.id = "ai-candidate-"+i;
 			candidate.addEventListener("blur", function(e){
 				AiUi.savecandidate(e.target.id);
 			})
@@ -59,7 +72,7 @@ AiUi = {
 			
 			let edit = document.createElement("i");
 			edit.className = "fas fa-pen zn-button";
-			edit.dataset.candidateid = "bard-paraphrase-"+i;
+			edit.dataset.candidateid = "ai-candidate-"+i;
 			edit.addEventListener("click", function(e){
 				AiUi.editcandidate(e.target.dataset.candidateid);
 			});
@@ -68,14 +81,14 @@ AiUi = {
 			
 			let accept = document.createElement("i");
 			accept.className = "fas fa-check zn-button";
-			accept.dataset.candidateid = "bard-paraphrase-"+i;
+			accept.dataset.candidateid = "ai-candidate-"+i;
 			accept.title = "Use this candidate."
 			accept.addEventListener("click", function(e){
-				if(!confirm("Do you want to use this paraprase?"))
+				if(!confirm(confirm_message))
 				{
 					return;
 				}
-				AiUi.acceptcandidate(e.target.dataset.candidateid, currentcomment, annotation);
+				AiUi.acceptcandidate(e.target.dataset.candidateid, currentcomment, annotation, mode);
 			});
 			buttons.appendChild(accept);
 			i+=1;

@@ -240,6 +240,9 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("bard-api-key", "zn-bard-api-key", "encrypt");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("google-translate-project-id", "zn-google-translate-project-id", "encrypt");
+			Zotero_Preferences.ZeNotes.loadpreference("google-translate-key", "zn-google-translate-key", "encrypt");
 		})
 		.catch(error => {
 			console.log('Error loading content: ' + error);

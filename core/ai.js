@@ -1,17 +1,32 @@
 var fetch = Zotero.getMainWindow().fetch;
 Ai={
-	request(url, options){
+	request(url, options, mode="bard"){
 		return fetch(url, options).
 		then(res => {
 			return res.json()
 		})
 		.then(data => {
-			try {
-				return Promise.resolve(data.candidates.map(function(v){return v.output}));
+			if(mode=="bard")
+			{
+				try {
+					return Promise.resolve(data.candidates.map(function(v){return v.output}));
+				}
+				catch(e) {
+					return Promise.resolve([data.error.message]);
+				}
 			}
-			catch(e) {
-				return Promise.resolve(["Error: "+e]);
+			else if(mode=="g-translate")
+			{
+				try {
+					// Google translate
+					return Promise.resolve(data.data.translations.map(function(e){return e.translatedText}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e]);
+				}
 			}
+			
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e]);
 		});
@@ -28,7 +43,6 @@ Ai.Bard = {
 	async summarize(sentence, ratio=1/4)
 	{
 		var prompts = "Summarize the following in about "+Math.round(sentence.split(" ").length*ratio)+" words:"
-		alert(prompts);
 		return this.sendprompt(sentence, prompts);
 	},
 	
@@ -60,6 +74,25 @@ Ai.Bard = {
 			},
 			body: JSON.stringify(payload),
 		}
-		return Ai.request(url, options);
+		return Ai.request(url, options, "bard");
+	},
+}
+
+Ai.Google = {
+	translate(sentence, language){
+		var apikey = Zotero.ZeNotes.Prefs.getb("google-translate-key");
+		var url = "https://translation.googleapis.com/language/translate/v2?key="+apikey+"&target="+language
+		
+		var payload = {q: sentence};
+		
+		var options = {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json;  charset=utf-8",
+				'Accept': 'application/json',
+			},
+			body: JSON.stringify(payload),
+		}
+		return Ai.request(url, options, "g-translate");
 	},
 }

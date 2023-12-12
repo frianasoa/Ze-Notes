@@ -211,19 +211,17 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		// setDefaultPrefs(rootURI);
 	}
 
+	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/image.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/filter.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/utils.js');
-	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ui.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/menu.js');
-	
 	Services.scriptloader.loadSubScript(rootURI + 'core/data.js');
-	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
-	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
-	
 	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
 	
 	ZeNotes.init({ id, version, rootURI });
@@ -232,6 +230,10 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	
 	Zotero_Tabs = Zotero.getMainWindow().Zotero_Tabs;
 	Menu.addToAllWindows();
+	ZeNotes.Prefs = Prefs;
+	ZeNotes.Database = Database;
+	await Database.init();
+	
 	ZeNotes.Ui = Ui; 
 	ZeNotes.Menu = Menu;
 	ZeNotes.Utils = Utils;
@@ -241,11 +243,9 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.CryptoJS = CryptoJS;
 
 	ZeNotes.Data = Data;
-	ZeNotes.Database = Database;
-	ZeNotes.Prefs = Prefs;
+	
+	
 	ZeNotes.Format = Format;
-	Database.create();
-	Database.z6transition(Prefs.get("tag-lists"));
 	await ZeNotes.main();
 }
 
@@ -259,7 +259,8 @@ function onMainWindowUnload({ window }) {
 
 function shutdown() {
 	log("Shutting down 1.2");
-
+	ZeNotes.Database.close();
+	
 	if (Zotero.platformMajorVersion < 102) {
 		removeMainWindowListener();
 	}
@@ -267,7 +268,7 @@ function shutdown() {
 	{
 		chromeHandle.destruct();
 	}
-
+	
 	ZeNotes.removeFromAllWindows();
 	ZeNotes = undefined;
 }

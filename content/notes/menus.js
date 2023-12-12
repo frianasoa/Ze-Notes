@@ -40,13 +40,19 @@ Menus = {
 		}
 		
 		var items_ai = {}
-		
+
+		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="google-translate-key")
+		{
+			items_ai["translate-google-en"] = {name: "Translate to English (Google)", icon: "fa-language"};
+			items_ai["sep-ai-02"] = "---------";
+		}
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
-			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-language"},
+			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-language"};
 			items_ai["sep-ai-01"] = "---------";
 		}
 		
+
 		var items1 = {
 			"showfile": {name: "Show attached files", icon: "fa-file-pdf"},
 			"showentry": {name: "Show entry", icon: "fa-file-lines"},
@@ -170,16 +176,17 @@ Menus = {
 		Zotero.OpenPDF.openToPage(attachment, annotationpage, annotationkey);
 	},
 	
-	actions (key, options)
+	actions(key, options)
     {
 		var tohide = "column";
-		if(Zotero.ZeNotes.Prefs.get("vertical-table")=="true" || Zotero.ZeNotes.Prefs.get("vertical-table")==true)
+		var isvertical = Zotero.ZeNotes.Prefs.get("vertical-table");
+		if( isvertical=="true" || isvertical==true);
 		{
 			tohide = "row";
 		}
 		
 		var td = options.$trigger.get(0);
-        var column = td.dataset.column;
+		var column = td.dataset.column;
         var itemid = td.dataset.itemid;
         var itemkey = td.dataset.itemkey;
         var attachmentid = td.dataset.attachmentid;
@@ -192,7 +199,7 @@ Menus = {
         
         var filekey = td.dataset.filekey;
         var notekey = td.dataset.notekey;
-        		
+		
         try
         {
             var filenames = JSON.parse(td.dataset.filenames);
@@ -204,7 +211,6 @@ Menus = {
         
         if(key=="showentry")
         {
-            
 			let win = Zotero.getMainWindow();
 			if (win) {
 				win.ZoteroPane.selectItems([itemid]);
@@ -234,9 +240,47 @@ Menus = {
 			// New page to prevent page jump back. Will default to original openToPage when Zotero 7 is stable.
 			// Zotero.OpenPDF.openToPage(attachment, annotationpagelabel, annotationkey);
 			this.openToPage(parseInt(attachmentid), parseInt(annotationpage), annotationkey)
-			
-            
         }
+		
+		
+		else if(key=="translate-google-en")
+		{
+			if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+			
+			if(Zotero.ZeNotes.Prefs.getb("google-translate-key")=="")
+			{
+				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+				return;
+			}
+			
+			var annotation = Zotero.Items.get(annotationid);
+			var currentcomment = annotation.annotationComment;
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], "en").then(r=>{
+				var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
+				Dialog.open(table, function(){}, "Choose translation [Google]", "close");
+			}).catch(r=>{
+				var html = "";
+				if(Array.isArray(r))
+				{
+					html = r.join("<br/>");
+				}
+				else
+				{
+					html="-"+r;
+				}
+				Dialog.open(html, function(){
+				});
+			});
+		}
+		
 		else if(key=="paraphrase-bard")
 		{
 			if(!annotationkey)
@@ -258,8 +302,8 @@ Menus = {
 				currentcomment = "";
 			}
 			Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
-				var table = AiUi.createdialog(r);
-				Dialog.open(table, function(){}, "Choose paraprahse", "close");
+				var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
+				Dialog.open(table, function(){}, "Choose paraprahse [Bard]", "close");
 			}).catch(r=>{
 				var html = "";
 				if(Array.isArray(r))
@@ -274,6 +318,7 @@ Menus = {
 				});
 			});
 		}
+		
         else if(key=="showfile")
         {
             this.choosefile(filenames);

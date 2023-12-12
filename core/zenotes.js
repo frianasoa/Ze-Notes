@@ -89,7 +89,11 @@ ZeNotes = {
 			let elem = doc.getElementById(id);
 			if (elem) elem.remove();
 		}
-		doc.querySelector('[href="zenotes.ftl"]').remove();
+		var ftl = doc.querySelector('[href="zenotes.ftl"]');
+		if(ftl!=null)
+		{
+			ftl.remove();
+		}
 	},
 	
 	removeFromAllWindows() {
