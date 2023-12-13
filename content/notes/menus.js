@@ -1,5 +1,6 @@
 Menus = {
-	load(){
+	load()
+	{
 		this.openTabs = [];
 		this.veil = document.createElement("div");
 		this.veil.innerHTML = "Loading, please wait ...";
@@ -167,7 +168,8 @@ Menus = {
         });
     },
 	
-	loading(){
+	loading()
+	{
 		this.veil.style.width = "100%";
 		this.veil.style.height = "100%";
 		this.veil.style.display = "table-cell";
@@ -180,7 +182,8 @@ Menus = {
 		this.veil.style.display = "none";
 	},
 	
-	openToPage(attachmentid, annotationpage, annotationkey){
+	openToPage(attachmentid, annotationpage, annotationkey)
+	{
 		var attachment = Zotero.Items.get(attachmentid);
 		Zotero.OpenPDF.openToPage(attachment, annotationpage, annotationkey);
 	},
@@ -254,6 +257,7 @@ Menus = {
 		
 		else if(key=="translate-google-en")
 		{
+			var mode = "api-key";
 			if(!annotationkey)
             {
                 alert("Annotation not found!");
@@ -262,8 +266,7 @@ Menus = {
 			
 			if(Zotero.ZeNotes.Prefs.getb("google-translate-key")=="")
 			{
-				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-				return;
+				mode="free-0";
 			}
 			
 			var annotation = Zotero.Items.get(annotationid);
@@ -273,7 +276,7 @@ Menus = {
 				currentcomment = "";
 			}
 			var tl = Zotero.ZeNotes.Prefs.get("target-language");
-			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl).then(r=>{
+			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
 				var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
 				Dialog.open(table, function(){}, "Choose translation [Google]", "close");
 			}).catch(r=>{

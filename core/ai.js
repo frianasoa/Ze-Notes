@@ -26,6 +26,28 @@ Ai={
 					return Promise.resolve(["Error: "+e]);
 				}
 			}
+			else if(mode=="g-translate-free-0")
+			{
+				try {
+					// Google translate without api key
+					return Promise.resolve(data[0].map(function(e){return e[0]}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e]);
+				}
+			}
+			else if(mode=="g-translate-free-1")
+			{
+				try {
+					// Google translate without api key
+					return Promise.resolve(data.map(function(e){return e[0]}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e]);
+				}
+			}
 			
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e]);
@@ -79,7 +101,7 @@ Ai.Bard = {
 }
 
 Ai.Google = {
-	translate(sentence, language){
+	translatewithapi(sentence, language){
 		var apikey = Zotero.ZeNotes.Prefs.getb("google-translate-key");
 		var url = "https://translation.googleapis.com/language/translate/v2?key="+apikey+"&target="+language
 		
@@ -94,5 +116,26 @@ Ai.Google = {
 			body: JSON.stringify(payload),
 		}
 		return Ai.request(url, options, "g-translate");
+	},
+	
+	translate(sentence, language, mode="api-key")
+	{
+		if(mode=="api-key")
+		{
+			return this.translatewithapi(sentence, language);
+		}
+		
+		else if(mode=="free-0")
+		{
+			var url = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=auto&tl="+language+"&q="+encodeURIComponent(sentence);
+			var options = {method: 'POST', headers: {},}
+			return Ai.request(url, options, "g-translate-free-0");
+		}
+		else if(mode=="free-1")
+		{
+			var url = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl="+language+"&q="+encodeURIComponent(sentence);
+			var options = {method: 'POST', headers: {},}
+			return Ai.request(url, options, "g-translate-free-1");
+		}
 	},
 }
