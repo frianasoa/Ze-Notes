@@ -172,6 +172,7 @@ function initPreferences(rootURI) {
 			src: rootURI + 'content/settings/preferences.xhtml',
 			scripts: [
 				rootURI + 'content/settings/zntable.js',
+				rootURI + 'content/settings/languages.js',
 				rootURI + 'content/settings/preferences.js',
 			],
 			image: rootURI+"/content/images/zenotes-settings.png"

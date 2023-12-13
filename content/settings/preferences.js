@@ -133,6 +133,75 @@ Zotero_Preferences.ZeNotes = {
 		lsettings.dataset.collectionid = e.target.value;
 	},
 	
+	targetlanguages()
+	{
+		var tl = Zotero.ZeNotes.Prefs.get("target-language");
+		var options = Languages.list().map(function(e){return {label: e.name, value:e.code}});
+		var combo = this.addcombobox("zn-target-language", options, tl);
+		combo.addEventListener("change", function(e){
+			Zotero.ZeNotes.Prefs.set("target-language", e.target.value);
+		});
+		combo.addEventListener("command", function(e){
+			Zotero.ZeNotes.Prefs.set("target-language", e.target.value);
+		})
+	},
+	
+	addcombobox(itemid, options, value){
+		var menulist = document.getElementById(itemid);
+		if (Zotero.platformMajorVersion < 102)
+		{
+			if(menulist.tagName.toUpperCase()!="SELECT")
+			{
+				var p = menulist.parentNode.parentNode;
+				menulist.parentNode.remove();
+				var sel = document.createElement("select");
+				p.insertBefore(sel, p.firstChild);
+				sel.setAttribute("id", "zn-load-settings");
+				menulist = sel;
+			}
+			else
+			{
+				menulist.innerHTML="";
+			}
+		}
+		else
+		{
+			menulist.innerHTML="";
+		}
+		
+		if(menulist==undefined)
+		{
+			return;
+		}
+						
+		for(s of options)
+		{
+			if(Zotero.platformMajorVersion < 102){
+				var opt = document.createElement("option");
+				opt.innerHTML = s.label;
+				opt.setAttribute("label", s.label);
+				opt.setAttribute("value", s.value);
+				menulist.appendChild(opt);
+				if(s.value==value)
+				{
+					opt.selected = "true";
+				}
+			}
+			else
+			{
+				var opt = document.createXULElement("menuitem");
+				opt.setAttribute("label", s.label);
+				opt.setAttribute("value", s.value);
+				menulist.appendChild(opt);
+				if(s.value==value)
+				{
+					menulist.parentNode.selectedItem = opt;
+				}
+			}
+		}
+		return menulist;
+	},
+	
 	loadpreferences()
 	{		
 		var lsettings = document.getElementById("zn-load-settings");
@@ -226,6 +295,7 @@ Zotero_Preferences.ZeNotes = {
 			include.appendChild(importedNode);
 			Zotero_Preferences.ZeNotes.loadtables();
 			Zotero_Preferences.ZeNotes.loadpreferences();
+			Zotero_Preferences.ZeNotes.targetlanguages();
 			Zotero_Preferences.ZeNotes.initopacity();
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter", "zn-html-filter");
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter-replacement", "zn-html-filter-replacement");

@@ -43,15 +43,25 @@ Menus = {
 
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="google-translate-key")
 		{
-			items_ai["translate-google-en"] = {name: "Translate to English (Google)", icon: "fa-language"};
+			var tlcode = Zotero.ZeNotes.Prefs.get("target-language");
+			var tl = "";
+			for(a of Languages.list())
+			{
+				if(tlcode.toUpperCase()==a.code.toUpperCase())
+				{
+					tl = a.name;
+				}
+			}
+			
+			items_ai["translate-google-en"] = {name: "Translate to "+tl+" (Google)", icon: "fa-language"};
 			items_ai["sep-ai-02"] = "---------";
 		}
+		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
 			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-language"};
 			items_ai["sep-ai-01"] = "---------";
 		}
-		
 
 		var items1 = {
 			"showfile": {name: "Show attached files", icon: "fa-file-pdf"},
@@ -84,7 +94,7 @@ Menus = {
 
         $('.context-menu-one').on('click', function(e){
             console.log('clicked', this);
-        })
+        });
         
         $.contextMenu({
             selector: '.context-menu-two', 
@@ -131,7 +141,6 @@ Menus = {
                     "saveasmarkdownhtml": {name: "With html [full]", icon: "fa-markdown"},
                     "saveasmarkdownhtmlicon": {name: "With html [icon]", icon: "fa-markdown"},
                     "saveasmarkdownhtmlnoicon": {name: "With html [no icon]", icon: "fa-markdown"},
-                    
                     },
                 },
                 "sep": "-----",
@@ -263,7 +272,8 @@ Menus = {
 			{
 				currentcomment = "";
 			}
-			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], "en").then(r=>{
+			var tl = Zotero.ZeNotes.Prefs.get("target-language");
+			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl).then(r=>{
 				var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
 				Dialog.open(table, function(){}, "Choose translation [Google]", "close");
 			}).catch(r=>{
