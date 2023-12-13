@@ -148,7 +148,7 @@ Zotero_Preferences.ZeNotes = {
 	
 	addcombobox(itemid, options, value){
 		var menulist = document.getElementById(itemid);
-		if (Zotero.platformMajorVersion < 102)
+		if(Zotero.platformMajorVersion < 102)
 		{
 			if(menulist.tagName.toUpperCase()!="SELECT")
 			{
@@ -156,7 +156,7 @@ Zotero_Preferences.ZeNotes = {
 				menulist.parentNode.remove();
 				var sel = document.createElement("select");
 				p.insertBefore(sel, p.firstChild);
-				sel.setAttribute("id", "zn-load-settings");
+				sel.setAttribute("id", itemid);
 				menulist = sel;
 			}
 			else
@@ -205,7 +205,10 @@ Zotero_Preferences.ZeNotes = {
 	loadpreferences()
 	{		
 		var lsettings = document.getElementById("zn-load-settings");
-		
+		if(lsettings==null)
+		{
+			return;
+		}
 		if (Zotero.platformMajorVersion < 102)
 		{
 			if(lsettings.tagName.toUpperCase()!="SELECT")
