@@ -30,7 +30,7 @@ Ai={
 			{
 				try {
 					// Google translate without api key
-					return Promise.resolve(data[0].map(function(e){return e[0]}));
+					return Promise.resolve([data[0].map(function(e){return e[0]}).join(" ")]);
 				}
 				catch(e)
 				{
