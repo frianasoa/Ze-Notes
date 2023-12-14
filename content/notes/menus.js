@@ -36,31 +36,37 @@ Menus = {
 		
 		var items0 = {
 			"edit": {name: "Edit note", icon: "fa-pencil-alt"},
-			"editpdfnote": {name: "Edit annotation", icon: "fa-edit"},
+			"editannotation": {name: "Edit annotation", icon: "fa-edit"},
+			"showannotation": {name: "Show annotation", icon: "fa-edit"},
 			"sep": "---------",
 		}
 		
 		var items_ai = {}
 
-		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="google-translate-key")
+		var tlcode = Zotero.ZeNotes.Prefs.get("target-language");
+		var tl = "";
+		if(tlcode=="")
 		{
-			var tlcode = Zotero.ZeNotes.Prefs.get("target-language");
-			var tl = "";
+			tl = "English";
+		}
+		else 
+		{
 			for(a of Languages.list())
 			{
 				if(tlcode.toUpperCase()==a.code.toUpperCase())
 				{
 					tl = a.name;
+					break;
 				}
 			}
-			
-			items_ai["translate-google-en"] = {name: "Translate to "+tl+" (Google)", icon: "fa-language"};
-			items_ai["sep-ai-02"] = "---------";
 		}
+		
+		items_ai["translate-google-en"] = {name: "Translate to "+tl+" (Google)", icon: "fa-google"};
+		items_ai["sep-ai-02"] = "---------";
 		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
-			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-language"};
+			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-b"};
 			items_ai["sep-ai-01"] = "---------";
 		}
 
@@ -241,7 +247,37 @@ Menus = {
                 this.opennote(notekey);
             }
         }
-        else if(key=="editpdfnote")
+		else if(key=="editannotation")
+		{
+			if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+			
+			var annotation = Zotero.Items.get(annotationid);
+			var currentcomment = annotation.annotationComment;
+			
+			var html = document.createElement("div");
+			html.style = "width:100%; padding: 0.5em;"
+			html.innerHTML = currentcomment.split("\n").join("<br/>");
+			html.contentEditable = true;
+			Dialog.open(html, function(){
+				var value = html.innerHTML.split("<br xmlns=\"http://www.w3.org/1999/xhtml\" />").join("\n");
+				
+				value = value.split(" xmlns=\"http://www.w3.org/1999/xhtml\"").join("");
+				value = value.split("<div>").join("");
+				value = value.split("</div>").join("\n");
+				value = value.split("<br />").join("\n");
+				value = value.split("<br/>").join("\n");
+				
+				annotation.annotationComment = value;				
+				annotation.saveTx({skipSelect:true}).then(e=>{
+					Zotero.ZeNotes.Ui.reload();
+				});
+			}, "Edit annotation comment", "save");
+		}
+        else if(key=="showannotation")
         {
             var attachment = Zotero.Items.get(attachmentid);
             if(!annotationkey)

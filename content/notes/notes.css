@@ -16,6 +16,7 @@ th {
     text-transform: capitalize;
 }
 
+
 .notekey {
     width: 100%;
     padding: 0.1em;
@@ -126,6 +127,11 @@ body {
     background-color: #d8e6f2;
     border: solid 1px #c0dcf3;
     color: black;
+}
+
+.context-menu-separator
+{
+	border: solid 1px #dfdfff!important;
 }
 
 .zn-menuitem:hover {

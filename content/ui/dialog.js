@@ -19,7 +19,7 @@ Dialog = {
         document.body.appendChild(this.dialog);
         this.dialog.appendChild(this.contents);
         this.dialog.id = "main-dialog";
-        this.dialog.title = "Coding dialog";
+        this.dialog.title = "ZeNotes Dialog";
         this.contents.style = "height: 100%; width: 100%;";
         this.contents.innerHTML = ``;
     },
@@ -75,6 +75,22 @@ Dialog = {
 		{
 			buttons = {
 				Close: function(){
+					$("#main-dialog").dialog( "close" );
+					if(callback!=null)
+                    {
+                        callback();
+                    }
+				}
+			}
+		}
+		else if(buttons=="save")
+		{
+			buttons = {
+				Cancel: function()
+                {
+                    $("#main-dialog").dialog( "close" );
+                },
+				Save: function(){
 					$("#main-dialog").dialog( "close" );
 					if(callback!=null)
                     {

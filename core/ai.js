@@ -48,6 +48,17 @@ Ai={
 					return Promise.resolve(["Error: "+e]);
 				}
 			}
+			else if(mode=="bing")
+			{
+				try {
+					// Google translate without api key
+					return Promise.resolve(data.map(function(e){return e[0]}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
+				}
+			}
 			
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e]);
