@@ -260,16 +260,20 @@ Menus = {
 			
 			var html = document.createElement("div");
 			html.style = "width:100%; padding: 0.5em;"
-			html.innerHTML = currentcomment.split("\n").join("<br/>");
+			var value = currentcomment.split("\n").join("<br/>");
+			value = value.split("&").join("&amp;")
+			html.innerHTML = value;
 			html.contentEditable = true;
 			Dialog.open(html, function(){
-				var value = html.innerHTML.split("<br xmlns=\"http://www.w3.org/1999/xhtml\" />").join("\n");
+				let value = html.innerHTML.split("<br xmlns=\"http://www.w3.org/1999/xhtml\" />").join("\n");
 				
 				value = value.split(" xmlns=\"http://www.w3.org/1999/xhtml\"").join("");
 				value = value.split("<div>").join("");
 				value = value.split("</div>").join("\n");
 				value = value.split("<br />").join("\n");
 				value = value.split("<br/>").join("\n");
+				
+				value = value.split("&amp;").join("&");
 				
 				annotation.annotationComment = value;				
 				annotation.saveTx({skipSelect:true}).then(e=>{
