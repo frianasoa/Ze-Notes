@@ -170,17 +170,11 @@ Notes = {
                     td.className = "context-menu-one tag";
                 }
                 
-                var span = td.querySelector(".notekey");
-                
-                if(span)
-                {
-                    td.dataset.notekey = span.innerText;
-                    span.parentNode.removeChild(span);
-                }
-                else
-                {
-                    td.dataset.notekey = "";
-                }
+                td.querySelectorAll(".user-note").forEach(div=>{
+					div.addEventListener("mouseover", function(e){
+						e.target.closest("td").dataset.notekey=div.dataset.notekey;
+					})
+				})
                 
                 td.dataset.column = c;
                 td.dataset.itemid = v.itemid;
@@ -284,17 +278,11 @@ Notes = {
                     td.className = "context-menu-one tag";
                 }
                 
-                var span = td.querySelector(".notekey");
-                
-                if(span)
-                {
-                    td.dataset.notekey = span.innerText;
-                    span.parentNode.removeChild(span);
-                }
-                else
-                {
-                    td.dataset.notekey = "";
-                }
+                td.querySelectorAll(".user-note").forEach(div=>{
+					div.addEventListener("mouseover", function(e){
+						e.target.closest("td").dataset.notekey=div.dataset.notekey;
+					})
+				})
                 
                 td.dataset.column = c;
                 td.dataset.itemid = v.itemid;

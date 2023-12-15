@@ -123,7 +123,7 @@ Data = {
 				var tag = "";
 				if(tags.length==0)
 				{
-					taglist.push("Other")
+					taglist.push("Untagged")
 				}
 				else if(tags.length==1)
 				{

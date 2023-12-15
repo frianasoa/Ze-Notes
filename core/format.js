@@ -10,7 +10,7 @@ Format = {
 			for(const tag of tags)
 			{
 				if(this.hastag(item, tag))
-				{
+				{					
 					if(!Object.keys(tagged_items).includes(item.id))
 					{
 						tagged_items[item.id] = itemlist[item.id];
@@ -30,6 +30,25 @@ Format = {
 							tagged_items[item.id][tag]+=itemnotes[tag].join("");
 						}
 					}
+				}
+			}
+			
+			for(const note of this.noteswithouttags(item))
+			{
+				var tag = "Untagged";
+				var n = await this.formatnote(note);
+				
+				if(!Object.keys(tagged_items).includes(item.id))
+				{
+					tagged_items[item.id] = itemlist[item.id];
+				}
+				if(!Object.keys(tagged_items[item.id]).includes(tag))
+				{
+					tagged_items[item.id][tag] = n;
+				}
+				else
+				{
+					tagged_items[item.id][tag]+=n;
 				}
 			}
 		}
@@ -131,6 +150,48 @@ Format = {
 		return this.itemtags(item).includes(tag)
 	},
 	
+	noteswithouttags(item)
+	{
+		var notes = [];
+		var noteids = [];
+		if(![NOTE_LABEL].includes(item.itemType))
+		{
+			noteids = item.getNotes();
+		}
+		else
+		{
+			noteids.push(item.id);
+		}
+		
+		var pdfids = [];
+		try {
+			pdfids = item.getAttachments();
+		}
+		catch(e)
+		{
+		}
+		
+		for(let id of pdfids)
+		{
+			let attachment = Zotero.Items.get(id);
+			if(attachment.isPDFAttachment())
+			{
+				noteids = noteids.concat(attachment.getAnnotations().map(function(e){return e.id}));
+			}
+		}		
+		
+		for(id of noteids)
+		{
+			var note = Zotero.Items.get(id);
+			
+			if(note.getTags(false).length==0)
+			{
+				notes.push(note);
+			}
+		}
+		return notes;
+	},
+	
 	xmlescape(txt){
 		txt = txt.replace(/&/g, '&amp;');
 		txt = txt.replace(/<br>/g, '<br/>');
@@ -184,8 +245,7 @@ Format = {
 			note_ = note.getNote();
 			note_ = Zotero.ZeNotes.Filter.apply(note_, selectors, replacement);
 			note_ = await Zotero.ZeNotes.Image.render(note_, item);
-			
-			notetext+=note_+ "<span class='notekey'>"+note.id+"</span><hr/>";
+			notetext+="<div class='user-note' data-notekey='"+note.id+"'>"+note_+"</div><hr/>";
 		}
 		return notetext;
 	},

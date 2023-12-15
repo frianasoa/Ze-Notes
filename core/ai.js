@@ -17,12 +17,18 @@ Ai={
 			}
 			else if(mode=="gemini-pro")
 			{
-				// alert(JSON.stringify(data));
 				try {
 					return Promise.resolve(data.candidates.map(function(v){return v.content.parts.map(function(w){return w.text})}));
 				}
 				catch(e) {
-					return Promise.resolve([data.error.message]);
+					if(data.candidates[0].finishReason=="OTHER")
+					{
+						return Promise.resolve(["Error: No results found!"]);
+					}
+					else
+					{
+						return Promise.resolve(e);
+					}
 				}
 			}
 			else if(mode=="g-translate")
