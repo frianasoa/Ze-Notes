@@ -303,6 +303,7 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter", "zn-html-filter");
 			Zotero_Preferences.ZeNotes.loadpreference("html-filter-replacement", "zn-html-filter-replacement");
 			
+			Zotero_Preferences.ZeNotes.loadpreference("add-to-menu", "zn-add-to-menu");
 			Zotero_Preferences.ZeNotes.loadpreference("load-on-change", "zn-reload-on-change");
 			Zotero_Preferences.ZeNotes.loadpreference("vertical-table", "zn-vertical-table");
 			
@@ -314,8 +315,10 @@ Zotero_Preferences.ZeNotes = {
 			
 			Zotero_Preferences.ZeNotes.loadpreference("bard-api-key", "zn-bard-api-key", "encrypt");
 			
-			Zotero_Preferences.ZeNotes.loadpreference("google-translate-project-id", "zn-google-translate-project-id", "encrypt");
 			Zotero_Preferences.ZeNotes.loadpreference("google-translate-key", "zn-google-translate-key", "encrypt");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("bard-model", "zn-bard-model");
+			Zotero_Preferences.ZeNotes.loadpreference("bard-custom-prompt", "zn-bard-custom-prompt");
 		})
 		.catch(error => {
 			console.log('Error loading content: ' + error);

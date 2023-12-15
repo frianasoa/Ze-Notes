@@ -36,7 +36,7 @@ Menus = {
 		
 		var items0 = {
 			"edit": {name: "Edit note", icon: "fa-pencil-alt"},
-			"editannotation": {name: "Edit annotation", icon: "fa-edit"},
+			"editannotationcomment": {name: "Edit annotation comments", icon: "fa-edit"},
 			"showannotation": {name: "Show annotation", icon: "fa-edit"},
 			"sep": "---------",
 		}
@@ -67,6 +67,7 @@ Menus = {
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
 			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-b"};
+			items_ai["custom-prompt-bard"] = {name: "Custom prompt (Bard)", icon: "fa-b"};
 			items_ai["sep-ai-01"] = "---------";
 		}
 
@@ -247,7 +248,7 @@ Menus = {
                 this.opennote(notekey);
             }
         }
-		else if(key=="editannotation")
+		else if(key=="editannotationcomment")
 		{
 			if(!annotationkey)
             {
@@ -334,6 +335,51 @@ Menus = {
 			});
 		}
 		
+		else if(key=="custom-prompt-bard")
+		{
+			var customprompt = Zotero.ZeNotes.Prefs.get("bard-custom-prompt");
+			if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+			
+			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
+			{
+				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+				return;
+			}
+			
+			var annotation = Zotero.Items.get(annotationid);
+			var currentcomment = annotation.annotationComment;
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+			Zotero.ZeNotes.Ai.Bard.customprompt(annotation["annotationText"]).then(r=>{
+				var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
+				var model = Zotero.ZeNotes.Prefs.get("bard-model");
+				
+				var div = document.createElement("div");
+				div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<br/><br/>"+annotation["annotationText"]+"<br/><br/>"
+				div.appendChild(table);
+				
+				Dialog.open(div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
+			}).catch(r=>{
+				var html = "";
+				if(Array.isArray(r))
+				{
+					html = r.join("<br/>");
+				}
+				else
+				{
+					html="-"+r;
+				}
+				Dialog.open(html, function(){
+				});
+			});
+		}
+		
 		else if(key=="paraphrase-bard")
 		{
 			if(!annotationkey)
@@ -356,7 +402,8 @@ Menus = {
 			}
 			Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
 				var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
-				Dialog.open(table, function(){}, "Choose paraprahse [Bard]", "close");
+				var model = Zotero.ZeNotes.Prefs.get("bard-model");
+				Dialog.open(table, function(){}, "Edit and choose a paraphrase [Bard: "+model+"]", "close");
 			}).catch(r=>{
 				var html = "";
 				if(Array.isArray(r))

@@ -6,10 +6,20 @@ Ai={
 			return res.json()
 		})
 		.then(data => {
-			if(mode=="bard")
+			if(mode=="text-bison-001")
 			{
 				try {
 					return Promise.resolve(data.candidates.map(function(v){return v.output}));
+				}
+				catch(e) {
+					return Promise.resolve([data.error.message]);
+				}
+			}
+			else if(mode=="gemini-pro")
+			{
+				// alert(JSON.stringify(data));
+				try {
+					return Promise.resolve(data.candidates.map(function(v){return v.content.parts.map(function(w){return w.text})}));
 				}
 				catch(e) {
 					return Promise.resolve([data.error.message]);
@@ -73,19 +83,41 @@ Ai.Bard = {
 		return this.sendprompt(sentence, prompts)
 	},
 	
-	async summarize(sentence, ratio=1/4)
+	async summarize(sentence, ratio=1/3)
 	{
-		var prompts = "Summarize the following in about "+Math.round(sentence.split(" ").length*ratio)+" words:"
-		return this.sendprompt(sentence, prompts);
+		model = Zotero.ZeNotes.Prefs.get("bard-model");
+		if(model=="")
+		{
+			model = "gemini-pro";
+		}
+		var prompts = "Your are an academic.　Summarize the following in about "+Math.round(sentence.split(" ").length*ratio)+" words:"
+		return this.sendprompt(sentence, prompts, model);
 	},
 	
 	async paraphrase(sentence)
 	{
-		var prompts = "Paraphrase the following:"
-		return this.sendprompt(sentence, prompts)
+		model = Zotero.ZeNotes.Prefs.get("bard-model");
+		if(model=="")
+		{
+			model = "gemini-pro";
+		}
+		
+		var prompts = "Your are an academic. Paraphrase the following. "
+		return this.sendprompt(sentence, prompts, model)
 	},
 	
-	async sendprompt(sentence, prompts) {
+	async customprompt(sentence)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("bard-model");
+		var prompts = Zotero.ZeNotes.Prefs.get("bard-custom-prompt");
+		if(model=="")
+		{
+			model = "gemini-pro";
+		}
+		return this.sendprompt(sentence, prompts+" \n\n"+sentence, model)
+	},
+	
+	async sendprompt(sentence, prompts, model) {
 		var apikey = Zotero.ZeNotes.Prefs.getb("bard-api-key");
 		var url = "https://generativelanguage.googleapis.com/v1beta3/models/text-bison-001:generateText?key="+apikey;
 		
@@ -99,6 +131,23 @@ Ai.Bard = {
 			"candidate_count": 3 
 		}
 		
+		if(model=="gemini-pro")
+		{
+			url = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key="+apikey;
+			
+			payload = {
+				"contents": 
+				[
+					{
+						"role": "user",
+						"parts":[{"text": p}]
+					}
+				],
+				// "temperature": 1.0,
+				// "candidate_count": 3 
+			}
+		}
+		
 		var options = {
 			method: 'POST',
 			headers: {
@@ -107,7 +156,9 @@ Ai.Bard = {
 			},
 			body: JSON.stringify(payload),
 		}
-		return Ai.request(url, options, "bard");
+
+		
+		return Ai.request(url, options, model);
 	},
 }
 

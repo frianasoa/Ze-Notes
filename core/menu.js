@@ -15,7 +15,11 @@ Menu = {
 		}		
 		Ui.opentab("chrome://ze-notes/content/notes/notes.xhtml", title);
 	},
+
 	mainmenu(w){
+		var showmain = Prefs.get("add-to-menu");
+		showmain = showmain==true || showmain=="true";
+		
 		let stringBundle = Services.strings.createBundle(
 			'chrome://ze-notes/locale/zenotes.properties'
 		);
@@ -36,7 +40,12 @@ Menu = {
 
 		// Add menu in front of tools
 		var toolsmenu = document.getElementById("toolsMenu");
-        menubar.insertBefore(menu, toolsmenu);
+		
+		// if(showmain)
+		// {
+			menubar.insertBefore(menu, toolsmenu);
+		// }
+		
 		ZeNotes.storeAddedElement(toolsmenu);
 				
 		// Add popup
