@@ -418,8 +418,6 @@ Menus = {
 				data = Table.tabledata(td.closest("tr"));
 			}
 			
-			
-			
 			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
 			{
 				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");

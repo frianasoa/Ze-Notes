@@ -21,13 +21,19 @@ Ai={
 					return Promise.resolve(data.candidates.map(function(v){return v.content.parts.map(function(w){return w.text	})}));
 				}
 				catch(e) {
-					if(data.candidates[0].finishReason=="OTHER")
-					{
-						return Promise.resolve(["Error: No results found!"]);
+					try {
+						if(data.candidates[0].finishReason=="OTHER")
+						{
+							return Promise.resolve(["Error: No results found!"]);
+						}
+						else
+						{
+							return Promise.resolve([e, JSON.stringify(data)]);
+						}
 					}
-					else
+					catch(e)
 					{
-						return Promise.resolve([e]);
+						return Promise.resolve([e, JSON.stringify(data)]);
 					}
 				}
 			}
