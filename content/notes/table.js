@@ -73,10 +73,13 @@ Table = {
 		var notelist = usernotes.split("\n").filter(function(e){
 			return e!="";
 		});
-
-		if(!notelist[0].endsWith("]"))
+		
+		if(notelist.length>0)
 		{
-			notelist.splice(0, 0, "[Reader notes]");
+			if(!notelist[0].endsWith("]"))
+			{
+				notelist.splice(0, 0, "[Reader notes]");
+			}
 		}
 		
 		var key = "";

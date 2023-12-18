@@ -5,13 +5,13 @@
             <rdf:Seq>
                 <rdf:li>
                     <rdf:Description>
-                        <ns1:version>0.6.3</ns1:version>
+                        <ns1:version>0.6.4</ns1:version>
                         <ns1:targetApplication>
                             <rdf:Description>
                                 <ns1:id>zotero@chnm.gmu.edu</ns1:id>
                                 <ns1:minVersion>5.0.0</ns1:minVersion>
                                 <ns1:maxVersion>6.*</ns1:maxVersion>
-                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.6.3/zenotes-v0.6.3.xpi</ns1:updateLink>
+                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.6.4/zenotes-v0.6.4.xpi</ns1:updateLink>
                             </rdf:Description>
                         </ns1:targetApplication> 
 
@@ -20,7 +20,7 @@
                                 <ns1:id>juris-m@juris-m.github.io</ns1:id>
                                 <ns1:minVersion>4.999</ns1:minVersion>
                                 <ns1:maxVersion>6.*</ns1:maxVersion>
-                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.6.3/zenotes-v0.6.3.xpi</ns1:updateLink>
+                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.6.4/zenotes-v0.6.4.xpi</ns1:updateLink>
                             </rdf:Description>
                         </ns1:targetApplication>
 
