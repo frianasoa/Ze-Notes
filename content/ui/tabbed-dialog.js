@@ -54,11 +54,21 @@ TabbedDialog = {
 		
 		this.tab1.style = "max-height: 80%; overflow-y: auto";
 		this.tab2.style = "max-height: 80%; overflow-y: auto";
+		
 		$(this.tabs).tabs().css({
 		   'width': '100%',
 		   'overflow': 'hidden',
 		});
-		$("#main-tabbed-dialog").dialog({}).close();
+		
+		$("#main-tabbed-dialog").dialog({
+            width: 850,
+            height: 550,
+            modal: true,
+			autoOpen: false,
+			open: function (event, ui) {
+				$("#main-tabbed-dialog").css('overflow', 'hidden');
+			}
+        });
     },
 	
 	resize(width=500, height=500)
@@ -147,19 +157,8 @@ TabbedDialog = {
 				}
 			}
 		}
-        $(this.tabs).tabs().css({
-		   'width': '100%',
-		   'overflow': 'hidden',
-		});
-        $("#main-tabbed-dialog").dialog({
-            width: 850,
-            height: 550,
-            modal: true,
-            buttons: buttons,
-			open: function (event, ui) {
-				$("#main-tabbed-dialog").css('overflow', 'hidden');
-			}
-        });
+		$("#main-tabbed-dialog").dialog('option', 'buttons', buttons);
+		$("#main-tabbed-dialog").dialog("open");
 	},
 }
 
