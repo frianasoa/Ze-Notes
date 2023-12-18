@@ -157,9 +157,14 @@ Data = {
 				annotations = attachment.getAnnotations();
 				for(let n of annotations)
 				{
-					for(let t of n.getTags())
+					var tags = n.getTags();
+					for(let t of tags)
 					{
 						taglist.push(t.tag)
+					}
+					if(tags.length==0)
+					{
+						taglist.push("Untagged")
 					}
 				}
 			}
