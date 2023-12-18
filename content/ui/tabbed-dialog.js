@@ -54,6 +54,10 @@ TabbedDialog = {
 		
 		this.tab1.style = "max-height: 80%; overflow-y: auto";
 		this.tab2.style = "max-height: 80%; overflow-y: auto";
+		$(this.tabs).tabs().css({
+		   'width': '100%',
+		   'overflow': 'hidden',
+		});
     },
 	
 	resize(width=500, height=500)
