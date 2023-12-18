@@ -36,7 +36,7 @@ Format = {
 			for(const note of this.noteswithouttags(item))
 			{
 				var tag = "Untagged";
-				var n = await this.formatnote(note);
+				var n = await this.formatnote(note, tag);
 				
 				if(!Object.keys(tagged_items).includes(item.id))
 				{
@@ -87,9 +87,9 @@ Format = {
 		var r = {};
 		for(note of allnotes)
 		{
-			var n = await this.formatnote(note);
 			for(tag of note.getTags())
 			{
+				var n = await this.formatnote(note, tag.tag);
 				if(!Object.keys(r).includes(tag.tag))
 				{
 					r[tag.tag] = [n];
@@ -199,7 +199,7 @@ Format = {
 		return txt;
 	},
 	
-	async formatnote(note)
+	async formatnote(note, tag)
 	{
 		var selectors = Zotero.ZeNotes.Prefs.get("html-filter");
 		var replacement = Zotero.ZeNotes.Prefs.get("html-filter-replacement");
@@ -217,7 +217,7 @@ Format = {
 				annotationtext = this.escapehtml(annotationtext);
 			}
 			
-			var contents = "&#x201F;"+annotationtext+"&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+			var contents = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
 			
 			var comment = note["annotationComment"];
 
@@ -237,7 +237,7 @@ Format = {
 			
 			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
 			
-			let note_ = comment+"<hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";'>"+contents+"</div><hr/>";
+			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+contents+"</div></div><hr/>";
 			notetext+=note_;
 		}
 		else
@@ -245,7 +245,7 @@ Format = {
 			note_ = note.getNote();
 			note_ = Zotero.ZeNotes.Filter.apply(note_, selectors, replacement);
 			note_ = await Zotero.ZeNotes.Image.render(note_, item);
-			notetext+="<div class='user-note' data-notekey='"+note.id+"'>"+note_+"</div><hr/>";
+			notetext+="<div class='user-note' data-tag='"+tag+"' data-notekey='"+note.id+"'>"+note_+"</div><hr/>";
 		}
 		return notetext;
 	},

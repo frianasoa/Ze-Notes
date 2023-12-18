@@ -208,3 +208,17 @@ body {
 	cursor: pointer;
 	border-radius: 0.1em;
 }
+
+.json-key {
+	color: red;
+}
+.json-number {
+	color: blue;
+}
+.json-string {
+	color: green;
+}
+.json-null {
+	color: blue;
+	font-weight: bold;
+}

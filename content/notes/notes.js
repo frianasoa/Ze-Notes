@@ -105,6 +105,7 @@ Notes = {
 			var trh = document.createElement("tr");
             var tdh = document.createElement("td");
 			table.appendChild(trh);
+			trh.className = "zn-data-row";
 			trs[c] = trh;
             Notes.innerHTML(tdh, c);
             tdh.className = "context-menu-header draggable-header";
@@ -184,12 +185,12 @@ Notes = {
 
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
-                        e.target.parentNode.dataset.annotationid = e.target.dataset.annotationid;
-                        e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
-                        e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
-                        e.target.parentNode.dataset.annotationpage = e.target.dataset.annotationpage;
-                        e.target.parentNode.dataset.annotationkey = e.target.dataset.annotationkey;
-                        e.target.parentNode.dataset.annotationdomid = e.target.id;
+                        e.target.closest("td").dataset.annotationid = e.target.dataset.annotationid;
+                        e.target.closest("td").dataset.attachmentid = e.target.dataset.attachmentid;
+                        e.target.closest("td").dataset.attachmentkey = e.target.dataset.attachmentkey;
+                        e.target.closest("td").dataset.annotationpage = e.target.dataset.annotationpage;
+                        e.target.closest("td").dataset.annotationkey = e.target.dataset.annotationkey;
+                        e.target.closest("td").dataset.annotationdomid = e.target.id;
                     });
                 });
 				
@@ -252,6 +253,7 @@ Notes = {
 				
         items.forEach(v=>{
 			var tr = document.createElement("tr");
+			tr.className = "zn-data-row";
             table.appendChild(tr);
             columns.forEach(c=>{
                 let td = document.createElement("td");
@@ -292,12 +294,12 @@ Notes = {
 
                 td.querySelectorAll(".annotation").forEach(a=>{
                     a.addEventListener("mouseover", function(e){
-                        e.target.parentNode.dataset.annotationid = e.target.dataset.annotationid;
-                        e.target.parentNode.dataset.attachmentid = e.target.dataset.attachmentid;
-                        e.target.parentNode.dataset.attachmentkey = e.target.dataset.attachmentkey;
-                        e.target.parentNode.dataset.annotationpage = e.target.dataset.annotationpage;
-                        e.target.parentNode.dataset.annotationkey = e.target.dataset.annotationkey;
-                        e.target.parentNode.dataset.annotationdomid = e.target.id;
+                        e.target.closest("td").dataset.annotationid = e.currentTarget.dataset.annotationid;
+                        e.target.closest("td").dataset.attachmentid = e.currentTarget.dataset.attachmentid;
+                        e.target.closest("td").dataset.attachmentkey = e.currentTarget.dataset.attachmentkey;
+                        e.target.closest("td").dataset.annotationpage = e.currentTarget.dataset.annotationpage;
+                        e.target.closest("td").dataset.annotationkey = e.currentTarget.dataset.annotationkey;
+                        e.target.closest("td").dataset.annotationdomid = e.currentTarget.id;
                     });
                 });
 				td.style.minWidth = hsize+"px";

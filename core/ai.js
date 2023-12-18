@@ -18,7 +18,7 @@ Ai={
 			else if(mode=="gemini-pro")
 			{
 				try {
-					return Promise.resolve(data.candidates.map(function(v){return v.content.parts.map(function(w){return w.text})}));
+					return Promise.resolve(data.candidates.map(function(v){return v.content.parts.map(function(w){return w.text	})}));
 				}
 				catch(e) {
 					if(data.candidates[0].finishReason=="OTHER")
@@ -27,7 +27,7 @@ Ai={
 					}
 					else
 					{
-						return Promise.resolve(e);
+						return Promise.resolve([e]);
 					}
 				}
 			}
@@ -79,6 +79,11 @@ Ai={
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e]);
 		});
+	},
+	prompts: {
+		cell: "Paraphrase and summarize 'Direct quotes'",
+		row: "Paraphrase and summarize 'Direct quotes'",
+		table: "Summarize all the data",
 	}
 }
 
@@ -87,6 +92,16 @@ Ai.Bard = {
 	{
 		var prompts = "Translate the following sentence.";
 		return this.sendprompt(sentence, prompts)
+	},
+	async batchsummarize(data)
+	{
+		model = "gemini-pro";
+		var prompts = Zotero.ZeNotes.Prefs.get("table-custom-prompt");
+		if(prompts=="")
+		{
+			prompts = "Summarize this list of passages. Add the reference. The input is in json format."
+		}
+		return this.sendprompt(JSON.stringify(data), prompts, model)
 	},
 	
 	async summarize(sentence, ratio=1/3)
@@ -112,10 +127,14 @@ Ai.Bard = {
 		return this.sendprompt(sentence, prompts, model)
 	},
 	
-	async customprompt(sentence)
+	async customprompt(sentence, target)
 	{
 		var model = Zotero.ZeNotes.Prefs.get("bard-model");
-		var prompts = Zotero.ZeNotes.Prefs.get("bard-custom-prompt");
+		var prompts = Zotero.ZeNotes.Prefs.get("cell-custom-prompt");
+		if(prompts=="")
+		{
+			prompts = Ai.prompts[target];
+		}
 		if(model=="")
 		{
 			model = "gemini-pro";

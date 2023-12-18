@@ -318,7 +318,9 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("google-translate-key", "zn-google-translate-key", "encrypt");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("bard-model", "zn-bard-model");
-			Zotero_Preferences.ZeNotes.loadpreference("bard-custom-prompt", "zn-bard-custom-prompt");
+			Zotero_Preferences.ZeNotes.loadpreference("cell-custom-prompt", "zn-cell-custom-prompt");
+			Zotero_Preferences.ZeNotes.loadpreference("row-custom-prompt", "zn-row-custom-prompt");
+			Zotero_Preferences.ZeNotes.loadpreference("table-custom-prompt", "zn-table-custom-prompt");
 		})
 		.catch(error => {
 			console.log('Error loading content: ' + error);

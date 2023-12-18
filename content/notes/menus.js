@@ -66,8 +66,37 @@ Menus = {
 		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
-			items_ai["paraphrase-bard"] = {name: "Paraphrase annotation (Bard)", icon: "fa-b"};
-			items_ai["custom-prompt-bard"] = {name: "Custom prompt (Bard)", icon: "fa-b"};
+			items_ai["paraphrase-annotation"] = {
+				name: "Paraphrase annotation",
+				icon: "fa-repeat",
+				items: {
+					"paraphrase-bard": {name: "Using bard", icon: "fa-b"},
+				}
+			}
+			
+			items_ai["custom-prompt-on-cell"] = {
+				name: "Run custom prompt on cell",
+				icon: "fa-square",
+				items: {
+					"custom-prompt-cell-bard": {name: "Using bard", icon: "fa-b"},
+				}
+			}
+			
+			items_ai["custom-prompt-on-row"] = {
+				name: "Run custom prompt on row",
+				icon: "fa-arrow-right",
+				items: {
+					"custom-prompt-row-bard": {name: "Using bard", icon: "fa-b"},
+				}
+			}
+			
+			items_ai["custom-prompt-on-table"] = {
+				name: "Run custom prompt on table",
+				icon: "fa-table",
+				items: {
+					"custom-prompt-table-bard": {name: "Using bard", icon: "fa-b"},
+				}
+			}
 			items_ai["sep-ai-01"] = "---------";
 		}
 
@@ -215,7 +244,7 @@ Menus = {
         var annotationpagelabel = td.dataset.pagelabel;
         var annotationid = td.dataset.annotationid;
         var annotationdomid = td.dataset.annotationdomid;
-        
+		
         var filekey = td.dataset.filekey;
         var notekey = td.dataset.notekey;
 		
@@ -239,9 +268,9 @@ Menus = {
         }
         else if(key=="edit")
         {
-            if(notekey=="")
+            if(!notekey)
             {
-                this.createnote(itemkey, column);
+				this.createnote(itemkey, column);
             }
             else
             {
@@ -258,6 +287,11 @@ Menus = {
 			
 			var annotation = Zotero.Items.get(annotationid);
 			var currentcomment = annotation.annotationComment;
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+			
 			
 			var html = document.createElement("div");
 			html.style = "width:100%; padding: 0.5em;"
@@ -335,36 +369,14 @@ Menus = {
 			});
 		}
 		
-		else if(key=="custom-prompt-bard")
+		else if(key=="summarize-row-annotations")
 		{
-			var customprompt = Zotero.ZeNotes.Prefs.get("bard-custom-prompt");
-			if(!annotationkey)
-            {
-                alert("Annotation not found!");
-                return;
-            }
-			
-			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
-			{
-				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-				return;
-			}
-			
-			var annotation = Zotero.Items.get(annotationid);
-			var currentcomment = annotation.annotationComment;
-			if(currentcomment==null)
-			{
-				currentcomment = "";
-			}
-			Zotero.ZeNotes.Ai.Bard.customprompt(annotation["annotationText"]).then(r=>{
-				var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
-				var model = Zotero.ZeNotes.Prefs.get("bard-model");
-				
+			// var data = Table.rowdata(td.closest("tr"));
+			var data = Table.tabledata(td.closest("tr"));
+			Zotero.ZeNotes.Ai.Bard.batchsummarize(data).then(r=>{				
 				var div = document.createElement("div");
-				div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<br/><br/>"+annotation["annotationText"]+"<br/><br/>"
-				div.appendChild(table);
-				
-				Dialog.open(div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
+				div.innerHTML = r;
+				Dialog.open(div, function(){}, "Summary", "close");
 			}).catch(r=>{
 				var html = "";
 				if(Array.isArray(r))
@@ -379,6 +391,77 @@ Menus = {
 				});
 			});
 		}
+		
+		else if(key.includes("custom-prompt-"))
+		{
+			if(!annotationkey)
+            {
+                alert("Annotation not found!");
+                return;
+            }
+			var annotation = Zotero.Items.get(annotationid);
+			
+			var target = "cell";
+			data = {
+				"Direct quote": annotation["annotationText"],
+			}
+			
+			if(key.includes("-row"))
+			{
+				target = "row";
+				data = Table.rowdata(td.closest("tr"));
+				
+			}
+			else if(key.includes("-table"))
+			{
+				target = "table";
+				data = Table.tabledata(td.closest("tr"));
+			}
+			
+			
+			
+			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
+			{
+				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+				return;
+			}
+			
+			var customprompt = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
+			
+			var currentcomment = annotation.annotationComment;
+
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+				
+			if(key.includes("-bard"))
+			{
+				Zotero.ZeNotes.Ai.Bard.customprompt(JSON.stringify(data), target).then(r=>{
+					var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
+					var model = Zotero.ZeNotes.Prefs.get("bard-model");
+					
+					var div = document.createElement("div");
+					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
+					
+					TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
+				}).catch(r=>{
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					Dialog.open(html, function(){
+					});
+				});
+			}
+		}
+		
+		
 		
 		else if(key=="paraphrase-bard")
 		{
@@ -545,7 +628,7 @@ Menus = {
             // alert(key);
         }
     },
-	
+		
 	async addrow()
     {
         var io = { dataIn: { search: '', name }, dataOut: null, singleSelection: true};
@@ -592,7 +675,8 @@ Menus = {
     
     opennote(itemID, col, parentKey)
     {
-        var pane = Zotero.getActiveZoteroPane();
+		
+		var pane = Zotero.getActiveZoteroPane();
         if (!pane.canEdit()) {
 			pane.displayCannotEditLibraryMessage();
 			return;
@@ -630,7 +714,7 @@ Menus = {
     
     createnote(itemid, column)
     {
-        var note = new Zotero.Item('note'); 
+		var note = new Zotero.Item('note'); 
 		note.setNote("&lt;&lt;"+column+"&gt;&gt;<br/>New note");
         note.parentKey = itemid;
         note.addTag(column);
@@ -727,7 +811,32 @@ Menus = {
                 }
             }
         });
-    }
+    },
+	
+	displayjson(json) {
+		if (typeof json != 'string') {
+			 json = JSON.stringify(json, undefined, 2);
+		}
+		json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		json = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+			var cls = 'json-number';
+			if (/^"/.test(match)) {
+				if (/:$/.test(match)) {
+					cls = 'json-key';
+				} else {
+					cls = 'json-string';
+				}
+			} else if (/true|false/.test(match)) {
+				cls = 'json-boolean';
+			} else if (/null/.test(match)) {
+				cls = 'json-null';
+			}
+			return '<span class="' + cls + '">' + match + '</span>';
+		});
+		
+		json = json.split("\n").join("<br/>").split("  ").join("&#160;&#160;");
+		return json;
+	}
 }
 
 window.addEventListener("load", function(){
