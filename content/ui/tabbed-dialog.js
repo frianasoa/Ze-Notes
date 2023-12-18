@@ -58,6 +58,7 @@ TabbedDialog = {
 		   'width': '100%',
 		   'overflow': 'hidden',
 		});
+		$("#main-tabbed-dialog").dialog({}).close();
     },
 	
 	resize(width=500, height=500)
