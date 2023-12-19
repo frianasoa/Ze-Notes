@@ -394,13 +394,7 @@ Menus = {
 		
 		else if(key.includes("custom-prompt-"))
 		{
-			if(!annotationkey)
-            {
-                alert("Annotation not found!");
-                return;
-            }
 			var annotation = Zotero.Items.get(annotationid);
-			
 			var target = "cell";
 			data = {
 				"Direct quote": annotation["annotationText"],
@@ -425,6 +419,10 @@ Menus = {
 			}
 			
 			var customprompt = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
+			if(!customprompt)
+			{
+				customprompt = Zotero.ZeNotes.Ai.prompts[target];
+			}
 			
 			var currentcomment = annotation.annotationComment;
 

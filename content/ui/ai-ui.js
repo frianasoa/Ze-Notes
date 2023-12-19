@@ -12,8 +12,14 @@ AiUi = {
 		c.style.backgroundColor = "";
 	},
 	
-	acceptcandidate(id, currentcomment, annotation, mode="bard")
+	acceptcandidate(id, currentcomment, annotation=false, mode="bard")
 	{
+		if(!annotation)
+		{
+			alert("No destination annotation!\nThis button adds the current element to annotation.\nIf you want to add the results to an annotation, right click on the annotation.");
+			return;
+		}
+		
 		var c = document.getElementById(id);
 		var comment = c.innerText;
 		annotation.annotationComment = currentcomment+"\n\n<b>[Paraphrase]</b>\n"+comment+"\n";
@@ -30,10 +36,10 @@ AiUi = {
 	
 	createdialog(annotation, currentcomment, candidates, mode="bard")
 	{
-		var confirm_message = "Do you want to use this paraprase?";
+		var confirm_message = "Do you want to add this content to the annotation?";
 		if(mode=="g-translate")
 		{
-			confirm_message = "Do you want to use this translation?"
+			confirm_message = "Do you want to add this translation to the annotation?";
 		}
 		var table = document.createElement("table");
 		table.id = "zn-ai-table";

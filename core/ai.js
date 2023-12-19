@@ -137,10 +137,12 @@ Ai.Bard = {
 	{
 		var model = Zotero.ZeNotes.Prefs.get("bard-model");
 		var prompts = Zotero.ZeNotes.Prefs.get("cell-custom-prompt");
+		
 		if(prompts=="")
 		{
 			prompts = Ai.prompts[target];
 		}
+		
 		if(model=="")
 		{
 			model = "gemini-pro";
