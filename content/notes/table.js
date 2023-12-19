@@ -1,5 +1,45 @@
 
 Table = {
+	celldata(td)
+	{
+		let d = {};
+		td.querySelectorAll(".user-note").forEach(div=>{
+			if(Object.keys(d).includes("Reader notes") && div.innerText!="")
+			{
+				d["Reader notes"]+=div.innerText.trim("\n")+"\n";
+			}
+			else if(div.innerText!="")
+			{
+				d["Reader notes"]=div.innerText.trim("\n")+"\n";
+			}
+		});
+		
+		if(Object.keys(d).includes("Reader notes"))
+		{
+			d["Reader notes"] = d["Reader notes"].trim("\n")
+		}
+		
+		td.querySelectorAll(".annotation-body").forEach(div=>{
+			var annotationcontent = div.querySelector(".direct-quote").innerText;
+			var author = div.querySelector(".direct-quote").parentNode.dataset.author;
+			var date = div.querySelector(".direct-quote").parentNode.dataset.date;
+			var annotationcomments = Table.splitusernotes(div.querySelector(".annotation-comment").innerHTML);	
+			s = annotationcomments;
+			s["Direct quote"] = annotationcontent;
+			s["Author"] = author;
+			s["Date"] = date;
+			if(Object.keys(d).includes("Selections"))
+			{
+				d["Selections"].push(s);
+			}
+			else {
+				d["Selections"] = [s];
+			}
+		});
+		
+		return d;
+	},
+	
 	rowdata(tr){
 		var data = {
 			info: {},
@@ -9,44 +49,9 @@ Table = {
 			let key = e.dataset.column;
 			data["info"][key] = e.innerText;
 		});
-		
 		tr.querySelectorAll("td").forEach(node=>{
+			let d = this.celldata(node);
 			let tag = node.dataset.column;
-			let d = {};
-			node.querySelectorAll(".user-note").forEach(div=>{
-				if(Object.keys(d).includes("Reader notes") && div.innerText!="")
-				{
-					d["Reader notes"]+=div.innerText.trim("\n")+"\n";
-				}
-				else if(div.innerText!="")
-				{
-					d["Reader notes"]=div.innerText.trim("\n")+"\n";
-				}
-			});
-			
-			if(Object.keys(d).includes("Reader notes"))
-			{
-				d["Reader notes"] = d["Reader notes"].trim("\n")
-			}
-			
-			node.querySelectorAll(".annotation-body").forEach(div=>{
-				var annotationcontent = div.querySelector(".direct-quote").innerText;
-				var author = div.querySelector(".direct-quote").parentNode.dataset.author;
-				var date = div.querySelector(".direct-quote").parentNode.dataset.date;
-				var annotationcomments = Table.splitusernotes(div.querySelector(".annotation-comment").innerHTML);	
-				s = annotationcomments;
-				s["Direct quote"] = annotationcontent;
-				s["Author"] = author;
-				s["Date"] = date;
-				if(Object.keys(d).includes("Selections"))
-				{
-					d["Selections"].push(s);
-				}
-				else {
-					d["Selections"] = [s];
-				}
-			});
-			
 			if(Object.keys(d).length>0)
 			{
 				d["Part"] = tag;

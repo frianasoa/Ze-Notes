@@ -333,6 +333,7 @@ Menus = {
 		else if(key=="translate-google-en")
 		{
 			var mode = "api-key";
+			
 			if(!annotationkey)
             {
                 alert("Annotation not found!");
@@ -396,9 +397,7 @@ Menus = {
 		{
 			var annotation = Zotero.Items.get(annotationid);
 			var target = "cell";
-			data = {
-				"Direct quote": annotation["annotationText"],
-			}
+			data = Table.celldata(td);
 			
 			if(key.includes("-row"))
 			{
@@ -451,7 +450,7 @@ Menus = {
 					{
 						html="-"+r;
 					}
-					Dialog.open(html, function(){
+					TabbedDialog.open(html, div, function(){
 					});
 				});
 			}

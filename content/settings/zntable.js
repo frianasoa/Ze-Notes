@@ -273,6 +273,61 @@ Zotero_Preferences.ZNTable = {
 		Zotero_Preferences.ZeNotes.saveandreload();
 	},
 	
+	hideall(e)
+	{
+		if(!confirm("Caution! This will hide all your tags and your previous settings will be lost.\nDo you want to procede?"))
+		{
+			return;
+		}
+		
+		var table = e.target.closest("table");
+		table.querySelectorAll("tr").forEach(tr=>{
+			var visibles = tr.querySelectorAll("span.status-visible");
+			var visibility = tr.querySelector("span.tag-status:first-child");
+			if(visibles.length>0)
+			{
+				visibility.innerHTML = "hidden";
+				visibility.className = "tag-status status-hidden";
+				for(v of visibles)
+				{
+					v.classList.add("status-hidden");
+					v.classList.remove("status-visible");
+				}
+				var eye = tr.querySelector(".fa-eye")
+				eye.className = "fa-solid fa-eye-slash red-icon";
+			}
+		});
+		Zotero_Preferences.ZeNotes.saveandreload();
+		
+	},
+	
+	showall(e)
+	{
+		if(!confirm("Caution! This will show all your tags and your previous settings will be lost.\nDo you want to procede?"))
+		{
+			return;
+		}
+		var table = e.target.closest("table");
+		table.querySelectorAll("tr").forEach(tr=>{
+			var hiddens = tr.querySelectorAll("span.status-hidden");
+			var visibility = tr.querySelector("span.tag-status:first-child");
+			if(hiddens.length>0)
+			{
+				visibility.innerHTML = "visible";
+				visibility.className = "tag-status status-visible";
+				for(h of hiddens)
+				{
+					h.classList.add("status-visible");
+					h.classList.remove("status-hidden");
+				}
+				var eye = tr.querySelector(".fa-eye-slash")
+				eye.className = "fa-solid fa-eye";
+			}
+		});
+		Zotero_Preferences.ZeNotes.saveandreload();
+		
+	},
+	
 	togglevisibility(e)
 	{
 		var tr = e.target.closest("tr");
