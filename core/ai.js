@@ -70,6 +70,18 @@ Ai={
 					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
 			}
+			
+			else if(mode=="deepl-translate")
+			{
+				try {
+					return Promise.resolve(data.translations.map(function(e){return e.text}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
+				}
+			}
+			
 			else if(mode=="bing")
 			{
 				try {
@@ -232,5 +244,24 @@ Ai.Google = {
 			var options = {method: 'POST', headers: {},}
 			return Ai.request(url, options, "g-translate-free-1");
 		}
+	},
+}
+
+Ai.DeepL = {
+	translate(sentence, language){
+		var apikey = Zotero.ZeNotes.Prefs.getb("deepl-api-key");
+		var url = "https://api-free.deepl.com/v2/translate"
+		
+		var payload = {text: [sentence], target_lang: language.toUpperCase()};
+		
+		var options = {
+			method: 'POST',
+			headers: {
+				"Authorization": "DeepL-Auth-Key "+apikey,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		}
+		return Ai.request(url, options, "deepl-translate");
 	},
 }

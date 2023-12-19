@@ -61,7 +61,17 @@ Menus = {
 			}
 		}
 		
-		items_ai["translate-google-en"] = {name: "Translate to "+tl+" (Google)", icon: "fa-google"};
+		items_ai["zn-translation"] = {
+			name: "Translate to "+tl, 
+			icon: "fa-language", 
+			items: {
+				"translate-google": {name: "Google", icon: "fa-google"}
+			}
+		};
+		if(Zotero.ZeNotes.Prefs.getb("deepl-api-key")!="")
+		{
+			items_ai["zn-translation"]["items"]["translate-deepl"] = {name: "DeepL", icon: "fa-d"};
+		}
 		items_ai["sep-ai-02"] = "---------";
 		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
@@ -330,51 +340,77 @@ Menus = {
         }
 		
 		
-		else if(key=="translate-google-en")
+		else if(key.includes("translate-"))
 		{
-			var mode = "api-key";
-			
 			if(!annotationkey)
             {
                 alert("Annotation not found!");
                 return;
             }
 			
-			if(Zotero.ZeNotes.Prefs.getb("google-translate-key")=="")
+			var annotation = Zotero.Items.get(annotationid);
+			
+			if(!annotation)
 			{
-				mode="free-0";
+				alert("Annotation text not found!");
+				return;
 			}
 			
-			var annotation = Zotero.Items.get(annotationid);
 			var currentcomment = annotation.annotationComment;
 			if(currentcomment==null)
 			{
 				currentcomment = "";
 			}
 			
-			if(!annotation)
+			var tl = Zotero.ZeNotes.Prefs.get("target-language");
+			
+			if(key.includes("-google"))
 			{
-				alert("Annotation text not found!"+annotationkey);
-				return;
+				var mode = "api-key";
+				if(Zotero.ZeNotes.Prefs.getb("google-translate-key")=="")
+				{
+					mode="free-0";
+				}
+				Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
+					var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
+					Dialog.open(table, function(){}, "Choose translation [Google]", "close");
+				}).catch(r=>{
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					Dialog.open(html, function(){
+					});
+				});
+			}
+			else if(key.includes("-deepl"))
+			{
+				Zotero.ZeNotes.Ai.DeepL.translate(annotation["annotationText"], tl).then(r=>{
+					var table = AiUi.createdialog(annotation, currentcomment, r, "deepl-translate");
+					Dialog.open(table, function(){}, "Choose translation [DeepL]", "close");
+				}).catch(r=>{
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					Dialog.open(html, function(){
+					});
+				});
 			}
 			
-			var tl = Zotero.ZeNotes.Prefs.get("target-language");
-			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
-				var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
-				Dialog.open(table, function(){}, "Choose translation [Google]", "close");
-			}).catch(r=>{
-				var html = "";
-				if(Array.isArray(r))
-				{
-					html = r.join("<br/>");
-				}
-				else
-				{
-					html="-"+r;
-				}
-				Dialog.open(html, function(){
-				});
-			});
+			
+			
+			
 		}
 		
 		else if(key=="summarize-row-annotations")

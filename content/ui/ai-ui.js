@@ -24,7 +24,7 @@ AiUi = {
 		var comment = c.innerText;
 		annotation.annotationComment = currentcomment+"\n\n<b>[Paraphrase]</b>\n"+comment+"\n";
 		
-		if(mode=="g-translate")
+		if(["g-translate", "deepl-translate"].includes(mode))
 		{
 			annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+comment+"\n";
 		}

@@ -316,6 +316,7 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("bard-api-key", "zn-bard-api-key", "encrypt");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("google-translate-key", "zn-google-translate-key", "encrypt");
+			Zotero_Preferences.ZeNotes.loadpreference("deepl-api-key", "zn-deepl-api-key", "encrypt");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("bard-model", "zn-bard-model");
 			Zotero_Preferences.ZeNotes.loadpreference("cell-custom-prompt", "zn-cell-custom-prompt");
