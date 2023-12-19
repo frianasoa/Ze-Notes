@@ -12,7 +12,7 @@ Ai={
 					return Promise.resolve(data.candidates.map(function(v){return v.output}));
 				}
 				catch(e) {
-					return Promise.resolve([data.error.message]);
+					return Promise.resolve([data.error.message, JSON.stringify(data)]);
 				}
 			}
 			else if(mode=="gemini-pro")
@@ -24,7 +24,7 @@ Ai={
 					try {
 						if(data.candidates[0].finishReason=="OTHER")
 						{
-							return Promise.resolve(["Error: No results found!"]);
+							return Promise.resolve(["Error: No results found!", JSON.stringify(data)]);
 						}
 						else
 						{
@@ -45,7 +45,7 @@ Ai={
 				}
 				catch(e)
 				{
-					return Promise.resolve(["Error: "+e]);
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
 			}
 			else if(mode=="g-translate-free-0")
@@ -56,7 +56,7 @@ Ai={
 				}
 				catch(e)
 				{
-					return Promise.resolve(["Error: "+e]);
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
 			}
 			else if(mode=="g-translate-free-1")
@@ -67,7 +67,7 @@ Ai={
 				}
 				catch(e)
 				{
-					return Promise.resolve(["Error: "+e]);
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
 			}
 			else if(mode=="bing")
@@ -83,13 +83,13 @@ Ai={
 			}
 			
 		}).catch(e=>{
-			return Promise.reject(["Error: "+e]);
+			return Promise.reject(["Error: "+e, JSON.stringify(data)]);
 		});
 	},
 	prompts: {
 		cell: "Paraphrase and summarize 'Direct quotes'",
-		row: "Paraphrase and summarize 'Direct quotes'",
-		table: "Summarize all the data",
+		row: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
+		table: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
 	}
 }
 
@@ -136,7 +136,7 @@ Ai.Bard = {
 	async customprompt(sentence, target)
 	{
 		var model = Zotero.ZeNotes.Prefs.get("bard-model");
-		var prompts = Zotero.ZeNotes.Prefs.get("cell-custom-prompt");
+		var prompts = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
 		
 		if(prompts=="")
 		{

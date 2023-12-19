@@ -351,6 +351,13 @@ Menus = {
 			{
 				currentcomment = "";
 			}
+			
+			if(!annotation)
+			{
+				alert("Annotation text not found!"+annotationkey);
+				return;
+			}
+			
 			var tl = Zotero.ZeNotes.Prefs.get("target-language");
 			Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
 				var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
@@ -435,12 +442,18 @@ Menus = {
 				Zotero.ZeNotes.Ai.Bard.customprompt(JSON.stringify(data), target).then(r=>{
 					var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
 					var model = Zotero.ZeNotes.Prefs.get("bard-model");
-					
 					var div = document.createElement("div");
 					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
-					
-					TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
+					try {
+						TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
+					}
+					catch(e)
+					{
+						alert(e);
+					}
 				}).catch(r=>{
+					var div = document.createElement("div");
+					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
 					var html = "";
 					if(Array.isArray(r))
 					{
