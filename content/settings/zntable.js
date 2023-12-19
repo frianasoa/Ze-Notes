@@ -297,6 +297,9 @@ Zotero_Preferences.ZNTable = {
 				eye.className = "fa-solid fa-eye-slash red-icon";
 			}
 		});
+		if (Zotero.platformMajorVersion >= 102) {
+			Zotero_Preferences.ZeNotes.init();
+		}
 		Zotero_Preferences.ZeNotes.saveandreload();
 		
 	},
@@ -324,6 +327,9 @@ Zotero_Preferences.ZNTable = {
 				eye.className = "fa-solid fa-eye";
 			}
 		});
+		if (Zotero.platformMajorVersion >= 102) {
+			Zotero_Preferences.ZeNotes.init();
+		}
 		Zotero_Preferences.ZeNotes.saveandreload();
 		
 	},
