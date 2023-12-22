@@ -314,11 +314,16 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("column-width", "zn-column-width");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("bard-api-key", "zn-bard-api-key", "encrypt");
+			Zotero_Preferences.ZeNotes.loadpreference("bard-model", "zn-bard-model");
+			
+			Zotero_Preferences.ZeNotes.loadpreference("openai-api-key", "zn-openai-api-key", "encrypt");
+			Zotero_Preferences.ZeNotes.loadpreference("openai-model", "zn-openai-model");
+			Zotero_Preferences.ZeNotes.loadpreference("openai-max-token", "zn-openai-max-token");
 			
 			Zotero_Preferences.ZeNotes.loadpreference("google-translate-key", "zn-google-translate-key", "encrypt");
 			Zotero_Preferences.ZeNotes.loadpreference("deepl-api-key", "zn-deepl-api-key", "encrypt");
 			
-			Zotero_Preferences.ZeNotes.loadpreference("bard-model", "zn-bard-model");
+			
 			Zotero_Preferences.ZeNotes.loadpreference("cell-custom-prompt", "zn-cell-custom-prompt");
 			Zotero_Preferences.ZeNotes.loadpreference("row-custom-prompt", "zn-row-custom-prompt");
 			Zotero_Preferences.ZeNotes.loadpreference("table-custom-prompt", "zn-table-custom-prompt");

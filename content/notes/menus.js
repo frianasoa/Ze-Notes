@@ -74,39 +74,49 @@ Menus = {
 		}
 		items_ai["sep-ai-02"] = "---------";
 		
-		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
+		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="" || Zotero.ZeNotes.Prefs.getb("openai-api-key")!="")
 		{
 			items_ai["paraphrase-annotation"] = {
 				name: "Paraphrase annotation",
 				icon: "fa-repeat",
-				items: {
-					"paraphrase-bard": {name: "Using bard", icon: "fa-b"},
-				}
+				items: {}
 			}
 			
 			items_ai["custom-prompt-on-cell"] = {
 				name: "Run custom prompt on cell",
 				icon: "fa-square",
-				items: {
-					"custom-prompt-cell-bard": {name: "Using bard", icon: "fa-b"},
-				}
+				items: {}
 			}
 			
 			items_ai["custom-prompt-on-row"] = {
 				name: "Run custom prompt on row",
 				icon: "fa-arrow-right",
-				items: {
-					"custom-prompt-row-bard": {name: "Using bard", icon: "fa-b"},
-				}
+				items: {}
 			}
 			
 			items_ai["custom-prompt-on-table"] = {
 				name: "Run custom prompt on table",
 				icon: "fa-table",
-				items: {
-					"custom-prompt-table-bard": {name: "Using bard", icon: "fa-b"},
-				}
+				items: {}
 			}
+			
+			
+			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
+			{
+				items_ai["paraphrase-annotation"]["items"]["paraphrase-bard"] = {name: "Using bard", icon: "fa-b"};
+				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-bard"] = {name: "Using bard", icon: "fa-b"};
+				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-bard"] = {name: "Using bard", icon: "fa-b"};
+				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-row-table"] = {name: "Using bard", icon: "fa-b"};
+			}
+			
+			if(Zotero.ZeNotes.Prefs.getb("openai-api-key")!="")
+			{
+				items_ai["paraphrase-annotation"]["items"]["paraphrase-openai-gpt"] = {name: "Using Chat GPT", icon: "fa-g"};
+				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
+				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
+				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
+			}
+			
 			items_ai["sep-ai-01"] = "---------";
 		}
 
@@ -439,10 +449,13 @@ Menus = {
 		else if(key.includes("custom-prompt-"))
 		{
 			var annotation = Zotero.Items.get(annotationid);
-			var target = "cell";
-			data = Table.celldata(td);
 			
-			if(key.includes("-row"))
+			if(key.includes("cell"))
+			{
+				target = "cell";
+				data = Table.celldata(td);
+			}
+			else if(key.includes("-row"))
 			{
 				target = "row";
 				data = Table.rowdata(td.closest("tr"));
@@ -503,11 +516,39 @@ Menus = {
 					});
 				});
 			}
+			else if(key.includes("-openai"))
+			{
+				Zotero.ZeNotes.Ai.OpenAi.customprompt(JSON.stringify(data), target).then(r=>{
+					var model = Zotero.ZeNotes.Prefs.get("openai-model");
+					var table = AiUi.createdialog(annotation, currentcomment, r, "openai");
+					var div = document.createElement("div");
+					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
+					try {
+						TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [OpenAi: "+model+"]", "close");
+					}
+					catch(e)
+					{
+						alert(e);
+					}
+				}).catch(r=>{
+					var div = document.createElement("div");
+					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					TabbedDialog.open(html, div, function(){
+					});
+				});
+			}
 		}
 		
-		
-		
-		else if(key=="paraphrase-bard")
+		else if(key.startsWith("paraphrase"))
 		{
 			if(!annotationkey)
             {
@@ -515,35 +556,64 @@ Menus = {
                 return;
             }
 			
-			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
-			{
-				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-				return;
-			}
-			
 			var annotation = Zotero.Items.get(annotationid);
 			var currentcomment = annotation.annotationComment;
 			if(currentcomment==null)
 			{
 				currentcomment = "";
 			}
-			Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
-				var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
-				var model = Zotero.ZeNotes.Prefs.get("bard-model");
-				Dialog.open(table, function(){}, "Edit and choose a paraphrase [Bard: "+model+"]", "close");
-			}).catch(r=>{
-				var html = "";
-				if(Array.isArray(r))
+			
+			if(key.endsWith("-bard"))
+			{
+				if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
 				{
-					html = r.join("<br/>");
+					alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+					return;
 				}
-				else
-				{
-					html="-"+r;
-				}
-				Dialog.open(html, function(){
+				Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
+					var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
+					var model = Zotero.ZeNotes.Prefs.get("bard-model");
+					Dialog.open(table, function(){}, "Edit and choose a paraphrase [Bard: "+model+"]", "close");
+				}).catch(r=>{
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					Dialog.open(html, function(){
+					});
 				});
-			});
+			}
+			else if(key.endsWith("-openai-gpt"))
+			{
+				if(Zotero.ZeNotes.Prefs.getb("openai-api-key")=="")
+				{
+					alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
+					return;
+				}
+				
+				Zotero.ZeNotes.Ai.OpenAi.paraphrase(annotation["annotationText"]).then(r=>{
+					var table = AiUi.createdialog(annotation, currentcomment, r, "gpt");
+					var model = Zotero.ZeNotes.Prefs.get("openai-model");
+					Dialog.open(table, function(){}, "Edit and choose a paraphrase [OpenAi: "+model+"]", "close");
+				}).catch(r=>{
+					var html = "";
+					if(Array.isArray(r))
+					{
+						html = r.join("<br/>");
+					}
+					else
+					{
+						html="-"+r;
+					}
+					Dialog.open(html, function(){
+					});
+				});
+			}			
 		}
 		
         else if(key=="showfile")

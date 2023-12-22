@@ -93,7 +93,16 @@ Ai={
 					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
 			}
-			
+			else if(mode.startsWith("gpt"))
+			{
+				try {
+					return Promise.resolve(data.choices.map(function(e){return e.message.content}));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
+				}
+			}			
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e, JSON.stringify(data)]);
 		});
@@ -102,6 +111,7 @@ Ai={
 		cell: "Paraphrase and summarize 'Direct quotes'",
 		row: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
 		table: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
+		paraphrase: "Paraphrase the following passage.",
 	}
 }
 
@@ -140,9 +150,7 @@ Ai.Bard = {
 		{
 			model = "gemini-pro";
 		}
-		
-		var prompts = "Your are an academic. Paraphrase the following. "
-		return this.sendprompt(sentence, prompts, model)
+		return this.sendprompt(sentence, Ai.prompts["paraphrase"], model)
 	},
 	
 	async customprompt(sentence, target)
@@ -264,4 +272,71 @@ Ai.DeepL = {
 		}
 		return Ai.request(url, options, "deepl-translate");
 	},
+}
+
+Ai.OpenAi = {
+	paraphrase(sentence){
+		var model = Zotero.ZeNotes.Prefs.get("openai-model");
+		return this.sendprompt(sentence, Ai.prompts["paraphrase"], model)
+	},
+	
+	async customprompt(sentence, target)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("openai-model");
+		var prompts = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
+		
+		if(prompts=="")
+		{
+			prompts = Ai.prompts[target];
+		}
+		return this.sendprompt(sentence, prompts, model)
+	},
+	
+	async sendprompt(sentence, prompts, model) {
+		var apikey = Zotero.ZeNotes.Prefs.getb("openai-api-key");
+		var url = "https://api.openai.com/v1/chat/completions";
+		var maxtoken = 300;
+		try {
+			maxtoken = Zotero.ZeNotes.Prefs.get("openai-max-token");
+			
+			if(maxtoken=="")
+			{
+				maxtoken = 300;
+			}
+			else if(isNaN(parseInt(maxtoken)))
+			{
+				alert("Please input Max token (a number) in settings > open ai max token.\nThe value 100 is used by default!\nCurrent value: "+maxtoken);
+				maxtoken = 300;
+			}
+			else
+			{
+				maxtoken = parseInt(maxtoken);
+			}
+			
+		}catch(e){
+			maxtoken = 300;
+		}
+		
+		var payload = {
+			model: model, 
+			max_tokens: maxtoken,
+			messages: [
+				{role: "system", content: "You are an academic assistant."},
+				{role: "user", content: prompts},
+				{role: "user", content: sentence},
+			],
+		}
+		
+		var options = {
+			method: 'POST',
+			headers: {
+				"Authorization": "Bearer "+apikey,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		}
+		return Ai.request(url, options, model);
+	},
+	
+	
 }

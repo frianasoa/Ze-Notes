@@ -2,18 +2,19 @@ Format = {
 	async formatitems(items, tags)
 	{
 		var tagged_items = {};
-		var itemlist = {};
+		var itemlist = [];
 		for(item of items)
 		{
-			var itemnotes = await Format.itemnotes(item);
-			itemlist[item.id] = await Format.formatitem(item);			
+			var itemnotes = await Format.itemnotes(item);	
+			let itemelement = await Format.formatitem(item);	
+			itemlist.push(itemelement);
 			for(const tag of tags)
 			{
 				if(this.hastag(item, tag))
 				{					
 					if(!Object.keys(tagged_items).includes(item.id))
 					{
-						tagged_items[item.id] = itemlist[item.id];
+						tagged_items[item.id] = itemelement;
 					}
 					
 					if(!Object.keys(tagged_items[item.id]).includes(tag))
@@ -40,7 +41,7 @@ Format = {
 				
 				if(!Object.keys(tagged_items).includes(item.id))
 				{
-					tagged_items[item.id] = itemlist[item.id];
+					tagged_items[item.id] = itemelement;
 				}
 				if(!Object.keys(tagged_items[item.id]).includes(tag))
 				{
@@ -53,7 +54,7 @@ Format = {
 			}
 		}
 		return {
-			data: Object.values(itemlist),
+			data: itemlist,
 			columns: ["id", "itemid", "key", "title", "date", "journal", "author", "creators", "filekey"],
 			tagged_items: Object.values(tagged_items),
 		}
@@ -251,19 +252,21 @@ Format = {
 	},
 	
 	async formatitem(item) {
-		var line = {
-			id: item.getID(),
-			itemid: item.id,
-			key: item.getField("key"),
-			title: this.xmlescape(item.getField("title")),
-			date: Format.year(item),
-			journal: this.xmlescape(item.getField("publicationTitle")),
-			author: Format.creatorshort(item)+" ("+Format.year(item)+")",
-			creators: Format.creators(item),
-			filenames: await Format.filenames(item),
-			filekey: Format.filekey(item),
-		}
-		return line;
+		return Format.filenames(item).then(filenames=>{
+			var line = {
+				id: item.getID(),
+				itemid: item.id,
+				key: item.getField("key"),
+				title: this.xmlescape(item.getField("title")),
+				date: Format.year(item),
+				journal: this.xmlescape(item.getField("publicationTitle")),
+				author: Format.creatorshort(item)+" ("+Format.year(item)+")",
+				creators: Format.creators(item),
+				filenames: filenames,
+				filekey: Format.filekey(item),
+			}
+			return Promise.resolve(line);
+		})
 	},
 	
 	year(item) {

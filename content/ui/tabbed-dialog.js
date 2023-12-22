@@ -110,7 +110,7 @@ TabbedDialog = {
 		
         if(title!="")
         {
-            this.dialog.title = title;
+            $("#main-tabbed-dialog").dialog( "option", "title", title);
         }
         
         if(buttons==null)
