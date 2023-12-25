@@ -51,7 +51,7 @@ Menus = {
 		}
 		else 
 		{
-			for(a of Languages.list())
+			for(a of Zotero.ZeNotes.Languages.list())
 			{
 				if(tlcode.toUpperCase()==a.code.toUpperCase())
 				{
@@ -238,12 +238,6 @@ Menus = {
 		this.veil.style.display = "none";
 	},
 	
-	openToPage(attachmentid, annotationpage, annotationkey)
-	{
-		var attachment = Zotero.Items.get(attachmentid);
-		Zotero.OpenPDF.openToPage(attachment, annotationpage, annotationkey);
-	},
-	
 	actions(key, options)
     {
 		var tohide = "column";
@@ -299,157 +293,36 @@ Menus = {
         }
 		else if(key=="editannotationcomment")
 		{
-			if(!annotationkey)
-            {
-                alert("Annotation not found!");
-                return;
-            }
-			
 			var annotation = Zotero.Items.get(annotationid);
-			var currentcomment = annotation.annotationComment;
-			if(currentcomment==null)
-			{
-				currentcomment = "";
-			}
-			
-			
-			var html = document.createElement("div");
-			html.style = "width:100%; padding: 0.5em;"
-			var value = currentcomment.split("\n").join("<br/>");
-			value = value.split("&").join("&amp;")
-			html.innerHTML = value;
-			html.contentEditable = true;
-			Dialog.open(html, function(){
-				let value = html.innerHTML.split("<br xmlns=\"http://www.w3.org/1999/xhtml\" />").join("\n");
-				
-				value = value.split(" xmlns=\"http://www.w3.org/1999/xhtml\"").join("");
-				value = value.split("<div>").join("");
-				value = value.split("</div>").join("\n");
-				value = value.split("<br />").join("\n");
-				value = value.split("<br/>").join("\n");
-				
-				value = value.split("&amp;").join("&");
-				
-				annotation.annotationComment = value;				
-				annotation.saveTx({skipSelect:true}).then(e=>{
-					Zotero.ZeNotes.Ui.reload();
-				});
-			}, "Edit annotation comment", "save");
+			Actions.editannotationcomment(annotation);
 		}
         else if(key=="showannotation")
         {
-            var attachment = Zotero.Items.get(attachmentid);
-            if(!annotationkey)
-            {
-                alert("Annotation not found!");
-                return;
-            }			
-			// New page to prevent page jump back. Will default to original openToPage when Zotero 7 is stable.
-			// Zotero.OpenPDF.openToPage(attachment, annotationpagelabel, annotationkey);
-			this.openToPage(parseInt(attachmentid), parseInt(annotationpage), annotationkey)
+            Actions.showannotation(parseInt(attachmentid), parseInt(annotationpage), annotationkey)
         }
-		
 		
 		else if(key.includes("translate-"))
 		{
-			if(!annotationkey)
-            {
-                alert("Annotation not found!");
-                return;
-            }
-			
 			var annotation = Zotero.Items.get(annotationid);
-			
 			if(!annotation)
 			{
 				alert("Annotation text not found!");
 				return;
 			}
 			
-			var currentcomment = annotation.annotationComment;
-			if(currentcomment==null)
-			{
-				currentcomment = "";
-			}
-			
-			var tl = Zotero.ZeNotes.Prefs.get("target-language");
-			
 			if(key.includes("-google"))
 			{
-				var mode = "api-key";
-				if(Zotero.ZeNotes.Prefs.getb("google-translate-key")=="")
-				{
-					mode="free-0";
-				}
-				Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
-					var table = AiUi.createdialog(annotation, currentcomment, r, "g-translate");
-					Dialog.open(table, function(){}, "Choose translation [Google]", "close");
-				}).catch(r=>{
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					Dialog.open(html, function(){
-					});
-				});
+				Actions.googletranslate(annotation);
 			}
 			else if(key.includes("-deepl"))
 			{
-				Zotero.ZeNotes.Ai.DeepL.translate(annotation["annotationText"], tl).then(r=>{
-					var table = AiUi.createdialog(annotation, currentcomment, r, "deepl-translate");
-					Dialog.open(table, function(){}, "Choose translation [DeepL]", "close");
-				}).catch(r=>{
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					Dialog.open(html, function(){
-					});
-				});
+				Actions.deepltranslate(annotation);
 			}
-			
-			
-			
-			
-		}
-		
-		else if(key=="summarize-row-annotations")
-		{
-			// var data = Table.rowdata(td.closest("tr"));
-			var data = Table.tabledata(td.closest("tr"));
-			Zotero.ZeNotes.Ai.Bard.batchsummarize(data).then(r=>{				
-				var div = document.createElement("div");
-				div.innerHTML = r;
-				Dialog.open(div, function(){}, "Summary", "close");
-			}).catch(r=>{
-				var html = "";
-				if(Array.isArray(r))
-				{
-					html = r.join("<br/>");
-				}
-				else
-				{
-					html="-"+r;
-				}
-				Dialog.open(html, function(){
-				});
-			});
 		}
 		
 		else if(key.includes("custom-prompt-"))
 		{
 			var annotation = Zotero.Items.get(annotationid);
-			
 			if(key.includes("cell"))
 			{
 				target = "cell";
@@ -459,92 +332,21 @@ Menus = {
 			{
 				target = "row";
 				data = Table.rowdata(td.closest("tr"));
-				
 			}
 			else if(key.includes("-table"))
 			{
 				target = "table";
 				data = Table.tabledata(td.closest("tr"));
-			}
-			
-			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
-			{
-				alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-				return;
-			}
-			
-			var customprompt = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
-			if(!customprompt)
-			{
-				customprompt = Zotero.ZeNotes.Ai.prompts[target];
-			}
-			
-			var currentcomment = annotation.annotationComment;
-
-			if(currentcomment==null)
-			{
-				currentcomment = "";
-			}
+			}			
 				
 			if(key.includes("-bard"))
 			{
-				Zotero.ZeNotes.Ai.Bard.customprompt(JSON.stringify(data), target).then(r=>{
-					var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
-					var model = Zotero.ZeNotes.Prefs.get("bard-model");
-					var div = document.createElement("div");
-					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
-					try {
-						TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [Bard: "+model+"]", "close");
-					}
-					catch(e)
-					{
-						alert(e);
-					}
-				}).catch(r=>{
-					var div = document.createElement("div");
-					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					TabbedDialog.open(html, div, function(){
-					});
-				});
+				Actions.bardcustomprompt(data, target, annotation)
 			}
+			
 			else if(key.includes("-openai"))
 			{
-				Zotero.ZeNotes.Ai.OpenAi.customprompt(JSON.stringify(data), target).then(r=>{
-					var model = Zotero.ZeNotes.Prefs.get("openai-model");
-					var table = AiUi.createdialog(annotation, currentcomment, r, "openai");
-					var div = document.createElement("div");
-					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
-					try {
-						TabbedDialog.open(table, div, function(){}, "Edit and choose a candidate [OpenAi: "+model+"]", "close");
-					}
-					catch(e)
-					{
-						alert(e);
-					}
-				}).catch(r=>{
-					var div = document.createElement("div");
-					div.innerHTML = "<h2>Custom prompt</h2> "+customprompt+"<hr/>"+this.displayjson(data);
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					TabbedDialog.open(html, div, function(){
-					});
-				});
+				Actions.openaicustomprompt(data, target, annotation);
 			}
 		}
 		
@@ -565,55 +367,12 @@ Menus = {
 			
 			if(key.endsWith("-bard"))
 			{
-				if(Zotero.ZeNotes.Prefs.getb("bard-api-key")=="")
-				{
-					alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-					return;
-				}
-				Zotero.ZeNotes.Ai.Bard.paraphrase(annotation["annotationText"]).then(r=>{
-					var table = AiUi.createdialog(annotation, currentcomment, r, "bard");
-					var model = Zotero.ZeNotes.Prefs.get("bard-model");
-					Dialog.open(table, function(){}, "Edit and choose a paraphrase [Bard: "+model+"]", "close");
-				}).catch(r=>{
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					Dialog.open(html, function(){
-					});
-				});
+				Actions.bardparaphrase(annotation);
 			}
 			else if(key.endsWith("-openai-gpt"))
 			{
-				if(Zotero.ZeNotes.Prefs.getb("openai-api-key")=="")
-				{
-					alert("Please set API key first.\nGo to ZeNotes > Settings > General Settings > AI API settings");
-					return;
-				}
-				
-				Zotero.ZeNotes.Ai.OpenAi.paraphrase(annotation["annotationText"]).then(r=>{
-					var table = AiUi.createdialog(annotation, currentcomment, r, "gpt");
-					var model = Zotero.ZeNotes.Prefs.get("openai-model");
-					Dialog.open(table, function(){}, "Edit and choose a paraphrase [OpenAi: "+model+"]", "close");
-				}).catch(r=>{
-					var html = "";
-					if(Array.isArray(r))
-					{
-						html = r.join("<br/>");
-					}
-					else
-					{
-						html="-"+r;
-					}
-					Dialog.open(html, function(){
-					});
-				});
-			}			
+				Actions.openaiparaphrase(annotation);
+			}		
 		}
 		
         else if(key=="showfile")

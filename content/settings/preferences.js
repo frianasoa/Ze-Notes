@@ -136,7 +136,7 @@ Zotero_Preferences.ZeNotes = {
 	targetlanguages()
 	{
 		var tl = Zotero.ZeNotes.Prefs.get("target-language");
-		var options = Languages.list().map(function(e){return {label: e.name, value:e.code}});
+		var options = Zotero.ZeNotes.Languages.list().map(function(e){return {label: e.name, value:e.code}});
 		var combo = this.addcombobox("zn-target-language", options, tl);
 		combo.addEventListener("change", function(e){
 			Zotero.ZeNotes.Prefs.set("target-language", e.target.value);

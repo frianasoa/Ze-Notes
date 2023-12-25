@@ -14,6 +14,9 @@ var Filter;
 var Image;
 var Ai;
 var CryptoJS;
+var Actions;
+var Annotations;
+var Languages;
 
 const ANNOTATION = 1;
 const ANNOTATION_LABEL = "annotation";
@@ -172,7 +175,6 @@ function initPreferences(rootURI) {
 			src: rootURI + 'content/settings/preferences.xhtml',
 			scripts: [
 				rootURI + 'content/settings/zntable.js',
-				rootURI + 'content/settings/languages.js',
 				rootURI + 'content/settings/preferences.js',
 			],
 			image: rootURI+"/content/images/zenotes-settings.png"
@@ -223,6 +225,9 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/data.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
+	Services.scriptloader.loadSubScript(rootURI + 'content/notes/actions.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/annotations.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/languages.js');
 	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
 	
 	ZeNotes.init({ id, version, rootURI });
@@ -242,11 +247,15 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Image = Image;
 	ZeNotes.Ai = Ai;
 	ZeNotes.CryptoJS = CryptoJS;
+	ZeNotes.Actions = Actions;
+	ZeNotes.Annotations = Annotations;
+	ZeNotes.Languages = Languages;
 
 	ZeNotes.Data = Data;
 	
 	
 	ZeNotes.Format = Format;
+	Annotations.initmenu();
 	await ZeNotes.main();
 }
 

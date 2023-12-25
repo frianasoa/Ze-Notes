@@ -49,7 +49,7 @@ ZeNotes = {
 		link1.id = 'zenotes-stylesheet';
 		link1.type = 'text/css';
 		link1.rel = 'stylesheet';
-		link1.href = this.rootURI + 'style.css';
+		link1.href = this.rootURI + 'content/lib/fontawesome/6.1.1/css/all.min.css';
 		doc.documentElement.appendChild(link1);
 		this.storeAddedElement(link1);
 		
