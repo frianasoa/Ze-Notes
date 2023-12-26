@@ -272,7 +272,7 @@ Actions = {
 		});
 	},
 	
-	openaiparaphrase(annotation)
+	openaiparaphrase(annotation, direct=false)
 	{
 		if(Zotero.ZeNotes.Prefs.getb("openai-api-key")=="")
 		{
@@ -287,6 +287,13 @@ Actions = {
 		}
 		
 		Zotero.ZeNotes.Ai.OpenAi.paraphrase(annotation["annotationText"]).then(r=>{
+			if(direct)
+			{
+				annotation.annotationComment = currentcomment+"\n\n<b>[Paraphrase]</b>\n"+r[0]+"\n";
+				annotation.saveTx({skipSelect:true}).then(e=>{});
+				return;
+			}
+			
 			var table = AiUi.createdialog(annotation, currentcomment, r, "gpt");
 			var model = Zotero.ZeNotes.Prefs.get("openai-model");
 			Dialog.open(table, function(){}, "Edit and choose a paraphrase [OpenAi: "+model+"]", "close");
@@ -299,6 +306,11 @@ Actions = {
 			else
 			{
 				html="-"+r;
+			}
+			if(direct)
+			{
+				alert(html);
+				return;
 			}
 			Dialog.open(html, function(){
 			});

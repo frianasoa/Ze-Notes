@@ -103,7 +103,7 @@ Menus = {
 			
 			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 			{
-				items_ai["paraphrase-annotation"]["items"]["paraphrase-bard"] = {name: "Using bard", icon: "fa-b"};
+				items_ai["paraphrase-annotation"]["items"]["paraphrase-bard"] = {name: "Using Bard", icon: "fa-b"};
 				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-bard"] = {name: "Using bard", icon: "fa-b"};
 				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-bard"] = {name: "Using bard", icon: "fa-b"};
 				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-row-table"] = {name: "Using bard", icon: "fa-b"};

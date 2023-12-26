@@ -19,8 +19,22 @@
 .zn-include {
 	padding-top: 0.5em!important;
 	width: 100%!important;
+	display: flex;
+	flex-direction: column;
+}
+
+.zn-include table {
 }
 
 fieldset {
 	width: 100%!important;
+}
+
+#ai-prompts tr td:nth-child(1){
+	white-space: nowrap;
+	width: 1%;
+}
+
+#ai-prompts tr td{
+	border-bottom: solid 1px;
 }

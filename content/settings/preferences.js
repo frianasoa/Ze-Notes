@@ -324,6 +324,7 @@ Zotero_Preferences.ZeNotes = {
 			Zotero_Preferences.ZeNotes.loadpreference("deepl-api-key", "zn-deepl-api-key", "encrypt");
 			
 			
+			Zotero_Preferences.ZeNotes.loadpreference("paraphrase-custom-prompt", "zn-paraphrase-custom-prompt");
 			Zotero_Preferences.ZeNotes.loadpreference("cell-custom-prompt", "zn-cell-custom-prompt");
 			Zotero_Preferences.ZeNotes.loadpreference("row-custom-prompt", "zn-row-custom-prompt");
 			Zotero_Preferences.ZeNotes.loadpreference("table-custom-prompt", "zn-table-custom-prompt");

@@ -42,7 +42,7 @@ Annotations = {
 		
 		reader.menus[label] = {
 			label: 'Translate to '+tl+' [Google]',
-			icon: 'fa-language',
+			image: 'fa-language',
 			onCommand: function(){
 				for(id of params.ids)
 				{
@@ -57,7 +57,7 @@ Annotations = {
 			label = 'Translate to '+tl+' [DeepL]';
 			reader.menus[label] = {
 				label: label,
-				icon: "fa-language",
+				image: "fa-language",
 				onCommand: function(){
 					for(id of params.ids)
 					{
@@ -70,15 +70,31 @@ Annotations = {
 		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 		{
-			label = 'Paraphrase [bard]';
+			label = 'Paraphrase [Bard]';
 			reader.menus[label] = {
 				label: label,
-				icon: "fa-arrow-right-arrow-left",
+				image: "fa-arrow-right-arrow-left",
 				onCommand: function(){
 					for(id of params.ids)
 					{
 						var annotation = reader._item.getAnnotations().filter(function(e){return e.key==id})[0];
 						Zotero.ZeNotes.Actions.bardparaphrase(annotation, true);
+					}
+				}
+			};
+		}
+		
+		if(Zotero.ZeNotes.Prefs.getb("openai-api-key")!="")
+		{
+			label = 'Paraphrase [ChatGPT]';
+			reader.menus[label] = {
+				label: label,
+				image: "fa-robot",
+				onCommand: function(){
+					for(id of params.ids)
+					{
+						var annotation = reader._item.getAnnotations().filter(function(e){return e.key==id})[0];
+						Zotero.ZeNotes.Actions.openaiparaphrase(annotation, true);
 					}
 				}
 			};
@@ -89,7 +105,7 @@ Annotations = {
 			let { reader, params, append } = event;
 			Annotations.newmenus(reader, params);
 			for(menu of Object.values(reader.menus))
-			{
+			{				
 				append(menu);
 			}
 		});
@@ -116,7 +132,7 @@ Annotations = {
 				menuitem = reader._window.document.createElement('menuitem');
 				menuitem.setAttribute('label', menu.label);
 				menuitem.className = 'menuitem-iconic';
-				menuitem.setAttribute('image', Annotations.geticon(menu.icon));
+				menuitem.setAttribute('image', Annotations.geticon(menu.image));
 				menuitem.addEventListener('command', (e) => {
 					reader.menus[e.target.label].onCommand();
 				});

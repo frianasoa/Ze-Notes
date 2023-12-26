@@ -145,12 +145,18 @@ Ai.Bard = {
 	
 	async paraphrase(sentence)
 	{
-		model = Zotero.ZeNotes.Prefs.get("bard-model");
+		var model = Zotero.ZeNotes.Prefs.get("bard-model");
+		var defaultprompt = Zotero.ZeNotes.Prefs.get("paraphrase-custom-prompt");
+		if(!defaultprompt)
+		{
+			defaultprompt = Ai.prompts["paraphrase"]
+		}
+		
 		if(model=="")
 		{
 			model = "gemini-pro";
 		}
-		return this.sendprompt(sentence, Ai.prompts["paraphrase"], model)
+		return this.sendprompt(sentence, defaultprompt, model)
 	},
 	
 	async customprompt(sentence, target)
@@ -277,7 +283,12 @@ Ai.DeepL = {
 Ai.OpenAi = {
 	paraphrase(sentence){
 		var model = Zotero.ZeNotes.Prefs.get("openai-model");
-		return this.sendprompt(sentence, Ai.prompts["paraphrase"], model)
+		var defaultprompt = Zotero.ZeNotes.Prefs.get("paraphrase-custom-prompt");
+		if(!defaultprompt)
+		{
+			defaultprompt = Ai.prompts["paraphrase"]
+		}
+		return this.sendprompt(sentence, defaultprompt, model)
 	},
 	
 	async customprompt(sentence, target)
