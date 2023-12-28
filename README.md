@@ -65,12 +65,11 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 * For DeepL API key, head to https://www.deepl.com/account/plan after you sign up. They will ask you for your credit card details even for the free plan.
 
 ### Preferences
-(The preference window has changed. Will update this part later)
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
 ![Opening settings](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/06.zenotes-interface-settings.png "Opening settings")
 * Select the tags you will be using as columns. You can hide the ones you do not need.
-* You can choose the tags on which you want to sort the results. Double click on an entry or click on order with the entry selected if you want the sort to be desc or asc.
-* You can save the current layout, load or delete saved layouts.
+* You can choose the tags on which you want to sort the results. Click on the icon a->z or z-> to change how you want to sort.
+* The current layout is automatically saved for the current (selected) selection. 
 * Click "OK" when you finish and the table will reload.
 
 ## Use cases
