@@ -97,4 +97,4 @@ These global settings apply to the plugin as a whole.
 8. Export your notes to MS Word, Excel or CSV format.
 
 ## Disclaimer
-Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated.
+Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated on their official websites.
