@@ -66,7 +66,7 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 
 ### Preferences
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
-![Opening settings](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/06.zenotes-interface-settings.png "Opening settings")
+![Opening settings](https://raw.githubusercontent.com/frianasoa/ze-notes/main/docs/images/06.zenotes-interface-settings.png "Opening settings")
 * Select the tags you will be using as columns. You can hide the ones you do not need.
 * You can choose the tags on which you want to sort the results. Click on the icon a->z or z-> to change how you want to sort.
 * The current layout is automatically saved for the current (selected) selection. 
