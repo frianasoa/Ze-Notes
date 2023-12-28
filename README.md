@@ -4,21 +4,21 @@
 
 Now works with Zotero 7 Beta.
 
-## Transition to version 0.4.* (Supporting Zotero 6 & 7 beta)
+## Description
+ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes and pdf annotations. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes. On the latest versions, you can add translations of your notes using Google or DeepL. You can also apply a generative AI prompts (Bard and ChatGPT for the moment) to a cell, a row, or the entire table. These actions are also available right in the pdf reader of Zotero.
+
+## How to migrate your preferences to v0.4.* and later
 * After installing the plugin, restart Zotero (This will import your preferences from previous versions)
 * Select the collection you are working on
-* Head to ZeNotes -> Settings
+* Head to ZeNotes > Settings
 * In settings, scroll down to "Load and save"
 * Click on the dropdown and choose the preference you want to apply to the current collection
-	* Preferences from Zotero 6 are imported automatically and their names will start with Z6. "Z6 default" will be your last preference
+	* Preferences from Zotero 6 are imported automatically and their names will start with Z6. "Z6 default" will hold your last preference on Zotero 6.
 * Click "Import preferences" to apply the selected preference to the current collection
 
 ## Limitations & bugs for current version
-* Opening annotation does not open to the page with highlight, especially on Zotero 7.
-* If it is of concern for you, please download and install a previous version.
-
-## Description
-ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes.
+* "Show annotation" does not open the pdf at the page with highlight on Zotero 7.
+* If it is of concern for you, please stay on Zotero 6 until it's resolved.
 
 # Instructions
 ## Install
@@ -55,10 +55,14 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 
 ### AI Assisted paraphrasing
 * Go to ZeNotes > Settings > Global Settings > AI API Settings
-* Insert your API Key (Only Bard, because it's free ☺ for the moment?)
-* Display your notes and right click on an annotation. The menu "Paraphrase annotation" will be available. Click. It will paraphrase the excerpt selected in the PDF file.
-* Here is a link to the discussion on Bard API [If it does not work, search the internet. These things move so fast]. https://www.googlecloudcommunity.com/gc/forums/forumtopicprintpage/board-id/cloud-ai-ml/message-id/1705/print-single-message/true/page/1
+* Insert your API Key
+* Display your notes and right click on an annotation. The menu "Paraphrase annotation" will be available. Choose Bard or ChatGPT depending on the API key you have. It will paraphrase the excerpt selected in the PDF file.
+* Here are some links to access Google Ai Studio (Bard) [Can be used for free so far] [If it does not work, search the internet. These things move so fast]. https://ai.google.dev/pricing
+ https://makersuite.google.com
 
+* For Open Ai (ChatGPT), head to https://platform.openai.com/api-keys. You will be asked to sign up. If you have never signed up (ChatGPT on the web included), you may get some free credits at the beginning. Do not try to create multiple accounts using the same email and/or mobile phone, you might be banned.
+
+* For DeepL API key, head to https://www.deepl.com/account/plan after you sign up. They will ask you for your credit card details even for the free plan.
 
 ### Preferences
 (The preference window has changed. Will update this part later)
