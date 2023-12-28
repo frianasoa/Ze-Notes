@@ -88,12 +88,13 @@ These global settings apply to the plugin as a whole.
 ### How to start a systematic review of the literature?
 
 1. Create a folder (collection) to add all the papers you want to review (you can also use an existing folder).
-2. Add notes to each entry of the folder. It is now possible to add annotations directly inside a pdf attachment. In this case, please open the  
-3. To each note, add a tag according to its content (e.g. Objectives, Methods, Results, Discussions, Comments, ... ). 
-4. Right click on the folder you work on and open "ZeNotes - My notes in collection" to see all your notes in the current collection. All your notes will be shown in a table with the tags as columns.
-5. You may right click on the table cells to see what actions are available (Edit, remove columns, etc, ...).
-6. Go to tools and settings to control the columns (tags) you want to show or hide. You may also sort the results. It is now possible to save, load, and delete layouts.  
-7. Export your notes to MS Word, Excel or CSV format.
+2. Add notes to each entry of the folder. It is also possible to add annotations directly inside a pdf attachment.
+3. To each note or annotation, add a tag according to its content (e.g. Objectives, Methods, Results, Discussions, Comments, ... ). If you do not add a tag, the note or annotation will be tagged "Untagged". 
+4. Right click on the folder you work on and open "ZeNotes - My notes in collection" to see all your notes in the current collection. All your notes will be shown in a table with the tags as column headers. You can choose "vertical table" if you want to display them as row headers instead.
+5. You may right click on the table cells to see what actions are available (Edit, remove columns, etc, ...). You can also drag and drop the headers.
+6. Go to tools and settings to control the columns (tags) you want to show or hide. You may also sort the results. The setting you choose will be saved automatically for each collection.
+7. Use Google translate or DeepL to translate your annotations. You can apply a generative AI prompt to each cell as well.
+8. Export your notes to MS Word, Excel or CSV format.
 
 ## Disclaimer
 Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated.
