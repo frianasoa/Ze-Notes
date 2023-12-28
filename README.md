@@ -60,7 +60,7 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 * Here are some links to access Google Ai Studio (Bard) [Can be used for free so far] [If it does not work, search the internet. These things move so fast]. https://ai.google.dev/pricing
  https://makersuite.google.com
 
-* For Open Ai (ChatGPT), head to https://platform.openai.com/api-keys. You will be asked to sign up. If you have never signed up (ChatGPT on the web included), you may get some free credits at the beginning. Do not try to create multiple accounts using the same email and/or mobile phone, you might be banned.
+* For Open Ai (ChatGPT), head to https://platform.openai.com/api-keys. You will be asked to sign up. If you have never signed up (ChatGPT on the web included), you may get some free credits at the beginning (they expire). Otherwise you will need to buy some credits to be able to use the API. Please be warned that Open AI credits expire after 1 year if not used (at the time of writing. Please always check.). Do not try to create multiple accounts using the same email and/or mobile phone, you might get banned.
 
 * For DeepL API key, head to https://www.deepl.com/account/plan after you sign up. They will ask you for your credit card details even for the free plan.
 
@@ -72,8 +72,17 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 * The current layout is automatically saved for the current (selected) selection. 
 * Click "OK" when you finish and the table will reload.
 
+### API settings
+Extra menus are available for each API you set (contextmenu: when you write click on the table or on an annotation in the pdf reader). For Bard and Open AI, you can set the models you want to use. You can set the maximum token used for OpenAI as well. \
+The plugin has simple default prompt for each action. You can set your own in "AI custom prompts". Remember that when you change them, the menus would mean something completely different from the label (If you change paraphrase prompt into something else for example). \
+Last, you can set the language for Google and DeepL translation the label of the contextmenu will change accordingly.
+
+![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/08.zenotes-ai-settings.png "Other settings")
+
+
 ### Other settings
-![Opening settings](https://raw.githubusercontent.com/frianasoa/ze-notes/main/docs/images/07.zenotes-load-save-display-performance.png "Other settings")
+These global settings apply to the plugin as a whole.
+![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/07.zenotes-load-save-display-performance.png "Other settings")
 
 ## Use cases
 ### How to start a systematic review of the literature?
@@ -85,3 +94,6 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 5. You may right click on the table cells to see what actions are available (Edit, remove columns, etc, ...).
 6. Go to tools and settings to control the columns (tags) you want to show or hide. You may also sort the results. It is now possible to save, load, and delete layouts.  
 7. Export your notes to MS Word, Excel or CSV format.
+
+## Disclaimer
+Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated.
