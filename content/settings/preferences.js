@@ -255,7 +255,6 @@ Zotero_Preferences.ZeNotes = {
 			case 'global':
 				args = [
 					["bg-opacity", "zn-bg-opacity"],
-					["remove-menu", "zn-remove-menu"],
 					["html-filter-replacement", "zn-html-filter-replacement"],
 					["html-filter", "zn-html-filter"],
 					["column-width", "zn-column-width"],
@@ -294,7 +293,8 @@ Zotero_Preferences.ZeNotes = {
 				break;
 			case 'performance':
 				args = [
-					["load-on-change", "zn-reload-on-change"]
+					["load-on-change", "zn-reload-on-change"],
+					["remove-menu", "zn-remove-menu"]
 				];
 				break;
 			case 'load-save':
