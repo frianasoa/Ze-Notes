@@ -151,31 +151,21 @@ function registerchrome(rootURI){
 }
 
 function initPreferences(rootURI) {
-	
-	/* already done in chrome.manifest
-		Keep for the day it becomes obsolete
-		registerchrome(rootURI);
-	*/
-	
-	if(Zotero.platformMajorVersion < 102) {
-		/*
-		Try to implement native preference in Zotero 6
-		*/
-	}
-	else
-	{
+	if(Zotero.platformMajorVersion >= 102) {
 		registerchrome(rootURI);
 		Zotero.PreferencePanes.register({
 			pluginID: 'zenotes@alefa.net',
 			id: 'zenotes@alefa.net',
 			stylesheets: [
 				rootURI + 'content/settings/preferences.css',
+				rootURI + 'content/settings/preferences7.css',
 				rootURI + 'content/lib/fontawesome/6.1.1/css/all.min.css',
 			],
 			src: rootURI + 'content/settings/preferences.xhtml',
 			scripts: [
 				rootURI + 'content/settings/zntable.js',
 				rootURI + 'content/settings/preferences.js',
+				rootURI + 'content/settings/preferences7.js',
 			],
 			image: rootURI+"/content/images/zenotes-settings.png"
 		});
@@ -214,6 +204,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		// setDefaultPrefs(rootURI);
 	}
 
+	Services.scriptloader.loadSubScript(rootURI + 'core/settings.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
@@ -252,10 +243,12 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Languages = Languages;
 
 	ZeNotes.Data = Data;
+	ZeNotes.Settings = Settings;
 	
 	
 	ZeNotes.Format = Format;
 	Annotations.initmenu();
+	Settings.inject();
 	await ZeNotes.main();
 }
 

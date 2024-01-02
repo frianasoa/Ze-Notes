@@ -1,19 +1,28 @@
-* {
+#zotero-prefpane-zenotes-overlay > * {
 	font-size: 1em!important;
+}
+
+.zn-table-holder{
+	height: 500px!important;
 }
 
 .zn-type-table {
 	margin-right: 1.2em!mportant;
 	min-width: 80vw!important;
+	table-layout:fixed!important;
 }
 
-.zn-table-holder {
-	height: 15em!important;
+.zn-type-table td:nth-child(1){
+	overflow: hidden;
+	white-space: pre-wrap!important;
 }
 
 .zn-legend {
 	font-size: 1.02em!important;
-	
+}
+
+#zn-tags-display-panel {
+	min-height: 500px;
 }
 
 .zn-include {
@@ -21,6 +30,7 @@
 	width: 100%!important;
 	display: flex;
 	flex-direction: column;
+	min-height: 500px;
 }
 
 .zn-include table {
@@ -30,11 +40,9 @@ fieldset {
 	width: 100%!important;
 }
 
-#ai-prompts tr td:nth-child(1){
-	white-space: nowrap;
-	width: 1%;
+.collection-name {
+	display: block;
+	text-align: center;
+	color: red;
 }
 
-#ai-prompts tr td{
-	border-bottom: solid 1px;
-}

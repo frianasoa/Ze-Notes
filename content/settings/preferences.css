@@ -1,4 +1,4 @@
-* {
+#zotero-prefpane-zenotes-overlay > * {
 	font-size: 1.01em;
 	box-sizing: border-box;
 }
@@ -43,9 +43,8 @@
 }
 
 .zn-legend {
-	font-size: 1.3em;
-	color: red;
-	
+	font-size: 1.3em!important;
+	color: red!important;
 }
 
 .zn-include {
@@ -77,4 +76,39 @@ fieldset {
 #table-manage-tags td, 
 #table-manage-tags tr  {
 	max-width: 15em;
+}
+
+menulist {
+	background-color: white;
+}
+
+.zn-buttons-holder button{
+	color: red;
+}
+
+#group-ai-api input, #group-ai-api select, #group-ai-api menulist {
+	width: 90%;
+}
+
+#group-ai-api p{
+	margin-bottom: 0.5em;
+}
+
+#ai-prompts tr td:nth-child(1){
+	white-space: nowrap;
+	width: 1%;
+}
+
+#ai-prompts tr td:nth-child(2) {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+#ai-prompts textarea {
+	padding-left: 0.3em;
+	padding-right: 0.3em;
+}
+
+#ai-prompts tr td{
+	border-bottom: solid 1px;
 }

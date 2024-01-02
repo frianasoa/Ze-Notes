@@ -40,11 +40,16 @@ Menu = {
 
 		// Add menu in front of tools
 		var toolsmenu = document.getElementById("toolsMenu");
-		
-		// if(showmain)
-		// {
+
+		if(Prefs.get("remove-menu", false)==true || Prefs.get("remove-menu", false)=="true")
+		{
+			toolsmenu.querySelector("menupopup").appendChild(menu);
+			// menubar.insertBefore(menu, toolsmenu);
+		}
+		else
+		{
 			menubar.insertBefore(menu, toolsmenu);
-		// }
+		}
 		
 		ZeNotes.storeAddedElement(toolsmenu);
 				
@@ -96,7 +101,8 @@ Menu = {
 			Menu.opentab();
 		});
         menupopup.appendChild(menuitem_notes);
-        document.getElementById("zotero-collectionmenu").appendChild(menuitem_notes_c);
+		
+		document.getElementById("zotero-collectionmenu").appendChild(menuitem_notes_c);
 		ZeNotes.storeAddedElement(menuitem_notes_c);
 		ZeNotes.window = w;
 	},

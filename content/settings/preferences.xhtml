@@ -1,63 +1,50 @@
-<vbox id="zenotes-prefpane-zenotes"  xmlns:html="http://www.w3.org/1999/xhtml" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="Zotero_Preferences.ZeNotes.init();">
-	<html:h1 id='zn-settings-main-title'></html:h1>
-	<vbox class="main-section">
-		<html:fieldset>
-			<html:legend class='zn-legend'>Tag display</html:legend>
-			<div class="zn-include" src="manage-tags.xhtml"> </div>
-		</html:fieldset>
+<div id="zenotes-prefpane-zenotes" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns="http://www.w3.org/1999/xhtml" onload="Zotero_Preferences.ZeNotes.init();">
+	<h1 id='zn-settings-main-title'></h1>
+	<div class="main-section">
+		<fieldset>
+			<legend class='zn-legend'>Tag display</legend>
+			<h3 class="collection-name">Collection</h3>
+			<div class="zn-include" data-src="manage-tags.xhtml" onload="Zotero_Preferences.ZeNotes.loadtagmanager(this)"> </div>
+		</fieldset>
 	
-		<html:fieldset>
-			<html:legend class='zn-legend'>Tag sorting</html:legend>
-			<div class="zn-include" src="sort-tags.xhtml"> </div>
-		</html:fieldset>
+		<fieldset>
+			<legend class='zn-legend'>Tag sorting</legend>
+			<h3 class="collection-name">Collection</h3>
+			<div class="zn-include" data-src="sort-tags.xhtml" onload="Zotero_Preferences.ZeNotes.loadtagsorter(this)"> </div>
+		</fieldset>
+		
+		<fieldset>
+			<legend class='zn-legend'>Translation</legend>
+			<div class="zn-include" data-src="translation.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('translation');"> </div>			
+		</fieldset>
+		
+		<fieldset>
+			<legend class='zn-legend'>Generative AI</legend>
+			<div class="zn-include" data-src="generative-ai.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('generative-ai')"> </div>			
+		</fieldset>
+		
+		<fieldset>
+			<legend class='zn-legend'>AI custom prompts</legend>
+			<div class="zn-include" data-src="ai-prompts.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('prompts')"> </div>
+		</fieldset>
 		
 		
-		<html:fieldset>
-			<html:legend class='zn-legend'>Load and save</html:legend>
-			<box>
-				<menulist oncommand="Zotero_Preferences.ZeNotes.updateprefimport(event);">
-				<menupopup id="zn-load-settings">
-				</menupopup>
-				</menulist>
-				<html:button onclick="Zotero_Preferences.ZeNotes.importpref(event);">Import preferences</html:button>
-			</box>
-		</html:fieldset>
+		<h1>Global settings</h1>
+		<fieldset>
+			<legend class='zn-legend'>Global display</legend>
+			<div class="zn-include" data-src="display.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('global')"> </div>
+		</fieldset>
 		
-		<html:h1>Global settings</html:h1>
-		<html:fieldset>
-			<html:legend class='zn-legend'>Display</html:legend>
-			<div class="zn-include" src="display.xhtml"> </div>
-		</html:fieldset>
 		
-		<html:fieldset>
-			<html:legend class='zn-legend'>AI API settings</html:legend>
-			<div class="zn-include" src="ai-api.xhtml"> </div>
-			<html:table>
-			<html:tr><html:td>Target language</html:td><html:td colspan="2">
-			<box>
-			<menulist>
-			<menupopup id="zn-target-language">
-			</menupopup>
-			</menulist>
-			</box>
-			</html:td><html:td></html:td></html:tr>
-			</html:table>
+		<fieldset>
+			<legend class='zn-legend'>Advanced</legend>
+			<div class="zn-include" data-src="performance.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('performance')"></div>
 			
-		</html:fieldset>
-		
-		<html:fieldset>
-			<html:legend class='zn-legend'>AI custom prompts</html:legend>
-			<div class="zn-include" src="ai-prompts.xhtml"> </div>
-		</html:fieldset>
-		
-		<html:fieldset>
-			<html:legend class='zn-legend'>Performance</html:legend>
-			<div class="zn-include" src="performance.xhtml"> </div>
-		</html:fieldset>
-		
-		<html:fieldset>
-			<html:legend class='zn-legend'>Page actions</html:legend>
-			<html:button id="zn-refresh">Refresh</html:button>
-		</html:fieldset>
-	</vbox>
-</vbox>
+			<div class="zn-include" data-src="load-save-tags.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('load-save')"> </div>
+		</fieldset>
+
+		<div class="zn-buttons-holder">
+		<button id="zn-refresh" onclick="Zotero.ZeNotes.Ui.reload();"><i class='fa-solid fa-refresh'></i> Refresh table</button>
+		</div>
+	</div>
+</div>

@@ -119,7 +119,11 @@ Zotero_Preferences.ZNTable = {
 		
 		tags = this.sorttags(tags, sortlist);
 		
-		const parser = new DOMParser();
+		if(!this.parser)
+		{
+			this.parser = new DOMParser();
+		}
+		
 		for(tag of tags)
 		{
 			var tr = document.createElementNS("http://www.w3.org/1999/xhtml", 'tr');
@@ -140,7 +144,7 @@ Zotero_Preferences.ZNTable = {
 				var td = document.createElementNS("http://www.w3.org/1999/xhtml", 'td');
 				tr.appendChild(td);
 				// const doc = parser.parseFromString("<span xmlns='http://www.w3.org/1999/xhtml' class='"+statusclass+" tag-"+c+"' style='padding:0; margin:0;'>"+value+"</span>", 'application/xhtml+xml');
-				const doc = parser.parseFromString(xml, 'application/xhtml+xml');
+				const doc = this.parser.parseFromString(xml, 'application/xhtml+xml');
 				const importedNode = document.importNode(doc.documentElement, true);
 				td.appendChild(importedNode);
 			}
@@ -297,11 +301,8 @@ Zotero_Preferences.ZNTable = {
 				eye.className = "fa-solid fa-eye-slash red-icon";
 			}
 		});
-		if (Zotero.platformMajorVersion >= 102) {
-			Zotero_Preferences.ZeNotes.init();
-		}
+		if (Zotero.platformMajorVersion >= 102) {}
 		Zotero_Preferences.ZeNotes.saveandreload();
-		
 	},
 	
 	showall(e)
@@ -327,11 +328,8 @@ Zotero_Preferences.ZNTable = {
 				eye.className = "fa-solid fa-eye";
 			}
 		});
-		if (Zotero.platformMajorVersion >= 102) {
-			Zotero_Preferences.ZeNotes.init();
-		}
+		if (Zotero.platformMajorVersion >= 102) {}
 		Zotero_Preferences.ZeNotes.saveandreload();
-		
 	},
 	
 	togglevisibility(e)
@@ -428,10 +426,13 @@ Zotero_Preferences.ZNTable = {
 	
 	toxml(txt, classname)
 	{
-
 		if (Zotero.platformMajorVersion >= 102) {
-			var parser = new DOMParser();
-			var doc = parser.parseFromString(txt, "text/html");
+			if(!this.parser)
+			{
+				this.parser = new DOMParser();
+			}
+			
+			var doc = this.parser.parseFromString(txt, "text/html");
 			var span = doc.createElement("span");
 			span.className = classname;
 			doc.querySelector("body").childNodes.forEach(child=>{

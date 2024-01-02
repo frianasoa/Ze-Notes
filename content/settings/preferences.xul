@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE prefwindow SYSTEM "chrome://zotero/locale/preferences.dtd">
+<?xml-stylesheet href="chrome://global/skin/global.css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/preferences.css"?>
+<?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css"?>
+<?xml-stylesheet href="chrome://zotero/skin/preferences.css"?>
+<?xml-stylesheet href="chrome://zotero/skin/zotero.css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/overlay.css"?>
+<?xml-stylesheet href="chrome://zotero-platform-version/content/style.css"?>
+<?xml-stylesheet href="chrome://zotero-platform/content/zotero-react-client.css"?>
+
+
+<prefwindow id="zenotes-prefs"
+		title="Ze Notes - Settings"
+		windowtype="zenotes:pref"
+		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<script src="chrome://zotero/content/include.js"></script>
+	<script src="chrome://zotero/content/charsetMenu.js"></script>
+	<script src="chrome://ze-notes/content/settings/preferences.js" type="application/javascript"/>
+	
+	<script type="application/javascript">
+	<![CDATA[		
+		this.addEventListener("load", function(e)
+		{
+			var prefwindow = document.querySelector("prefwindow");
+			var znpref = document.createElement("prefpane");
+			znpref.setAttribute("id", "zotero-prefpane-zenotes");
+			znpref.setAttribute("label", "Ze Notes");
+			znpref.setAttribute("image", "chrome://ze-notes/content/images/zenotes-settings.png");
+			znpref.setAttribute("src", "chrome://ze-notes/content/settings/preferences6.xul");
+			prefwindow.addPane(znpref);
+			prefwindow.showPane(znpref);
+			this.addEventListener("resize", function(e){
+				let width = this.innerWidth;
+				let height = this.innerHeight;
+				Zotero.ZeNotes.Prefs.set("prefs-window-width", width);
+				Zotero.ZeNotes.Prefs.set("prefs-window-height", height);
+			})
+		})
+	]]>
+	</script>
+	<script src="chrome://zotero/content/preferences/preferences.js" type="application/javascript"/>
+</prefwindow>

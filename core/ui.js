@@ -24,10 +24,12 @@ Ui = {
         {
             Zotero.ZeNotes.collection = "All documents";
         }
-        var url = "chrome://ze-notes/content/settings/preferences6.xhtml";
+        var url = "chrome://ze-notes/content/settings/preferences.xul";
         var io = {collection: Zotero.ZeNotes.collection};
-        var name = "settingswin"
-                Zotero.getMainWindow().openDialog(url, name, 'chrome,titlebar,toolbar,centerscreen,dialog,modal=no,resize,resizable=yes,width=900,height=600px', io);
+        var name = "settingswin";
+		let width = Zotero.ZeNotes.Prefs.get("prefs-window-width", "775");
+		let height = Zotero.ZeNotes.Prefs.get("prefs-window-height", "575");
+		Zotero.getMainWindow().openDialog(url, name, 'chrome,titlebar,toolbar,centerscreen,dialog,modal=no,resize,resizable=yes,width='+width+',height='+height, io);
 	},
 	
 	reload(){
