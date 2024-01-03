@@ -302,6 +302,9 @@ Zotero_Preferences.ZeNotes = {
 					["load-settings", "zn-load-settings"]
 				];
 				break;
+			case 'exclude-from-prompt':
+				this.promptdataselection();
+				return;
 		}
 		
 		for(arg of args)
@@ -314,6 +317,52 @@ Zotero_Preferences.ZeNotes = {
 			{
 				Zotero_Preferences.ZeNotes.loadpreference(arg[0], arg[1], arg[2]);
 			}
+		}
+	},
+	
+	promptdataselection()
+	{
+		var fields = Zotero.ZeNotes.Filter.excludefields;
+		var table = document.getElementById("exclude-from-prompt");
+		table.innerHTML = "";
+		let i = 0;
+		for(field in fields)
+		{
+			let l = fields[field];
+			let row = table.insertRow();
+			let lcell = row.insertCell();
+			let rcell = row.insertCell();
+			if(i==0)
+			{
+				let tcell = row.insertCell();
+				let sample = this.filterlist(JSON.parse(JSON.stringify(Zotero.ZeNotes.Filter.excludefields)));
+				tcell.style = "padding-left: 2em;"
+				tcell.setAttribute("rowspan", Object.keys(fields).length);
+				tcell.innerHTML = "A cell prompt will be followed by the following data.<hr/>var celldata = "+Zotero.ZeNotes.Utils.displayjson(sample);
+			}
+			
+			let label = document.createElementNS("http://www.w3.org/1999/xhtml", "label");
+			label.innerText = l;
+			label.setAttribute("for", "zn-exclude-"+field);
+			
+			let ipt = document.createElementNS("http://www.w3.org/1999/xhtml", "input");
+			ipt.type = "checkbox";
+			ipt.setAttribute("id", "zn-exclude-"+field);
+			ipt.dataset.field = "exclude-"+field;
+			ipt.addEventListener("change", function(e){
+				try {
+					Zotero_Preferences.ZeNotes.setpreference(e, e.currentTarget.dataset.field);
+					Zotero_Preferences.ZeNotes.promptdataselection()
+				}
+				catch(e)
+				{
+					alert(e);
+				}
+			})
+			lcell.appendChild(label);
+			rcell.appendChild(ipt);
+			Zotero_Preferences.ZeNotes.loadpreference(ipt.dataset.field, ipt.getAttribute("id"));
+			i+=1;
 		}
 	},
 		
@@ -443,6 +492,17 @@ Zotero_Preferences.ZeNotes = {
 		}
 		this.tableutils.rendertags(table, tags, columns, this.usersettings);
 		return table;
+	},
+	filterlist(s)
+	{
+		Object.keys(Zotero.ZeNotes.Filter.excludefields).forEach(field=>{
+			let r = Zotero.ZeNotes.Prefs.get("exclude-"+field, false);
+			if(r=="true" || r==true)
+			{
+				delete s[field];
+			}
+		})
+		return s;
 	}
 }
 

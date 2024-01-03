@@ -1,4 +1,14 @@
 Filter = {
+	excludefields : {
+		"Translation":"Translation",
+		"Paraphrase":"Paraphrase",
+		"Reader notes":"Reader notes",
+		"Direct quote":"Direct quote",
+		"Author":"Author",
+		"Date":"Date",
+		"Tag":"Tag"
+	},
+	
 	apply(txt, selectors = "", replacement=""){
 		txt = Filter.legacy(txt);
 		

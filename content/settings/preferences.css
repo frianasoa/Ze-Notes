@@ -112,3 +112,18 @@ menulist {
 #ai-prompts tr td{
 	border-bottom: solid 1px;
 }
+
+
+.json-key {
+	color: red;
+}
+.json-number {
+	color: blue;
+}
+.json-string {
+	color: green;
+}
+.json-null {
+	color: blue;
+	font-weight: bold;
+}

@@ -23,17 +23,27 @@ Table = {
 			var annotationcontent = div.querySelector(".direct-quote").innerText;
 			var author = div.querySelector(".direct-quote").parentNode.dataset.author;
 			var date = div.querySelector(".direct-quote").parentNode.dataset.date;
+			var tag = div.querySelector(".direct-quote").parentNode.dataset.tag;
 			var annotationcomments = Table.splitusernotes(div.querySelector(".annotation-comment").innerHTML);	
 			s = annotationcomments;
 			s["Direct quote"] = annotationcontent;
 			s["Author"] = author;
 			s["Date"] = date;
+			s["Tag"] = tag;
+			s = this.filter(s);
+			
 			if(Object.keys(d).includes("Selections"))
 			{
-				d["Selections"].push(s);
+				if(Object.keys(s).length>0)
+				{
+					d["Selections"].push(s);
+				}
 			}
 			else {
-				d["Selections"] = [s];
+				if(Object.keys(s).length>0)
+				{
+					d["Selections"] = [s];
+				}
 			}
 		});
 		
@@ -111,6 +121,17 @@ Table = {
 			r[k] = r[k].join("\n");
 		}		
 		return r;
-	}
+	},
 	
+	filter(s)
+	{
+		Object.keys(Zotero.ZeNotes.Filter.excludefields).forEach(field=>{
+			let r = Zotero.ZeNotes.Prefs.get("exclude-"+field, false);
+			if(r=="true" || r==true)
+			{
+				delete s[field];
+			}
+		})
+		return s;
+	}
 }

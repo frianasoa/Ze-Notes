@@ -19,6 +19,7 @@
 				<tab id="zn-tags-sorting" label="Tag sorting"/>
 				<tab id="zn-api-settings" label="API settings"/>
 				<tab id="zn-prompt-settings" label="Custom prompts"/>
+				<tab id="zn-prompt-data-settings" label="Prompts data"/>
 				<tab id="zn-global-settings" label="Global setting"/>
 				<tab id="zn-advanced-settings" label="Advanced"/>
 			</tabs>
@@ -53,12 +54,19 @@
 						<box class="zn-include" src="ai-prompts.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('prompts')"> </box>
 					</groupbox>
 				</tabpanel>
+				<tabpanel orient="vertical" id="zn-prompt-data">
+					<groupbox>
+						<caption label="Exclude from prompt"/>
+						<box class="zn-include" src="exclude-from-prompt.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('exclude-from-prompt')"> </box>
+					</groupbox>
+				</tabpanel>
 				<tabpanel orient="vertical" id="zn-global-panel">
 					<groupbox>
 						<caption label="Global display"/>
 						<box class="zn-include" src="display.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('global')"> </box>
 					</groupbox>
 				</tabpanel>
+				
 				<tabpanel orient="vertical" id="zn-advanced-panel">
 					<groupbox>
 						<caption label="Performance"/>
