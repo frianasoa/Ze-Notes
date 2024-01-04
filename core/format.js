@@ -55,12 +55,11 @@ Format = {
 		}
 		return {
 			data: itemlist,
-			columns: ["id", "itemid", "key", "title", "date", "journal", "author", "creators", "filekey"],
+			columns: ["id", "itemid", "key", "title", "date", "journal", "author", "source", "creators", "filekey"],
 			tagged_items: Object.values(tagged_items),
 		}
 	},
-	
-	
+
 	async itemnotes(item)
 	{
 		var allnotes = [];
@@ -261,6 +260,7 @@ Format = {
 				date: Format.year(item),
 				journal: this.xmlescape(item.getField("publicationTitle")),
 				author: Format.creatorshort(item)+" ("+Format.year(item)+")",
+				source: Format.creatorshort(item)+" ("+Format.year(item)+")",
 				creators: Format.creators(item),
 				filenames: filenames,
 				filekey: Format.filekey(item),
@@ -270,7 +270,16 @@ Format = {
 	},
 	
 	year(item) {
-        var y = item.getField("date", true).substr(0, 4);
+		var date;
+		for(type of ["date", "issueDate", "dateEnacted", "dateDecided"])
+		{
+			date = item.getField(type, true);
+			if(date)
+			{
+				break;
+			}
+		}
+        var y = date.substr(0, 4);	
         return y;
     },
 	
@@ -299,21 +308,7 @@ Format = {
     },
 	
 	creatorshort(item) {
-        var creators = item.getCreatorsJSON();
-        var author = "";
-        if(creators.length==1)
-        {
-            author = creators[0].lastName; 
-        }
-        else if(creators.length==2)
-        {
-            author = creators[0].lastName+" and "+creators[1].lastName;
-        }
-        else if(creators.length>0)
-        {
-            author = creators[0].lastName+" et al."
-        }
-        return author;
+		return Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators());
     },
 	
 	creators(item) {

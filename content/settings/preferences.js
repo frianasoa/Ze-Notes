@@ -14,7 +14,7 @@ Zotero_Preferences.ZeNotes = {
 		}
 		this.savevalues = [];
 		this.tableutils = Zotero_Preferences.ZNTable;
-		this.defaulthiddentags = ["Id", "itemid", "key", "filekey"];
+		this.defaulthiddentags = ["Id", "itemid", "key", "filekey", "source"];
 	},
 	
 	async currentcollection()
