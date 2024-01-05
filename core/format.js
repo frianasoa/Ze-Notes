@@ -237,7 +237,7 @@ Format = {
 			
 			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
 			
-			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+contents+"</div></div><hr/>";
+			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-source='"+Format.creatorshortlocale(item)+"' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+contents+"</div></div><hr/>";
 			notetext+=note_;
 		}
 		else
@@ -260,7 +260,7 @@ Format = {
 				date: Format.year(item),
 				journal: this.xmlescape(item.getField("publicationTitle")),
 				author: Format.creatorshort(item)+" ("+Format.year(item)+")",
-				source: Format.creatorshort(item)+" ("+Format.year(item)+")",
+				source: Format.creatorshortlocale(item)+" ("+Format.year(item)+")",
 				creators: Format.creators(item),
 				filenames: filenames,
 				filekey: Format.filekey(item),
@@ -308,8 +308,57 @@ Format = {
     },
 	
 	creatorshort(item) {
+		let _and = Zotero.ZeNotes.Prefs.get("display-and", " and ");
+		let _etal = Zotero.ZeNotes.Prefs.get("display-etal", " et al.");
+		return this.getFirstCreatorFromData(item.itemTypeID, item.getCreators(), _and, _etal);
+	},
+	
+	creatorshortlocale(item) {
 		return Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators());
     },
+	
+	getFirstCreatorFromData(itemTypeID, creatorsData, _and, _etal, options) {
+		//From Zotero
+		if (!options) {
+			options = {
+				omitBidiIsolates: false
+			};
+		}
+		
+		if (creatorsData.length === 0) {
+			return "";
+		}
+		
+		var validCreatorTypes = [
+			Zotero.CreatorTypes.getPrimaryIDForType(itemTypeID),
+			Zotero.CreatorTypes.getID('editor'),
+			Zotero.CreatorTypes.getID('contributor')
+		];
+	
+		for (let creatorTypeID of validCreatorTypes) {
+			let matches = creatorsData.filter(data => data.creatorTypeID == creatorTypeID)
+			if (!matches.length) {
+				continue;
+			}
+			if (matches.length === 1) {
+				return matches[0].lastName;
+			}
+			if (matches.length === 2) {
+				let a = matches[0];
+				let b = matches[1];
+				let args = options.omitBidiIsolates
+					? [a.lastName, b.lastName]
+					// \u2068 FIRST STRONG ISOLATE: Isolates the directionality of characters that follow
+					// \u2069 POP DIRECTIONAL ISOLATE: Pops the above isolation
+					: [`\u2068${a.lastName}\u2069`, `\u2068${b.lastName}\u2069`];
+				return args.join(_and);
+			}
+			if (matches.length >= 3) {
+				return matches[0].lastName + " " + _etal;
+			}
+		}
+		return "";
+	},
 	
 	creators(item) {
         var variable = item.getCreatorsJSON();

@@ -305,6 +305,12 @@ Zotero_Preferences.ZeNotes = {
 			case 'exclude-from-prompt':
 				this.promptdataselection();
 				return;
+			case 'note-style':
+				args = [
+					["display-and", "zn-display-and"],
+					["display-etal", "zn-display-etal"],
+				];
+				break;
 		}
 		
 		for(arg of args)

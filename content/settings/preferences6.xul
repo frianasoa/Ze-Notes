@@ -65,6 +65,10 @@
 						<caption label="Global display"/>
 						<box class="zn-include" src="display.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('global')"> </box>
 					</groupbox>
+					<groupbox>
+						<caption label="Note style"/>
+						<box class="zn-include" src="note-style.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('note-style')"> </box>
+					</groupbox>
 				</tabpanel>
 				
 				<tabpanel orient="vertical" id="zn-advanced-panel">
