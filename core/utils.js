@@ -1,3 +1,4 @@
+var window = Zotero.getMainWindow();
 Utils = {
 	tohex(d)
     {
@@ -93,6 +94,7 @@ Utils = {
 		}
 		return arr;
 	},
+	
 	displayjson(json) {
 		if (typeof json != 'string') {
 			 json = JSON.stringify(json, undefined, 2);
@@ -116,5 +118,13 @@ Utils = {
 		
 		json = json.split("\n").join("<br/>").split("  ").join("&#160;&#160;");
 		return json;
+	},
+	
+	bin2b64(bin, mime="png"){
+		var uint8Array = new TextEncoder().encode(bin);
+		var base64String = btoa(String.fromCharCode.apply(null, uint8Array));
+		return base64String;
+		// return "data:image/"+mime+";base64,"+window.btoa(encodeURIComponent(bin));
 	}
+	
 }

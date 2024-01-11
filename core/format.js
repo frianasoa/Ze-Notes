@@ -217,7 +217,7 @@ Format = {
 				annotationtext = this.escapehtml(annotationtext);
 			}
 			
-			var contents = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+			
 			
 			var comment = note["annotationComment"];
 
@@ -226,6 +226,9 @@ Format = {
 				comment = "";
 			}
 			
+			
+				
+			
 			if(!this.isvalidxhtml(comment))
 			{
 				comment = this.escapehtml(comment);
@@ -233,11 +236,26 @@ Format = {
 			
 			comment = comment.split("\n").join("<br/>\n");
 			
+			var contents = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+			
+			var img = "";
+			if(note.annotationType=="image")
+			{
+				var json = await Zotero.Annotations.toJSON(note);
+				if(annotationtext)
+				{
+					annotationtext = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221;";
+				}
+				var img = "<img width='100%' src='"+json["image"]+"' />";
+				
+				var contents = annotationtext+"<br/> Source: "+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+"";
+			}
+			
 			var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
 			
 			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
 			
-			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-source='"+Format.creatorshortlocale(item)+"' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+contents+"</div></div><hr/>";
+			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-source='"+Format.creatorshortlocale(item)+"' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+img+	contents+"</div></div><hr/>";
 			notetext+=note_;
 		}
 		else

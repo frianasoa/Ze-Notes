@@ -1,9 +1,15 @@
 Notes = {
 	init() {
+		var fontsize = Zotero.ZeNotes.Prefs.get("font-size");
 		this.tableutils = Zotero_Preferences.ZNTable;
 		this.body = document.getElementById("zn-body");
 		this.infotags = ["id", "key", "title", "date", "journal", "author", "creators", "itemid", "filekey"];
 		this.body.focus();
+		if(fontsize)
+		{
+			this.body.style.fontSize = fontsize+"px";
+		}
+		
 	},
 	
 	isvertical()

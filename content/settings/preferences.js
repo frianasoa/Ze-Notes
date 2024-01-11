@@ -166,6 +166,16 @@ Zotero_Preferences.ZeNotes = {
 					});
 				}
 			}
+			if(elid.includes("-val"))
+			{
+				el.addEventListener("keyup", function(e){
+					let value = e.target.value;
+					let id = e.target.id.replace("-val", "");
+					let cevent = new Event('change');
+					document.getElementById(id).value = value;
+					document.getElementById(id).dispatchEvent(cevent);
+				})
+			}
 		}
 	},
 	
@@ -261,7 +271,9 @@ Zotero_Preferences.ZeNotes = {
 					["column-width", "zn-column-width-val"],
 					["header-size", "zn-header-size"],
 					["header-size", "zn-header-size-val"],
-					["vertical-table", "zn-vertical-table"]
+					["vertical-table", "zn-vertical-table"],
+					["font-size", "zn-font-size"],
+					["font-size", "zn-font-size-val"]
 				];
 				break;
 				
