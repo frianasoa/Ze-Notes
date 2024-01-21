@@ -187,11 +187,15 @@ Menus = {
                 Menus.actions(key, options)
             },
             items: {
-                "saveasxls": {name: "Export as xls...", icon: "fa-file-excel"},
-                "saveascsv": {name: "Export as csv...", icon: "fa-file-csv"},
-                "saveasdoc": {name: "Export as doc...", icon: "fa-file-word"},
-                "saveashtml": {name: "Export as html...", icon: "fa-file-code"},
-                "saveasmarkdown": {name: "Export as markdown", icon: "fa-markdown", items: {
+                "saveas": {name: "Export as...", icon: "fa-file"},
+                // "saveasxls": {name: "Export as xls...", icon: "fa-file-excel"},
+                // "saveascsv": {name: "Export as csv...", icon: "fa-file-csv"},
+                // "saveasdoc": {name: "Export as doc...", icon: "fa-file-word"},
+                // "saveashtml": {name: "Export as html...", icon: "fa-file-code"},
+                // "saveasfullhtml": {name: "Export as html (complete)", icon: "fa-folder"},
+                // "saveasfullmd": {name: "Export as markdown (complete)", icon: "fa-folder"},
+                // "saveasfullmdhtml": {name: "Export as markdown (complete, with html)", icon: "fa-folder"},
+                "saveasmarkdown": {name: "Export as markdown (legacy)", icon: "fa-markdown", items: {
                     "saveasmarkdownnoicon": {name: "Simple", icon: "fa-markdown"},
                     "saveasmarkdown": {name: "With icon", icon: "fa-markdown"},
                     "sep": "---",
@@ -456,6 +460,10 @@ Menus = {
             Find.show();
         }
         
+        else if(key=="saveas" ){
+            Io.export();
+        }
+		
         else if(key=="saveasxls" ){
             Io.download("xls");
         }
@@ -466,6 +474,18 @@ Menus = {
         
         else if(key=="saveashtml"){
             Io.download("html");
+        }
+        
+        else if(key=="saveasfullhtml"){
+            Io.download("fullhtml");
+        }
+        
+        else if(key=="saveasfullmdhtml"){
+            Io.download("markdown", ["html", "style", "link-icon", "full"]);
+        }
+        
+        else if(key=="saveasfullmd"){
+            Io.download("markdown", ["style", "link-icon", "full"]);
         }
         
         else if(key=="saveasmarkdownnoicon"){

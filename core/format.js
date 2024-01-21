@@ -236,7 +236,11 @@ Format = {
 			
 			comment = comment.split("\n").join("<br/>\n");
 			
-			var contents = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221; ("+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+")";
+			// var url = "zotero://open-pdf/library/items/"+note["parentItem"].key+"?annotation="+note["key"];
+			var ref = Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"];
+			// ref = "<a href='"+url+"'>"+ref+"</a>";
+			
+			var contents = "&#x201F;<span class='direct-quote'>"+annotationtext+"</span>&#8221; (<span class='quotation-source'>"+ref+"</span>)";
 			
 			var img = "";
 			if(note.annotationType=="image")
@@ -248,7 +252,7 @@ Format = {
 				}
 				var img = "<img width='100%' src='"+json["image"]+"' />";
 				
-				var contents = annotationtext+"<br/> Source: "+Format.creatorshort(item)+" "+Format.year(item)+", p. "+note["annotationPageLabel"]+"";
+				var contents = annotationtext+"<br/> Source: <span class='quotation-source'>"+ref+"</span>";
 			}
 			
 			var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];

@@ -1,6 +1,7 @@
 Notes = {
 	init() {
 		var fontsize = Zotero.ZeNotes.Prefs.get("font-size");
+		
 		this.tableutils = Zotero_Preferences.ZNTable;
 		this.body = document.getElementById("zn-body");
 		this.infotags = ["id", "key", "title", "date", "journal", "author", "creators", "itemid", "filekey"];
@@ -9,6 +10,7 @@ Notes = {
 		{
 			this.body.style.fontSize = fontsize+"px";
 		}
+		this.fontsize = 1;
 		
 	},
 	
@@ -347,11 +349,52 @@ Notes = {
 			Zotero.ZeNotes.Prefs.set("scrolltop", $('#zn-body-wrapper').scrollTop());
 			Zotero.ZeNotes.Prefs.set("scrollleft", $('#zn-body-wrapper').scrollLeft());
 		});
+	},
+	
+	zoom(sign){
+		this.fontsize = this.fontsize;
+		this.fontsize+=0.05*sign;
+		if(this.fontsize<=0)
+		{
+			this.fontsize = 1;
+		}
+		else if(this.fontsize>10)
+		{
+			this.fontsize = 10;
+		}
+		Notes.body.style.fontSize = this.fontsize+"em";
+		let pxsize = parseFloat(getComputedStyle(Notes.body).fontSize);
+		Zotero.ZeNotes.Prefs.set("font-size", pxsize);
 	}
+	
 }
 
 window.addEventListener("load", function(){
 	Notes.init();
 	Notes.loaddata();
 	Notes.initscroll();
+})
+
+document.addEventListener("wheel", function(e){
+	if(e.ctrlKey){
+		let delta = e.deltaY;
+		delta = delta && delta / Math.abs(delta);
+		let sign = delta*-1;
+		Notes.zoom(sign);
+	}
+})
+
+document.addEventListener("keyup", function(e){
+	if(e.ctrlKey){
+		let sign = 1;
+		if(e.keyCode==107)
+		{
+			sign = 1;
+		}
+		else if(e.keyCode==109)
+		{
+			sign=-1;
+		}
+		Notes.zoom(sign);
+	}
 })

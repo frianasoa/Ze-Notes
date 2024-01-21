@@ -84,6 +84,8 @@ Last, you can set the language for Google and DeepL translation the label of the
 These global settings apply to the plugin as a whole.
 ![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/07.zenotes-load-save-display-performance.png "Other settings")
 
+Font settings was added. You can use this to zoom in and out of your table with the shortcut "Ctrl + Mouse wheel" or "Ctrl + Plus/Minus"
+
 ## Use cases
 ### How to start a systematic review of the literature?
 
