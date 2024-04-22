@@ -3,6 +3,8 @@ function alert(msg) {
 }
 
 Ui = {
+	tabs: [],
+	iframes:[],
 	openpreferences()
 	{
 		if (Zotero.platformMajorVersion < 102)
@@ -39,10 +41,53 @@ Ui = {
 		}
 	},
 	
+	reloadcustomtab(tabname)
+	{
+		if(Object.keys(Ui.tabs).includes(tabname))
+		{
+			Ui.iframes[tabname].reload();
+		}
+	},
+	
 	closetab()
 	{
 		Zotero_Tabs.close(Ui.tab.id);
 		Ui.tab = null;
+	},
+	
+	opencustomtab6(url, title, tabname, data)
+	{
+		if(!Object.keys(Ui.tabs).includes(tabname))
+        {
+            Ui.tabs[tabname] = Zotero_Tabs.add({
+                title: "Ze Notes - "+title,
+                data: {tabname: tabname, data: data},
+                iconBackgroundImage:"url(\""+ZeNotes.icon+"\")",
+                onClose: function(){
+					delete Ui.tabs[this.data.tabname];
+				}
+            });
+			
+            var document = Zotero.getMainWindow().document;
+			Ui.iframes[tabname] = document.createElement("browser");
+            Ui.iframes[tabname].setAttribute("class", "reader");
+            Ui.iframes[tabname].setAttribute("flex", "1");
+            Ui.iframes[tabname].setAttribute("type", "content");
+            Ui.tabs[tabname].container.appendChild(Ui.iframes[tabname]);
+
+            var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
+			var tab = Zotero_Tabs._tabs[index];
+            tab["iconBackgroundImage"] = "url(\""+ZeNotes.icon+"\")";
+            Ui.iframes[tabname].setAttribute("src", url);
+        }
+        else
+        {
+            var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
+            Zotero_Tabs._tabs[index]["title"] = "Ze Notes - "+title;
+            Ui.iframes[tabname].setAttribute("src", url);
+            Ui.iframes[tabname].reload(true);
+        }
+        Zotero_Tabs.select(Ui.tabs[tabname].id);
 	},
 	
 	opentab6(url, title)
@@ -115,5 +160,46 @@ Ui = {
 			});
 		}
 		Zotero_Tabs.select(Ui.tab.id);
+	},
+	
+	opencustomtab(url, title, tabname, data)
+	{
+		if (Zotero.platformMajorVersion < 102)
+		{
+			Ui.opencustomtab6(url, title, tabname, data);
+			return;
+		}
+		
+		if(!Object.keys(Ui.tabs).includes(tabname))
+        {
+			Ui.tabs[tabname] = Zotero_Tabs.add({
+				title: "Ze Notes - "+title,
+				data: data,
+				id: tabname,
+				select: false,
+				onClose: function(){delete Ui.tabs[this.data.tabname]}
+			});
+						
+			var document = Ui.tabs[tabname].container.ownerDocument;
+			Ui.iframes[tabname] = Zotero.createXULElement(document, "browser");
+			Ui.tabs[tabname].container.appendChild(Ui.iframes[tabname]);
+			Ui.iframes[tabname].setAttribute("class", "reader");
+			Ui.iframes[tabname].setAttribute("flex", "1");
+			Ui.iframes[tabname].setAttribute("type", "content");
+			Ui.iframes[tabname].loadURI(url, {
+				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
+			});
+			var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
+			Zotero_Tabs._tabs[index]["iconBackgroundImage"] = "url(\""+ZeNotes.icon+"\")";
+		}
+		else
+		{
+			var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
+            Zotero_Tabs._tabs[index]["title"] = "Ze Notes - "+title;
+            Ui.iframe.loadURI(url, {
+				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
+			});
+		}
+		Zotero_Tabs.select(Ui.tabs[tabname].id);
 	}
 }

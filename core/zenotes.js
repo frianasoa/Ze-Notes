@@ -7,6 +7,7 @@ ZeNotes = {
 	version: null,
 	rootURI: null,
 	initialized: false,
+	cache: {},
 	addedElementIDs: [],
 	znkey: "W0phdmFTY3JpcHQgRXJyb3I6ICJSZWZlcmVuY2VFcnJvcjogZmV0Y2ggaXMgbm90IGRlZmluZWQiIHtmaWxlOiAicmVzb3VyY2U6Ly9ncm",
 	

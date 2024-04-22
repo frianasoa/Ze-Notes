@@ -20,11 +20,28 @@ Table = {
 		}
 		
 		td.querySelectorAll(".annotation-body").forEach(div=>{
-			var annotationcontent = div.querySelector(".direct-quote").innerText;
-			var author = div.querySelector(".direct-quote").parentNode.dataset.author;
-			var date = div.querySelector(".direct-quote").parentNode.dataset.date;
-			var tag = div.querySelector(".direct-quote").parentNode.dataset.tag;
-			var annotationcomments = Table.splitusernotes(div.querySelector(".annotation-comment").innerHTML);	
+			var annotationcontent = "";
+			var author = "";
+			var date = "";
+			var tag = "";
+			var directquotediv = div.querySelector(".direct-quote")
+			var annotationcommentdiv = div.querySelector(".annotation-comment");
+			var annotationcomments = {};
+			
+			if(directquotediv!=null)
+			{
+				annotationcontent = directquotediv.innerText;
+				author = directquotediv.parentNode.dataset.author;
+				date = directquotediv.parentNode.dataset.date;
+				tag = directquotediv.parentNode.dataset.tag;
+			}
+			author = div.parentNode.dataset.author;
+			
+			if(annotationcommentdiv!=null)
+			{
+				annotationcomments = Table.splitusernotes(annotationcommentdiv.innerHTML);	
+			}
+			
 			s = annotationcomments;
 			s["Direct quote"] = annotationcontent;
 			s["Author"] = author;

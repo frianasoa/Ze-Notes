@@ -386,7 +386,7 @@ document.addEventListener("wheel", function(e){
 
 document.addEventListener("keyup", function(e){
 	if(e.ctrlKey){
-		let sign = 1;
+		let sign = 0;
 		if(e.keyCode==107)
 		{
 			sign = 1;
@@ -395,6 +395,10 @@ document.addEventListener("keyup", function(e){
 		{
 			sign=-1;
 		}
-		Notes.zoom(sign);
+		
+		if(sign!=0)
+		{
+			Notes.zoom(sign);
+		}
 	}
 })

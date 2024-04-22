@@ -39,6 +39,18 @@ Menus = {
 			"editannotationcomment": {name: "Edit annotation comments", icon: "fa-edit"},
 			"showannotation": {name: "Show annotation", icon: "fa-edit"},
 			"sep": "---------",
+			
+			/*
+			"word-cloud": {name: "Show word cloud", icon:"fa-cloud", 
+				items: {
+					"word-cloud-all": {name: "All"},
+					"word-cloud-quote": {name: "Quote"},
+					"word-cloud-comment": {name: "Reader comment"},
+					"word-cloud-paraphrase": {name: "Paraphrase"},
+				}
+			},
+			*/
+			"sep-word-cloud": "---------",
 		}
 		
 		var items_ai = {}
@@ -304,6 +316,13 @@ Menus = {
         {
             Actions.showannotation(parseInt(attachmentid), parseInt(annotationpage), annotationkey)
         }
+		
+		else if(key=="word-cloud-all")
+		{
+			let data = Table.tabledata(td.closest("tr"));
+			Zotero.ZeNotes.cache["word-cloud-data"] = data;
+			Zotero.ZeNotes.Ui.opencustomtab("chrome://ze-notes/content/wordcloud/wordcloud.xhtml", "Word Cloud", "word-cloud-tab", data);
+		}
 		
 		else if(key.includes("translate-"))
 		{
