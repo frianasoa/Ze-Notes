@@ -116,9 +116,29 @@ ZeNotes = {
 		}
 	},
 	
+	listen()
+	{
+		var listener = {
+			onOpenWindow: function (aWindow) {
+				let domWindow = aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+				async function onload() {
+					domWindow.removeEventListener("load", onload, false);
+					if (domWindow.location.href !== "chrome://zotero/content/standalone/standalone.xul") {
+						return;
+					}
+					Zotero.ZeNotes.Menu.mainmenu(domWindow);
+				}
+				domWindow.addEventListener("load", onload, false);
+			}
+		};
+		Services.wm.addListener(listener);
+	},
+	
 	async main() {
 		// Global properties are imported above in Zotero 6 and included automatically in
 		// Zotero 7
+		Zotero.ZeNotes.listen();
 		var host = new URL('https://foo.com/path').host;
 		this.log(`Host is ${host}`);
 		

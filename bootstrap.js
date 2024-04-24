@@ -87,6 +87,7 @@ async function waitForZotero() {
 function listenForMainWindowEvents() {
 	mainWindowListener = {
 		onOpenWindow: function (aWindow) {
+			Zotero.debug('windowListener:onOpenWindow');
 			let domWindow = aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
 				.getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
 			async function onload() {
@@ -256,7 +257,7 @@ function onMainWindowLoad({ window }) {
 	ZeNotes.addToWindow(window);
 }
 
-function onMainWindowUnload({ window }) {
+function onMainWindowUnload({window}) {
 	ZeNotes.removeFromWindow(window);
 }
 

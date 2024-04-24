@@ -1,5 +1,8 @@
 Menu = {
 	window: null,
+	menu: null,
+	toolsmenu: null,
+	menubar: null,
 	opentab() {
 		var title = "All documents";
 		var collection = Zotero.getActiveZoteroPane().getSelectedCollection();
@@ -15,17 +18,29 @@ Menu = {
 		}		
 		Ui.opentab("chrome://ze-notes/content/notes/notes.xhtml", title);
 	},
-
+	
 	mainmenu(w){
 		var showmain = Prefs.get("add-to-menu");
 		showmain = showmain==true || showmain=="true";
+		
+		if(this.menubar!=null)
+		{
+			if(Zotero.isMac)
+			{
+				this.menubar.insertBefore(this.menu, this.toolsmenu);
+			}
+			return;
+		}
+		else
+		{
+			w.onfocus = function(e){Zotero.ZeNotes.Menu.mainmenu(e.target)};
+		}
 		
 		let stringBundle = Services.strings.createBundle(
 			'chrome://ze-notes/locale/zenotes.properties'
 		);
 		let document = w.document;
-		
-		
+
 		if(document.getElementById("zenotes-menu-main")!=null)
 		{
 			return;
@@ -41,17 +56,27 @@ Menu = {
 		// Add menu in front of tools
 		var toolsmenu = document.getElementById("toolsMenu");
 
-		if(Prefs.get("remove-menu", false)==true || Prefs.get("remove-menu", false)=="true")
+		if(toolsmenu)
 		{
-			toolsmenu.querySelector("menupopup").appendChild(menu);
-			// menubar.insertBefore(menu, toolsmenu);
+			if(Prefs.get("remove-menu", false)==true || Prefs.get("remove-menu", false)=="true")
+			{
+				toolsmenu.querySelector("menupopup").appendChild(menu);
+			}
+			else
+			{
+				menubar.insertBefore(menu, toolsmenu);
+			}
+			ZeNotes.storeAddedElement(menu);
 		}
 		else
 		{
-			menubar.insertBefore(menu, toolsmenu);
+			menubar.appendChild(menu);
 		}
+		ZeNotes.storeAddedElement(menu);
 		
-		ZeNotes.storeAddedElement(toolsmenu);
+		this.menu = menu;
+		this.toolsmenu = toolsmenu;
+		this.menubar = menubar;
 				
 		// Add popup
 		var menupopup = Zotero.createXULElement(document, "menupopup");
