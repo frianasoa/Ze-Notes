@@ -121,6 +121,18 @@ Ui = {
         Zotero_Tabs.select(Ui.tab.id);
 	},
 	
+	loadURI(iframe, url)
+	{
+		try {
+			iframe.loadURI(url, {
+				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
+			});
+		}
+		catch{
+			iframe.src = url;
+		}
+	},
+	
 	opentab(url, title)
 	{
 		if (Zotero.platformMajorVersion < 102)
@@ -145,9 +157,9 @@ Ui = {
 			Ui.iframe.setAttribute("class", "reader");
 			Ui.iframe.setAttribute("flex", "1");
 			Ui.iframe.setAttribute("type", "content");
-			Ui.iframe.loadURI(url, {
-				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
-			});
+			
+			Ui.loadURI(Ui.iframe, url);
+			
 			var index = Zotero_Tabs._getTab(Ui.tab.id).tabIndex;
 			Zotero_Tabs._tabs[index]["iconBackgroundImage"] = "url(\""+ZeNotes.icon+"\")";
 		}
@@ -155,9 +167,7 @@ Ui = {
 		{
 			var index = Zotero_Tabs._getTab(Ui.tab.id).tabIndex;
             Zotero_Tabs._tabs[index]["title"] = "Ze Notes - "+title;
-            Ui.iframe.loadURI(url, {
-				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
-			});
+			Ui.loadURI(Ui.iframe, url);
 		}
 		Zotero_Tabs.select(Ui.tab.id);
 	},
@@ -186,9 +196,7 @@ Ui = {
 			Ui.iframes[tabname].setAttribute("class", "reader");
 			Ui.iframes[tabname].setAttribute("flex", "1");
 			Ui.iframes[tabname].setAttribute("type", "content");
-			Ui.iframes[tabname].loadURI(url, {
-				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
-			});
+			Ui.loadURI(Ui.iframes[tabname], url);
 			var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
 			Zotero_Tabs._tabs[index]["iconBackgroundImage"] = "url(\""+ZeNotes.icon+"\")";
 		}
@@ -196,9 +204,7 @@ Ui = {
 		{
 			var index = Zotero_Tabs._getTab(Ui.tabs[tabname].id).tabIndex;
             Zotero_Tabs._tabs[index]["title"] = "Ze Notes - "+title;
-            Ui.iframe.loadURI(url, {
-				triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()
-			});
+			Ui.loadURI(Ui.iframe, url);
 		}
 		Zotero_Tabs.select(Ui.tabs[tabname].id);
 	}
