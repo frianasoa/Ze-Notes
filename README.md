@@ -17,8 +17,9 @@ ZeNotes is a Zotero plugin that will help you manage and visualize your notes. I
 * Click "Import preferences" to apply the selected preference to the current collection
 
 ## Limitations & bugs for current version
-* "Show annotation" does not open the pdf at the page with highlight on Zotero 7.
-* If it is of concern for you, please stay on Zotero 6 until it's resolved.
+* <s>"Show annotation" does not open the pdf at the page with highlight on Zotero 7.</s>
+* <s>If it is of concern for you, please stay on Zotero 6 until it's resolved.</s>
+* Fixed in [0.8.7](https://github.com/frianasoa/Ze-Notes/releases/tag/v0.8.4) (thanks @zzlb0224 )
 
 # Instructions
 ## Install
