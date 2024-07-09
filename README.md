@@ -16,10 +16,6 @@ ZeNotes is a Zotero plugin that will help you manage and visualize your notes. I
 	* Preferences from Zotero 6 are imported automatically and their names will start with Z6. "Z6 default" will hold your last preference on Zotero 6.
 * Click "Import preferences" to apply the selected preference to the current collection
 
-## Limitations & bugs for current version
-* "Show annotation" does not open the pdf at the page with highlight on Zotero 7.
-* If it is of concern for you, please stay on Zotero 6 until it's resolved.
-
 # Instructions
 ## Install
 * Head to the release page: https://github.com/frianasoa/Ze-Notes/releases/
