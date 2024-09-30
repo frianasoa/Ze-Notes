@@ -17,5 +17,3 @@ else
 {
 	var Zotero = window.parent.Zotero;
 }
-
-// Zotero.Utilities.Internal.openPreferences('zotero-prefpane-advanced');

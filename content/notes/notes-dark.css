@@ -1,0 +1,66 @@
+html {
+	color: white;
+	background: black;
+}
+
+a {
+	color: white;
+}
+
+#notes-table tr:first-child td {
+    background-color: black!important;
+}
+
+.rm-item-exists td
+{
+	background-color: rgb(25, 25, 55);
+}
+
+.rm-id {
+	color: white;
+}
+
+#notes-table td:first-child {
+    background-color: black;
+}
+
+#zn-sep-1 {
+    background-color: black;
+    height: 1.3em;
+}
+
+.zn-menubar {
+    background-color: black!important;
+}
+
+.zn-menubar li {
+	background-color: black;
+	border: solid 1px black;
+	color: white;
+}
+
+.context-menu-separator
+{
+	border: solid 1px black;
+}
+
+.zn-status-bar {
+	background-color: black;
+	color: white;
+}
+
+.context-menu-two {
+    background-color: black;
+	border: solid 1px black;
+}
+
+.zn-menuitem {
+	border: solid 1px black;
+	background-color: black;
+	color: white;
+}
+
+.zn-menuitem:hover {
+	background-color: black;
+    border-bottom: solid 1px white;
+}

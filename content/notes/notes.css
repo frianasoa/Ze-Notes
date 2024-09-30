@@ -131,7 +131,7 @@ body {
 
 .context-menu-separator
 {
-	border: solid 1px #dfdfff!important;
+	border: solid 1px #dfdfff;
 }
 
 .zn-menuitem:hover {

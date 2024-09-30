@@ -365,15 +365,30 @@ Notes = {
 		Notes.body.style.fontSize = this.fontsize+"em";
 		let pxsize = parseFloat(getComputedStyle(Notes.body).fontSize);
 		Zotero.ZeNotes.Prefs.set("font-size", pxsize);
-	}
+	},
 	
+	loaddark()
+	{
+		var isdark = Zotero.Prefs.get('general.theme')=="dark" || window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		
+		if(isdark)
+		{
+			var filename = "chrome://ze-notes/content/notes/notes-dark.css";
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+			link.type = "text/css";
+			link.href = filename;
+			document.head.appendChild(link);
+		}
+	}
 }
 
 window.addEventListener("load", function(){
 	Notes.init();
 	Notes.loaddata();
 	Notes.initscroll();
-})
+	Notes.loaddark();
+});
 
 document.addEventListener("wheel", function(e){
 	if(e.ctrlKey){
@@ -401,4 +416,5 @@ document.addEventListener("keyup", function(e){
 			Notes.zoom(sign);
 		}
 	}
-})
+});
+

@@ -386,6 +386,7 @@ Zotero_Preferences.ZeNotes = {
 		
 	loadtagmanager(box)
 	{
+		Zotero_Preferences.ZeNotes.loaddark();
 		var table = box.querySelector("#table-manage-tags-body");	
 		var buttonlist = ["up", "down", "first", "last", "visible"];
 		box.parentNode.querySelector(".collection-name").innerHTML = this.collection;
@@ -521,8 +522,26 @@ Zotero_Preferences.ZeNotes = {
 			}
 		})
 		return s;
+	},
+	loaddark()
+	{
+		var isdark = Zotero.Prefs.get('general.theme')=="dark" || window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		
+		if (isdark) {
+			var filename = "chrome://ze-notes/content/settings/preferences-dark.css";
+			var pi = document.createProcessingInstruction(
+				'xml-stylesheet',
+				`type="text/css" href="${filename}"`
+			);
+			document.insertBefore(pi, document.documentElement);
+		}
 	}
 }
+
+
+this.addEventListener("load", function(){
+	// Zotero_Preferences.ZeNotes.loaddark();
+});
 
 /**
 Refresh after losing focus
