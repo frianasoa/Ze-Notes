@@ -180,6 +180,7 @@ async function install() {
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec }) {
 	await waitForZotero();
+	
 	log("Starting Ze-Notes");
 	
 	initPreferences(rootURI);
@@ -221,6 +222,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/annotations.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/languages.js');
 	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
+	
 	
 	ZeNotes.init({ id, version, rootURI });
 	Zotero.ZeNotes = ZeNotes;

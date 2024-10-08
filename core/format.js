@@ -336,7 +336,8 @@ Format = {
 	},
 	
 	creatorshortlocale(item) {
-		return Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators());
+		var creators = Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators());
+		return creators.split("\u2068").join("").split("\u2069").join("");
     },
 	
 	getFirstCreatorFromData(itemTypeID, creatorsData, _and, _etal, options) {
@@ -372,7 +373,8 @@ Format = {
 					? [a.lastName, b.lastName]
 					// \u2068 FIRST STRONG ISOLATE: Isolates the directionality of characters that follow
 					// \u2069 POP DIRECTIONAL ISOLATE: Pops the above isolation
-					: [`\u2068${a.lastName}\u2069`, `\u2068${b.lastName}\u2069`];
+					: [`${a.lastName}`, `${b.lastName}`];
+					// : [`\u2068${a.lastName}\u2069`, `\u2068${b.lastName}\u2069`];
 				return args.join(_and);
 			}
 			if (matches.length >= 3) {

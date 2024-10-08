@@ -303,6 +303,11 @@ Zotero_Preferences.ZeNotes = {
 					["paraphrase-custom-prompt", "zn-paraphrase-custom-prompt"]
 				];
 				break;
+			case 'export':
+				args = [
+					["notes-add-links", "zn-notes-add-links"]
+				];
+				break;
 			case 'performance':
 				args = [
 					["load-on-change", "zn-reload-on-change"],
