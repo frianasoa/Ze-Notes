@@ -367,6 +367,16 @@ Notes = {
 		Zotero.ZeNotes.Prefs.set("font-size", pxsize);
 	},
 	
+	loadfont()
+	{
+		var fontfamily = Zotero.ZeNotes.Prefs.get('font-family', "Arial");
+		if(!fontfamily)
+		{
+			fontfamily="Arial";
+		}
+		document.getElementById("zn-body").style.setProperty("font-family", fontfamily, "important");
+	},
+	
 	loaddark()
 	{
 		var isdark = Zotero.Prefs.get('general.theme')=="dark" || window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -388,6 +398,7 @@ window.addEventListener("load", function(){
 	Notes.loaddata();
 	Notes.initscroll();
 	Notes.loaddark();
+	Notes.loadfont();
 });
 
 document.addEventListener("wheel", function(e){

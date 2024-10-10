@@ -85,7 +85,6 @@ Ai={
 			else if(mode=="bing")
 			{
 				try {
-					// Google translate without api key
 					return Promise.resolve(data.map(function(e){return e[0]}));
 				}
 				catch(e)
@@ -215,8 +214,6 @@ Ai.Bard = {
 			},
 			body: JSON.stringify(payload),
 		}
-
-		
 		return Ai.request(url, options, model);
 	},
 }
@@ -281,7 +278,8 @@ Ai.DeepL = {
 }
 
 Ai.OpenAi = {
-	paraphrase(sentence){
+	paraphrase(sentence)
+	{
 		var model = Zotero.ZeNotes.Prefs.get("openai-model");
 		var defaultprompt = Zotero.ZeNotes.Prefs.get("paraphrase-custom-prompt");
 		if(!defaultprompt)
@@ -348,6 +346,21 @@ Ai.OpenAi = {
 		}
 		return Ai.request(url, options, model);
 	},
+}
+
+Ai.custom = {
 	
-	
+	async sendprompt(sentence, prompts) {
+		var apikey = Zotero.ZeNotes.Prefs.getb("custom-ai-api-key");
+		var url = Zotero.ZeNotes.Prefs.get("custom-ai-url");
+		var method = Zotero.ZeNotes.Prefs.get("custom-ai-method", "POST");
+		var headers = Zotero.ZeNotes.Prefs.get("custom-ai-headers");
+		var payload = Zotero.ZeNotes.Prefs.get("custom-ai-payload", "");		
+		var options = {
+			method: method,
+			headers: headers,
+			body: payload,
+		}
+		return Ai.request(url, options);
+	},
 }

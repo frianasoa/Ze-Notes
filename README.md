@@ -2,7 +2,7 @@
 [![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-6.svg)](https://zotero.org) <br/>
 <a href="https://zotero.org"><img src="https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-7.png" width="182" /></a>
 
-Now works with Zotero 7 Beta.
+Now works with Zotero 7.
 
 ## Description
 ZeNotes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes and pdf annotations. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes. On the latest versions, you can add translations of your notes using Google or DeepL. You can also apply a generative AI prompts (Bard and ChatGPT for the moment) to a cell, a row, or the entire table. These actions are also available right in the pdf reader of Zotero.

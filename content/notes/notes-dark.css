@@ -61,6 +61,9 @@ a {
 }
 
 .zn-menuitem:hover {
-	background-color: black;
-    border-bottom: solid 1px white;
+	background-color: black!important;
+    border-bottom: solid 1px white!important;
+}
+.context-menu-one:hover {
+    background-color: rgb(25, 25, 55)!important;
 }

@@ -9,7 +9,7 @@ XPCOMUtils.defineLazyModuleGetters(this, {
 	setTimeout: "resource://gre/modules/Timer.jsm",
 });
 
-if (typeof Zotero_Preferences == 'undefined') {
+if(typeof Zotero_Preferences == 'undefined') {
 	var Zotero_Preferences= {
 	};	
 }

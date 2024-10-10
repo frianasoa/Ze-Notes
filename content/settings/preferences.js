@@ -1,3 +1,8 @@
+if(typeof Zotero_Preferences == 'undefined') {
+	var Zotero_Preferences= {
+	};	
+}
+
 Zotero_Preferences.ZeNotes = {
 	async init(){
 		if(!this.parser)
@@ -273,8 +278,12 @@ Zotero_Preferences.ZeNotes = {
 					["header-size", "zn-header-size-val"],
 					["vertical-table", "zn-vertical-table"],
 					["font-size", "zn-font-size"],
-					["font-size", "zn-font-size-val"]
+					["font-size", "zn-font-size-val"],
+					["font-family", "zn-font-family"],
+					["font-family-secondary", "zn-font-family-secondary"],
+					["custom-font-family", "zn-custom-font-family"]
 				];
+				Zotero_Preferences.ZeNotes.loadfonts();
 				break;
 				
 			case 'translation':
@@ -340,6 +349,29 @@ Zotero_Preferences.ZeNotes = {
 			{
 				Zotero_Preferences.ZeNotes.loadpreference(arg[0], arg[1], arg[2]);
 			}
+		}
+	},
+	
+	loadfonts()
+	{
+		var fontlist = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script MT", "Times New Roman", "MS Mincho", "MS Gothic", "Microsoft MingLiU", "SimSun", "NSimSun", "SimHei", "system-ui"];
+		var userfonts = Zotero.ZeNotes.Prefs.get("custom-font-family", "");
+		try {
+			userfonts = userfonts.split(",").map(item => item.trim());
+			fontlist = [...new Set([...fontlist, ...userfonts])];
+		}
+		catch(e)
+		{}
+		
+		fontlist = fontlist.sort();
+		
+		var sel = document.getElementById("zn-font-family");
+		for(let font of fontlist)
+		{
+			let opt = document.createElementNS("http://www.w3.org/1999/xhtml", "option");
+			opt.innerHTML = font;
+			opt.value = font;
+			sel.appendChild(opt);
 		}
 	},
 	
