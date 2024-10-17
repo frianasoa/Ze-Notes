@@ -303,6 +303,19 @@ Zotero_Preferences.ZeNotes = {
 					["bard-api-key", "zn-bard-api-key", "encrypt"]
 				];
 				break;
+				
+			case 'generative-ai-custom':
+				args = [
+					["custom-api-name", "zn-custom-api-name"],
+					["custom-api-model", "zn-custom-api-model"],
+					["custom-api-key", "zn-custom-api-key", "encrypt"],
+					["custom-api-method", "zn-custom-api-method"],
+					["custom-api-headers", "zn-custom-api-headers"],
+					["custom-api-payload", "zn-custom-api-payload"],
+					["custom-api-url", "zn-custom-api-url"],
+					["custom-api-translator", "zn-custom-api-translator"]
+				];
+				break;
 			
 			case 'prompts':
 				args = [

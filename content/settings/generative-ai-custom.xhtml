@@ -1,0 +1,46 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="group-generative-ai-api">
+	<table width="100%">
+	<tr>
+		<td>Name</td>
+		<td>
+			<input id="zn-custom-api-name" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-name');" style="width:100%;" placeholder="Enter custom API name" />
+		</td>
+		
+		<td style="width:1.1em;"> </td>
+		
+		<td> Model </td>
+		<td> <input id="zn-custom-api-model" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-model');" style="width:100%;" placeholder="Model" /></td>
+		
+	</tr>
+	<tr>
+		<td>Custom API key</td>
+		<td><input id="zn-custom-api-key" type="password" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-key', 'encrypt');" style="width:100%;" placeholder="Enter custom API key"/></td>
+		
+		<td style="width:1.1em;"> </td>
+		
+		<td>Method</td>
+		<td>
+			<select id="zn-custom-api-method" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-method');" oncommand="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-method');" style="width:100%;">
+			<option value="POST">POST</option>
+			<option value="GET">GET</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>API URL</td>
+		<td colspan="4"><input style="width:100%;" id="zn-custom-api-url" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-url');" placeholder="Enter API URL" /></td>
+	</tr>
+	<tr>
+		<td>Headers</td>
+		<td colspan="4"><textarea style="width:100%; height:12em;" id="zn-custom-api-headers" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-headers');" placeholder="Enter headers as json string"></textarea></td>
+	</tr>
+	<tr>
+		<td>Payload</td>
+		<td colspan="4"><textarea style="width:100%; height:12em;" id="zn-custom-api-payload" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-payload');" placeholder="Enter payload as json string"></textarea></td>
+	</tr>
+	<tr>
+		<td>Translator</td>
+		<td colspan="4"><textarea style="width:100%; height:12em;" id="zn-custom-api-translator" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'custom-api-translator');" placeholder="Enter the code to translate output to a list"></textarea></td>
+	</tr>
+	</table>
+</div>

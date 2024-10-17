@@ -80,11 +80,30 @@ Menus = {
 				"translate-google": {name: "Google", icon: "fa-google"}
 			}
 		};
+		
 		if(Zotero.ZeNotes.Prefs.getb("deepl-api-key")!="")
 		{
 			items_ai["zn-translation"]["items"]["translate-deepl"] = {name: "DeepL", icon: "fa-d"};
 		}
+		
+		if(Zotero.ZeNotes.Prefs.getb("openai-api-key")!="")
+		{
+			items_ai["zn-translation"]["items"]["translate-openai"] = {name: "Open Ai", icon: "fa-o"};
+		}
+		
+		if(Zotero.ZeNotes.Prefs.getb("custom-api-key")!="")
+		{
+			let name = Zotero.ZeNotes.Prefs.get("custom-api-name")
+			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-d"};
+		}
 		items_ai["sep-ai-02"] = "---------";
+		
+		if(Zotero.ZeNotes.Prefs.getb("custom-api-name")!="")
+		{
+			let name = Zotero.ZeNotes.Prefs.getb("custom-api-name");
+			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-d"};
+		}
+		items_ai["sep-ai-custom"] = "---------";
 		
 		if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="" || Zotero.ZeNotes.Prefs.getb("openai-api-key")!="")
 		{
@@ -127,6 +146,15 @@ Menus = {
 				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
 				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
 				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-openai"] = {name: "Using Chat GPT", icon: "fa-g"};
+			}
+			
+			if(Zotero.ZeNotes.Prefs.getb("custom-api-key")!="")
+			{
+				let name = Zotero.ZeNotes.Prefs.get("custom-api-name");
+				items_ai["paraphrase-annotation"]["items"]["paraphrase-custom-api"] = {name: "Using "+name, icon: "fa-g"};
+				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-custom-api"] = {name: "Using "+name, icon: "fa-g"};
+				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-custom-api"] = {name: "Using "+name, icon: "fa-g"};
+				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-custom-api"] = {name: "Using "+name, icon: "fa-g"};
 			}
 			
 			items_ai["sep-ai-01"] = "---------";
@@ -341,6 +369,14 @@ Menus = {
 			{
 				Actions.deepltranslate(annotation);
 			}
+			else if(key.includes("-custom-api"))
+			{
+				Actions.customapitranslate(annotation);
+			}
+			else if(key.includes("-openai"))
+			{
+				Actions.openaitranslate(annotation);
+			}
 		}
 		
 		else if(key.includes("custom-prompt-"))
@@ -371,6 +407,11 @@ Menus = {
 			{
 				Actions.openaicustomprompt(data, target, annotation);
 			}
+			
+			else if(key.includes("-custom-api"))
+			{
+				Actions.customapicustomprompt(data, target, annotation);
+			}
 		}
 		
 		else if(key.startsWith("paraphrase"))
@@ -395,6 +436,10 @@ Menus = {
 			else if(key.endsWith("-openai-gpt"))
 			{
 				Actions.openaiparaphrase(annotation);
+			}
+			else if(key.endsWith("-custom-api"))
+			{
+				Actions.customapiparaphrase(annotation);
 			}		
 		}
 		

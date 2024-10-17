@@ -18,6 +18,7 @@
 				<tab id="zn-tags-display" label="Tag display"/>
 				<tab id="zn-tags-sorting" label="Tag sorting"/>
 				<tab id="zn-api-settings" label="API settings"/>
+				<tab id="zn-custom-api-settings" label="Custom Generative AI"/>
 				<tab id="zn-prompt-settings" label="Custom prompts"/>
 				<tab id="zn-prompt-data-settings" label="Prompts data"/>
 				<tab id="zn-global-settings" label="Global setting"/>
@@ -46,6 +47,12 @@
 					<groupbox>
 						<caption label="Generative AI"/>
 						<box class="zn-include" src="generative-ai.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('generative-ai')"> </box>
+					</groupbox>
+				</tabpanel>
+				<tabpanel orient="vertical" id="zn-custom-api-panel">
+					<groupbox>
+						<caption label="Custom Generative AI"/>
+						<box class="zn-include" src="generative-ai-custom.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('generative-ai-custom')"> </box>
 					</groupbox>
 				</tabpanel>
 				<tabpanel orient="vertical" id="zn-prompt-panel">

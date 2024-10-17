@@ -1,6 +1,6 @@
 var fetch = Zotero.getMainWindow().fetch;
 Ai={
-	request(url, options, mode="bard"){
+	request(url, options, mode="bard", translator="[data]"){
 		return fetch(url, options).
 		then(res => {
 			return res.json()
@@ -101,16 +101,54 @@ Ai={
 				{
 					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
 				}
-			}			
+				
+			}
+			else if(mode=="custom-api")
+			{
+				try {
+					return Promise.resolve(this.sandboxeval(translator, data));
+				}
+				catch(e)
+				{
+					return Promise.resolve(["Error: "+e, JSON.stringify(data)]);
+				}
+				
+				if(Object.keys(data).includes("error"))
+				{
+					let message = "From "+url+"\n"+data["error"]["message"];
+					alert(message);
+				}
+			}
 		}).catch(e=>{
 			return Promise.reject(["Error: "+e, JSON.stringify(data)]);
 		});
 	},
+	
 	prompts: {
 		cell: "Paraphrase and summarize 'Direct quotes'",
 		row: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
 		table: "Summarize the data below into a coherent literature review. Add source for each claim in the form (Author date). ",
 		paraphrase: "Paraphrase the following passage.",
+	},
+	
+	sandboxeval(code, data)
+	{
+		// Create a new instance of SandboxManager
+		var sb = new Zotero.Translate.SandboxManager();
+		
+		// Initialize the sandbox with the 'data' object
+		sb.sandbox.data = data;
+		
+		// Evaluate the provided code inside the sandbox
+		sb.eval("this.sandbox.data="+code, []);
+		
+		// Return the modified 'data' object from the sandbox
+		return sb.sandbox.data;
+	},
+	escapejson(str)
+	{
+		str = str.split("\"").join("\\\"");
+		return str;
 	}
 }
 
@@ -301,6 +339,14 @@ Ai.OpenAi = {
 		return this.sendprompt(sentence, prompts, model)
 	},
 	
+	translate(sentence, language)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("openai-model");
+		var language = Zotero.ZeNotes.Prefs.get("target-language");
+		var prompts = "translate to "+language+". I only need the translation.";
+		return this.sendprompt(sentence, prompts, model);
+	},
+	
 	async sendprompt(sentence, prompts, model) {
 		var apikey = Zotero.ZeNotes.Prefs.getb("openai-api-key");
 		var url = "https://api.openai.com/v1/chat/completions";
@@ -348,19 +394,68 @@ Ai.OpenAi = {
 	},
 }
 
-Ai.custom = {
-	
+Ai.Custom = {
 	async sendprompt(sentence, prompts) {
-		var apikey = Zotero.ZeNotes.Prefs.getb("custom-ai-api-key");
-		var url = Zotero.ZeNotes.Prefs.get("custom-ai-url");
-		var method = Zotero.ZeNotes.Prefs.get("custom-ai-method", "POST");
-		var headers = Zotero.ZeNotes.Prefs.get("custom-ai-headers");
-		var payload = Zotero.ZeNotes.Prefs.get("custom-ai-payload", "");		
-		var options = {
-			method: method,
-			headers: headers,
-			body: payload,
+		var apikey = Zotero.ZeNotes.Prefs.getb("custom-api-key");
+		var model = Zotero.ZeNotes.Prefs.get("custom-api-model");
+		var url = Zotero.ZeNotes.Prefs.get("custom-api-url");
+		var method = Zotero.ZeNotes.Prefs.get("custom-api-method", "POST");
+		var headers = Zotero.ZeNotes.Prefs.get("custom-api-headers");
+		var payload = Zotero.ZeNotes.Prefs.get("custom-api-payload", "");
+		var translator = Zotero.ZeNotes.Prefs.get("custom-api-translator", "data.choices.map(function(e){return e.message.content})");
+
+		var options = `{
+			"method": "`+method+`",
+			"headers": `+headers+`,
+			"body": `+payload+`
+		}`;
+		
+		options = options
+		.replace("${apikey}", apikey)
+		.replace("${model}", model)
+		.replace("${prompts}", Ai.escapejson(prompts))
+		.replace("${sentence}", Ai.escapejson(sentence))
+		.replace("${headers}", headers);
+		
+		try {
+			options = JSON.parse(options);
+			options["body"] = JSON.stringify(options["body"]);
 		}
-		return Ai.request(url, options);
+		catch(e)
+		{
+			alert(e+"\n\n"+options);
+		}
+		return Ai.request(url, options, "custom-api", translator);
+	},
+	
+	paraphrase(sentence)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("custom-api-model");
+		var defaultprompt = Zotero.ZeNotes.Prefs.get("paraphrase-custom-prompt");
+		if(!defaultprompt)
+		{
+			defaultprompt = Ai.prompts["paraphrase"]
+		}
+		return this.sendprompt(sentence, defaultprompt, model)
+	},
+	
+	async customprompt(sentence, target)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("custom-api-model");
+		var prompts = Zotero.ZeNotes.Prefs.get(target+"-custom-prompt");
+		
+		if(prompts=="")
+		{
+			prompts = Ai.prompts[target];
+		}
+		return this.sendprompt(sentence, prompts, model)
+	},
+	
+	translate(sentence, language)
+	{
+		var model = Zotero.ZeNotes.Prefs.get("custom-api-model");
+		var language = Zotero.ZeNotes.Prefs.get("target-language");
+		var prompts = "translate to "+language+". I only need the translation.";
+		return this.sendprompt(sentence, prompts, model);
 	},
 }

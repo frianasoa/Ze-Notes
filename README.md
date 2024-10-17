@@ -60,6 +60,40 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 
 * For DeepL API key, head to https://www.deepl.com/account/plan after you sign up. They will ask you for your credit card details even for the free plan.
 
+#### Using a custom API
+From v0.8.8, it is possible to use a custom API. It can be used to paraphrase, translate, or trigger other custom actions. Below is an example setting for openai ChatGPT gpt-4o-mini. This is an advanced feature. Please make sure you know what you are doing. Please let me know your use case in the "issues" if it is not covered here. I will address them when I have time.
+* Go to ZeNotes > Settings > Custom Generative AI
+* Name: [Name you want to see in menu]
+* Model: gpt-4o-mini
+* Custom API key: [Your api key]
+* Method: POST
+* API URL: https://api.openai.com/v1/chat/completions
+* Headers: For security reasons, do not input your api key directly to this box. Instead, insert it to the "Custom API key" box above and use ${apikey} here.
+```
+	{
+	 "Authorization": "Bearer ${apikey}",
+	  "Content-Type": "application/json"
+	}
+```
+* Payload: model is provided in setting. Prompts are provided by the system, or the user settings for custom prompts. Sentence is the input from Ze-Notes (selected text, etc.). 
+```
+	{
+	  "model": "${model}", 
+	  "max_tokens": 400,
+	  "messages": [
+		{"role": "system", "content": "You are an academic assistant."},
+		{"role": "user", "content": "${prompts}"},
+		{"role": "user", "content": "${sentence}"}
+	  ]
+	} 
+``` 
+* Translator: the variable data contains the results of your request to your server. This should return a list. You could say "[data]" if your result is a string instead of json. The following function returns a list of contents.
+```
+	data.choices.map(function(e){return e.message.content})
+```
+
+* The data is submitted as json body.
+
 ### Choose which tags or field to show on the table
 * To open preference, go to menu "Edit > Preferences" of the ZeNotes window. Alternatively go to menu "ZeNotes > Settings" of the Zotero main window.
 ![Opening settings](https://raw.githubusercontent.com/frianasoa/ze-notes/main/docs/images/06.zenotes-interface-settings.png "Opening settings")
