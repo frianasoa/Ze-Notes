@@ -87,7 +87,7 @@ From v0.8.8, it is possible to use a custom API. It can be used to paraphrase, t
 	  ]
 	} 
 ``` 
-* Translator: the variable data contains the results of your request to your server. This should return a list. You could say "[data]" if your result is a string instead of json. The following function returns a list of contents.
+* Translator: the variable data contains the results of your request to your server. Translator function should return a list. You could say "[data]" if your result is a string instead of json to get a list of size 1. The following function returns a list of contents.
 ```
 	data.choices.map(function(e){return e.message.content})
 ```
