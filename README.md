@@ -128,5 +128,26 @@ Font settings was added. You can use this to zoom in and out of your table with 
 7. Use Google translate or DeepL to translate your annotations. You can apply a generative AI prompt to each cell as well.
 8. Export your notes to MS Word, Excel or CSV format.
 
+
+### Sharing collections using Dropbox
+
+* You may share your data using Dropbox&copy;. 
+* ⚠️ Please note that this does not sync your database, but instead, overwrites the data inside a collection.
+* Importing will not work as intented if you have multiple users working (writing) on the same collection. For that, you may need to use group libraries and buy some storage on Zotero.
+
+#### Settings
+* First, create and set your Dropbox App for your research group. You will need to do this only once. You may start from here https://www.dropbox.com/developers. I cannot provide support for this but please make sure to limit the app to "App folder" only.
+* Then, get your Dropbox "refresh token". Please check the Dropbox API documentation. You may start from here https://www.dropboxforum.com/t5/Dropbox-API-Support-Feedback/Get-refresh-token-from-access-token/m-p/596755/highlight/true#M27728
+
+* Head to Dropbox "App Console" and retrieve your client ID and "client secret". 
+* Head to ZeNotes settings > Dropbox
+	* Set all the values retrieved from Dropbox. 
+	* Target Zotero user will be the username or email of the person you want to send your data to. (You need to ask them what they use for logging in in Zotero). ⚠️ Be careful when you set this to yourself as ZeNotes will overwrite the data on the Dropbox folder when exporting and overwrites the data on your Zotero when importing.
+	* "Item exporting time" is the time (in milliseconds) it takes your computer to export one item. This is a hacky way to wait for all your data to be exported before uploading to Dropbox. In its current version, Zotero does not know when it finishes exporting items. On my computer I put 750, but you may make it bigger depending on the performance of your computer.
+* Share the settings above with your trusted research teammates.
+* Right click on a collection you want to export or import. You will find new menu items there "Export to Dropbox", "Import from Dropbox". You need to close and open Zotero after the settings.
+* Last, be careful who you share your API information with.
+![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/dropbox-settings.png "Dropbox settings")
+
 ## Disclaimer
-Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated on their official websites.
+* Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated on their official websites.

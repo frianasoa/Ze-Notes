@@ -1,0 +1,35 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="group-dropbox">
+	<table width="100%">
+	<tr>
+		<td>Dropbox refresh token</td>
+		<td>
+			<input id="zn-dropbox-refresh-token" type="password" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'dropbox-refresh-token', 'encrypt');" style="width:100%;" placeholder="Enter Dropbox refresh token" />
+		</td>		
+	</tr>
+	<tr>
+		<td>Dropbox client ID</td>
+		<td>
+			<input id="zn-dropbox-client-id" type="password" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'dropbox-client-id', 'encrypt');" style="width:100%;" placeholder="Enter Dropbox client id" />
+		</td>		
+	</tr>
+	<tr>
+		<td>Dropbox client secret</td>
+		<td>
+			<input id="zn-dropbox-client-secret" type="password" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'dropbox-client-secret', 'encrypt');" style="width:100%;" placeholder="Enter Dropbox client secret" />
+		</td>		
+	</tr>
+	<tr>
+		<td>Target Zotero user</td>
+		<td>
+			<input id="zn-dropbox-target-user" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'dropbox-target-user');" style="width:100%;" placeholder="Enter target Zotero username" />
+		</td>
+	</tr>
+	<tr>
+		<td>Item exporting time (ms)</td>
+		<td>
+			<input id="zn-dropbox-ms-per-file" type="text" onchange="Zotero_Preferences.ZeNotes.setpreference(event, 'dropbox-ms-per-file');" style="width:100%;" placeholder="Time spent to export one item (in milliseconds)" title="This value depends on your computer. Adjust it as needed." />
+		</td>
+	</tr>
+	
+	</table>
+</div>

@@ -257,7 +257,7 @@ Format = {
 			
 			var annotationpage = JSON.parse(note["annotationPosition"])["pageIndex"];
 			
-			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity"));
+			var color = Zotero.ZeNotes.Utils.addopacity(note["annotationColor"], Zotero.ZeNotes.Prefs.get("bg-opacity", 100));
 			
 			let note_ = "<div class='annotation-body'><div class='annotation-comment'>"+comment+"</div><hr style='width: 25%;'/><div id='annotation-"+note["parentItem"].key+"-"+note["key"]+"' class='annotation' data-attachmentkey='"+note["parentItem"].key+"' data-tag='"+tag+"' data-attachmentid='"+note["parentItem"].id+"' data-pagelabel='"+note["annotationPageLabel"]+"' data-annotationpage='"+annotationpage+"' data-annotationid='"+note.id+"' data-annotationkey='"+note["key"]+"' style='background-color:"+color+";' data-source='"+Format.creatorshortlocale(item)+"' data-author='"+Format.creatorshort(item)+"' data-date='"+Format.year(item)+"'>"+img+	contents+"</div></div><hr/>";
 			notetext+=note_;

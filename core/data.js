@@ -29,6 +29,23 @@ Data = {
 			"tagged_items": taggeditems,
 		}
 	},
+	
+	attachmentcount()
+	{
+		var selected = Data.collectionchildren(Zotero.getActiveZoteroPane().getSelectedCollection());
+		var count = 0;
+		for(id of selected.ids)
+		{
+			var item = Zotero.Items.get(id);
+			if(item!==false)
+			{
+				try {
+					count+=item.getAttachments().length;
+				}catch(e){}
+			}
+		}
+		return count;
+	},
 
 	collectionchildren(collection)
 	{

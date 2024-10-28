@@ -383,7 +383,7 @@ Notes = {
 		
 		if(isdark)
 		{
-			var filename = "chrome://ze-notes/content/notes/notes-dark.css";
+			var filename = "chrome://zenotes/content/notes/notes-dark.css";
 			const link = document.createElement("link");
 			link.rel = "stylesheet";
 			link.type = "text/css";

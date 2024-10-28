@@ -125,6 +125,14 @@ Utils = {
 		var base64String = btoa(String.fromCharCode.apply(null, uint8Array));
 		return base64String;
 		// return "data:image/"+mime+";base64,"+window.btoa(encodeURIComponent(bin));
+	},
+	headersafe(v) {
+		var charsToEncode = /[^\x00-\x7F]/g;
+		return v.replace(charsToEncode,
+			function(c) {
+				return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+			}
+		);
 	}
 	
 }

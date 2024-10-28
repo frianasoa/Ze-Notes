@@ -1,3 +1,5 @@
+var ZNStringBundle = Services.strings.createBundle('chrome://zenotes/locale/zenotes.properties');
+
 Menu = {
 	window: null,
 	menu: null,
@@ -16,7 +18,7 @@ Menu = {
 		{
 			title = group.name;
 		}		
-		Ui.opentab("chrome://ze-notes/content/notes/notes.xhtml", title);
+		Ui.opentab("chrome://zenotes/content/notes/notes.xhtml", title);
 	},
 	
 	mainmenu(w){
@@ -36,9 +38,6 @@ Menu = {
 			w.onfocus = function(e){Zotero.ZeNotes.Menu.mainmenu(e.target)};
 		}
 		
-		let stringBundle = Services.strings.createBundle(
-			'chrome://ze-notes/locale/zenotes.properties'
-		);
 		let document = w.document;
 
 		if(document.getElementById("zenotes-menu-main")!=null)
@@ -87,7 +86,7 @@ Menu = {
 		// Add items
 		var menuitem_settings = Zotero.createXULElement(document, "menuitem");
 		menuitem_settings.setAttribute("id", "zenotes-menuitem-settings");
-		menuitem_settings.setAttribute("data-l10n-id", "ze-notes-settings1");
+		menuitem_settings.setAttribute("data-l10n-id", "zenotes-settings");
 		
         menuitem_settings.className="menuitem-iconic";
         menuitem_settings.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-settings.png");
@@ -100,8 +99,9 @@ Menu = {
 		
 		if (Zotero.platformMajorVersion < 102)
 		{
-			menuitem_settings.setAttribute("label", stringBundle.GetStringFromName('ze-notes-settings1.label'));
+			menuitem_settings.setAttribute("label", ZNStringBundle.GetStringFromName('zenotes-settings.label'));
         }
+		
 		
         var menuitem_notes = Zotero.createXULElement(document, "menuitem");
         menuitem_notes.setAttribute("id", "zenotes-menuitem-notes");
@@ -110,27 +110,74 @@ Menu = {
         menuitem_notes.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-notes.png");
         menuitem_notes.addEventListener("command", function(){
 			Menu.opentab();
-			
 		});
         menuitem_notes.setAttribute("accesskey", "n");
         menupopup.appendChild(menuitem_notes);
+		menupopup.appendChild(menuitem_notes);
 		ZeNotes.storeAddedElement(menuitem_notes);	
 		
 		/** collection menu items */
-        var menuitem_notes_c = Zotero.createXULElement(document, "menuitem");
-        menuitem_notes_c.setAttribute("id", "zenotes-menuitem-contextmenu");
-        menuitem_notes_c.setAttribute("label", "ZeNotes - My notes in collection");
-        menuitem_notes_c.className="menuitem-iconic";
-        menuitem_notes_c.setAttribute("image", ZeNotes.rootURI+"/content/images/zenotes-notes.png");
-        menuitem_notes_c.addEventListener("command", function(){
-			Menu.opentab();
-		});
-        menupopup.appendChild(menuitem_notes);
+		icon = ZeNotes.rootURI+"/content/images/zenotes-notes.png";
+		iconup = ZeNotes.rootURI+"/content/images/icon-upload.png";
+		icondown = ZeNotes.rootURI+"/content/images/icon-download.png";
 		
-		document.getElementById("zotero-collectionmenu").appendChild(menuitem_notes_c);
-		ZeNotes.storeAddedElement(menuitem_notes_c);
+		if(Prefs.get("dropbox-refresh-token") && Prefs.get("dropbox-client-id") && Prefs.get("dropbox-client-secret") && Prefs.get("dropbox-target-user"))
+		{
+			this.addMenuToZenotes(document, menupopup, 1, "zenotes-dropbox-upload", iconup,  function(){NSync.export();}, "E");
+			this.addMenuToZenotes(document, menupopup, 2, "zenotes-dropbox-download", icondown,  function(){NSync.import();}, "I");
+		}
+		
+		this.addMenuToCollection(
+			document, "1", "ZeNotes - My notes in collection", icon, 
+			function(){Menu.opentab();}
+		);
+		
+		if(Prefs.get("dropbox-refresh-token") && Prefs.get("dropbox-client-id") && Prefs.get("dropbox-client-secret") && Prefs.get("dropbox-target-user"))
+		{
+			this.addMenuToCollection(
+				document, "2", "Export to Dropbox", iconup, 
+				function(){NSync.export();}
+			);
+			
+			this.addMenuToCollection(
+				document, "3", "Import from Dropbox", icondown, 
+				function(){NSync.import();}
+			);
+		}
+		
 		ZeNotes.window = w;
 	},
+	
+	addMenuToCollection(document, id, label, icon, command)
+	{
+		var menuitem = Zotero.createXULElement(document, "menuitem");
+        menuitem.setAttribute("id", "zenotes-menuitem-contextmenu"+id);
+        menuitem.setAttribute("label", label);
+        menuitem.setAttribute("image", icon);
+		menuitem.className="menuitem-iconic";
+        menuitem.addEventListener("command", command);
+		document.getElementById("zotero-collectionmenu").appendChild(menuitem);
+		ZeNotes.storeAddedElement(menuitem);
+	},
+	
+	addMenuToZenotes(document, menupopup, id, labelid, icon, command, accesskey)
+	{
+		var menuitem = Zotero.createXULElement(document, "menuitem");
+		menuitem.setAttribute("id", "zenotes-menuitem-"+id);
+		menuitem.setAttribute("data-l10n-id", labelid);
+		
+        menuitem.className="menuitem-iconic";
+        menuitem.setAttribute("image", icon);
+        menuitem.addEventListener("command", command);
+        menuitem.setAttribute("accesskey", accesskey);
+        menupopup.appendChild(menuitem);
+		if (Zotero.platformMajorVersion < 102)
+		{
+			menuitem.setAttribute("label", ZNStringBundle.GetStringFromName(labelid+'.label'));
+        }
+		ZeNotes.storeAddedElement(menuitem);
+	},
+	
 	addToWindow(window) {
 		this.mainmenu(window);
 	},

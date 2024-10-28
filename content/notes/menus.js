@@ -94,14 +94,14 @@ Menus = {
 		if(Zotero.ZeNotes.Prefs.getb("custom-api-key")!="")
 		{
 			let name = Zotero.ZeNotes.Prefs.get("custom-api-name")
-			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-d"};
+			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-c"};
 		}
 		items_ai["sep-ai-02"] = "---------";
 		
 		if(Zotero.ZeNotes.Prefs.getb("custom-api-name")!="")
 		{
 			let name = Zotero.ZeNotes.Prefs.getb("custom-api-name");
-			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-d"};
+			items_ai["zn-translation"]["items"]["translate-custom-api"] = {name: name, icon: "fa-c"};
 		}
 		items_ai["sep-ai-custom"] = "---------";
 		
@@ -151,10 +151,10 @@ Menus = {
 			if(Zotero.ZeNotes.Prefs.getb("custom-api-key")!="")
 			{
 				let name = Zotero.ZeNotes.Prefs.get("custom-api-name");
-				items_ai["paraphrase-annotation"]["items"]["paraphrase-custom-api"] = {name: "Using "+name, icon: "fa-g"};
-				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-custom-api"] = {name: "Using "+name, icon: "fa-g"};
-				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-custom-api"] = {name: "Using "+name, icon: "fa-g"};
-				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-custom-api"] = {name: "Using "+name, icon: "fa-g"};
+				items_ai["paraphrase-annotation"]["items"]["paraphrase-custom-api"] = {name: "Using "+name, icon: "fa-c"};
+				items_ai["custom-prompt-on-cell"]["items"]["custom-prompt-cell-custom-api"] = {name: "Using "+name, icon: "fa-c"};
+				items_ai["custom-prompt-on-row"]["items"]["custom-prompt-row-custom-api"] = {name: "Using "+name, icon: "fa-c"};
+				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-custom-api"] = {name: "Using "+name, icon: "fa-c"};
 			}
 			
 			items_ai["sep-ai-01"] = "---------";

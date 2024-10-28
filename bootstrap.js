@@ -3,10 +3,17 @@ if (typeof Zotero == 'undefined') {
 }
 
 var Zotero_Tabs;
+var Zotero_File_Exporter;
+var Zotero_File_Interface;
+var ZoteroPane_Local;
+var Zotero_File_Interface;
+var fflate;
 var ZeNotes;
+var setImmediate = function(){};
 var Menu;
 var Data;
 var Database;
+var DBPrefs;
 var Ui;
 var Format;
 var Utils
@@ -17,6 +24,9 @@ var CryptoJS;
 var Actions;
 var Annotations;
 var Languages;
+
+var Blob;
+var URLSearchParams;
 
 const ANNOTATION = 1;
 const ANNOTATION_LABEL = "annotation";
@@ -33,7 +43,37 @@ function log(msg) {
 
 function alert(msg)
 {
-	Zotero.getMainWindow().alert(msg);
+	return Zotero.getMainWindow().alert(msg);
+}
+
+function confirm(msg)
+{
+	return Zotero.getMainWindow().confirm(msg);
+}
+
+function prompt(message)
+{
+	return Zotero.getMainWindow().prompt(msg);
+}
+
+function setInterval(func, delay)
+{
+	return Zotero.getMainWindow().setInterval(func, delay);
+}
+
+function setTimeout(func, delay)
+{
+	return Zotero.getMainWindow().setTimeout(func, delay);
+}
+
+function clearTimeout(timoutid)
+{
+	return Zotero.getMainWindow().clearTimeout(timoutid);
+}
+
+function clearInterval(intervalid)
+{
+	return Zotero.getMainWindow().clearInterval(intervalid);
 }
 
 // In Zotero 6, bootstrap methods are called before Zotero is initialized, and using include.js
@@ -145,8 +185,8 @@ function registerchrome(rootURI){
 	var manifestURI = Services.io.newURI(rootURI + "manifest.json");	
 
 	chromeHandle = aomStartup.registerChrome(manifestURI, [
-        ["content", "ze-notes", "content/"],
-        ["locale", "ze-notes", "en-US", "chrome/locale/en-US"],
+        ["content", "zenotes", "content/"],
+        ["locale", "zenotes", "en-US", "chrome/locale/en-US"],
     ]);
 	
 }
@@ -205,15 +245,24 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 		*/
 		// setDefaultPrefs(rootURI);
 	}
-
+	
+	URLSearchParams = Zotero.getMainWindow().URLSearchParams;
+	Blob = Zotero.getMainWindow().Blob;
+	Response = Zotero.getMainWindow().Response;
+	
+	Services.scriptloader.loadSubScript(rootURI + 'lib/fflate/index.js');
+	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/settings.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/dropbox.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/prefs.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/database.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/dbprefs.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/image.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/filter.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/utils.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ui.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/nsync.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/menu.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/data.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
@@ -221,21 +270,27 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'content/notes/actions.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/annotations.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/languages.js');
-	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
-	
 	
 	ZeNotes.init({ id, version, rootURI });
 	Zotero.ZeNotes = ZeNotes;
 	ZeNotes.addToAllWindows();
 	
 	Zotero_Tabs = Zotero.getMainWindow().Zotero_Tabs;
+	Zotero_File_Exporter = Zotero.getMainWindow().Zotero_File_Exporter;
+	Zotero_File_Interface = Zotero.getMainWindow().Zotero_File_Interface;
+	ZoteroPane_Local = Zotero.getMainWindow().ZoteroPane_Local;
+	Zotero_File_Interface  = Zotero.getMainWindow().Zotero_File_Interface;
 	Menu.addToAllWindows();
 	ZeNotes.Prefs = Prefs;
 	ZeNotes.Database = Database;
+	ZeNotes.DBPrefs = DBPrefs;
 	await Database.init();
+	await DBPrefs.init();
 	
 	ZeNotes.Ui = Ui; 
 	ZeNotes.Menu = Menu;
+	ZeNotes.Dropbox = Dropbox;
+	ZeNotes.NSync = NSync;
 	ZeNotes.Utils = Utils;
 	ZeNotes.Filter = Filter;
 	ZeNotes.Image = Image;
@@ -264,8 +319,9 @@ function onMainWindowUnload({window}) {
 }
 
 function shutdown() {
-	log("Shutting down 1.2");
+	Zotero.log("Shutting down 1.2");
 	ZeNotes.Database.close();
+	ZeNotes.DBPrefs.close();
 	
 	if (Zotero.platformMajorVersion < 102) {
 		removeMainWindowListener();

@@ -316,6 +316,16 @@ Zotero_Preferences.ZeNotes = {
 					["custom-api-translator", "zn-custom-api-translator"]
 				];
 				break;
+				
+			case 'dropbox':
+				args = [
+					["dropbox-refresh-token", "zn-dropbox-refresh-token"],
+					["dropbox-client-id", "zn-dropbox-client-id"],
+					["dropbox-client-secret", "zn-dropbox-client-secret"],
+					["dropbox-target-user", "zn-dropbox-target-user"],
+					["dropbox-ms-per-file", "zn-dropbox-ms-per-file"]
+				];
+				break;
 			
 			case 'prompts':
 				args = [
