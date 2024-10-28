@@ -81,18 +81,19 @@ function update() {
 		var activecollection = Zotero.getActiveZoteroPane().getSelectedCollection().name;
 		var outfile = Zotero.File.pathToFile(Zotero.getTempDirectory().path+"\\zenotes-import.zip").path;
 		var destfilename = Zotero.File.pathToFile(Zotero.getTempDirectory().path+"\\zenotes-import").path;
-		Dropbox.init();
-		return Dropbox.download(activecollection+".zip", function(data, hash){
-			Zotero.File.putContentsAsync(outfile, data).then(e=>{
-				unzip(outfile, destfilename, 
-					function(){Zotero_File_Interface.Progress.show("Unzipping file ...");},
-					function(m){Zotero_File_Interface.Progress.show(m);},
-					function(){
-						Zotero_File_Interface.Progress.close();
-						callback(destfilename+"\\zenotes-export.rdf", hash);
-					},
-				);
-			})
+		Dropbox.init().then(token=> {
+			return Dropbox.download(activecollection+".zip", function(data, hash){
+				Zotero.File.putContentsAsync(outfile, data).then(e=>{
+					unzip(outfile, destfilename, 
+						function(){Zotero_File_Interface.Progress.show("Unzipping file ...");},
+						function(m){Zotero_File_Interface.Progress.show(m);},
+						function(){
+							Zotero_File_Interface.Progress.close();
+							callback(destfilename+"\\zenotes-export.rdf", hash);
+						},
+					);
+				})
+			});
 		});
 	}
 	
@@ -100,10 +101,10 @@ function update() {
 	{
 		var target = Zotero.ZeNotes.Prefs.get('dropbox-target-user', 'allusers');
 		var filename = Zotero.getActiveZoteroPane().getSelectedCollection().name;
-		Dropbox.init();
-		
-		var fn = "/"+target+"/"+filename+".zip";
-		Dropbox.upload(fn, contents, callback);
+		Dropbox.init().then(token=>{
+			var fn = "/"+target+"/"+filename+".zip";
+			Dropbox.upload(fn, contents, callback);
+		})
 	}
 	
 	delay = function(ms)
@@ -212,7 +213,7 @@ function update() {
 
 NSync = {
 	export()
-	{
+	{	
 		var zp = Zotero.getActiveZoteroPane();
 		var collection = zp.getSelectedCollection();
 		if(!collection)
@@ -249,7 +250,6 @@ NSync = {
 	
 	async beforeimport(activecollection, hash)
 	{
-		
 		Zotero_File_Interface.Progress.show("Importing all items to Zotero ...");
 		Zotero.ZeNotes.DBPrefs.set("zenotes.nsync.collectionhash:"+activecollection, hash);
 	},
@@ -269,50 +269,52 @@ NSync = {
 		}
 		var activecollection = collection.name;
 		var username = Zotero.Prefs.get("extensions.zotero.sync.server.username", true);
-		Dropbox.init();
-		Dropbox.list(username).then(async list=>{
-			let dataexists = list.map(a=>{return a.name.replace(".zip", "")}).includes(activecollection);
-			if(dataexists)
-			{
-				let current_hash = await Zotero.ZeNotes.DBPrefs.get("zenotes.nsync.collectionhash:"+activecollection);
-				let file = list.filter(f => f.name === activecollection+".zip")[0];
-								
-				if(file.content_hash!=current_hash)
+		Dropbox.init().then(token=>{
+			Dropbox.list(username).then(async list=>{
+				let dataexists = list.map(a=>{return a.name.replace(".zip", "")}).includes(activecollection);
+				if(dataexists)
 				{
-					return download(async function(localfilename, hash){
-						Zotero_File_Interface.Progress.show("Importing items to Zotero ...");
-						return await Zotero_File_Interface.importFile({
-							file: localfilename,
-							recreateStructure: false,
-							createNewCollection: false,
-							addToLibraryRoot: false,
-							linkFiles: false,
-							onBeforeImport: async function(){return NSync.beforeimport(activecollection, hash)},
-						}).then(e=>{
-							NSync.annotations(e).then(transfered=>{
-								if(transfered)
-								{
-									Zotero_File_Interface.Progress.close();
-									alert("All items imported!");
-								}
+					let current_hash = await Zotero.ZeNotes.DBPrefs.get("zenotes.nsync.collectionhash:"+activecollection);
+					let file = list.filter(f => f.name === activecollection+".zip")[0];
+									
+					if(file.content_hash!=current_hash)
+					{
+						return download(async function(localfilename, hash){
+							Zotero_File_Interface.Progress.show("Importing items to Zotero ...");
+							return await Zotero_File_Interface.importFile({
+								file: localfilename,
+								recreateStructure: false,
+								createNewCollection: false,
+								addToLibraryRoot: false,
+								linkFiles: false,
+								onBeforeImport: async function(){return NSync.beforeimport(activecollection, hash)},
+							}).then(e=>{
+								NSync.annotations(e).then(transfered=>{
+									if(transfered)
+									{
+										Zotero_File_Interface.Progress.close();
+										alert("All items imported!");
+									}
+								})
 							})
-						})
-					});
+						});
+					}
+					else
+					{
+						if(confirm("You have already downloaded this file! Do you want to force download?"))
+						{
+							Zotero.ZeNotes.DBPrefs.set("zenotes.nsync.collectionhash:"+activecollection, "");
+							NSync.import();
+						};
+					}
 				}
 				else
 				{
-					if(confirm("You have already downloaded this file! Do you want to force download?"))
-					{
-						Zotero.ZeNotes.DBPrefs.set("zenotes.nsync.collectionhash:"+activecollection, "");
-						NSync.import();
-					};
+					alert("You do not have data on \""+activecollection+"\" on the server!");
 				}
-			}
-			else
-			{
-				alert("You do not have data on \""+activecollection+"\" on the server!");
-			}
-		})
+			})
+		});
+		
 	},
 	
 	async annotations(imported)

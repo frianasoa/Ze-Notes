@@ -17,11 +17,15 @@ const Dropbox = {
     /**
      * Initialize the Dropbox object by loading values from Zotero.ZeNotes.Prefs.
      */
-    init() {
+    async init() {
         this.accessToken = Zotero.ZeNotes.Prefs.getb('dropbox-access-token', '');
         this.refreshToken = Zotero.ZeNotes.Prefs.getb('dropbox-refresh-token', '');
         this.clientId = Zotero.ZeNotes.Prefs.getb('dropbox-client-id', '');
         this.clientSecret = Zotero.ZeNotes.Prefs.getb('dropbox-client-secret', '');
+		if(this.accessToken=="")
+		{
+			await this.refresh();
+		}
     },
 
     /**
@@ -80,7 +84,6 @@ const Dropbox = {
 			});
 
 			if (response.status === 401) {
-				// console.log('Access token expired, refreshing...');
 				await this.refresh();
 				return this.upload(filePath, fileContent, callback);
 			}
