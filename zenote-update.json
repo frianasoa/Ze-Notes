@@ -5,9 +5,10 @@
         {
           "version": "0.9.1",
           "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v0.9.1/zenotes-v0.9.1.xpi",
+          "update_hash": "sha256:e1ab40479ff586ad964a38089d8e49536640790f73bbd0ab716e40e9a5344524",
           "applications": {
             "gecko": {
-              "strict_min_version": "60.0"
+              "strict_min_version": "6.999"
             }
           }
         }
