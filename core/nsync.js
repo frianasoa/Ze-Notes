@@ -332,10 +332,26 @@ NSync = {
 			var attachments = child.getAttachments()
 			for(itemid of attachments)
 			{
-				let transfer = true;
-				let ispriority = true;
-				let pw = "";
-				await Zotero.PDFWorker.import(itemid, ispriority, pw, transfer);
+				let attachment = Zotero.Items.get(itemid);
+				if(attachment.isPDFAttachment)
+				{
+					try {
+						Zotero_File_Interface.Progress.show("Importing annotations "+itemid+" ... ")
+						let attachment = Zotero.Items.get(itemid)
+						let transfer = true;
+						let ispriority = true;
+						let pw = "";
+						await Zotero.PDFWorker.import(itemid, ispriority, pw, transfer);
+					}
+					catch(error)
+					{
+						Zotero.log("Error importing annotations: "+error);
+					}
+				}
+				else
+				{
+					Zotero_File_Interface.Progress.show("File not PDF, skipping ... ");
+				}
 			}
 		}
 		return true;
