@@ -144,10 +144,12 @@ Font settings was added. You can use this to zoom in and out of your table with 
 	* Set all the values retrieved from Dropbox. 
 	* Target Zotero user will be the username or email of the person you want to send your data to. (You need to ask them what they use for logging in in Zotero). ⚠️ Be careful when you set this to yourself as ZeNotes will overwrite the data on the Dropbox folder when exporting and overwrites the data on your Zotero when importing.
 	* "Item exporting time" is the time (in milliseconds) it takes your computer to export one item. This is a hacky way to wait for all your data to be exported before uploading to Dropbox. In its current version, Zotero does not know when it finishes exporting items. On my computer I put 750, but you may make it bigger depending on the performance of your computer.
+![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/dropbox-settings.png "Dropbox settings")
+
 * Share the settings above with your trusted research teammates.
 * Right click on a collection you want to export or import. You will find new menu items there "Export to Dropbox", "Import from Dropbox". You need to close and open Zotero after the settings.
 * Last, be careful who you share your API information with.
-![Opening settings](https://raw.githubusercontent.com/frianasoa/Ze-Notes/main/docs/images/dropbox-settings.png "Dropbox settings")
+
 
 ## Disclaimer
 * Before utilizing any of the API introduced above, please carefully review the terms of service, usage guidelines, and agreements associated on their official websites.
