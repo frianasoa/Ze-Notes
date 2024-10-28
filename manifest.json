@@ -1,10 +1,9 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "Ze Notes",
     "version": "0.9.1",
     "description": "Advanced notes manager",
     "homepage_url": "https://github.com/frianasoa/zenotes",
-    "author": "Fanantenana Rianasoa Andriariniaina",
     "icons": {
         "48": "content/images/icon.png",
         "64": "content/images/icon64.png"
