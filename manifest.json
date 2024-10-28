@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Ze Notes",
     "version": "0.9.1",
     "description": "Advanced notes manager",
