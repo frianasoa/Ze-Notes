@@ -8,7 +8,8 @@
           "update_hash": "sha256:e1ab40479ff586ad964a38089d8e49536640790f73bbd0ab716e40e9a5344524",
           "applications": {
             "gecko": {
-              "strict_min_version": "6.999"
+              "strict_min_version": "7.0.0-beta.70",
+              "strict_max_version": "7.0.*"
             }
           }
         }
