@@ -67,6 +67,7 @@ Io = {
 			Zotero.ZeNotes.Prefs.set("export-default-ext", fp.defaultExtension);
 		}
 	},
+	
 	savebinary(file, url)
 	{
 		fetch(url)
@@ -75,6 +76,7 @@ Io = {
 			Zotero.File.putContentsAsync(file, blob);
 		});
 	},
+	
 	assets(directory, files)
 	{
 		Zotero.File.createDirectoryIfMissingAsync(directory).then(()=>{

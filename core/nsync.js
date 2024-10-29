@@ -355,5 +355,49 @@ NSync = {
 			}
 		}
 		return true;
+	},
+	
+	loadsettings()
+	{
+		let title = "Export Dropbox settings";
+		let filter = "ZeNotes Dropbox Settings (*.zdb)";
+		let extension = "*.zdb";
+		let defaultstring = "zenotes-dropbox-settings.zdb";
+		Zotero.ZeNotes.Io.loaddialog(title, filter, extension, defaultstring).then(settings=>{
+			try {
+				let s = JSON.parse(Zotero.ZeNotes.decrypt(settings));
+				if(!confirm("Do you want to import the settings for Dropbox?"))
+				{
+					return;
+				}
+				
+				Zotero.ZeNotes.Prefs.setb('dropbox-access-token', s["dropbox-access-token"]);
+				Zotero.ZeNotes.Prefs.setb('dropbox-refresh-token', s["dropbox-refresh-token"]);
+				Zotero.ZeNotes.Prefs.setb('dropbox-client-id', s["dropbox-client-id"]);
+				Zotero.ZeNotes.Prefs.setb('dropbox-client-secret', s["dropbox-client-secret"]);
+				Zotero.ZeNotes.Prefs.set("dropbox-target-user", s["dropbox-target-user"]);
+			}
+			catch(e)
+			{
+				alert(e);
+			}
+		})
+	},
+	
+	exportsettings()
+	{
+		let settings = Zotero.ZeNotes.encrypt(JSON.stringify(
+		{
+			"dropbox-access-token": Zotero.ZeNotes.Prefs.getb('dropbox-access-token', ''),
+			"dropbox-refresh-token": Zotero.ZeNotes.Prefs.getb('dropbox-refresh-token', ''),
+			"dropbox-client-id": Zotero.ZeNotes.Prefs.getb('dropbox-client-id', ''),
+			"dropbox-client-secret": Zotero.ZeNotes.Prefs.getb('dropbox-client-secret', ''),
+			"dropbox-target-user": Zotero.Prefs.get("extensions.zotero.sync.server.username", true)	
+		}));
+		let title = "Export Dropbox settings";
+		let filter = "ZeNotes Dropbox Settings (*.zdb)";
+		let extension = "*.zdb";
+		let defaultstring = "zenotes-dropbox-settings.zdb";
+		Zotero.ZeNotes.Io.savedialog(title, filter, extension, defaultstring, settings);
 	}
 }

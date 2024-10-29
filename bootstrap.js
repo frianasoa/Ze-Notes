@@ -20,6 +20,7 @@ var Utils
 var Filter;
 var Image;
 var Ai;
+var Io;
 var CryptoJS;
 var Actions;
 var Annotations;
@@ -267,6 +268,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/data.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/io.js');
 	Services.scriptloader.loadSubScript(rootURI + 'content/notes/actions.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/annotations.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/languages.js');
@@ -295,6 +297,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	ZeNotes.Filter = Filter;
 	ZeNotes.Image = Image;
 	ZeNotes.Ai = Ai;
+	ZeNotes.Io = Io;
 	ZeNotes.CryptoJS = CryptoJS;
 	ZeNotes.Actions = Actions;
 	ZeNotes.Annotations = Annotations;
