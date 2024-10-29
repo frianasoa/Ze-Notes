@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
     "name": "Ze Notes",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "description": "Advanced notes manager",
-	"author": "Fanantenana Rianasoa Andriariniaina",
+    "author": "Fanantenana Rianasoa Andriariniaina",
     "homepage_url": "https://github.com/frianasoa/zenotes",
     "icons": {
         "48": "content/images/icon.png",
@@ -16,10 +16,10 @@
             "strict_min_version": "6.0",
             "strict_max_version": "7.0.*"
         },
-		"gecko": {
-		  "id": "zenotes@alefa.net",
-		  "update_url": "https://raw.githubusercontent.com/frianasoa/zenotes/main/zenote-update.json",
-		  "strict_min_version": "102"
-		}
+        "gecko": {
+            "id": "zenotes@alefa.net",
+            "update_url": "https://raw.githubusercontent.com/frianasoa/zenotes/main/zenote-update.json",
+            "strict_min_version": "102"
+        }
     }
 }
