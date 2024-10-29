@@ -1,9 +1,11 @@
-var { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs");
-var { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
-
 Io = {
 	async savedialog(title, filter, extension, defaultstring, contents)
 	{
+		if(!FilePicker)
+		{
+			FilePicker = FilePicker6;
+		}
+		
 		let fp = new FilePicker();
 		fp.init(window, title, fp.modeSave);
 		fp.appendFilter(filter, extension);
@@ -17,6 +19,11 @@ Io = {
 	},
 	async loaddialog(title, filter, extension, defaultstring)
 	{
+		if(!FilePicker)
+		{
+			FilePicker = FilePicker6;
+		}
+		
 		let fp = new FilePicker();
 		fp.init(window, title, fp.modeOpen);
 		fp.appendFilter(filter, extension);

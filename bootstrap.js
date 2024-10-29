@@ -7,6 +7,7 @@ var Zotero_File_Exporter;
 var Zotero_File_Interface;
 var ZoteroPane_Local;
 var Zotero_File_Interface;
+var FilePicker;
 var fflate;
 var ZeNotes;
 var setImmediate = function(){};
@@ -253,6 +254,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	
 	Services.scriptloader.loadSubScript(rootURI + 'lib/fflate/index.js');
 	Services.scriptloader.loadSubScript(rootURI + 'lib/CryptoJS 3.1.2/aes.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/filepicker6.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/settings.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/dropbox.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/zenotes.js');
@@ -282,6 +284,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Zotero_File_Interface = Zotero.getMainWindow().Zotero_File_Interface;
 	ZoteroPane_Local = Zotero.getMainWindow().ZoteroPane_Local;
 	Zotero_File_Interface  = Zotero.getMainWindow().Zotero_File_Interface;
+	FilePicker  = Zotero.getMainWindow().FilePicker;
 	Menu.addToAllWindows();
 	ZeNotes.Prefs = Prefs;
 	ZeNotes.Database = Database;

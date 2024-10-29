@@ -62,7 +62,7 @@ ZeNotes = {
 		// Use strings from zenotes.properties (legacy properties format) in Zotero 6
 		else {
 			let stringBundle = Services.strings.createBundle(
-				'chrome://ze-notes/locale/zenotes.properties'
+				'chrome://zenotes/locale/zenotes.properties'
 			);
 		}
 	},

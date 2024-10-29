@@ -588,7 +588,7 @@ Zotero_Preferences.ZeNotes = {
 		var isdark = Zotero.Prefs.get('general.theme')=="dark" || window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 		
 		if (isdark) {
-			var filename = "chrome://ze-notes/content/settings/preferences-dark.css";
+			var filename = "chrome://zenotes/content/settings/preferences-dark.css";
 			var pi = document.createProcessingInstruction(
 				'xml-stylesheet',
 				`type="text/css" href="${filename}"`

@@ -21,6 +21,7 @@
 				<tab id="zn-custom-api-settings" label="Custom Generative AI"/>
 				<tab id="zn-prompt-settings" label="Custom prompts"/>
 				<tab id="zn-prompt-data-settings" label="Prompts data"/>
+				<tab id="zn-dropbox-panel" label="Dropbox settings"/>
 				<tab id="zn-global-settings" label="Global setting"/>
 				<tab id="zn-advanced-settings" label="Advanced"/>
 			</tabs>
@@ -67,6 +68,13 @@
 						<box class="zn-include" src="exclude-from-prompt.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('exclude-from-prompt')"> </box>
 					</groupbox>
 				</tabpanel>
+				
+				<tabpanel orient="vertical" id="zn-dropbox-panel">
+					<groupbox>
+						<caption label="Dropbox settings"/>
+						<box class="zn-include" src="dropbox.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('dropbox')"> </box>
+					</groupbox>
+				</tabpanel>
 				<tabpanel orient="vertical" id="zn-global-panel">
 					<groupbox>
 						<caption label="Global display"/>
@@ -95,18 +103,18 @@
 		</html:div>
 		
 	</prefpane>
-	<html:link rel="stylesheet" type="text/css" href="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" />
-	<html:link rel="stylesheet" type="text/css" href="chrome://ze-notes/content/lib/fontawesome/6.1.1/css/all.min.css" />
-	<html:link rel="stylesheet" type="text/css" href="chrome://ze-notes/content/settings/preferences.css" />
-	<html:link rel="stylesheet" type="text/css" href="chrome://ze-notes/content/settings/preferences6.css" />
+	<html:link rel="stylesheet" type="text/css" href="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" />
+	<html:link rel="stylesheet" type="text/css" href="chrome://zenotes/content/lib/fontawesome/6.1.1/css/all.min.css" />
+	<html:link rel="stylesheet" type="text/css" href="chrome://zenotes/content/settings/preferences.css" />
+	<html:link rel="stylesheet" type="text/css" href="chrome://zenotes/content/settings/preferences6.css" />
 	
-	<script src="chrome://ze-notes/content/lib/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/lib/jquery-ui/1.13.2/jquery-ui.min.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.ui.position.min.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/settings/zotero.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/settings/zntable.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/settings/languages.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/settings/preferences.js" type="application/javascript"></script>
-	<script src="chrome://ze-notes/content/settings/preferences6.js" type="application/javascript"/>
+	<script src="chrome://zenotes/content/lib/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/lib/jquery-ui/1.13.2/jquery-ui.min.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.ui.position.min.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/zotero.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/zntable.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/languages.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/preferences.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/preferences6.js" type="application/javascript"/>
 </overlay>

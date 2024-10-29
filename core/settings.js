@@ -4,8 +4,8 @@ Settings = {
 		var znpref = win.document.createElement("prefpane");
 		znpref.setAttribute("id", "zotero-prefpane-zenotes");
 		znpref.setAttribute("label", "Ze Notes");
-		znpref.setAttribute("image", "chrome://ze-notes/content/images/zenotes-settings.png");
-		znpref.setAttribute("src", "chrome://ze-notes/content/settings/preferences6.xul");
+		znpref.setAttribute("image", "chrome://zenotes/content/images/zenotes-settings.png");
+		znpref.setAttribute("src", "chrome://zenotes/content/settings/preferences6.xul");
 		prefwindow.addPane(znpref);
 	},
 	inject(){

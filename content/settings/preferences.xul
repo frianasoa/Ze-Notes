@@ -18,7 +18,7 @@
 	
 	<script src="chrome://zotero/content/include.js"></script>
 	<script src="chrome://zotero/content/charsetMenu.js"></script>
-	<script src="chrome://ze-notes/content/settings/preferences.js" type="application/javascript"/>
+	<script src="chrome://zenotes/content/settings/preferences.js" type="application/javascript"/>
 	
 	<script type="application/javascript">
 	<![CDATA[		
@@ -28,8 +28,8 @@
 			var znpref = document.createElement("prefpane");
 			znpref.setAttribute("id", "zotero-prefpane-zenotes");
 			znpref.setAttribute("label", "Ze Notes");
-			znpref.setAttribute("image", "chrome://ze-notes/content/images/zenotes-settings.png");
-			znpref.setAttribute("src", "chrome://ze-notes/content/settings/preferences6.xul");
+			znpref.setAttribute("image", "chrome://zenotes/content/images/zenotes-settings.png");
+			znpref.setAttribute("src", "chrome://zenotes/content/settings/preferences6.xul");
 			prefwindow.addPane(znpref);
 			prefwindow.showPane(znpref);
 			this.addEventListener("resize", function(e){

@@ -26,7 +26,7 @@ Ui = {
         {
             Zotero.ZeNotes.collection = "All documents";
         }
-        var url = "chrome://ze-notes/content/settings/preferences.xul";
+        var url = "chrome://zenotes/content/settings/preferences.xul";
         var io = {collection: Zotero.ZeNotes.collection};
         var name = "settingswin";
 		let width = Zotero.ZeNotes.Prefs.get("prefs-window-width", "775");
