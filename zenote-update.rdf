@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:ns1="http://www.mozilla.org/2004/em-rdf#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description about="urn:mozilla:extension:zenotes@alefa.net">
+        <ns1:updates>
+            <rdf:Seq>
+                <rdf:li>
+                    <rdf:Description>
+                        <ns1:version>0.9.3</ns1:version>
+                        <ns1:targetApplication>
+                            <rdf:Description>
+                                <ns1:id>zotero@chnm.gmu.edu</ns1:id>
+                                <ns1:minVersion>5.0.0</ns1:minVersion>
+                                <ns1:maxVersion>6.*</ns1:maxVersion>
+                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.9.3/zenotes-v0.9.3.xpi</ns1:updateLink>
+                            </rdf:Description>
+                        </ns1:targetApplication> 
+
+                        <ns1:targetApplication>
+                            <rdf:Description>
+                                <ns1:id>juris-m@juris-m.github.io</ns1:id>
+                                <ns1:minVersion>4.999</ns1:minVersion>
+                                <ns1:maxVersion>6.*</ns1:maxVersion>
+                                <ns1:updateLink>https://github.com/frianasoa/Ze-Notes/releases/download/v0.9.3/zenotes-v0.9.3.xpi</ns1:updateLink>
+                            </rdf:Description>
+                        </ns1:targetApplication>
+
+                    </rdf:Description>
+                </rdf:li>
+            </rdf:Seq>
+        </ns1:updates>
+    </rdf:Description>
+</rdf:RDF>
