@@ -55,6 +55,12 @@ const Os = {
 	
 	async tesseractpath()
 	{	
+		var defaultpath = Zotero.ZeNotes.Prefs.get("tesseract-path", false);
+		if(defaultpath && await OS.File.exists(defaultpath))
+		{
+			return defaultpath;
+		}
+		
 		for(path of Os.paths)
 		{
 			try {
