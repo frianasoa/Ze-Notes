@@ -11,6 +11,10 @@ var { FileUtils } = ChromeUtils.import("resource://gre/modules/FileUtils.jsm");
 
 const Os = {
 	paths: [
+		// Linux paths
+		"/usr/bin/tesseract",
+		"/usr/local/bin/tesseract",
+		
 		// Windows paths
 		"C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
 		"C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe",
@@ -19,15 +23,11 @@ const Os = {
 		// macOS paths
 		"/opt/homebrew/bin/tesseract",
 		"/usr/local/homebrew/bin/tesseract",
-		
-		// Linux paths
-		"/usr/bin/tesseract",
-		"/usr/local/bin/tesseract",
 	],
 	
-	sep()
+	async sep()
 	{
-		var tesspath = Os.tesseractpath();
+		var tesspath = await Os.tesseractpath();
 		if(!tesspath)
 		{
 			return "/";
@@ -43,28 +43,35 @@ const Os = {
 		}
 	},
 	
-	tesseractfolder() 
+	async tesseractfolder() 
 	{
-		const path = Os.tesseractpath();
-		const sep = Os.sep();
+		const path = await Os.tesseractpath();
+		const sep = await Os.sep();
 		if (path) {
 			return path.substring(0, path.lastIndexOf(sep));
 		}
 		return false;
 	},
 	
-	tesseractpath()
-	{
+	async tesseractpath()
+	{	
 		for(path of Os.paths)
 		{
-			if(OS.File.exists(path))
+			try {
+				var exists = await OS.File.exists(path); 
+				if(exists)
+				{
+					return path;
+				}
+			}
+			catch(e)
 			{
-				return path;
+				
 			}
 		}
 		return false;
 	},
-	
+		
 	listdir(path)
 	{
 		let entries = [];

@@ -1,5 +1,5 @@
 Menus = {
-	load()
+	async load()
 	{
 		this.openTabs = [];
 		this.veil = document.createElement("div");
@@ -158,10 +158,10 @@ Menus = {
 				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-custom-api"] = {name: "Using "+name, icon: "fa-c"};
 			}
 			
-			if(Zotero.ZeNotes.Os.tesseractpath())
+			var tesseractpath = await Zotero.ZeNotes.Os.tesseractpath();
+			if(tesseractpath)
 			{
 				var language = Zotero.ZeNotes.Ocr.languagename();
-				
 				items_ai["local-api-ocr"] = 
 				{
 					name: "OCR",
@@ -173,6 +173,7 @@ Menus = {
 				}
 			}
 			items_ai["sep-ai-01"] = "---------";
+			
 		}
 
 		var items1 = {

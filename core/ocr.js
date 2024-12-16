@@ -55,8 +55,8 @@ const Ocr = {
 	async languages()
 	{
 		var entries = {};
-		var sep = Zotero.ZeNotes.Os.sep();
-		var tess = Zotero.ZeNotes.Os.tesseractfolder();
+		var sep = await Zotero.ZeNotes.Os.sep();
+		var tess = await Zotero.ZeNotes.Os.tesseractfolder();
 		
 		if(!tess)
 		{
@@ -92,7 +92,7 @@ const Ocr = {
 		return new Promise(async (resolve, reject) => {
 			try {
 				var annotation = Zotero.Items.get(annotationid);
-				var exe = Zotero.ZeNotes.Os.tesseractpath();
+				var exe = await Zotero.ZeNotes.Os.tesseractpath();
 				if (annotation.annotationType == "image") {
 					var json = await Zotero.Annotations.toJSON(annotation);
 					var url = json["image"];
@@ -128,7 +128,7 @@ const Ocr = {
 	{
 		return new Promise(async (resolve, reject) => {
 			try {
-				var exe = Zotero.ZeNotes.Os.tesseractpath();
+				var exe = await Zotero.ZeNotes.Os.tesseractpath();
 				var filename = Zotero.ZeNotes.Io.randomfilename();
 				var tempoutput = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\annotation-cache-"+filename).path;
 				if(filepath!=null)
