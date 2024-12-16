@@ -67,6 +67,7 @@ const Os = {
 				var exists = await OS.File.exists(path); 
 				if(exists)
 				{
+					Zotero.ZeNotes.Prefs.set("tesseract-path", path);
 					return path;
 				}
 			}
