@@ -54,12 +54,34 @@ Actions = {
 		Zotero.OpenPDF.openToPage(attachment, annotationpage, annotationkey);
 	},
 	
+	tesseractocr(data, annotationid)
+	{
+		var annotation = Zotero.Items.get(annotationid);
+		var currentcomment = annotation.annotationComment;
+		Zotero.ZeNotes.Ocr.tesseract(annotationid).then(txt=>{
+			if(currentcomment==null)
+			{
+				currentcomment = "";
+			}
+			annotation.annotationComment = currentcomment+"\n\n<b>[OCR]</b>\n"+txt+"\n";
+			annotation.saveTx({skipSelect:true}).then(e=>{
+				Zotero.ZeNotes.Ui.reload();
+			});
+		});
+	},
+	
 	googletranslate(annotation, direct=false){
 		var tl = Zotero.ZeNotes.Prefs.get("target-language");
 		var currentcomment = annotation.annotationComment;
 		if(currentcomment==null)
 		{
 			currentcomment = "";
+		}
+		
+		var maintext = annotation["annotationText"];
+		if(annotation.annotationType=="image")
+		{
+			maintext = Zotero.ZeNotes.Format.annotationpart(currentcomment, "OCR");
 		}
 			
 		var mode = "api-key";
@@ -68,7 +90,7 @@ Actions = {
 			mode="free-0";
 		}
 		
-		Zotero.ZeNotes.Ai.Google.translate(annotation["annotationText"], tl, mode).then(r=>{
+		Zotero.ZeNotes.Ai.Google.translate(maintext, tl, mode).then(r=>{
 			if(direct)
 			{
 				annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+r[0]+"\n";
@@ -102,8 +124,14 @@ Actions = {
 		{
 			currentcomment = "";
 		}
+		
+		var maintext = annotation["annotationText"];
+		if(annotation.annotationType=="image")
+		{
+			maintext = Zotero.ZeNotes.Format.annotationpart(currentcomment, "OCR");
+		}
 			
-		Zotero.ZeNotes.Ai.DeepL.translate(annotation["annotationText"], tl).then(r=>{
+		Zotero.ZeNotes.Ai.DeepL.translate(maintext, tl).then(r=>{
 			if(direct)
 			{
 				annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+r[0]+"\n";
@@ -137,8 +165,14 @@ Actions = {
 		{
 			currentcomment = "";
 		}
+		
+		var maintext = annotation["annotationText"];
+		if(annotation.annotationType=="image")
+		{
+			maintext = Zotero.ZeNotes.Format.annotationpart(currentcomment, "OCR");
+		}
 			
-		Zotero.ZeNotes.Ai.Custom.translate(annotation["annotationText"], tl).then(r=>{
+		Zotero.ZeNotes.Ai.Custom.translate(maintext, tl).then(r=>{
 			if(direct)
 			{
 				annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+r[0]+"\n";
@@ -173,8 +207,14 @@ Actions = {
 		{
 			currentcomment = "";
 		}
+		
+		var maintext = annotation["annotationText"];
+		if(annotation.annotationType=="image")
+		{
+			maintext = Zotero.ZeNotes.Format.annotationpart(currentcomment, "OCR");
+		}
 			
-		Zotero.ZeNotes.Ai.OpenAi.translate(annotation["annotationText"], tl).then(r=>{
+		Zotero.ZeNotes.Ai.OpenAi.translate(maintext, tl).then(r=>{
 			if(direct)
 			{
 				annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+r[0]+"\n";
@@ -295,6 +335,11 @@ Actions = {
 			TabbedDialog.open(html, div, function(){
 			});
 		});
+	},
+	
+	localapi()
+	{
+		
 	},
 	
 	customapicustomprompt(data, target, annotation) {

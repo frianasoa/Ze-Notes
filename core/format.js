@@ -59,6 +59,27 @@ Format = {
 			tagged_items: Object.values(tagged_items),
 		}
 	},
+	
+	annotationpart(annotationtext, marker="OCR") {
+		const a = `<b>[${marker}]</b>`;
+		const b = `<b>[`;
+		
+		// Find the index of 'a'
+		const startIndex = annotationtext.indexOf(a);
+		if (startIndex === -1) return ""; // If 'a' is not found, return empty string
+
+		// Start after 'a'
+		const start = startIndex + a.length;
+
+		// Find the index of 'b' after 'a'
+		const endIndex = annotationtext.indexOf(b, start);
+
+		// If 'b' is not found, return text till the end
+		if (endIndex === -1) return annotationtext.substring(start).trim();;
+
+		// Return text between 'a' and 'b'
+		return annotationtext.substring(start, endIndex).trim();
+	},
 
 	async itemnotes(item)
 	{

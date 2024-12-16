@@ -22,6 +22,7 @@
 				<tab id="zn-prompt-settings" label="Custom prompts"/>
 				<tab id="zn-prompt-data-settings" label="Prompts data"/>
 				<tab id="zn-dropbox-panel" label="Dropbox settings"/>
+				<tab id="zn-tesseract-panel" label="Tesseract settings"/>
 				<tab id="zn-global-settings" label="Global setting"/>
 				<tab id="zn-advanced-settings" label="Advanced"/>
 			</tabs>
@@ -75,6 +76,14 @@
 						<box class="zn-include" src="dropbox.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('dropbox')"> </box>
 					</groupbox>
 				</tabpanel>
+				
+				<tabpanel orient="vertical" id="zn-tesseract-panel">
+					<groupbox>
+						<caption label="Tesseract settings"/>
+						<box class="zn-include" src="tesseract.xhtml" onload="Zotero_Preferences.ZeNotes.initpanel('tesseract')"> </box>
+					</groupbox>
+				</tabpanel>
+				
 				<tabpanel orient="vertical" id="zn-global-panel">
 					<groupbox>
 						<caption label="Global display"/>
@@ -114,6 +123,7 @@
 	<script src="chrome://zenotes/content/lib/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js" type="application/javascript"></script>
 	<script src="chrome://zenotes/content/settings/zotero.js" type="application/javascript"></script>
 	<script src="chrome://zenotes/content/settings/zntable.js" type="application/javascript"></script>
+	<script src="chrome://zenotes/content/settings/settings-ui.js" type="application/javascript"></script>
 	<script src="chrome://zenotes/content/settings/languages.js" type="application/javascript"></script>
 	<script src="chrome://zenotes/content/settings/preferences.js" type="application/javascript"></script>
 	<script src="chrome://zenotes/content/settings/preferences6.js" type="application/javascript"/>

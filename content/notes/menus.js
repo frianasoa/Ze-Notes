@@ -132,6 +132,7 @@ Menus = {
 			}
 			
 			
+			
 			if(Zotero.ZeNotes.Prefs.getb("bard-api-key")!="")
 			{
 				items_ai["paraphrase-annotation"]["items"]["paraphrase-bard"] = {name: "Using Bard", icon: "fa-b"};
@@ -157,6 +158,20 @@ Menus = {
 				items_ai["custom-prompt-on-table"]["items"]["custom-prompt-table-custom-api"] = {name: "Using "+name, icon: "fa-c"};
 			}
 			
+			if(Zotero.ZeNotes.Os.tesseractpath())
+			{
+				var language = Zotero.ZeNotes.Ocr.languagename();
+				
+				items_ai["local-api-ocr"] = 
+				{
+					name: "OCR",
+					icon: "fa-o",
+					items: 
+					{
+						"local-api-ocr-tesseract": {name: "Using Tesseract ["+language+"]", icon: "fa-t"}
+					}
+				}
+			}
 			items_ai["sep-ai-01"] = "---------";
 		}
 
@@ -411,6 +426,14 @@ Menus = {
 			else if(key.includes("-custom-api"))
 			{
 				Actions.customapicustomprompt(data, target, annotation);
+			}
+		}
+		else if(key.startsWith("local-api"))
+		{
+			data = Table.celldata(td);
+			if(key.endsWith("-tesseract"))
+			{
+				Actions.tesseractocr(data, annotationid);
 			}
 		}
 		

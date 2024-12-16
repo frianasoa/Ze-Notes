@@ -3,6 +3,54 @@ if(typeof Zotero_Preferences == 'undefined') {
 	};	
 }
 
+Zotero_Preferences.SettingsUi = {
+	select(sel, options, prefid)
+	{
+		var templateopt = document.createElementNS("http://www.w3.org/1999/xhtml", "option");
+		if (Zotero.platformMajorVersion>=102)
+		{
+			var menulist = document.createXULElement("menulist");
+			var menupopup = document.createXULElement("menupopup");
+			templateopt = document.createXULElement("menuitem");
+			menulist.appendChild(menupopup);
+			
+			menulist.onchange = sel.onchange;
+			menulist.setAttribute("id", sel.id);
+			
+			menulist.addEventListener("command", function(e){
+				e.currentTarget.onchange(e);
+			});
+			
+			sel.parentNode.replaceChild(menulist, sel);
+			sel = menupopup;
+		}
+		for(o of options)
+		{
+			let opt = templateopt.cloneNode(true);
+			opt.innerText = o.label;
+			opt.setAttribute("label", o.label);
+			opt.setAttribute("value", o.value);
+			sel.appendChild(opt);
+		}
+		
+		var value = Zotero.ZeNotes.Prefs.get(prefid);
+		Array.from(sel.querySelectorAll("option")).forEach(opt=>{
+			if(value==opt.value)
+			{
+				opt.setAttribute("selected", "true");
+			}
+		})
+		
+		Array.from(sel.querySelectorAll("menuitem")).forEach(opt=>{
+			if(value==opt.value)
+			{
+				sel.parentNode.selectedItem = opt;
+			}
+		})
+	}
+}
+
+
 Zotero_Preferences.ZeNotes = {
 	async init(){
 		if(!this.parser)
@@ -103,8 +151,8 @@ Zotero_Preferences.ZeNotes = {
 					templateopt = document.createXULElement("menuitem");
 					
 					menulist.setAttribute("id", el.id);
-					menulist.setAttribute("style", el.getAttribute("style"));
-					menulist.style.display = "inline-block";
+					// menulist.setAttribute("style", el.getAttribute("style"));
+					// menulist.style.display = "inline-block";
 					menulist.appendChild(menupopup);
 					p.replaceChild(menulist, el);
 					
@@ -325,6 +373,14 @@ Zotero_Preferences.ZeNotes = {
 					["dropbox-target-user", "zn-dropbox-target-user"],
 					["dropbox-ms-per-file", "zn-dropbox-ms-per-file"]
 				];
+				break;
+				
+			case 'tesseract':
+				args = [
+					["tesseract-path", "zn-tesseract-path"],
+					["tesseract-language", "zn-tesseract-language"]
+				];
+				Zotero_Preferences.ZeNotes.fillocrlanguages();
 				break;
 			
 			case 'prompts':
@@ -594,6 +650,30 @@ Zotero_Preferences.ZeNotes = {
 				`type="text/css" href="${filename}"`
 			);
 			document.insertBefore(pi, document.documentElement);
+		}
+	},
+	
+	async fillocrlanguages()
+	{
+		var languages = await Zotero.ZeNotes.Ocr.languages();
+		var sel = document.getElementById("zn-tesseract-language");
+		var options = Object.entries(languages).map(([key, value]) => ({
+		  label: value,
+		  value: key,
+		}));
+		Zotero_Preferences.SettingsUi.select(sel, options, "tesseract-language");
+	},
+	
+	async fillocrlanguages2()
+	{
+		var languages = await Zotero.ZeNotes.Ocr.languages();
+		var sel = document.getElementById("zn-tesseract-language");
+		for(let code in languages)
+		{
+			let opt = document.createElementNS("http://www.w3.org/1999/xhtml", "option");
+			opt.innerHTML = languages[code];
+			opt.value = code;
+			sel.appendChild(opt);
 		}
 	}
 }

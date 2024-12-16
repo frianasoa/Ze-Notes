@@ -5,7 +5,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>zenotes@alefa.net</em:id>
         <em:name>ZeNotes</em:name>
-        <em:version>0.9.6</em:version>
+        <em:version>0.9.7</em:version>
         <em:multiprocessCompatible>true</em:multiprocessCompatible>
         <em:updateURL>https://github.com/frianasoa/Ze-Notes/releases/download/release/zenotes-update.rdf</em:updateURL>
         <em:homepageURL>https://github.com/frianasoa/zenotes</em:homepageURL>

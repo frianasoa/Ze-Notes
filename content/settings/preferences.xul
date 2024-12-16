@@ -19,6 +19,7 @@
 	<script src="chrome://zotero/content/include.js"></script>
 	<script src="chrome://zotero/content/charsetMenu.js"></script>
 	<script src="chrome://zenotes/content/settings/preferences.js" type="application/javascript"/>
+	<script src="chrome://zenotes/content/settings/settingsui.js" type="application/javascript"/>
 	
 	<script type="application/javascript">
 	<![CDATA[		

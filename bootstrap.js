@@ -271,6 +271,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	Services.scriptloader.loadSubScript(rootURI + 'core/format.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/ai.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/io.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/os.js');
+	Services.scriptloader.loadSubScript(rootURI + 'core/ocr.js');
 	Services.scriptloader.loadSubScript(rootURI + 'content/notes/actions.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/annotations.js');
 	Services.scriptloader.loadSubScript(rootURI + 'core/languages.js');
@@ -311,6 +313,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 	
 	
 	ZeNotes.Format = Format;
+	ZeNotes.Ocr = Ocr;
+	ZeNotes.Os = Os;
 	Annotations.initmenu();
 	Settings.inject();
 	await ZeNotes.main();

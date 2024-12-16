@@ -11,7 +11,6 @@ Notes = {
 			this.body.style.fontSize = fontsize+"px";
 		}
 		this.fontsize = 1;
-		
 	},
 	
 	isvertical()
