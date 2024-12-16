@@ -54,10 +54,17 @@ const Ocr = {
 	
 	async languages()
 	{
+		var entries = {};
 		var sep = Zotero.ZeNotes.Os.sep();
 		var tess = Zotero.ZeNotes.Os.tesseractfolder();
+		
+		if(!tess)
+		{
+			return entries;
+		}
+		
 		var main = Zotero.ZeNotes.Os.listdir(tess+sep+"tessdata");
-		var entries = {};
+		
 		main = main
 			.filter(e => e.includes("traineddata")&&!e.includes("osd."))
 			.map(f=>{

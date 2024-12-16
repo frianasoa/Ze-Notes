@@ -28,6 +28,11 @@ const Os = {
 	sep()
 	{
 		var tesspath = Os.tesseractpath();
+		if(!tesspath)
+		{
+			return "/";
+		}
+		
 		if(tesspath.includes("\\"))
 		{
 			return "\\";
@@ -72,7 +77,7 @@ const Os = {
 			  entries.push(file.leafName);
 			}
 		} catch (e) {
-			alert(e);
+			
 		}
 		return entries;
 	}
