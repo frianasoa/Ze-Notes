@@ -1,34 +1,26 @@
-title: Ze-Notes documenation
+title: Ze-Notes Documentation
 email: 
 description: >-
-  Ze-Notes documenation.
-baseurl: ""
-url: ""
+  Ze-Notes documentation.
+baseurl: "frianasoa"
+url: "https://frianasoa.github.io"
 twitter_username: frianasoa
-github_username:  frianasoa
+github_username: frianasoa
 
 # Build settings
-remote_theme: pages-themes/leap-day
+remote_theme: pages-themes/leap-day@v0.2.0
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
-
-
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
+  - jekyll-remote-theme
+  
+# Optional: Exclude unnecessary files/folders from processing
 # exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+  # - .sass-cache/
+  # - .jekyll-cache/
+  # - gemfiles/
+  # - Gemfile
+  # - Gemfile.lock
+  # - node_modules/
+  # - vendor/bundle/
+  # - vendor/cache/
+  # - vendor/gems/
+  # - vendor/ruby/
