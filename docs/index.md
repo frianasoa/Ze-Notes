@@ -1,4 +1,6 @@
+---
 layout: default
+---
 
 # Ze Notes
 [![zotero](https://raw.githubusercontent.com/frianasoa/zenotes/main/docs/images/for-zotero-6.svg)](https://zotero.org) <br/>
