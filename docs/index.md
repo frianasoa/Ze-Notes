@@ -1,7 +1,7 @@
 ---
 
 layout: default
-title: "Ze-Notes documentation page"
+title: "Ze-Notes documentation"
 
 ---
 
