@@ -28,9 +28,10 @@ twitter_username: frianasoa
 github_username:  frianasoa
 
 # Build settings
-remote_theme: pages-themes/leap-day@v0.2.0
-plugins:
-  - jekyll-remote-theme
+# remote_theme: pages-themes/leap-day@v0.2.0
+theme: Ljekyll-theme-leap-day
+# plugins:
+  # - jekyll-remote-theme
 
 # Exclude from processing.
 # The following items will not be processed, by default.
