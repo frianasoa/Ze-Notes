@@ -1,13 +1,3 @@
-title: Ze-Notes Documentation
-email: 
-description: >-
-  Ze-Notes documentation.
-baseurl: ""
-url: "https://frianasoa.github.io"
-twitter_username: frianasoa
-github_username: frianasoa
-
-# Build settings
 remote_theme: pages-themes/leap-day@v0.2.0
 plugins:
   - jekyll-remote-theme
