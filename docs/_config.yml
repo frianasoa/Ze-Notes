@@ -28,8 +28,8 @@ twitter_username: frianasoa
 github_username:  frianasoa
 
 # Build settings
-remote_theme: pages-themes/leap-day
-# theme: Ljekyll-theme-leap-day
+# remote_theme: pages-themes/leap-day
+theme: jekyll-theme-leap-day
 plugins:
   - jekyll-remote-theme
 
