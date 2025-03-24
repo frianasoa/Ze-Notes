@@ -8,7 +8,7 @@ twitter_username: frianasoa
 github_username:  frianasoa
 
 # Build settings
-remote_theme: pages-themes/leap-day@v0.2.0
+remote_theme: pages-themes/leap-day
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
 
