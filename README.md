@@ -33,11 +33,13 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 * The new documentation is under construction but you can refer to the README.MD of version 0 to see what is possible.
 
 ## Documentation
-### Version 0
+### Version 0 
 https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
 
-### Version 1
-Under construction. See README.MD of version 0.\
+### Documentation page
+Under construction. \ 
 https://frianasoa.github.io/Ze-Notes/
 
+### See README.MD of version 1.\
+https://github.com/frianasoa/Ze-Notes/blob/v1/README.md
 ## Screenshots
