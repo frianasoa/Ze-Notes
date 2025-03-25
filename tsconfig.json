@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "es2015",
+    "module": "ES2015",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "lib": [
+      "ES2023",
+      "DOM"
+    ],
+		"allowSyntheticDefaultImports": true
+  },
+  "include": ["src", "node_modules/zotero-types"]
+}

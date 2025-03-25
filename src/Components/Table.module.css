@@ -1,0 +1,20 @@
+@media (prefers-color-scheme: light) {
+  .tr td, .tr th {
+    
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tr td, .tr th {
+    background-color :#121212!important;
+    color: white!important;
+  }
+  .tr td {
+    color: red;
+  }
+  
+  header {
+    color: white;
+  }
+}
+

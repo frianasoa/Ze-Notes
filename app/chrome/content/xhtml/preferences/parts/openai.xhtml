@@ -1,0 +1,24 @@
+<html:div xmlns:html="http://www.w3.org/1999/xhtml" >
+  <html:table>
+    <html:tr>
+      <html:td>API Key</html:td>
+      <html:td><html:input type="password" class="zenotes-values" data-key="openai-apikey" /></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Model</html:td>
+      <html:td><html:select class="zenotes-values" data-key="openai-model"></html:select></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Max token</html:td>
+      <html:td><html:input type="text" class="zenotes-values" data-key="openai-max-token" oninput="ZeNotes_Preferences.validatenumber(event, 1, 10000);" /></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>System message</html:td>
+      <html:td><html:textarea class="zenotes-values" data-key="openai-system-message"></html:textarea></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>User prompt</html:td>
+      <html:td><html:textarea class="zenotes-values" data-key="openai-user-prompt"></html:textarea></html:td>
+    </html:tr>
+  </html:table>
+</html:div>

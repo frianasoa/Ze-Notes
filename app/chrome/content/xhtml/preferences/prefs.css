@@ -1,0 +1,28 @@
+select, input, option, textarea {
+  padding: 0.4em;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  text-align: left;
+}
+
+input.zenotes-values {
+  width: 30em;
+}
+
+select.zenotes-values {
+  width: 30em;
+}
+
+textarea.zenotes-values {
+  width: 30em;
+  min-height: 6em;
+  height: auto;
+}
+
+textarea.resizeable {
+  resize: vertical;
+}
+
+table.zenotes-container {
+  width: 30em;
+}

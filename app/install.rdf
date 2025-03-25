@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:ns1="http://www.mozilla.org/2004/em-rdf#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+    <rdf:Description about="urn:mozilla:install-manifest">
+        <ns1:id>zenotes@alefa.net</ns1:id>
+        <ns1:name>Ze Notes</ns1:name>
+        <ns1:version>1.0.0-beta</ns1:version>
+        <ns1:multiprocessCompatible>true</ns1:multiprocessCompatible>
+        <ns1:updateURL>https://github.com/frianasoa/zenotes/releases/download/release/zenotes-update.rdf</ns1:updateURL>
+        <ns1:homepageURL>https://github.com/frianasoa/zenotes</ns1:homepageURL>
+        <ns1:localized>
+            <rdf:Description>
+                <ns1:locale>en-US</ns1:locale>
+                <ns1:name>Ze Notes</ns1:name>
+                <ns1:description>A Zotero plugin to keep all your work in one place</ns1:description>
+            </rdf:Description>
+        </ns1:localized>
+		<ns1:localized>
+		  <rdf:Description>
+			<ns1:locale>fr-FR</ns1:locale>
+			<ns1:name>Ze Notes</ns1:name>
+			<ns1:description>Un plugin Zotero pour conserver tous vos travaux en un seul endroit</ns1:description>
+		  </rdf:Description>
+		</ns1:localized>
+
+        <ns1:creator>Fanantenana Rianasoa Andriariniaina</ns1:creator>
+        <ns1:type>2</ns1:type> 
+        <ns1:iconURL>chrome://zenotes/content/images/icon.png</ns1:iconURL>
+        <ns1:icon64URL>chrome://zenotes/content/images/icon64.png</ns1:icon64URL>
+        <ns1:bootstrap>true</ns1:bootstrap>
+
+        <ns1:targetApplication>
+            <rdf:Description>
+                <ns1:id>zotero@chnm.gmu.edu</ns1:id>
+                <ns1:minVersion>6.0</ns1:minVersion>
+                <ns1:maxVersion>*</ns1:maxVersion>
+            </rdf:Description>
+        </ns1:targetApplication>
+    </rdf:Description>
+</rdf:RDF>

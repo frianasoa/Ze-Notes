@@ -1,6 +1,6 @@
-build
 run.cmd
 run7.cmd
 stats.py
 make.py
 upload.sh
+node_modules/

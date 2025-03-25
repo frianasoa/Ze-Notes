@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="./notes.css" />
+    
+    <title>Zotahiry - Notes</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+						display: flex;
+						flex-direction: column;
+						height: 100vh;
+        }
+        header, footer {
+            text-align: center;
+        }
+        
+        footer {
+          height: 1.2em;
+          text-align: right;
+          padding-right: 1em;
+        }
+        main {
+						flex: 1;
+						height: 100%;
+						overflow-y: auto;
+            overscroll-behavior: none;
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+		<script>
+			var pageinfo;
+			var Engine;
+			const iframe = window.frameElement;
+			iframe.contentWindow.addEventListener("load", (event) => {
+        Engine = window.parent.Zotero.AppBase.Engine;
+				pageinfo = JSON.parse(iframe.dataset.info);
+				
+        Engine.Core.Data.items(pageinfo).then(data=>{
+          event.currentTarget.document.title = window.parent.Zotero.AppBase.Config.name;
+          Engine.Components.Notes.show(event.currentTarget, data, Engine.Core.Data.collectionID, pageinfo.title, pageinfo.libraryID);
+          document.getElementById("page-title").innerText=pageinfo.title;
+				})
+			});
+      
+      
+		</script>
+</head>
+<body>
+  <header>
+		<h2 id='page-title'>Zotahiry notes</h2>
+  </header>
+  <main>
+		<div id="main-contents" ></div>
+  </main>
+  <footer id="zn-status-bar">
+	 
+  </footer>
+</body>
+</html>
