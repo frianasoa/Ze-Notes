@@ -4,7 +4,7 @@ const Database = {
 	DB: Zotero.DBConnection,
 	async init()
 	{
-		Database.DB = new Zotero.DBConnection(pkg.config.slug);
+		Database.DB = new Zotero.DBConnection(pkg.config.slug+"-v1");
 		await Database.create();
 	},
 	
