@@ -75,7 +75,8 @@ AppBase = {
 		let menuitem = doc.createElementNS(XUL_NS, 'menuitem');
 		menuitem.id = 'make-it-green-instead';
 		menuitem.setAttribute('type', 'checkbox');
-		menuitem.setAttribute('data-l10n-id', AppBase.Config.slug+'-green-instead');
+    menuitem.setAttribute("label", "Green")
+		// menuitem.setAttribute('data-l10n-id', AppBase.Config.slug+'-green-instead');
 		menuitem.addEventListener('command', () => {
 			AppBase.toggleGreen(window, menuitem.getAttribute('checked') === 'true');
 		});
@@ -131,8 +132,13 @@ AppBase = {
 	},
 	
 	toggleGreen(window, enabled) {
+    
 		let docElem = window.document.documentElement;
-		// Element#toggleAttribute() is not supported in Zotero 6
+		
+    for(const row of Array.from(docElem.querySelectorAll(".row")))
+    Zotero.log(row.innerHTML);
+    
+    // Element#toggleAttribute() is not supported in Zotero 6
 		if (enabled) {
 			docElem.setAttribute('data-green-instead', 'true');
 		}

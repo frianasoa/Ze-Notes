@@ -2,10 +2,11 @@ import pkg from "../../package.json";
 
 const Database = {
 	DB: Zotero.DBConnection,
+  version: "v1",
 	async init()
 	{
-		Database.DB = new Zotero.DBConnection(pkg.config.slug+"-v1");
-		await Database.create();
+		Database.DB = new Zotero.DBConnection(pkg.config.slug+"-"+DB.version);
+		await Database.create();  
 	},
 	
 	close()

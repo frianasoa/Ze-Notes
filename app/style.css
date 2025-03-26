@@ -1,2 +1,6 @@
 .row {
 }
+
+[aria-label="[Ai column notes]. Document.  "]  {
+	color: red;
+}
