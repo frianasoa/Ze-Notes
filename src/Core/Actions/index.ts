@@ -78,7 +78,7 @@ const Actions: ActionsType = {
       })
     });
   },
-  
+
   hiderow(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string)=>{
@@ -103,7 +103,7 @@ const Actions: ActionsType = {
       })
     });
   },
-  
+
   showcolumn(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string)=>{
@@ -181,9 +181,9 @@ const Actions: ActionsType = {
     {
       text = contents;
     }
-    
+
     note.setNote(text);
-    
+
     if(noparent)
     {
       note.addToCollection(celldata.collectionid);
@@ -192,7 +192,7 @@ const Actions: ActionsType = {
     {
       note.parentID = itemid;
     }
-    
+
     if(tags.length>0)
     {
       for(const tag of tags)
@@ -204,7 +204,7 @@ const Actions: ActionsType = {
     {
       note.addTag(column);
     }
-    
+
     note.saveTx().then(function(){
       Actions.editnote({data: {noteid: note.id}}, celldata);
     });
@@ -221,7 +221,7 @@ const Actions: ActionsType = {
     const name = 'zotero-note-' + item.data.itemid;
 
     const win = window_.openDialog(noteurl, name, 'chrome,resizable,centerscreen,dialog=false', io);
-        
+
     win?.addEventListener("close", function(){
       Actions.reload(null, {});
     });
@@ -230,8 +230,8 @@ const Actions: ActionsType = {
   async opensettings(item: zty.ContextMenuData, celldata: Record<string, any>) {
     Zotero.Utilities.Internal.openPreferences(Config.id);
   },
-  
-  async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {    
+
+  async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {
     const collection = Zotero.Items.get(item.data.collectionid);
     const img = (item.data.event.currentTarget || item.data.event.target) as HTMLElement;
     const imagekey = img.dataset.attachmentKey || "";
@@ -246,9 +246,9 @@ const Actions: ActionsType = {
     const image = attachment?.getFilePath();
     const note = attachment.parentItem;
     let lang = Zotero.Prefs.get('extensions.zenotes.tesseract-language', true);
-    
+
     if(!lang){lang = "en"} else{lang = String(lang)}
-    
+
     if (!note || !image) {
       return;
     }
@@ -294,7 +294,7 @@ const Actions: ActionsType = {
           note.setNote(updatedHTML);
           note.saveTx().then(() => {
             Actions.reload(null, {});
-          }); 
+          });
         }}
       );
       item?.data?.callback({
@@ -302,7 +302,7 @@ const Actions: ActionsType = {
         children: children,
         isOpen: true
       });
-      
+
     }).catch(e=>{
       window.alert("OCR error. status: "+e);
     })
@@ -316,13 +316,13 @@ const Actions: ActionsType = {
         {data: [ocrtext], save: (text)=>{
           const annotation = Zotero.Items.get(item.data.annotationid);
           const currentcomment = annotation.annotationComment;
-          annotation.annotationComment = currentcomment+"\n\n<b>[OCR]</b>\n"+text+"\n";
+          annotation.annotationComment = currentcomment+"\n\n<b>[[OCR]]</b>\n"+text+"\n";
           annotation.saveTx({skipSelect:true}).then(e=>{
             Actions.reload(null, {});
           });
         }}
       );
-      
+
       item?.data?.callback({
         title: "OCR dialog ["+item.data.service+"]",
         children: children,
@@ -332,38 +332,38 @@ const Actions: ActionsType = {
       window.alert("OCR error. status: "+e);
     })
   },
- 
+
   async customaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
     let target = null;
     let tags = [];
     let noparent = false;
-    
+
     if(item.data.target=="annotation")
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     if(item.data.target=="note")
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
     }
-    
+
     else if(item.data.target=="row")
     {
       target = celldata.target.closest("tr");
     }
-    
+
     else if(item.data.target=="column")
     {
       const tr = document.createElement("tr");
       const td = celldata.target.closest("td");
-      const table = td.closest("table"); 
+      const table = td.closest("table");
       const columnIndex = td.cellIndex;
 
       table.querySelectorAll("tr").forEach((row: any) => {
@@ -374,12 +374,12 @@ const Actions: ActionsType = {
       });
       target = tr;
     }
-    
+
     else if(item.data.target=="table")
     {
       target = celldata.target.closest("table");
     }
-    
+
     if(target)
     {
       const context = item.data.context;
@@ -390,7 +390,7 @@ const Actions: ActionsType = {
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window if you want, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
-      
+
       CustomAI.prompt(JSON.stringify(promptdata), item.data.key).then((data: any)=>{
         let contents = "[AI output on this "+item.data.target+"]<br/>\n"+data;
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
@@ -402,7 +402,7 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   async openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
     let target = null;
@@ -420,7 +420,7 @@ const Actions: ActionsType = {
     {
       const tr = document.createElement("tr");
       const td = celldata.target.closest("td");
-      const table = td.closest("table"); 
+      const table = td.closest("table");
       const columnIndex = td.cellIndex;
 
       table.querySelectorAll("tr").forEach((row: any) => {
@@ -435,7 +435,7 @@ const Actions: ActionsType = {
     {
       target = celldata.target.closest("table");
     }
-    
+
     if(target)
     {
       const context = item.data.context;
@@ -445,7 +445,7 @@ const Actions: ActionsType = {
       }
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
-      const promptdata = await PromptFormat.data(target, celldata.collectionid);      
+      const promptdata = await PromptFormat.data(target, celldata.collectionid);
       OpenAI.prompt(JSON.stringify(promptdata)).then((data: any)=>{
         let contents = "[AI output on this "+item.data.target+"]<br/>\n"+data;
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
@@ -460,7 +460,7 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     let machine = Google;
@@ -468,7 +468,7 @@ const Actions: ActionsType = {
     {
       machine = DeepL;
     }
-    
+
     const annotation = Zotero.Items.get(item.data.annotationid);
     let lang = Zotero.Prefs.get('extensions.zenotes.translation-language', true) as string;
     machine.translate(item.data.annotationtext, lang || "en").then((data: any)=>{
@@ -476,13 +476,13 @@ const Actions: ActionsType = {
         TranslationElement,
         {data: data, save: (text)=>{
           const currentcomment = annotation.annotationComment || "";
-          annotation.annotationComment = currentcomment+"\n\n<b>[Translation]</b>\n"+text+"\n";
+          annotation.annotationComment = currentcomment+"\n\n<b>[[Translation]]</b>\n"+text+"\n";
           annotation.saveTx({skipSelect:true}).then(e=>{
             Actions.reload(null, {});
           });
         }}
       );
-      
+
       item?.data?.callback({
         title: "Translation dialog ["+item.data.service+"]",
         children: children,
@@ -595,12 +595,12 @@ const Actions: ActionsType = {
         isOpen: false
       });
     }
-    
+
     const buttons = [
       {action: ()=>{close(); Actions.reload(item, celldata);}, label: "Reload"},
       {action: ()=>{close()}, label: "Close"},
     ]
-      
+
     const children = React.createElement(
       TableSortContents,
       {item: item, celldata: celldata, buttons: buttons}
@@ -628,7 +628,7 @@ const Actions: ActionsType = {
       {action: async ()=>{close(); Actions.reload(item, celldata);}, label: "Reload"},
       {action: async ()=>{close()}, label: "Close"},
     ]
-  
+
     const children = React.createElement(
       ColumnSortContents,
       {item: item, celldata: celldata, buttons: buttons}
@@ -640,18 +640,18 @@ const Actions: ActionsType = {
       isOpen: true
     });
   },
-  
+
   async showaidatasettings(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     const datasettings = DataSettings.generate(item);
-    
+
     const close = () =>{
       item?.data?.callback({
         title: "",
         isOpen: false
       });
     }
-    
+
     const handleUpdate = (data: any) =>
     {
       const buttons = [
@@ -677,11 +677,11 @@ const Actions: ActionsType = {
       isOpen: true
     });
   },
-  
+
   async exportas(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     const datasettings = DataSettings.generate(item);
-    
+
     const tablesettings = {
       removetdstyle: {label: "Keep td style", slug: "remove-td-style", options: ["true", "false"], default: "false", icon: FaTableCellsLarge},
       removemainlabels: {label: "Remove main labels", slug: "remove-main-labels", options: ["true", "false"], default: "false", icon: FaTags},
@@ -691,14 +691,14 @@ const Actions: ActionsType = {
       removehighlights: {label: "Remove highlights", slug: "remove-highlights", options: ["true", "false"], default: "false", icon: FaHighlighter},
       createfolder: {label: "Create save folder", slug: "create-folder", options: ["true", "false"], default: "false", icon: FaFolder},
     }
-    
+
     const close = () =>{
       item?.data?.callback({
         title: "",
         isOpen: false
       });
     }
-    
+
     const save = async (settings: any)=>{
       const filename = await Exporter.start(item.data.table, item.data.table.dataset.collectionname, settings);
       if(filename)

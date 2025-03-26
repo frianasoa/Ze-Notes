@@ -1,6 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 
 const Utils = {
+  splitregex: /(?:<b>)?\[\[([^\[]+?)\]\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[\[|$)/g,
   toxhtml(html: string) {
     const clean = sanitizeHtml(html, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'br']),
@@ -33,7 +34,8 @@ const Utils = {
   
   splitcomment(comment: string): { [key: string]: string } {
     const result: { [key: string]: string } = {};
-    const regex = /(?:<b>)?\[([^\]]+)\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[|$)/g;
+    // const regex = /(?:<b>)?\[([^\]]+)\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[|$)/g;
+    const regex = this.splitregex;
 
     let match;
     let matched = false;
@@ -46,7 +48,7 @@ const Utils = {
       if (match.index > lastIndex) {
         const preContent = comment.slice(lastIndex, match.index).trim();
         if (preContent) {
-          result["Main comment"] = (result["Main comment"] || "") + (result["Main comment"] ? " " : "") + preContent;
+          result["Main comment"] = (result["Main content"] || "") + (result["Main comment"] ? " " : "") + preContent;
         }
       }
 
@@ -79,7 +81,7 @@ const Utils = {
 
   splithtmlcomment(comment: string) {
     const result: any = {};
-    const regex = /(?:<b>)?\[([^\]]+)\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[|$)/g;
+    const regex = this.splitregex;
 
     let match;
     let lastIndex = 0; // Keep track of the last processed index
