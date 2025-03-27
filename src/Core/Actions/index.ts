@@ -344,9 +344,14 @@ const Actions: ActionsType = {
       target = celldata.target.closest(".zcontent");
     }
 
-    if(item.data.target=="note")
+    else if(item.data.target=="note")
     {
       target = celldata.target.closest(".zcontent");
+    }
+    
+    else if(item.data.target=="notepart")
+    {
+      target = celldata.target;
     }
 
     else if(item.data.target=="cell")
@@ -392,7 +397,7 @@ const Actions: ActionsType = {
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
 
       CustomAI.prompt(JSON.stringify(promptdata), item.data.key).then((data: any)=>{
-        let contents = "[AI output on this "+item.data.target+"]<br/>\n"+data;
+        let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
@@ -405,10 +410,26 @@ const Actions: ActionsType = {
 
   async openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
+    if(!item.data)
+    {
+      return;
+    }
+    
     let target = null;
     let tags = [];
     let noparent = false;
-    if(item.data.target=="cell")
+    
+    if(item.data.target=="annotation")
+    {
+      target = celldata.target.closest(".zcontent");
+    }
+
+    else if(item.data.target=="note")
+    {
+      target = celldata.target.closest(".zcontent");
+    }
+    
+    else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
     }
@@ -446,8 +467,9 @@ const Actions: ActionsType = {
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
+      
       OpenAI.prompt(JSON.stringify(promptdata)).then((data: any)=>{
-        let contents = "[AI output on this "+item.data.target+"]<br/>\n"+data;
+        let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })

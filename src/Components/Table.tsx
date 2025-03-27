@@ -96,7 +96,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   };
 
   const handleMenuClose = () =>{
-    MenuItems.resetmain();
+    MenuItems.resetmain(MenuItems.main);
   }
 
   const handleClick = (event: any) =>{}

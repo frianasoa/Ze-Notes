@@ -3,7 +3,7 @@ import CustomAI from '../../Core/Ai/CustomAI';
 import MenuUtils from './MenuUtils';
 
 const CustomAiMenu = {
-  show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>, param: any)
+  show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>, params: any)
   {
     const target = event.currentTarget || event.target;
     CustomAI.settinglist().then(settings=>{
@@ -11,11 +11,11 @@ const CustomAiMenu = {
       {
         MenuUtils.aidata(context, target);
       }
-      CustomAiMenu.customai(context, target, settings, param);
+      CustomAiMenu.customai(context, target, settings, params);
     });
   },
     
-  customai(context: any, target:any, settings:any, param: any)
+  customai(context: any, target:any, settings:any, params: any)
   {
     let i = 0;
     for (const k of Object.keys(settings).sort()) {
@@ -27,12 +27,23 @@ const CustomAiMenu = {
         continue;
       }
       
-      MenuUtils.insert(context.MenuItems.main, target, {
-        ...param, 
-        keys: key + "/submenu/" + param.key,
-        onClick: Actions.customaiprompt,
-        data: {target: param.target, context, key: k}
-      });
+      for(const param of params)
+      {
+        MenuUtils.insert(context.MenuItems.main, context.MenuItems.resetkeys, target, {
+          ...param, 
+          keys: key + "/submenu/" + param.key,
+          onClick: Actions.customaiprompt,
+          data: {target: param.target, context, key: k, title: param.data?.title},
+        });
+      }
+      
+      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, [
+        {
+          label: "---",
+          key: "customailastsep",
+          keys: key + "/submenu/customaipartsep"
+        }
+      ]);
       i++;
     }
   }

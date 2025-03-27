@@ -1,6 +1,7 @@
 import ZPrefs from '../../Core/ZPrefs';
 import Actions from '../../Core/Actions';
 import CustomAI from '../../Core/Ai/CustomAI';
+import MenuUtils from './MenuUtils';
 import React from 'react';
 
 import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
@@ -100,45 +101,81 @@ const CellMenu = {
         });
       }
       
+      // Open AI
       ZPrefs.getb("openai-apikey").then((key: string)=>{
         if(key)
         {
-          context.MenuItems.main["openai"]["label"] = "Using OpenAI";
-          context.MenuItems.main["openai"]["icon"] = FaO;
-          context.MenuItems.main["aidatasettings"] = {
-            label: 'Ai data settings',
-            onClick: Actions.showaidatasettings,
-            icon: FaListCheck,
-            data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: target?.closest(".main-table")}
-          };
-          
+          const params = [
+            {
+              label: "Using OpenAI",
+              key: "openai",
+              keys: "openai",
+              onClick: Actions.openaiprompt,
+              icon: FaO,
+            },
+            {
+              label: "Prompt on cell",
+              key: "openaicell",
+              keys: "openai/submenu/openaicell",
+              data: { target: "cell", context: context },
+              onClick: Actions.openaiprompt,
+              icon: FaRegSquare
+            },
+            {
+              label: "Prompt on row",
+              key: "openairow",
+              keys: "openai/submenu/openairow",
+              data: { target: "row", context: context },
+              onClick: Actions.openaiprompt,
+              icon: FaTableColumns
+            },
+            {
+              label: "Prompt on column",
+              key: "openaicolumn",
+              keys: "openai/submenu/openaicolumn",
+              data: { target: "column", context: context },
+              onClick: Actions.openaiprompt,
+              icon: FaTableList
+            },
+            {
+              label: "Prompt on table",
+              key: "openaitable",
+              keys: "openai/submenu/openaitable",
+              data: { target: "table", context: context },
+              onClick: Actions.openaiprompt,
+              icon: FaTableCells
+            },
+            {
+              label: "---",
+              key: "sepai",
+              keys: "sepai"
+            }
+          ];
+
+          MenuUtils.aidata(context, target);
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+
           if(target.dataset.itemtype=="note")
           {
-            context.MenuItems.main["openai"]["submenu"]["openaicell"]["label"] = "";
-            context.MenuItems.main["openai"]["submenu"]["openairow"]["label"] = "";
+            const params = [
+              {key: "openaicell", keys: "openai/submenu/openaicell"},
+              {key: "openaicell", keys: "openai/submenu/openairow"},
+            ]
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }
-          context.MenuItems.main["sepai"] = {label: '---'};
-          
-          // Add context
-          Object.keys(context.MenuItems.main["openai"].submenu).forEach(key => {
-            context.MenuItems.main["openai"].submenu[key]["data"]["context"] = context;
-          });
         }
-      })
+      });
       
+      // Custom AI
       CustomAI.settinglist().then(settings=>{
-        
-        /** Factor this later*/
         if(Object.keys(settings).length>0)
         {
-          context.MenuItems.main["aidatasettings"] = {
-            label: 'Ai data settings',
-            onClick: Actions.showaidatasettings,
-            icon: FaListCheck,
-            data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: target?.closest(".main-table")}
-          };
-          context.MenuItems.main["sepai"] = {label: '---'};
-          context.MenuItems.main["sepcustomai"] = {label: '---'};
+          MenuUtils.aidata(context, target);
+          const params = [
+            { label: "---", key: "sepai", keys: "sepai" },
+            { label: "---", key: "sepcustomai", keys: "sepcustomai" },
+          ]
+          MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
         }
         
         let i = 0;
@@ -151,50 +188,74 @@ const CellMenu = {
             continue;
           }
           
-          context.MenuItems.main[key] ??= {};
-          context.MenuItems.main[key].submenu ??= {};
-          
-          context.MenuItems.main[key]["label"] = setting.name;
-          context.MenuItems.main[key]["icon"] = FaWrench;
-          context.MenuItems.main[key]["color"] = 'blue';
-
-          context.MenuItems.main[key].submenu.customainote ??= { data: { target: "note" } };
-          context.MenuItems.main[key].submenu.customaiannotation ??= { data: { target: "annotation" } };
-          context.MenuItems.main[key].submenu.customaicell = { 
+          const params = [
+            {
+              label: setting.name,
+              key: key,
+              keys: key,
+              icon: FaWrench,
+              color: "blue",
+            },
+            {keys: key+"/submenu/customainote", init: "true"},
+            {keys: key+"/submenu/customainotepart", init: "true"},
+            {keys: key+"/submenu/customaiannotation", init: "true"},
+            {keys: key+"/submenu/customaipartsep", init: "true"},
+            // {
+              // label: "",
+              // key: key,
+              // keys: key+"/submenu/customaiannotation",
+              // icon: FaWrench,
+              // data: {target: "annotation"},
+              // onClick: Actions.customaiprompt,
+              // init: "true",
+            // },
+            {
               label: "Prompt on cell", 
-              icon: FaRegSquare,  
+              keys: key+"/submenu/customaicell",
+              icon: FaRegSquare,
               onClick: Actions.customaiprompt, 
               data: { target: "cell", context, key: k } 
-          };
-          context.MenuItems.main[key].submenu.customairow = { 
+            },
+            { 
               label: "Prompt on row", 
+              keys: key+"/submenu/customairow",
               icon: FaTableColumns,  
               onClick: Actions.customaiprompt, 
               data: { target: "row", context, key: k } 
-          };
-          context.MenuItems.main[key].submenu.customaicolumn = { 
+            },
+            { 
               label: "Prompt on column", 
+              keys: key+"/submenu/customaicolumn",
               icon: FaTableList,  
               onClick: Actions.customaiprompt, 
               data: { target: "column", context, key: k } 
-          };
-          context.MenuItems.main[key].submenu.customaitable = { 
+            },
+            {
               label: "Prompt on table", 
+              keys: key+"/submenu/customaitable",
               icon: FaTableCells,  
               onClick: Actions.customaiprompt, 
-              data: { target: "table", context, key: k } 
-          };
+              data: { target: "table", context, key: k }
+            },
+            {label: "---", key: "sepcustomai", keys: "sepcustomai"},
+          ];
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           
+                  
           if(target.dataset.itemtype=="note")
           {
             context.MenuItems.main[key]["submenu"][key+"cell"]["label"] = "";
             context.MenuItems.main[key]["submenu"][key+"row"]["label"] = "";
+            
+            const params = [
+              {key: key, keys: key+"/submenu/customaicell"},
+              {key: key, keys: key+"/submenu/customairow"},
+            ];
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }
-
           i++;
         }
       })
-      
     }
   }
 }

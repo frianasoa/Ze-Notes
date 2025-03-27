@@ -1,5 +1,6 @@
 import Actions from '../../Core/Actions';
 import CustomAiMenu from './CustomAiMenu';
+import MenuUtils from './MenuUtils';
 import {FaPencil, FaRegTrashCan, FaNoteSticky}  from "react-icons/fa6";
 
 const NoteTextMenu = {
@@ -26,21 +27,51 @@ const NoteTextMenu = {
     const legend = fieldset.querySelector("legend");
     const title = legend?.innerText ? `‟${legend.innerText}”` : "note part";
     
-    const param = {
-      label: "Prompt on "+title,
-      key: "customainotepart",
-      target: "note-part",
-      icon: FaNoteSticky
-    }
-    CustomAiMenu.show(context, event, param)
+    // OpenAi
+    const target = event.currentTarget || event.target;
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+    [
+      
+      {
+        label: "Prompt on note",
+        key: "openainote",
+        keys: "openai/submenu/openainote",
+        icon: FaNoteSticky,
+        data: { target: "note", context: context, noteid: item.noteid},
+        onClick: Actions.openaiprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "openainotepart",
+        keys: "openai/submenu/openainotepart",
+        icon: FaNoteSticky,
+        data: { target: "notepart", context: context, title: "Prompt on "+title, noteid: item.noteid},
+        onClick: Actions.openaiprompt,
+      },
+      {
+        label: "---",
+        key: "openainotesep",
+        keys: "openai/submenu/openainotesep"
+      }
+    ]);
     
-    const param2 = {
-      label: "Prompt on note",
-      key: "customainote",
-      target: "note",
-      icon: FaNoteSticky
-    }
-    CustomAiMenu.show(context, event, param2)
+    // CustomAi
+    const params = [
+      {
+        label: "Prompt on note",
+        key: "customainote",
+        target: "note",
+        icon: FaNoteSticky
+      },
+      {
+        label: "Prompt on part",
+        data: {title: "Prompt on "+title},
+        key: "customainotepart",
+        target: "notepart",
+        icon: FaNoteSticky
+      }
+    ];
+    CustomAiMenu.show(context, event, params)
   }
 }
 

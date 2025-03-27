@@ -77,6 +77,10 @@ const AiNotes = {
   },
   
   async create(item: zty.ContextMenuData, celldata: Record<string, any>, contents:string, callback: any) {
+    if(item.data.target=="note")
+    {
+      return this.note(item, celldata, contents, callback);
+    }
     if(item.data.target=="cell")
     {
       return this.cellnote(item, celldata, contents, callback);
@@ -99,6 +103,17 @@ const AiNotes = {
   {
     let note = new Zotero.Item('note');
     note.setNote(contents);
+    note.parentID = celldata.itemid;
+    note.addTag(celldata.column);
+    note.saveTx().then(function(){
+      AiNotes.editnote(item, note, callback);
+    });
+  },
+  
+  async note(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  {
+    const note = Zotero.Items.get(item.data.noteid);
+    note.setNote(note.getNote()+contents);
     note.parentID = celldata.itemid;
     note.addTag(celldata.column);
     note.saveTx().then(function(){

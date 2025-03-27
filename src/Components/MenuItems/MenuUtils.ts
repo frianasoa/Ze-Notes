@@ -15,16 +15,16 @@ const MenuUtils = {
     context.MenuItems.main["sepBaseai"] = {label: '---'};
   },
   
-  insertitems(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>, params: any[])
+  insertitems(menu: any, resetkeys: any, event: React.MouseEvent<HTMLElement, MouseEvent>, params: any[])
   {
     const target = event.currentTarget || event.target;
     for(const param of params)
     {
-      MenuUtils.insert(context, target, param);
+      MenuUtils.insert(menu, resetkeys, target, param);
     }
   },  
-  
-  insert(menu: any, target: any, param: any) {
+    
+  insert(menu: any, resetkeys: any, target: any, param: any) {
     const keys = param.keys.split("/");
     let currentLevel = menu;
     for (const key of keys) {
@@ -33,10 +33,34 @@ const MenuUtils = {
       }
       currentLevel = currentLevel[key];
     }
-    currentLevel.label = param.label;
-    currentLevel.icon = param.icon;
-    currentLevel.onClick = param.onClick;
-    currentLevel.data = param.data;
+    
+    if(param.init!="true")
+    {
+      currentLevel.label = param.label;
+      currentLevel.icon = param.icon;
+      currentLevel.onClick = param.onClick;
+      currentLevel.data = param.data;
+      currentLevel.title = param.data?.title;
+      resetkeys.push(param.keys);
+    }
+  },
+  
+  resetitems(menu: any, resetkeys: any, event: React.MouseEvent<HTMLElement, MouseEvent>, params: any[])
+  {
+    const target = event.currentTarget || event.target;
+    for(const param of params)
+    {
+      MenuUtils.reset(menu, resetkeys, target, param);
+    }
+  },
+  
+  reset(menu: any, resetkeys: any, target: any, param: any)
+  {
+    MenuUtils.insert(menu, resetkeys, target, {
+      label: "",
+      key: param.key,
+      keys: param.keys,
+    })
   }
 }
 

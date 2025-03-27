@@ -10,6 +10,7 @@ const MenuItems: any = {
   hiddenrows: [] as string[],
   main: MainMenu.data,
   header: HeaderMenu.data,
+  resetkeys: MainMenu.resetkeys,
   
   init(hiddencolumns: string[], hiddenrows: string[], initColumnWidths:()=>void, collectionid: string) {
     this.hiddencolumns = hiddencolumns;
@@ -39,9 +40,9 @@ const MenuItems: any = {
     
   },
   
-  resetmain()
+  resetmain(menu: any)
   {
-    MainMenu.reset();
+    MainMenu.reset(menu);
   }
 };
 

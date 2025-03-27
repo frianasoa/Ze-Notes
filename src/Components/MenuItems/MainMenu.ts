@@ -23,7 +23,9 @@ const Main = {
     openai: {
       submenu: {
         openainote:{data: {target: "note"}},
+        openainotepart:{data: {target: "notepart"}},
         openaiannotation:{data: {target: "annotation"}},
+        openainotesep: {label: ""},
         openaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.openaiprompt, data: {target: "cell"}},
         openairow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.openaiprompt, data: {target: "row"}},
         openaicolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.openaiprompt, data: {target: "column"}},
@@ -35,7 +37,7 @@ const Main = {
     customai: {
       submenu: {
         customainote:{data: {target: "note"}},
-        customainotepart:{data: {target: "note-part"}},
+        customainotepart:{data: {target: "notepart"}},
         customaiannotation:{data: {target: "annotation"}},
         customaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.customaiprompt, data: {target: "cell", key: "custom-ai"}},
         customairow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.customaiprompt, data: {target: "row", key: "custom-ai"}},
@@ -79,31 +81,68 @@ const Main = {
     settings: {label: 'Open settings', icon: Icons.data["settings"], onClick: Actions.opensettings }
   } as any,
   
-  reset()
+  resetkeys: [
+    "showannotation",
+    "editnote",
+    "ocrnoteimage",
+    "deletenote",
+    "showattachedfile",
+    "createnote",
+    "sepnote",
+    "translateannotation",
+    "translateannotationwithdeepl",
+    "septranslate",
+    "editannotationcomment",
+    "ocrannotationimage",
+    "openai",
+    "openai/submenu/openaicell",
+    "openai/submenu/openairow",
+    "customai",
+    "customai/submenu/customaicell",
+    "customai/submenu/customairow"
+  ],
+  
+  reset(menu: any)
   {
-    Main.data["showannotation"] = {}
-    Main.data["editnote"] = {}
-    Main.data["ocrnoteimage"] = {}
-    Main.data["deletenote"] = {}
-    Main.data["showattachedfile"] = {}
-    Main.data["createnote"] = {}
-    Main.data["sepnote"] = {label: ""}
-    Main.data["translateannotation"] = {}
-    Main.data["translateannotationwithdeepl"] = {}
-    Main.data["septranslate"] = {}
-    Main.data["editannotationcomment"] = {}
-    Main.data["ocrannotationimage"] = {}
+    // dynamically reset initialized menuitems
+    for(const k of Main.resetkeys as string[]) {
+      const keys = k.split("/");
+      let currentLevel = menu;
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (!currentLevel[key]) {
+          return;
+        }
+        currentLevel = currentLevel[key];
+        if (i === keys.length - 1 && currentLevel.label) {
+          currentLevel.label = "";
+        }
+      }
+    }
     
-    Main.data["openai"]["label"] = "";
-    Main.data["openai"]["submenu"]["openaicell"]["label"] = "Prompt on cell";
-    Main.data["openai"]["submenu"]["openairow"]["label"] = "Prompt on row";
+    // Main.data["showannotation"] = {}
+    // Main.data["editnote"] = {}
+    // Main.data["ocrnoteimage"] = {}
+    // Main.data["deletenote"] = {}
+    // Main.data["showattachedfile"] = {}
+    // Main.data["createnote"] = {}
+    // Main.data["sepnote"] = {label: ""}
+    // Main.data["translateannotation"] = {}
+    // Main.data["translateannotationwithdeepl"] = {}
+    // Main.data["septranslate"] = {}
+    // Main.data["editannotationcomment"] = {}
+    // Main.data["ocrannotationimage"] = {}
     
-    Main.data["customai"]["label"] = "";
-    Main.data["customai"]["submenu"]["customaicell"]["label"] = "Prompt on cell";
-    Main.data["customai"]["submenu"]["customairow"]["label"] = "Prompt on row";
+    // Main.data["openai"]["label"] = "";
+    // Main.data["openai"]["submenu"]["openaicell"]["label"] = "Prompt on cell";
+    // Main.data["openai"]["submenu"]["openairow"]["label"] = "Prompt on row";
+    
+    // Main.data["customai"]["label"] = "";
+    // Main.data["customai"]["submenu"]["customaicell"]["label"] = "Prompt on cell";
+    // Main.data["customai"]["submenu"]["customairow"]["label"] = "Prompt on row";
     
     Main.data["aidatasettings"] = {};
-    
     for(let i = 0; i<20; i++)
     {
       const key = `customai${String(i).padStart(2, "0")}`;
