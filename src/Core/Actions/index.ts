@@ -429,6 +429,11 @@ const Actions: ActionsType = {
       target = celldata.target.closest(".zcontent");
     }
     
+    else if(item.data.target=="notepart")
+    {
+      target = celldata.target.closest(".zcontent");
+    }
+    
     else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
@@ -470,6 +475,11 @@ const Actions: ActionsType = {
       
       OpenAI.prompt(JSON.stringify(promptdata)).then((data: any)=>{
         let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
+        if(item.data.target=="notepart")
+        {
+          contents = "[[AI output on \""+item.data.title+"\"]]<br/>\n"+data;
+        }
+        
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })

@@ -1,7 +1,7 @@
 import TablePrefs from '../TablePrefs'
 
 const AiNotes = {
-  editnote(item: zty.ContextMenuData, note: any, callback: any)
+  editnote(item: zty.ContextMenuData, note: any, callback: any, discardable=true)
   {
     const window_ = Zotero.getMainWindow();
     const noteurl = "chrome://zotero/content/note.xhtml";
@@ -18,10 +18,18 @@ const AiNotes = {
     }
     win.dataset = win.dataset || {};
     win.dataset.noteid = note.id;
+    
     win.addEventListener("close", function(event){
       const target = event.currentTarget || event.target;
       const noteid = (target as Window).dataset.noteid || "";
-      AiNotes.deletenote(win, noteid, callback);
+      if(discardable)
+      {
+        AiNotes.deletenote(win, noteid, callback);
+      }
+      else
+      {
+        callback();
+      }
     });
     
     win.addEventListener("load", function(event){
@@ -31,27 +39,30 @@ const AiNotes = {
       const ztoolbar = target.document.createElement("div");
       ztoolbar.setAttribute("style", "padding: 0.5em; text-align: right; border-top: solid 1px #ccc;");
       
-      const button = target.document.createElement("button");
-      button.dataset.noteid  = note.id;
-      button.innerHTML = "Save";
-      button.setAttribute("style", "margin-right: 0.3em;");
-      button.addEventListener("click", function(e){
-        win?.close();
-        callback();
-      })
       
-      const closebutton = target.document.createElement("button");
-      closebutton.dataset.noteid  = note.id;
-      closebutton.innerHTML = "Discard";
-      closebutton.setAttribute("style", "margin-right: 0.3em;");
-      closebutton.addEventListener("click", function(e){
-        AiNotes.deletenote(win, (e.target as HTMLElement).dataset.noteid || "", callback);
-        win?.close();
-      })
-      
-      ztoolbar.appendChild(button);
-      ztoolbar.appendChild(closebutton);
-      noteeditor?.parentElement?.parentElement?.appendChild(ztoolbar);
+      if(discardable)
+      {
+        const button = target.document.createElement("button");
+        button.dataset.noteid  = note.id;
+        button.innerHTML = "Save";
+        button.setAttribute("style", "margin-right: 0.3em;");
+        button.addEventListener("click", function(e){
+          win?.close();
+          callback();
+        })
+        
+        const closebutton = target.document.createElement("button");
+        closebutton.dataset.noteid  = note.id;
+        closebutton.innerHTML = "Discard";
+        closebutton.setAttribute("style", "margin-right: 0.3em;");
+        closebutton.addEventListener("click", function(e){
+          AiNotes.deletenote(win, (e.target as HTMLElement).dataset.noteid || "", callback);
+          win?.close();
+        })
+        ztoolbar.appendChild(button);
+        ztoolbar.appendChild(closebutton);
+        noteeditor?.parentElement?.parentElement?.appendChild(ztoolbar);
+      }
     });
   },
   
@@ -77,7 +88,7 @@ const AiNotes = {
   },
   
   async create(item: zty.ContextMenuData, celldata: Record<string, any>, contents:string, callback: any) {
-    if(item.data.target=="note")
+    if(item.data.target=="note" || item.data.target=="notepart")
     {
       return this.note(item, celldata, contents, callback);
     }
@@ -113,11 +124,12 @@ const AiNotes = {
   async note(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
   {
     const note = Zotero.Items.get(item.data.noteid);
-    note.setNote(note.getNote()+contents);
+    note.setNote(note.getNote()+"<br/><br/>\n\n"+contents);
     note.parentID = celldata.itemid;
     note.addTag(celldata.column);
     note.saveTx().then(function(){
-      AiNotes.editnote(item, note, callback);
+      const discardable = false;
+      AiNotes.editnote(item, note, callback, discardable);
     });
   },
   
