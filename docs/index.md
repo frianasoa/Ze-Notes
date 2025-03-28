@@ -25,6 +25,8 @@ Fill in the URL, the API key, and the model. Those variables are used in the req
 "System message" and "User prompt" have generic default values but you can go ahead and fill them too.
 
 Here is a working sample value for options.
+
+*Options sample*
 ```
 {
   "method": "POST",
@@ -45,7 +47,7 @@ Here is a working sample value for options.
 
 Please see how the variables are included and adapt to your API. 
 
-Here is the format function 
+*Format function*
 ```
 (data) => {
   return data.choices.map(function(e) {
@@ -57,6 +59,7 @@ Here is the format function
 After setting those values, you will see "Using Custom Ai" in the context menu. Try and adjust the "System message" and the "User prompt" untill you are satisfied with the results. Once you are satisfied, you may click save to record the current settings. 
 
 ![image](./images/settings-custom-ai-02.png)
+*How to record a Custom AI API call*
 
 Once you click "OK", the current Custom AI settings will be recorded and will show in "Saved Custom AI". You can add as many Custom AI menu as you want. However, avoid long names that could disrupt the menu.
 
@@ -64,5 +67,5 @@ Check "Use" if you want it to show in the context menu of the main table. Unchec
 
 The image below shows how the settings are reflected on the context menu of the main table.
 
-![image](./images/settings-custom-ai-03.png){ width=45%}
-
+![image](./images/settings-custom-ai-03.png)
+*Context menu containing Custom AI menu*
