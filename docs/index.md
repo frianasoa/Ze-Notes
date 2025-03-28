@@ -67,5 +67,5 @@ Check "Use" if you want it to show in the context menu of the main table. Unchec
 
 The image below shows how the settings are reflected on the context menu of the main table.
 
-*Context menu reflecting Custom AI settings*
+*Context menu reflecting Custom AI*
 ![image](./images/settings-custom-ai-03.png)
