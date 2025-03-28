@@ -16,7 +16,9 @@ https://github.com/frianasoa/Ze-Notes/blob/v1/README.md
 # Settings
 ## Custom AI Settings
 You can have several Custom AI requests that can be called on different parts of your data (table, row, column, cell, annotations, notes, note parts, etc.). The image below shows how to set one up.
+
 ![image](./images/settings-custom-ai-01.png)
+*Custom AI Settings*
 
 Fill in the URL, the API key, and the model. Those variables are used in the request later. Construct the options variable to be sent with the request. Also, add a function to format the data from the API. The function should return a list. For now, only the first element of such a list is added to the main table upon execution.
 
@@ -40,6 +42,7 @@ Here is a working sample value for options.
   }
 }
 ```
+
 Please see how the variables are included and adapt to your API. 
 
 Here is the format function 
