@@ -40,24 +40,36 @@ const CustomAi = {
     
     return data;
   },
+  
+  applyvar(obj: any, params: Record<string, string>): any {
+    if (typeof obj === "string") {
+      return Object.keys(params).reduce(
+        (str, key) => str.replace(new RegExp(`\\$\\{${key}\\}`, "g"), params[key]),
+        obj
+      );
+    } else if (Array.isArray(obj)) {
+      return obj.map(item => CustomAi.applyvar(item, params));
+    } else if (typeof obj === "object" && obj !== null) {
+      return Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [key, CustomAi.applyvar(value, params)])
+      );
+    }
+    return obj;
+  },
 
   async prompt(data: string, key: string) {
-    const params = await this.params(key) as any;    
-    let options = params["options"]
-		.replace("${apikey}", params["apikey"])
-		.replace("${model}", params["model"])
-		.replace("${systemmessage}", this.escapejson(params["systemmessage"]))
-		.replace("${userprompt}", this.escapejson(params["userprompt"]))
-		.replace("${data}", this.escapedata(data))
-    .split("\n").join(" ")
-    
+    let params = await this.params(key) as any;
+    params.data = data;
+    let options = {} as any;
     try {
-      options = JSON.parse(options);
+      options = JSON.parse(params["options"].split("\n").join(" "));
     }
     catch(e)
     {
       throw "Please check Custom AI options settings: \n"+e;
-    }    
+    }
+    options = this.applyvar(options, params) as any;
+    options["body"] = JSON.stringify(options["body"]);    
     return Request.send(params["url"], options, params["format"]);
   },
   
