@@ -76,29 +76,63 @@ const CellMenu = {
         data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: event?.currentTarget.closest(".main-table")}
       }
       
+      // Custom AI
       if(ZPrefs.get("custom-ai-apikey"))
       {
-        context.MenuItems.main["aidatasettings"] = {
-          label: 'Ai data settings',
-          onClick: Actions.showaidatasettings,
-          icon: FaListCheck,
-          data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: target?.closest(".main-table")}
-        };
+        const params = 
+        [
+          {
+            label: "Using Custom AI",
+            key: "customai",
+            keys: "customai",
+            onClick: Actions.customaiprompt,
+            icon: FaC,
+          },
+          {
+            label: "Prompt on cell",
+            key: "customaicell",
+            keys: "customai/submenu/customaicell",
+            data: { target: "cell", context: context },
+            onClick: Actions.customaiprompt,
+            icon: FaRegSquare,
+          },
+          {
+            label: "Prompt on row",
+            key: "customairow",
+            keys: "customai/submenu/customairow",
+            data: { target: "row", context: context },
+            onClick: Actions.customaiprompt,
+            icon: FaTableColumns,
+          },
+          {
+            label: "Prompt on column",
+            key: "customaicolumn",
+            keys: "customai/submenu/customaicolumn",
+            data: { target: "column", context: context },
+            onClick: Actions.customaiprompt,
+            icon: FaTableList,
+          },
+          {
+            label: "Prompt on table",
+            key: "customaitable",
+            keys: "customai/submenu/customaitable",
+            data: { target: "table", context: context },
+            onClick: Actions.customaiprompt,
+            icon: FaTableCells,
+          },
+        ];
         
-        context.MenuItems.main["customai"]["label"] = "Using Custom AI";
-        context.MenuItems.main["customai"]["icon"] = FaC;
+        MenuUtils.aidata(context, target);
+        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
         
         if(target.dataset.itemtype=="note")
         {
-          context.MenuItems.main["customai"]["submenu"]["customaicell"]["label"] = "";
-          context.MenuItems.main["customai"]["submenu"]["customairow"]["label"] = "";
+          const params = [
+            {key: "customaicell", keys: "customai/submenu/customaicell"},
+            {key: "customairow", keys: "customai/submenu/customairow"},
+          ]
+          MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
         }
-        context.MenuItems.main["sepai"] = {label: '---'};
-        
-        // Add context
-        Object.keys(context.MenuItems.main["customai"].submenu).forEach(key => {
-          context.MenuItems.main["customai"].submenu[key]["data"]["context"] = context;
-        });
       }
       
       // Open AI

@@ -1,3 +1,4 @@
+import Config from "../../Config"
 var pretty = require("pretty");
 
 import sanitizeHtml from 'sanitize-html';
@@ -167,7 +168,7 @@ const Html = {
       <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Zotahiry - Notes</title>
+        <title>${Config.name}</title>
         <style>
           table {
             border-collapse: collapse;
