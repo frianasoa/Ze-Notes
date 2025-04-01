@@ -11,8 +11,10 @@ const MenuUtils = {
       icon: FaListCheck,
       data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: target?.closest(".main-table")}
     };
-    context.MenuItems.main["sepai"] = {label: '---'};
-    context.MenuItems.main["sepBaseai"] = {label: '---'};
+    
+    context.MenuItems.main["sepai"] = {
+      label: '---'
+    };
   },
   
   insertitems(menu: any, resetkeys: any, event: React.MouseEvent<HTMLElement, MouseEvent>, params: any[])

@@ -10,11 +10,11 @@ const CellMenu = {
   show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
   {
     var target = event.currentTarget || event.target;
-    const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]"); 
+    const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]");
     if(context && attachments.length>0)
     {
       const submenu: Record<string, any> = {};
-      
+
       for(const att of attachments)
       {
         if(!att.filetype)
@@ -24,7 +24,7 @@ const CellMenu = {
         let icon = FaFile;
         let label = 'Open attachment'
         let iconColor = null;
-        if(att.filetype === "text/html") 
+        if(att.filetype === "text/html")
         {
           icon = FaHtml5;
           label = 'Open HTML';
@@ -40,7 +40,7 @@ const CellMenu = {
           icon = FaFileImage;
           label = 'Open Image'
         }
-        
+
         submenu[att.key] = {
           label: label,
           icon: icon,
@@ -50,36 +50,36 @@ const CellMenu = {
         }
       }
       context.MenuItems.main["showattachedfile"] = {
-        label: "Attachment", 
+        label: "Attachment",
         icon: FaFilePdf,
         iconColor: "#f80c04",
         submenu: submenu
       }
     }
-    
+
     if(context)
     {
       if(dataset.itemtype!="note")
       {
         context.MenuItems.main["createnote"] = {
-          label: 'New note', 
-          icon: context.MenuItems.icons["note"], 
-          onClick: Actions.createnote 
+          label: 'New note',
+          icon: context.MenuItems.icons["note"],
+          onClick: Actions.createnote
         }
         context.MenuItems.main["sepnote"] = {label: '---'};
       }
-      
+
       context.MenuItems.main["exportas"] = {
         label: "Export",
         onClick: Actions.exportas,
         icon: FaFileExport,
         data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: event?.currentTarget.closest(".main-table")}
       }
-      
+
       // Custom AI
-      if(ZPrefs.get("custom-ai-apikey"))
+      if(ZPrefs.get("custom-ai-url", "").trim())
       {
-        const params = 
+        const params =
         [
           {
             label: "Using Custom AI",
@@ -92,7 +92,7 @@ const CellMenu = {
             label: "Prompt on cell",
             key: "customaicell",
             keys: "customai/submenu/customaicell",
-            data: { target: "cell", context: context },
+            data: { target: "cell", context: context, key: "custom-ai"},
             onClick: Actions.customaiprompt,
             icon: FaRegSquare,
           },
@@ -100,7 +100,7 @@ const CellMenu = {
             label: "Prompt on row",
             key: "customairow",
             keys: "customai/submenu/customairow",
-            data: { target: "row", context: context },
+            data: { target: "row", context: context, key: "custom-ai"},
             onClick: Actions.customaiprompt,
             icon: FaTableColumns,
           },
@@ -108,7 +108,7 @@ const CellMenu = {
             label: "Prompt on column",
             key: "customaicolumn",
             keys: "customai/submenu/customaicolumn",
-            data: { target: "column", context: context },
+            data: { target: "column", context: context, key: "custom-ai" },
             onClick: Actions.customaiprompt,
             icon: FaTableList,
           },
@@ -116,15 +116,15 @@ const CellMenu = {
             label: "Prompt on table",
             key: "customaitable",
             keys: "customai/submenu/customaitable",
-            data: { target: "table", context: context },
+            data: { target: "table", context: context, key: "custom-ai"},
             onClick: Actions.customaiprompt,
             icon: FaTableCells,
           },
         ];
-        
+
         MenuUtils.aidata(context, target);
         MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-        
+
         if(target.dataset.itemtype=="note")
         {
           const params = [
@@ -134,7 +134,7 @@ const CellMenu = {
           MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
         }
       }
-      
+
       // Open AI
       ZPrefs.getb("openai-apikey").then((key: string)=>{
         if(key)
@@ -178,11 +178,6 @@ const CellMenu = {
               data: { target: "table", context: context },
               onClick: Actions.openaiprompt,
               icon: FaTableCells
-            },
-            {
-              label: "---",
-              key: "sepai",
-              keys: "sepai"
             }
           ];
 
@@ -199,29 +194,24 @@ const CellMenu = {
           }
         }
       });
-      
+
       // Custom AI
       CustomAI.settinglist().then(settings=>{
         if(Object.keys(settings).length>0)
         {
           MenuUtils.aidata(context, target);
-          const params = [
-            { label: "---", key: "sepai", keys: "sepai" },
-            { label: "---", key: "sepcustomai", keys: "sepcustomai" },
-          ]
-          MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
         }
-        
+
         let i = 0;
         for (const k of Object.keys(settings).sort()) {
           const setting = settings[k];
           const key = `customai${String(i).padStart(2, "0")}`;
-          
+
           if(!setting.use)
           {
             continue;
           }
-          
+
           const params = [
             {
               label: setting.name,
@@ -244,43 +234,43 @@ const CellMenu = {
               // init: "true",
             // },
             {
-              label: "Prompt on cell", 
+              label: "Prompt on cell",
               keys: key+"/submenu/customaicell",
               icon: FaRegSquare,
-              onClick: Actions.customaiprompt, 
-              data: { target: "cell", context, key: k } 
-            },
-            { 
-              label: "Prompt on row", 
-              keys: key+"/submenu/customairow",
-              icon: FaTableColumns,  
-              onClick: Actions.customaiprompt, 
-              data: { target: "row", context, key: k } 
-            },
-            { 
-              label: "Prompt on column", 
-              keys: key+"/submenu/customaicolumn",
-              icon: FaTableList,  
-              onClick: Actions.customaiprompt, 
-              data: { target: "column", context, key: k } 
+              onClick: Actions.customaiprompt,
+              data: { target: "cell", context, key: k }
             },
             {
-              label: "Prompt on table", 
+              label: "Prompt on row",
+              keys: key+"/submenu/customairow",
+              icon: FaTableColumns,
+              onClick: Actions.customaiprompt,
+              data: { target: "row", context, key: k }
+            },
+            {
+              label: "Prompt on column",
+              keys: key+"/submenu/customaicolumn",
+              icon: FaTableList,
+              onClick: Actions.customaiprompt,
+              data: { target: "column", context, key: k }
+            },
+            {
+              label: "Prompt on table",
               keys: key+"/submenu/customaitable",
-              icon: FaTableCells,  
-              onClick: Actions.customaiprompt, 
+              icon: FaTableCells,
+              onClick: Actions.customaiprompt,
               data: { target: "table", context, key: k }
             },
             {label: "---", key: "sepcustomai", keys: "sepcustomai"},
           ];
           MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          
-                  
+
+
           if(target.dataset.itemtype=="note")
           {
             context.MenuItems.main[key]["submenu"][key+"cell"]["label"] = "";
             context.MenuItems.main[key]["submenu"][key+"row"]["label"] = "";
-            
+
             const params = [
               {key: key, keys: key+"/submenu/customaicell"},
               {key: key, keys: key+"/submenu/customairow"},

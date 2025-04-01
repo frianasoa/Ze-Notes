@@ -37,7 +37,7 @@ const Html2Docx = {
         if (text) {
           text = text+" ";
           let textStyle = Html2Docx.getstyles(node as HTMLElement);
-          
+
           const textobj = {text, ...textStyle};
           currentRuns.push(new TextRun(textobj));
         }
@@ -94,8 +94,8 @@ const Html2Docx = {
           if (text) {
             text = text+" ";
             const textobj = {text, ...textStyle};
-            Zotero.log(JSON.stringify(textStyle));
-            Zotero.log(JSON.stringify(textobj));
+            //Zotero.log(JSON.stringify(textStyle));
+            //Zotero.log(JSON.stringify(textobj));
             currentRuns.push(new TextRun(textobj));
           }
         }
@@ -111,10 +111,10 @@ const Html2Docx = {
     }
     return children;
   },
-  
+
   getstyles(node: HTMLElement | null, self=false) {
     let textStyle: any = {};
-    
+
     const tagName = node?.tagName?.toLowerCase();
     if(tagName)
     {
@@ -125,9 +125,9 @@ const Html2Docx = {
       if (tagName === "sub") textStyle.subscript = true;
       if (tagName === "sup") textStyle.superscript = true;
     }
-    
+
     let inlineStyle = null;
-    
+
     if(self)
     {
       inlineStyle = node?.style;
@@ -136,7 +136,7 @@ const Html2Docx = {
     {
       inlineStyle = (node?.closest("[style]") as HTMLElement)?.style;
     }
-    
+
     if(inlineStyle)
     {
       if (inlineStyle.fontWeight === "bold") textStyle.bold = true;
@@ -173,11 +173,11 @@ const Html2Docx = {
     }
     return textStyle;
   },
-  
+
   async convertSvgToPng(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new window.Image();
-      
+
       img.onload = () => {
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
@@ -191,12 +191,12 @@ const Html2Docx = {
           reject(new Error("Canvas context unavailable"));
         }
       };
-      
+
       img.onerror = reject;
       img.src = url;
     });
   },
-  
+
   hexcolor(color: string) {
     const rgbValues = color.match(/\d+/g);
     if (rgbValues && rgbValues.length === 3) {
@@ -206,16 +206,16 @@ const Html2Docx = {
       return color;
     }
   },
-    
+
   async processImage(el: HTMLElement): Promise<ImageRun | TextRun> {
     let src = el.getAttribute("src") || el.getAttribute("alt");
     if (!src) return new TextRun("[Image missing]");
-    
+
     if(src.toLowerCase().endsWith(".svg") || src.startsWith("data:image/svg+xml;") || src.startsWith("data:image/svg+xml,"))
     {
       src = await this.convertSvgToPng(src);
     }
-    
+
     try {
       const response = await fetch(src);
       if (!response.ok) throw new Error("Failed to fetch image");
@@ -224,16 +224,16 @@ const Html2Docx = {
       const arrayBuffer = await blob.arrayBuffer();
       const mimeType = blob.type;
       const extension = mimeType.split("/")[1] as "jpg" | "png" | "gif" | "bmp";
-      
-      let width = 100; 
+
+      let width = 100;
       let height = 100;
-      
+
       if(el.className=="group-icon")
       {
         width = 10;
         height = 10;
       }
-      
+
       return new ImageRun({
         type: extension,
         data: arrayBuffer,

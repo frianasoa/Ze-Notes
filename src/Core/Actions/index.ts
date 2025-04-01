@@ -397,7 +397,7 @@ const Actions: ActionsType = {
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
 
       CustomAI.prompt(JSON.stringify(promptdata), item.data.key).then((data: any)=>{
-        let contents = "[[AI output on this "+item.data.target+"]]\n"+String(data).trim();
+        let contents = "[[AI output on this "+item.data.target+"]]<br/>"+String(data).trim();
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
