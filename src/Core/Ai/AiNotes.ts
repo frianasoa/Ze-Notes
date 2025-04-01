@@ -1,4 +1,5 @@
 import TablePrefs from '../TablePrefs'
+import Actions from '../Actions'
 
 const AiNotes = {
   editnote(item: zty.ContextMenuData, note: any, callback: any, discardable=true)
@@ -86,13 +87,17 @@ const AiNotes = {
       callback();
     }
   },
-  
+
   async create(item: zty.ContextMenuData, celldata: Record<string, any>, contents:string, callback: any) {
-    if(item.data.target=="note" || item.data.target=="notepart")
+    if(item.data.target=="quote")
+    {
+      return this.quote(item, celldata, contents, callback);
+    }
+    else if(item.data.target=="note" || item.data.target=="notepart")
     {
       return this.note(item, celldata, contents, callback);
     }
-    if(item.data.target=="cell")
+    else if(item.data.target=="cell")
     {
       return this.cellnote(item, celldata, contents, callback);
     }
@@ -171,6 +176,21 @@ const AiNotes = {
     note.saveTx().then(function(){
       AiNotes.editnote(item, note, callback);
     });
+  },
+  
+  async quote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  {
+    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    const annotation = Zotero.Items.get(annotationid);
+    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
+    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    item.data.callback = (value: any) => {
+      if(item.data.context)
+      {
+        item.data.context.setCommonDialogState?.(value);
+      }
+    }
+    Actions.editannotationcomment(item, celldata);
   },
   
   async getrow(collectionid: number, libraryid: number)

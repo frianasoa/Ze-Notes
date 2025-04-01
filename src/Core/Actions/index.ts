@@ -338,8 +338,8 @@ const Actions: ActionsType = {
     let target = null;
     let tags = [];
     let noparent = false;
-
-    if(item.data.target=="annotation")
+    
+    if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
     }
@@ -397,7 +397,7 @@ const Actions: ActionsType = {
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
 
       CustomAI.prompt(JSON.stringify(promptdata), item.data.key).then((data: any)=>{
-        let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
+        let contents = "[[AI output on this "+item.data.target+"]]\n"+String(data).trim();
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
@@ -419,7 +419,7 @@ const Actions: ActionsType = {
     let tags = [];
     let noparent = false;
     
-    if(item.data.target=="annotation")
+    if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
     }

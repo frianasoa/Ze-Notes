@@ -33,14 +33,14 @@ const CustomAiMenu = {
           ...param, 
           keys: key + "/submenu/" + param.key,
           onClick: Actions.customaiprompt,
-          data: {target: param.target, context, key: k, title: param.data?.title},
+          data: {...param.data, key: k||param.key},
         });
       }
       
       MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, [
         {
           label: "---",
-          key: "customailastsep",
+          key: "customaipartsep",
           keys: key + "/submenu/customaipartsep"
         }
       ]);

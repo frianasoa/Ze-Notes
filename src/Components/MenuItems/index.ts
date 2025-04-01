@@ -13,6 +13,7 @@ const MenuItems: any = {
   resetkeys: MainMenu.resetkeys,
   
   init(hiddencolumns: string[], hiddenrows: string[], initColumnWidths:()=>void, collectionid: string) {
+    this.resetmain();
     this.hiddencolumns = hiddencolumns;
     this.hiddenrows = hiddenrows;
     this.header.data = {callback: initColumnWidths};

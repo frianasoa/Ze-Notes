@@ -6,20 +6,17 @@ import {FaQuoteLeft}  from "react-icons/fa6";
 const AnnotationQuoteMenu = {
   show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>) 
   {
-    CustomAiMenu.show(context, event, {
-      label: "Prompt on quote",
-      key: "customaiannotation",
-      target: "annotation"
-    });
-    
-    // Add openai
     const target = event.currentTarget || event.target;
+        
+    
+    
+    // Open AI
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
     [
       {
         label: "Prompt on quote",
-        key: "openaiannotation",
-        keys: "openai/submenu/openaiannotation",
+        key: "openaiquote",
+        keys: "openai/submenu/openaiquote",
         icon: FaQuoteLeft,
         data: { target: "quote", context: context },
         onClick: Actions.openaiprompt,
@@ -28,6 +25,34 @@ const AnnotationQuoteMenu = {
         label: "---",
         key: "openainotesep",
         keys: "openai/submenu/openainotesep"
+      }
+    ]);
+    
+    // Custom AI default
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    [
+      {
+        label: "Prompt on quote",
+        key: "customaiquote",
+        keys: "customai/submenu/customaiquote",
+        icon: FaQuoteLeft,
+        data: {target: "quote", context: context, key: "custom-ai"},
+        onClick: Actions.customaiprompt,
+      },
+      {
+        label: "---",
+        key: "customainotesep",
+        keys: "customai/submenu/customainotesep"
+      }
+    ]);
+    
+    // CustomAi multiple
+    CustomAiMenu.show(context, event, [
+      {
+        label: "Prompt on quote",
+        key: "customaiquote",
+        data: { target: "quote", context: context },
+        icon: FaQuoteLeft
       }
     ]);
   }
