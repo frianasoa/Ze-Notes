@@ -1,19 +1,6 @@
 <vbox onload="ZeNotes_Preferences.init()">
-	<groupbox>
-		<label><html:h2>Translation</html:h2></label>
-    <html:div>
-      Language: <html:select class="zenotes-values" data-key="translation-language"></html:select><html:br/>
-      DeepL API key: <html:input class="zenotes-values" data-key="deepl-api-key" type="password" /><html:br/>
-      Google translate API key: <html:input class="zenotes-values" data-key="google-translate-api-key" type="password" /><html:br/>
-    </html:div>
-  </groupbox>
-	<groupbox>
-		<label><html:h2>Tesseract</html:h2></label>
-    <html:div>
-      Language: <html:select class="zenotes-values" data-key="tesseract-language"></html:select> 
-    </html:div>
-  </groupbox>
-	<groupbox include="parts/openai.xhtml" label="OpenAI Settings"></groupbox>
-	<groupbox include="parts/custom-ai.xhtml" label="Custom AI Settings">
-  </groupbox>
+  <groupbox include="parts/translation.xhtml" label="Translation"></groupbox>
+	<groupbox include="parts/tesseract.xhtml" label="Tesseract"></groupbox>
+	<groupbox include="parts/openai.xhtml" label="OpenAI"></groupbox>
+	<groupbox include="parts/custom-ai.xhtml" label="Custom AI"></groupbox>
 </vbox>
