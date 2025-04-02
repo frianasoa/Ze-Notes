@@ -2,8 +2,12 @@
   box-sizing: border-box;
 }
 
-select, input, option, textarea {
-  
+hr {
+  width: 100%;
+  border: none;
+  background-color: lightgray; 
+  height: 1px; 
+  margin-top: 1em;
 }
 
 .zenotes-values {

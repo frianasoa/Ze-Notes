@@ -1,6 +1,6 @@
 import Actions from '../../Core/Actions';
 import Icons from "./Icons";
-import { FaArrowsRotate, FaEye, FaEyeSlash, FaVectorSquare, FaBan, FaHashtag, FaTableCells, FaFilter} from "react-icons/fa6";
+import { FaArrowsRotate, FaEye, FaEyeSlash, FaVectorSquare, FaBan, FaHashtag, FaTableCells, FaFilter, FaMagnifyingGlass} from "react-icons/fa6";
 
 
 const Header = {
@@ -71,6 +71,7 @@ const Header = {
     sep: {label: "---"},
     exportas: {},
     sep2: {label: '---'},
+    findinpage: { label: 'Find in page [CTRL+F]', icon: FaMagnifyingGlass, onClick: Actions.opentextfinder },
     reloadpage: { label: 'Reload page', icon: FaArrowsRotate, onClick: Actions.reload },
     settings: {label: 'Open settings', icon: Icons.data["settings"], onClick: Actions.opensettings }
   }

@@ -24,7 +24,7 @@ type TableProps = {
 };
 
 const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, collectionid, collectionname, libraryid}) => {
-
+  
   const [translationDialogState, setTranslationDialogState] = useState({
     title: "My dialog",
     children: <p>default</p>,

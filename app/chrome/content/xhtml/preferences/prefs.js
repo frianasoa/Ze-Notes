@@ -35,6 +35,8 @@ const ZeNotes_Preferences = {
           doc.documentElement.childNodes.forEach(node => {
             groupbox.appendChild(document.importNode(node, true));
           });
+          
+          groupbox.appendChild(document.createElement("hr"));
         })
         .catch(error => console.error("Error loading:", file, error));
 

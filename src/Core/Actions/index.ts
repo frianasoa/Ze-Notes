@@ -20,6 +20,8 @@ import ExportSettingDialog from "../../Components/Dialog/ExportSettingDialog";
 import DataSettingDialog from "../../Components/Dialog/DataSettingDialog";
 import {FaFolder, FaTag, FaTableCellsLarge, FaHighlighter, FaTags, FaCircleXmark, FaIcons, FaQuoteLeft, FaBook, FaNoteSticky }  from "react-icons/fa6";
 
+import { emitter } from '../../Components/EventEmitter';
+
 type ActionsType = {
 	rootURI: string;
   init(config: {rootURI: string}): void;
@@ -48,6 +50,7 @@ type ActionsType = {
   opensettings(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   showattachment(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   resetwidths(item: zty.ContextMenuData, celldata: Record<string, any>): void;
+  opentextfinder(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   filesafename(name: string): string;
 };
 
@@ -555,6 +558,13 @@ const Actions: ActionsType = {
     }
   },
 
+  opentextfinder(item: zty.ContextMenuData, celldata: Record<string, any>)
+  {
+    setTimeout(() => {
+      emitter.emit('toggleFinder', true);
+    }, 10);
+  },
+  
   showattachment(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     var attachment = Zotero.Items.get(item.data.id);

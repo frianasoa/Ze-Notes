@@ -23,8 +23,9 @@
         }
         
         footer {
-          height: 1.2em;
-          text-align: right;
+          height: 2em;
+          display: flex;
+          flex-direction: row;
           padding-right: 1em;
         }
         main {
@@ -55,6 +56,8 @@
           Engine.Components.Notes.show(event.currentTarget, data, Engine.Core.Data.collectionID, pageinfo.title, pageinfo.libraryID);
           document.getElementById("page-title").innerText=pageinfo.title;
 				})
+        
+        Engine.Components.FindBar.init(event.currentTarget, document.getElementById("zn-search-bar"));
 			});
       
       
@@ -68,7 +71,8 @@
 		<div id="main-contents" ></div>
   </main>
   <footer id="zn-status-bar">
-	 
+  <div id="zn-search-bar"></div>
   </footer>
+  
 </body>
 </html>

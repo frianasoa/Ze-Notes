@@ -1,5 +1,5 @@
 const { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs") as { OS: any };
-
+import ZPrefs from "../ZPrefs";
 
 const Tessearct = {
   run(filename: string, lang="eng")
@@ -11,7 +11,11 @@ const Tessearct = {
   },
   
   async getexe() {
+    const userpath = ZPrefs.get("tesseract-path", "");
     const paths = [
+      // User path
+      userpath,
+      
       // Linux paths
       "/usr/bin/tesseract",
       "/usr/local/bin/tesseract",
@@ -32,6 +36,7 @@ const Tessearct = {
 				var exists = await IOUtils.exists(p); 
 				if(exists)
 				{
+          ZPrefs.set("tesseract-path", p);
 					return p;
 				}
 			}

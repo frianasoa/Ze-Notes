@@ -11,6 +11,7 @@ const CellMenu = {
   {
     var target = event.currentTarget || event.target;
     const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]");
+    
     if(context && attachments.length>0)
     {
       const submenu: Record<string, any> = {};
@@ -56,7 +57,7 @@ const CellMenu = {
         submenu: submenu
       }
     }
-
+    
     if(context)
     {
       if(dataset.itemtype!="note")

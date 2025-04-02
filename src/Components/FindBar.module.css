@@ -1,0 +1,49 @@
+.findbar {
+  background: transparent;
+  display: flex;
+  flex-direction: row;
+  gap: 0.8em;
+  width: 25em;
+  padding: 0.2em;
+}
+
+.findinput {
+  display: inline-block;
+  margin: 0;
+  padding: 0.3em;
+  height: 1.6em;
+  flex: 1;
+}
+
+.findbutton {
+  display: inline-block;
+  border: none;
+  border-radius: 0.2em;
+  background: transparent;
+  margin: 0;
+  padding: 0.1em;
+  width: 2.6em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  height: 100%;
+}
+
+.findbutton:hover {
+  background-color: rgba(100, 100, 100, 0.1); /* Light background on hover */
+}
+
+.icon {
+  padding: 0;
+  margin: 0;
+  size: 1.3em;
+}
+
+
+
+.findnext {
+  /* Optional specific styles for the "Find Next" button */
+}
+
+.findprevious {
+  /* Optional specific styles for the "Find Previous" button */
+}
