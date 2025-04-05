@@ -21,6 +21,8 @@ const PromptFormat = {
       return this.table(element);
     } else if (classList.includes("zcontent")) {
       return this.zcontent(element);
+    } else if (classList.includes("comment")) {
+      return this.cell(element, {});
     } else {
       return this.defaultElement(element);
     }
@@ -68,11 +70,15 @@ const PromptFormat = {
     });
     return clonedTarget;
   },
+  
+ 
   /** TODO here*/
+  
+  
   zcontent(element: HTMLElement): Record<string, any> {
     return {element: element.dataset.legend, value: element.innerText}
   },
-  
+
   cell(element: HTMLElement, data: Record<string, any>): Record<string, any> {
     const key = element.dataset.column;
     if (!key) return data;

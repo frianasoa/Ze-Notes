@@ -5,18 +5,19 @@ import Actions from '../Core/Actions';
 import ZPrefs from '../Core/ZPrefs';
 import Languages from '../Core/Translation/Languages';
 import DataContext from "./DataContext";
-import {FaGoogle, FaD, FaT, FaNoteSticky}  from "react-icons/fa6";
+import {FaGoogle, FaD, FaNoteSticky}  from "react-icons/fa6";
 import AnnotationImageMenu from './MenuItems/AnnotationImageMenu'
 import AnnotationQuoteMenu from './MenuItems/AnnotationQuoteMenu'
 
 type AnnotationElementProps = {
   item: Record<string, any>;
+  dataset: Record<string, any>;
 };
 
 const annotationicon = "chrome://zotero/skin/itempane/16/attachment-annotations.svg";
 const editicon = "chrome://zotero/skin/16/universal/edit.svg";
 
-const AnnotationElement: React.FC<AnnotationElementProps> = ({ item }) => {
+const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) => {
   const [image, setImage] = useState<string | null>(null);
 
   const context = useContext(DataContext);
@@ -104,25 +105,6 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item }) => {
     }
   };
 
-  const handleCommentContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    if(context)
-    {
-      context.MenuItems.main["showannotation"] = {
-        label: 'Show annotation',
-        icon: FaNoteSticky,
-        onClick: Actions.showannotation,
-        data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey}
-      }
-
-      context.MenuItems.main["editannotationcomment"] = {
-        label: 'Edit annotation comment',
-        icon: FaNoteSticky,
-        onClick: Actions.editannotationcomment,
-        data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationcomment: item.comment, annotationkey: item.annotationkey, callback: openCommonDialog}
-      }
-    }
-  };
-
   return (
     <fieldset className="main-fieldset">
       <legend className="main-legend">
@@ -131,17 +113,17 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item }) => {
       <div data-type="annotation" >
         {image ? (
           <div>
-            <AnnotationCommentElement onContextMenu={handleCommentContextMenu} item={item} />
+            <AnnotationCommentElement item={item} dataset={dataset} />
             <img onContextMenu={handleImageAnnotationContextMenu} width="100%" src={image} style={{border: "solid 1px red"}} alt={image} />
           </div>
         ) : item.text ? (
           <div>
-            <AnnotationCommentElement onContextMenu={handleCommentContextMenu} item={item} />
+            <AnnotationCommentElement item={item} dataset={dataset} />
             <AnnotationQuoteElement onContextMenu={handleQuoteContextMenu} item={item} />
           </div>
         ) : item.comment ? (
           <div>
-            <AnnotationCommentElement onContextMenu={handleCommentContextMenu} item={item} />
+            <AnnotationCommentElement item={item} dataset={dataset} />
             <AnnotationQuoteElement onContextMenu={handleQuoteContextMenu} item={item} />
           </div>
         ): (

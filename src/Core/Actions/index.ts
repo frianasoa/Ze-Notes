@@ -342,7 +342,17 @@ const Actions: ActionsType = {
     let tags = [];
     let noparent = false;
     
-    if(item.data.target=="quote")
+    if(item.data.target=="comment")
+    {
+      target = celldata.target.closest(".comment");
+    }
+    
+    else if(item.data.target=="commentpart")
+    {
+      target = celldata.target;
+    }
+    
+    else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
     }
@@ -422,7 +432,17 @@ const Actions: ActionsType = {
     let tags = [];
     let noparent = false;
     
-    if(item.data.target=="quote")
+    if(item.data.target=="comment")
+    {
+      target = celldata.target.closest(".comment");
+    }
+    
+    else if(item.data.target=="commentpart")
+    {
+      target = celldata.target;
+    }
+    
+    else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
     }

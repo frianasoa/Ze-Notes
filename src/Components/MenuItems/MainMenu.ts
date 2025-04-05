@@ -24,6 +24,8 @@ const Main: any = {
       submenu: {
         openainote:{data: {target: "note"}},
         openainotepart:{data: {target: "notepart"}},
+        openaicomment:{data: {target: "comment"}},
+        openaicommentpart:{data: {target: "commentpart"}},
         openaiquote:{data: {target: "quote"}},
         openainotesep: {label: ""},
         openaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.openaiprompt, data: {target: "cell"}},
@@ -39,6 +41,8 @@ const Main: any = {
         customainote:{data: {target: "note"}},
         customainotepart:{data: {target: "notepart"}},
         customaiquote:{data: {target: "quote"}},
+        customaicomment:{data: {target: "comment"}},
+        customaicommentpart:{data: {target: "commentpart"}},
         customainotesep: {label: ""},
         customaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.customaiprompt, data: {target: "cell", key: "custom-ai"}},
         customairow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.customaiprompt, data: {target: "row", key: "custom-ai"}},
@@ -116,6 +120,8 @@ const Main: any = {
         Main.resetkeys.push(key+"/submenu/customainote");
         Main.resetkeys.push(key+"/submenu/customainotepart");
         Main.resetkeys.push(key+"/submenu/customaiquote");
+        Main.resetkeys.push(key+"/submenu/customaicomment");
+        Main.resetkeys.push(key+"/submenu/customaicommentpart");
         Main.resetkeys.push(key+"/submenu/customaipartsep");  
         Main.resetkeys.push(key+"/submenu/customaicell");
         Main.resetkeys.push(key+"/submenu/customairow");

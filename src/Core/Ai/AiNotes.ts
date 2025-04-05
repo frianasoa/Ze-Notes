@@ -89,7 +89,15 @@ const AiNotes = {
   },
 
   async create(item: zty.ContextMenuData, celldata: Record<string, any>, contents:string, callback: any) {
-    if(item.data.target=="quote")
+    if(item.data.target=="comment")
+    {
+      return this.comment(item, celldata, contents, callback);
+    }
+    else if(item.data.target=="commentpart")
+    {
+      return this.commentpart(item, celldata, contents, callback);
+    }
+    else if(item.data.target=="quote")
     {
       return this.quote(item, celldata, contents, callback);
     }
@@ -179,6 +187,36 @@ const AiNotes = {
   },
   
   async quote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  {
+    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    const annotation = Zotero.Items.get(annotationid);
+    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
+    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    item.data.callback = (value: any) => {
+      if(item.data.context)
+      {
+        item.data.context.setCommonDialogState?.(value);
+      }
+    }
+    Actions.editannotationcomment(item, celldata);
+  },
+  
+  async comment(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  {
+    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    const annotation = Zotero.Items.get(annotationid);
+    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
+    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    item.data.callback = (value: any) => {
+      if(item.data.context)
+      {
+        item.data.context.setCommonDialogState?.(value);
+      }
+    }
+    Actions.editannotationcomment(item, celldata);
+  },
+  
+  async commentpart(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
   {
     const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
     const annotation = Zotero.Items.get(annotationid);

@@ -44,7 +44,7 @@ const Cell: React.FC<CellProps> = ({ data, dataset, children }) => {
           } 
           else if (item.type === 'annotation') 
           {
-            c.push(<AnnotationElement key={`${index}-annotation`} item={item} />);
+            c.push(<AnnotationElement key={`${index}-annotation`} item={item} dataset={dataset} />);
           } else if (item.type === 'empty') {
             c.push(<div key={`${index}-empty`}>-</div>);
           }

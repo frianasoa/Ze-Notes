@@ -29,6 +29,7 @@ AppBase = {
 	{
 		if (this.initialized) return;
 		Services.scriptloader.loadSubScript(rootURI + '/chrome/core/engine.js');
+    
 		this.id = id;
 		this.version = version;
 		this.rootURI = rootURI;
@@ -36,8 +37,21 @@ AppBase = {
 		this.Engine = Engine.Engine;
 
 		this.Config = this.Engine.Config;
+    this.note_url = "chrome://"+AppBase.Config.slug+"/content/xhtml/notes.xhtml";
     this.Engine.init({id, version, rootURI, Zotero});
-		this.Engine.Ui.ContextMenu.additems(this.menuitems());
+		this.Engine.Ui.ContextMenu.additems([
+      {
+        id: "150", label: "Show notes", icon: "icon.png", command: function(){AppBase.Engine.Core.Page.open(AppBase.note_url, "notes");}
+      }
+    ]);
+		this.Engine.Ui.MainMenu.additems([
+      {
+        id: "150", label: "Show notes", icon: "icon.png", command: function(){AppBase.Engine.Core.Page.open(AppBase.note_url, "notes");}
+      },
+      {
+        id: "150", label: "Show settings", icon: "settings.png", command: function(){Zotero.Utilities.Internal.openPreferences(AppBase.Config.id);}
+      },
+    ]);
     await this.Engine.Core.Database.init();
     await this.Engine.ReaderMenu.init();
     this.addprefs(rootURI);
@@ -45,10 +59,7 @@ AppBase = {
 
 	menuitems()
 	{
-		var note_url = "chrome://"+AppBase.Config.slug+"/content/xhtml/notes.xhtml";
-		return [{
-			id: "150", label: AppBase.Config.name, icon: "icon.png", command: function(){AppBase.Engine.Core.Page.open(note_url, "notes");}
-		}];
+		return ;
 	},
 
 	log(msg) {
