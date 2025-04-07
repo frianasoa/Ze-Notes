@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Prefs from "../../Core/Prefs";
 import {FaCheckDouble}  from "react-icons/fa6";
+import Tabs from '../Tabs/Tabs';
 
 interface ExportSettingDialogProps {
   datasettings: Record<string, any>;
@@ -122,43 +123,46 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
     });
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show a loading message while state is being fetched
+    return <div>Loading...</div>;
   }
 
-  return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1em",
-      }}
-    >
-      <div style={{ width: "100%", display: "flex", flex: "1", flexDirection: "row" }}>
-        <fieldset style={{ flex: "1" }}>
-          <legend>Export settings</legend>
-          <table>
-            <tbody>{renderForm(tablesettings)}</tbody>
-          </table>
-        </fieldset>
-
-        <fieldset style={{ flex: "1" }}>
-          <legend>Data to include</legend>
-          <table>
-            <tbody>
-              <tr>
-                <td><FaCheckDouble /></td>
-                <td><label htmlFor="check-all" style={{userSelect: "none"}}>Check all</label></td>
-                <td><input onClick={checkAll} id="check-all" type="checkbox" /></td>
-              </tr>
-              {renderForm(datasettings)}
-            </tbody>
-          </table>
-        </fieldset>
-      </div>
-    </div>
-  );
+  const Table: React.FC = () => {
+    return (
+      <table>
+      <tbody>{renderForm(tablesettings)}</tbody>
+      </table>
+    );
+  }
+  const Data: React.FC = () => {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <td><FaCheckDouble /></td>
+            <td><label htmlFor="check-all" style={{userSelect: "none"}}>Check all</label></td>
+            <td><input onClick={checkAll} id="check-all" type="checkbox" /></td>
+          </tr>
+          {renderForm(datasettings)}
+        </tbody>
+      </table>
+   );
+  };
+  
+  const TabTwo = () => <div>Content Two</div>;
+  
+  
+  const tabs = [
+    {
+      title: "Export settings",
+      content: Table,
+    },
+    {
+      title: "Data to export",
+      content: Data,
+    }
+  ];
+  
+  return (<Tabs tabs={tabs} />);
 };
 
 export default ExportSettingDialog;
