@@ -27,7 +27,7 @@ const getWidestChildWidth = (element: React.RefObject<HTMLDivElement | null>) =>
   return widestWidth;
 };
 
-const subMenuMinWidth = 150;
+const subMenuMinWidth = 175;
 
 const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subMenuLeftRef, subMenuRightRef, cellData}) => {
 	const [submenuWidth, setSubmenuWidth] = useState(subMenuMinWidth);
@@ -88,7 +88,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subM
       <li
         className = {styles.li}
         style={{
-        padding: "0.2em 0.4em",
+        padding: "0 0.3em 0 0.3em",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -123,11 +123,11 @@ const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subM
       ref={menuItemRef}
       onClick={onClick}
       style={{
-        padding: "0.2em 0.4em",
+        padding: "0 0.3em 0 0.3em",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        borderRadius: "0.3em",
+        borderRadius: "0.2em",
         whiteSpace: "nowrap",
         position: "relative"
       }}
@@ -169,7 +169,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subM
 			
 			{
         data.submenu ? (
-          <span style={{display: "flex", width: "100%", gap: "0.3em"}}>
+          <span style={{display: "flex", width: "100%", gap: "0.1em"}}>
             <span style={{flex: "1"}}  title={data.title || data.label}>{data.label} </span>
             <span style={{color: "lightgray"}}>&gt;</span>
           </span>

@@ -22,7 +22,7 @@ const TranslationElement: React.FC<TranslationElementProps> = ({ data, save }) =
           <textarea
             key={index}
             defaultValue={item}
-            onInput={(e:React.FormEvent<HTMLTextAreaElement>) => setCurrentText((e.target as HTMLTextAreaElement).value)}
+            onInput={(e:React.FormEvent<HTMLTextAreaElement>) => setCurrentText((e.target as HTMLTextAreaElement).value || "")}
             style={{
               width: "100%",
               height: "100%",

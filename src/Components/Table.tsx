@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import Shortcuts from './Shortcuts';
 import Loading from './Loading';
 import DataContext from './DataContext';
 import Cell from './Cell';
@@ -219,7 +220,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       };
     }
   }
-
+  
   useEffect(() => {
     doScroll();
   }, [])
@@ -423,7 +424,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       </Dialog>
       
       <Loading visible={isLoading} message={loadingMessage}/>
-      
+      <Shortcuts />
     </DataContext.Provider>
   );
 };

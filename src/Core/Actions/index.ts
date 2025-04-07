@@ -260,7 +260,7 @@ const Actions: ActionsType = {
         TranslationElement,
         {data: [ocrtext], save: (text)=>{
           // Retrieve the current note's HTML string.
-          let currentNoteHTML = note.getNote();
+          let currentNoteHTML = note.getNote() || "";
 
           // Parse the HTML string into a document.
           const parser = new DOMParser();
@@ -291,7 +291,7 @@ const Actions: ActionsType = {
           }
 
           // Serialize the document back to a string.
-          const updatedHTML = doc.body.innerHTML;
+          const updatedHTML = doc.body.innerHTML || "";
 
           // Save the updated note.
           note.setNote(updatedHTML);
@@ -318,7 +318,7 @@ const Actions: ActionsType = {
         TranslationElement,
         {data: [ocrtext], save: (text)=>{
           const annotation = Zotero.Items.get(item.data.annotationid);
-          const currentcomment = annotation.annotationComment;
+          const currentcomment = annotation.annotationComment || "";
           annotation.annotationComment = currentcomment+"\n\n<b>[[OCR]]</b>\n"+text+"\n";
           annotation.saveTx({skipSelect:true}).then(e=>{
             Actions.reload(null, {});

@@ -1,3 +1,7 @@
+.menu {
+  font-size: 0.95em;
+}
+
 @media (prefers-color-scheme: light) {
   .menu {
     border: solid 1px lightgray;
