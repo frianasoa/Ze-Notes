@@ -62,17 +62,21 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
       let adjustedX = contextMenuPosition.x;
       let adjustedY = contextMenuPosition.y;
 
+      // Check if the menu exceeds the viewport width
       if (contextMenuPosition.x + menuWidth > viewportWidth) {
-        adjustedX = viewportWidth - menuWidth - 10; // Adjust position if menu exceeds the viewport width
+        // Move the menu to the left of the cursor if it exceeds the viewport width
+        adjustedX = contextMenuPosition.x - menuWidth;
       }
 
+      // Check if the menu exceeds the viewport height
       if (contextMenuPosition.y + menuHeight > viewportHeight) {
-        adjustedY = viewportHeight - menuHeight - 10; // Adjust position if menu exceeds the viewport height
+        adjustedY = viewportHeight - menuHeight - 10; // Keep it within bounds
       }
 
       setAdjustedPosition({ x: adjustedX, y: adjustedY });
     }
   }, [isContextMenuVisible, contextMenuPosition]);
+
 
   // Add event listener for right-click (context menu)
   useEffect(() => {
