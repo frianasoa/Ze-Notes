@@ -10,12 +10,22 @@ const Shortcuts = () => {
 
     const applyZoom = (newZoom: number) => {
       zoom = Math.min(maxZoom, Math.max(minZoom, newZoom));
-      const target = document.querySelector(".main-table") as HTMLElement;
-      if (target) {
-        target.style.transform = `scale(${zoom})`;
-        target.style.transformOrigin = "0 0";
+
+      // Apply zoom to the table content only, not the entire wrapper
+      const table = document.querySelector(".main-table") as HTMLElement;
+      const tableHeaders = document.querySelectorAll(".main-table thead th") as NodeListOf<HTMLElement>;
+
+      if (table) {
+        // Set font size for the table content
+        table.style.fontSize = `${zoom}em`;
+        
+        // Optionally, adjust headers as well
+        // tableHeaders.forEach((header) => {
+          // header.style.fontSize = `${zoom}em`;
+        // });
+
+        Prefs.set("page-zoom", zoom.toFixed(2));
       }
-      Prefs.set("page-zoom", zoom.toFixed(2));
     };
 
     const initZoom = async () => {

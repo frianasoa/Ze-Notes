@@ -41,7 +41,7 @@ const Notes: NotesType = {
 			const root = ReactDOM.createRoot(container);
 			globalThis.window = win as Window & typeof globalThis;
 			globalThis.document = win.document as Document & typeof globalThis;
-			root.render(<Table data={this.sortdata(data, tablesortkeys)} sortkeys={sortkeys} hidekeys={hidekeys} rowhidekeys={rowhidekeys} collectionid={collectionID} collectionname={collectionName} libraryid={libraryID} />);
+			root.render(<div className="main-table-container"><Table data={this.sortdata(data, tablesortkeys)} sortkeys={sortkeys} hidekeys={hidekeys} rowhidekeys={rowhidekeys} collectionid={collectionID} collectionname={collectionName} libraryid={libraryID} /></div>);
 		}
   }
 };
