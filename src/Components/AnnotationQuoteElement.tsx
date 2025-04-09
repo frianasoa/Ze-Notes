@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Utils from '../Core/Utils'
+import Color from './Color';
+import ZPrefs from '../Core/ZPrefs';
+import { emitter } from './EventEmitter';
 
 type AnnotationSelectionElementProps = {
   item: Record<string, any>;
@@ -7,8 +10,24 @@ type AnnotationSelectionElementProps = {
 };
 
 const AnnotationQuoteElement: React.FC<AnnotationSelectionElementProps> = ({ item, onContextMenu }) => {
+  const [backgroundColor, setBackgroundColor] = useState<string>(item.color);
+  
+  const addopacity = (newOpacity: number) => {
+    const newColor = Color.addopacity(item.color, newOpacity);
+    setBackgroundColor(newColor);
+  };
+  
+  useEffect(() => {
+    const opacity = ZPrefs.get("quote-bg-opacity", 255);
+    addopacity(opacity);
+    emitter.addListener('opacityChanged', addopacity);
+    return () => {
+      emitter.removeListener('opacityChanged', addopacity);
+    };
+  }, [item.color]);
+  
   return (
-    <div onContextMenu={onContextMenu} className="selection zcontent" data-legend="Direct quote" data-annotationid={item.annotationid} style={{background: item.color, border: 'dotted 1px', padding: '0.3em'}}>
+    <div onContextMenu={onContextMenu} className="selection zcontent" data-legend="Direct quote" data-annotationid={item.annotationid} style={{background: backgroundColor, border: 'dotted 1px', padding: '0.3em'}}>
       <span className="annotation-quote">“{item.text}”</span>&nbsp;
       <span className="annotation-source">{item.source}</span>
     </div>
