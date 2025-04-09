@@ -3,6 +3,7 @@ run.cmd
 run7.cmd
 stats.py
 make.py
+beta.py
 docs.sh
 upload.sh
 node_modules/
