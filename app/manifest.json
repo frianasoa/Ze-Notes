@@ -14,7 +14,7 @@
             "id": "zenotes@alefa.net",
             "update_url": "https://github.com/frianasoa/Ze-Notes/raw/refs/heads/v1/zenotes-update.json",
             "strict_min_version": "6.999",
-            "strict_max_version": "7.0.*"
+            "strict_max_version": "7.1.*"
         }
     },
     "chrome_resources": {
