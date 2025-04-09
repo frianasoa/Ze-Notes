@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Tabs.module.css';
+import TabContent from './TabContent'
 
 interface Tab {
   title: string;
@@ -9,18 +10,6 @@ interface Tab {
 interface TabsProps {
   tabs: Tab[];
 }
-
-const TabContent: React.FC<{ activeTab: number; tabId: number; content: React.ComponentType }> = ({
-  activeTab,
-  tabId,
-  content: Content,  // Renaming content to Content to clarify it's a component
-}) => {
-  return activeTab === tabId ? (
-    <div className={styles.tabcontent}>
-      <Content />
-    </div>
-  ) : null;
-};
 
 const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   const [activeTab, setActiveTab] = useState(1);
@@ -43,7 +32,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
         ))}
         <div className={styles.sep}></div>
       </div>
-
+      <div>
       {tabs.map((tab, index) => (
         <TabContent
           key={index}
@@ -52,6 +41,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
           content={tab.content}  // Pass the component reference
         />
       ))}
+      </div>
     </div>
   );
 };

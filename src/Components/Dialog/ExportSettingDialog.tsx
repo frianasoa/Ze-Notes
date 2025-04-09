@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Prefs from "../../Core/Prefs";
 import {FaCheckDouble}  from "react-icons/fa6";
 import Tabs from '../Tabs/Tabs';
+import Form from './Form';
 
 interface ExportSettingDialogProps {
   datasettings: Record<string, any>;
@@ -22,10 +23,20 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
         setFormState(JSON.parse(savedState)); // Use saved state
       } else {
         // Initialize with default values if no saved state
-        const defaultState = Object.entries(datasettings).reduce((acc, [key, value]) => {
-          acc[key] = value.default || "";
+        // const defaultState = Object.entries(datasettings).reduce((acc, [key, value]) => {
+          // acc[key] = value.default || "";
+          // return acc;
+        // }, {} as Record<string, string>);
+        
+        
+        const defaultState = Object.values(datasettings).reduce((acc, group) => {
+          Object.entries(group).forEach(([key, value]) => {
+            const v = value as any;
+            acc[key] = v.default || "";
+          });
           return acc;
         }, {} as Record<string, string>);
+        
         setFormState(defaultState);
       }
       setIsLoading(false); // Loading complete
@@ -45,12 +56,11 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
     }
   }, [formState, isLoading]);
 
-  const checkAll = (event: React.MouseEvent<HTMLInputElement>) => {
-    const isChecked = event.currentTarget.checked;
-
-    // Update the form state for all keys in datasettings
-    const updatedState = Object.keys(datasettings).reduce((acc, key) => {
-      acc[key] = isChecked ? "true" : "false";
+  const checkAll = (isChecked: boolean) => {    
+    const updatedState = Object.values(datasettings).reduce((acc, group) => {
+      Object.keys(group).forEach((key) => {
+        acc[key] = isChecked ? "true" : "false";
+      });
       return acc;
     }, {} as Record<string, string>);
 
@@ -74,91 +84,60 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
     }));
   };
 
-  const renderForm = (data_: Record<string, any>) =>
-    Object.entries(data_).map(([key, { label, slug, options, className, style, icon, default: defaultValue}]) => {
-      const elementId = `setting-${key}`;
-      const value = formState[key] ?? defaultValue;
-      return (
-        <tr key={slug}>
-          <td>{icon && React.createElement(icon)}</td>
-          <td>
-            <label htmlFor={elementId} style={{...style, userSelect: "none"}}>{label}</label>
-          </td>
-          <td>
-            {options?.length === 2 && options.includes("true") && options.includes("false") ? (
-              <input
-                id={elementId}
-                type="checkbox"
-                className={className}
-                checked={value === "true"}
-                data-key={key}
-                onChange={(e) =>
-                  handleCheckboxChange(key, e.target.checked)
-                }
-              />
-            ) : options?.length ? (
-              <select
-                id={elementId}
-                value={value || ""}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              >
-                <option value="">Select an option</option>
-                {options.map((option: string) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id={elementId}
-                type="text"
-                value={formState[key] || ""}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              />
-            )}
-          </td>
-        </tr>
-      );
-    });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   const Table: React.FC = () => {
     return (
-      <table>
-      <tbody>{renderForm(tablesettings)}</tbody>
-      </table>
+      <>
+        {Object.entries(tablesettings).map(([key, settings]) => (
+          <fieldset key={key}>
+            <legend>{key}</legend>
+            <table>
+              <Form
+                data={settings}
+                formState={formState}
+                handleInputChange={handleInputChange}
+                handleCheckboxChange={handleCheckboxChange}
+              />
+            </table>
+          </fieldset>
+        ))}
+      </>
     );
   }
+  
   const Data: React.FC = () => {
     return (
-      <table>
-        <tbody>
-          <tr>
-            <td><FaCheckDouble /></td>
-            <td><label htmlFor="check-all" style={{userSelect: "none"}}>Check all</label></td>
-            <td><input onClick={checkAll} id="check-all" type="checkbox" /></td>
-          </tr>
-          {renderForm(datasettings)}
-        </tbody>
-      </table>
-   );
+      <>
+        {Object.entries(datasettings).map(([key, settings]) => (
+          <fieldset key={key}>
+            <legend>{key}</legend>
+            <table>
+              <tbody>
+                <Form
+                  data={settings}
+                  formState={formState}
+                  handleInputChange={handleInputChange}
+                  handleCheckboxChange={handleCheckboxChange}
+                />
+              </tbody>
+            </table>
+          </fieldset>
+        ))}
+      </>
+    );
   };
-  
-  const TabTwo = () => <div>Content Two</div>;
-  
   
   const tabs = [
     {
-      title: "Export settings",
-      content: Table,
+      title: "Select data",
+      content: Data,
     },
     {
-      title: "Data to export",
-      content: Data,
+      title: "Advanced settings",
+      content: Table,
     }
   ];
   

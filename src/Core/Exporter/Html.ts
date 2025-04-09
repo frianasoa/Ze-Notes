@@ -75,13 +75,13 @@ const Html = {
       });
     }
 
-    if(settings?.removemainlabels === "true") {
+    if(settings?.removemainlegends === "true") {
       table.querySelectorAll('.main-legend').forEach((legend: HTMLElement) => {
         legend.remove();
       });
     }
 
-    if(settings?.removesublabels === "true") {
+    if(settings?.removesublegends === "true") {
       table.querySelectorAll('.sub-legend').forEach((legend: HTMLElement) => {
         legend.remove();
       });
@@ -177,6 +177,8 @@ const Html = {
           }
           td, th {
             border: solid 1px;
+            vertical-align: top;
+            padding: 0.3em;
           }
         </style>
       </head>

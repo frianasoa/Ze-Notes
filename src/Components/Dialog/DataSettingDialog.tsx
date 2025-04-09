@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Prefs from "../../Core/Prefs";
 import { FaCheckDouble } from "react-icons/fa6";
+import Form from './Form';
 
 interface DataSettingDialogProps {
   datasettings: Record<string, any>;
@@ -72,83 +73,29 @@ const DataSettingDialog: React.FC<DataSettingDialogProps> = ({ datasettings, onU
     }));
   };
 
-  const renderForm = (data_: Record<string, any>) =>
-    Object.entries(data_).map(([key, { label, slug, options, className, style, icon, default: defaultValue }]) => {
-      const elementId = `setting-${key}`;
-      const value = formState[key] ?? defaultValue;
-      return (
-        <tr key={slug}>
-          <td>{icon && React.createElement(icon)}</td>
-          <td>
-            <label htmlFor={elementId} style={{ ...style, userSelect: "none" }}>{label}</label>
-          </td>
-          <td>
-            {options?.length === 2 && options.includes("true") && options.includes("false") ? (
-              <input
-                id={elementId}
-                type="checkbox"
-                className={className}
-                checked={value === "true"}
-                data-key={key}
-                onChange={(e) =>
-                  handleCheckboxChange(key, e.target.checked)
-                }
-              />
-            ) : options?.length ? (
-              <select
-                id={elementId}
-                value={value || ""}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              >
-                <option value="">Select an option</option>
-                {options.map((option: string) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id={elementId}
-                type="text"
-                value={formState[key] || ""}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              />
-            )}
-          </td>
-        </tr>
-      );
-    });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+  
   return (
-    <div
-      style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1em",
-      }}
-    >
-      <fieldset>
-        <legend>Data to include in prompt</legend>
-        <table>
-          <tbody>
-            <tr>
-              <td><FaCheckDouble /></td>
-              <td><label htmlFor="check-all" style={{ userSelect: "none" }}>Check all</label></td>
-              <td><input onClick={checkAll} id="check-all" type="checkbox" /></td>
-            </tr>
-            {renderForm(datasettings)}
-          </tbody>
-        </table>
-      </fieldset>
-    </div>
-  );
+    <>
+      {Object.entries(datasettings).map(([key, settings]) => (
+        <fieldset key={key}>
+          <legend>{key}</legend>
+          <table>
+            <tbody>
+              <Form
+                data={settings}
+                formState={formState}
+                handleInputChange={handleInputChange}
+                handleCheckboxChange={handleCheckboxChange}
+              />
+            </tbody>
+          </table>
+        </fieldset>
+      ))}
+    </>
+  )
 };
 
 export default DataSettingDialog;

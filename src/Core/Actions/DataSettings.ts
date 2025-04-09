@@ -1,4 +1,5 @@
-import { FaNoteSticky, FaQuoteLeft, FaBook } from 'react-icons/fa6';
+import React from 'react'
+import { FaNoteSticky, FaQuoteLeft, FaBook, FaCheckDouble} from 'react-icons/fa6';
 
 const DataSettings = {
   filesafename(name: string): string {
@@ -22,7 +23,7 @@ const DataSettings = {
         if (label) {
           acc[key] = {
             label: label,
-            slug: this.filesafename(label),
+            slug: DataSettings.filesafename(label),
             options: ["true", "false"],
             default: "false",
             className: "data-checkbox",
@@ -31,6 +32,24 @@ const DataSettings = {
         }
         return acc;
       }, {});
+    
+    const checkall = {
+      label: "Check all",
+      slug: "--check-all--",
+      className: "data-checkbox",
+      style: { color: "red", fontWeight: "bolder" },
+      options: ["true", "false"],
+      default: "true",
+      icon: FaCheckDouble,
+      callback: (event: React.ChangeEvent<HTMLInputElement>, handleCheckboxChange: (key: string, checked: boolean) => void)=>{
+        const checked = event.currentTarget.checked;
+        event.currentTarget.closest("table")?.querySelectorAll("input[type='checkbox']")?.forEach((i:Element) => {
+          const input = i as HTMLInputElement;
+          const key = input.dataset.key || ""; 
+          handleCheckboxChange(key, checked);
+        })
+      }
+    };
     
     const quote = {
       label: "Quotes",
@@ -57,15 +76,17 @@ const DataSettings = {
     /** Sort settings by key */
     const datasettings___ = Object.keys(datasettings__)
       .sort()
-      .reduce((sortedObj: Record<string, any>, key) => {
+      .reduce((sortedObj: Record<string, unknown>, key: string) => {
         sortedObj[key] = datasettings__[key];
         return sortedObj;
       }, {});
     
     return {
-      displayquote: quote,
-      displaycitation: citation,
-      ...datasettings___,
+      "Default": {
+        displayquote: quote,
+        displaycitation: citation,
+      },
+      "Tags and parts": {checkall: checkall, ...datasettings___},
     };
   }
 };

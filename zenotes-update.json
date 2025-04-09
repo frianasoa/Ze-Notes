@@ -10,7 +10,7 @@
               "strict_min_version": "60.0"
             }
           },
-          "update_hash": "sha512:2fc3786a2268c96c07a4fe532f4e290ecb4a1df6321203c04e9706bdfe0eaadcc36bda2e69a64adf5009babf8f90f5311763fcb3bfb609938f984732e5ff6205"
+          "update_hash": "sha512:07679d67aa1f5cb8a5d93c60680b2d06cd1734a404590094b93e1c427f1b672a5f81f906ca2db8699b4cfc48dcbd62220b4547e9ab9ebb97cc35d1030bf292aa"
         },
         {
           "version": "1.0.0-beta",
@@ -21,7 +21,7 @@
               "strict_max_version": "7.0.*"
             }
           },
-          "update_hash": "sha512:2fc3786a2268c96c07a4fe532f4e290ecb4a1df6321203c04e9706bdfe0eaadcc36bda2e69a64adf5009babf8f90f5311763fcb3bfb609938f984732e5ff6205"
+          "update_hash": "sha512:07679d67aa1f5cb8a5d93c60680b2d06cd1734a404590094b93e1c427f1b672a5f81f906ca2db8699b4cfc48dcbd62220b4547e9ab9ebb97cc35d1030bf292aa"
         }
       ]
     }

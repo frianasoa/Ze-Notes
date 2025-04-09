@@ -11,6 +11,7 @@ import OpenAI from "../Ai/OpenAI";
 import CustomAI from "../Ai/CustomAI";
 import AiNotes from "../Ai/AiNotes";
 import Tesseract from "../Ocr/Tesseract";
+import TableSettings from "./TableSettings";
 import DataSettings from "./DataSettings";
 import TranslationElement from "../../Components/Dialog/TranslationElement";
 import TableSortContents from "../../Components/Dialog/TableSortContents";
@@ -744,15 +745,7 @@ const Actions: ActionsType = {
   {
     const datasettings = DataSettings.generate(item);
 
-    const tablesettings = {
-      removetdstyle: {label: "Keep td style", slug: "remove-td-style", options: ["true", "false"], default: "false", icon: FaTableCellsLarge},
-      removemainlabels: {label: "Remove main labels", slug: "remove-main-labels", options: ["true", "false"], default: "false", icon: FaTags},
-      removesublabels: {label: "Remove sub labels", slug: "remove-sub-labels", options: ["true", "false"], default: "false", icon: FaTag},
-      removeempty: {label: "Remove empty elements", slug: "remove-empty-element", options: ["true", "false"], default: "true", icon: FaCircleXmark},
-      removeicons: {label: "Remove icons", slug: "remove-group-icons", options: ["true", "false"], default: "false", icon: FaIcons},
-      removehighlights: {label: "Remove highlights", slug: "remove-highlights", options: ["true", "false"], default: "false", icon: FaHighlighter},
-      createfolder: {label: "Create save folder", slug: "create-folder", options: ["true", "false"], default: "false", icon: FaFolder},
-    }
+    const tablesettings = TableSettings.generate(item);
 
     const close = () =>{
       item?.data?.callback({
