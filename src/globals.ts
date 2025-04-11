@@ -3,7 +3,7 @@ function createXULElement(document: Document, tag: string): Element {
   return document.createElementNS(XUL_NS, tag);
 }
 
-var Zotero_Tabs = Zotero.getMainWindow().Zotero_Tabs;
+const Zotero_Tabs = Zotero.getMainWindow().Zotero_Tabs;
 globalThis.console = Zotero.getMainWindow().console;
 
 export {

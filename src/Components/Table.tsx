@@ -12,7 +12,7 @@ import Dialog from './Dialog/Dialog'
 import TablePrefs from "../Core/TablePrefs";
 import styles from "./Table.module.css";
 
-import {FaArrowsRotate, FaEye, FaRegEye, FaEyeSlash, FaArrowDownAZ, FaFilePdf, FaHtml5, FaFile, FaVectorSquare, FaFileExport} from "react-icons/fa6";
+import {FaArrowsRotate, FaEye, FaRegEye, FaEyeSlash, FaArrowDownAZ, FaFilePdf, FaHtml5, FaFile, FaVectorSquare, FaFileExport, FaDropbox} from "react-icons/fa6";
 
 type TableProps = {
   data: Array<Record<string, any>>;
@@ -275,6 +275,14 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       label: "Export",
       onClick: Actions.exportas,
       icon: FaFileExport,
+      data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
+    }
+    
+    // If dropbox key exists
+    headerMenuItems.dropboxupload = {
+      label: "Upload to dropbox",
+      onClick: Actions.dropboxupload,
+      icon: FaDropbox,
       data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
     }
 

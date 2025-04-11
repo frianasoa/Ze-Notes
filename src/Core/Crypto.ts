@@ -28,7 +28,7 @@ const Crypto = {
       decrypted += decipher.final('utf8');
       return decrypted;
     } catch (error) {
-       Zotero.log('Decryption error:'+error);
+      Zotero.log('Decryption error: '+error);
       return '';
     }
   },

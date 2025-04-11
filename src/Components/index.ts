@@ -6,7 +6,6 @@ type ComponentsType = {
   Notes: typeof Notes,
   FindBar: typeof FindBar,
   emitter: typeof emitter,
-  
 };
 
 const Components: ComponentsType = {

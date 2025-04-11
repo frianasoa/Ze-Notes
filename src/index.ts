@@ -31,6 +31,7 @@ const Engine: EngineType = {
     this.version = version;
     this.rootURI = rootURI;
 		this.Ui.init({rootURI});
+    this.Core.Server.init();
   }
 };
 

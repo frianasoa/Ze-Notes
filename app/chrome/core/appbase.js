@@ -95,7 +95,8 @@ AppBase = {
 		this.storeAddedElement(menuitem);
 
 		if (Zotero.platformMajorVersion >= 102) {
-			window.MozXULElement.insertFTLIfNeeded(AppBase.Config.slug+".ftl");
+			/** Check why this gives error later*/
+      // window.MozXULElement.insertFTLIfNeeded(AppBase.Config.slug+".ftl");
 		}
 
 		else {

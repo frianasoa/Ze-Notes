@@ -4,6 +4,7 @@ import Config from "../../Config";
 import TablePrefs from "../TablePrefs";
 import Exporter from "../Exporter";
 import PromptFormat from "../Exporter/PromptFormat";
+import DataExporter from "../Exporter/DataExporter";
 import Prefs from "../Prefs";
 import Google from "../Translation/Google";
 import DeepL from "../Translation/DeepL";
@@ -13,6 +14,7 @@ import AiNotes from "../Ai/AiNotes";
 import Tesseract from "../Ocr/Tesseract";
 import TableSettings from "./TableSettings";
 import DataSettings from "./DataSettings";
+import DropboxUploadDialog from "../../Components/Dialog/DropboxUploadDialog";
 import TranslationElement from "../../Components/Dialog/TranslationElement";
 import TableSortContents from "../../Components/Dialog/TableSortContents";
 import ColumnSortContents from "../../Components/Dialog/ColumnSortContents";
@@ -37,6 +39,7 @@ type ActionsType = {
   createnote(item: zty.ContextMenuData, celldata: Record<string, any>, event: any, contents?: string|null, tags?: string[], noparent?: boolean): void;
   editnote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   editannotationcomment(item: zty.ContextMenuData, celldata: Record<string, any>): void;
+  dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   exportas(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   showaidatasettings(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   showcolumnsortdialog(item: zty.ContextMenuData, celldata: Record<string, any>): void;
@@ -619,6 +622,27 @@ const Actions: ActionsType = {
   {
     TablePrefs.set(celldata.collectionid, "data-filter", item.data.filter).then((k: any)=>{
       Actions.reload(null, {});
+    });
+  },
+  
+  dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>)
+  {
+    const children = React.createElement(
+      DropboxUploadDialog,
+      {
+        collectionid: celldata.collectionid, 
+        upload: (email: string)=>{
+          DataExporter.exportall(celldata.collectionid, email).then(()=>{
+             item?.data?.callback({isOpen: false});
+          })
+        }
+      }
+    );
+
+    item?.data?.callback({
+      title: "Upload to dropbox",
+      children: children,
+      isOpen: true
     });
   },
 

@@ -166,7 +166,16 @@ const Utils = {
       .replace(/<[^>]+>/g, "") // Remove all tags
       .trim(); // Remove leading/trailing whitespace
     return content.includes("<img") || cleanedContent.length > 0; // Content is meaningful if there's any non-whitespace text
-  }
+  },
+  
+  headersafe(v: string) {
+		var charsToEncode = /[^\x00-\x7F]/g;
+		return v.replace(charsToEncode,
+			function(c) {
+				return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+			}
+		);
+	}
 };
 
 export default Utils;
