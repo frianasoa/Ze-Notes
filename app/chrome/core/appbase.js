@@ -125,6 +125,7 @@ AppBase = {
 
 	removeFromWindow(window) {
 		var doc = window.document;
+    this.Engine.Core.Garbage.freeall(doc);
 		// Remove all elements added to DOM
 		for (let id of this.addedElementIDs) {
 			// ?. (null coalescing operator) not available in Zotero 6

@@ -1,5 +1,6 @@
 import { createXULElement } from "../globals";
 import pkg from "../../package.json";
+import Garbage from "../Core/Garbage";
 
 type ItemType = {
   id: string;
@@ -34,22 +35,33 @@ const MainMenu: MainMenuType = {
   
   getmenupopup(document: Document): HTMLElement
   {
+    const popupid = pkg.config.slug+'-main-popup';
     const menuid = pkg.config.slug+'-main-menu';
-    let menupopup = document.getElementById(menuid);
+    const sepid = pkg.config.slug+'-main-sep';
+    let menupopup = document.getElementById(popupid);
     if(menupopup)
     {
       return menupopup;
     }
     const parent = document.getElementById("menu_ToolsPopup");
     menupopup = createXULElement(document, "menupopup") as HTMLElement;
-    menupopup.id = menuid;
+    menupopup.id = popupid;
     
     const menu = createXULElement(document, "menu");
     menu.setAttribute("class", "menuitem-iconic");
     menu.setAttribute('label', pkg.config.name);
-    parent?.appendChild(createXULElement(document, "menuseparator"))
+    menu.id = menuid;
+    
+    const sep = createXULElement(document, "menuseparator");
+    sep.id = sepid;
+    parent?.appendChild(sep)
     parent?.appendChild(menu);
     menu.appendChild(menupopup);
+    
+    Garbage.collect(menupopup);
+    Garbage.collect(menu);
+    Garbage.collect(sep);
+    
     return menupopup;
   },
   

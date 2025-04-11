@@ -5,6 +5,7 @@ import DataContext from './DataContext';
 import Cell from './Cell';
 import Actions from '../Core/Actions'
 import Prefs from '../Core/Prefs'
+import ZPrefs from '../Core/ZPrefs'
 import Menu from './ContextMenu/Menu';
 import ColumnResizer from './ColumnResizer'
 import MenuItems from './MenuItems'
@@ -279,11 +280,17 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     }
     
     // If dropbox key exists
-    headerMenuItems.dropboxupload = {
-      label: "Upload to dropbox",
-      onClick: Actions.dropboxupload,
-      icon: FaDropbox,
-      data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
+    const dropboxclientid= ZPrefs.get('dropbox-client-id', '');
+    const dropboxsecret= ZPrefs.get('dropbox-client-secret', '');
+    
+    if(dropboxclientid && dropboxsecret)
+    {
+      headerMenuItems.dropboxupload = {
+        label: "Upload to dropbox",
+        onClick: Actions.dropboxupload,
+        icon: FaDropbox,
+        data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
+      }
     }
 
     headerMenuItems.columnsort = {

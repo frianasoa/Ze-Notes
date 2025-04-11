@@ -1,5 +1,6 @@
 import { createXULElement } from "../globals";
 import pkg from "../../package.json";
+import Garbage from "../Core/Garbage";
 
 type ItemType = {
   id: string;
@@ -47,6 +48,7 @@ const ContextMenu: ContextMenuType = {
       menuitem.setAttribute("image", ContextMenu.rootURI+"/chrome/content/icons/"+icon);
       menuitem.className = "menuitem-iconic";
       menuitem.addEventListener("command", command);
+      Garbage.collect(menuitem);
 
       const collectionMenu = document.getElementById("zotero-collectionmenu");
       if (collectionMenu) {

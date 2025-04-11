@@ -11,6 +11,7 @@ import TablePrefs from './TablePrefs';
 import Utils from './Utils';
 import Crypto from './Crypto';
 import Server from './Server';
+import Garbage from './Garbage';
 
 type CoreType = {
   Page: typeof Page;
@@ -26,6 +27,7 @@ type CoreType = {
   Utils: typeof Utils;
   Crypto: typeof Crypto;
   Server: typeof Server;
+  Garbage: typeof Garbage;
   init(config: {rootURI: string}): void;
 };
 
@@ -43,6 +45,7 @@ const Core: CoreType = {
 	Utils,
 	Crypto,
 	Server,
+	Garbage,
 	init({rootURI}:{rootURI: string}) 
 	{
 		this.Page.init({rootURI});
