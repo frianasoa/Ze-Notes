@@ -17,13 +17,17 @@ const AnnotationQuoteElement: React.FC<AnnotationSelectionElementProps> = ({ ite
     setBackgroundColor(newColor);
   };
   
+  /** Move this somewhere up if needed */
+  // useEffect(()=>{
+    // emitter.addListener('opacityChanged', addopacity);
+    // return () => {
+      // emitter.removeListener('opacityChanged', addopacity);
+    // };
+  // }, [])
+  
   useEffect(() => {
     const opacity = ZPrefs.get("quote-bg-opacity", 255);
     addopacity(opacity);
-    emitter.addListener('opacityChanged', addopacity);
-    return () => {
-      emitter.removeListener('opacityChanged', addopacity);
-    };
   }, [item.color]);
   
   return (

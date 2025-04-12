@@ -115,4 +115,4 @@ const ColumnResizer: React.FC<ColumnResizerProps> = ({item}) => {
   );
 };
 
-export default ColumnResizer;
+export default React.memo(ColumnResizer);
