@@ -111,10 +111,87 @@ const Dropbox = {
 		}
     catch (error) 
     {
-			// throw 'Error uploading file: ' + error;
       return Dropbox.refresh();
 		}
 	},
+  
+  async list(username: string): Promise<any> {
+    await Dropbox.init();
+    const filepath = "/" + username;
+    try {
+      const response = await window.fetch(this.listFolderUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          path: filepath,
+          recursive: false,
+          include_media_info: false,
+          include_deleted: false,
+        }),
+      });
+
+      if (response.status === 401) {
+        await this.refresh();
+        return this.list(username);
+      }
+
+      if (!response.ok) {
+        throw await response.text();
+      }
+
+      const data = await response.json();
+      return (data as any).entries?.filter((entry: any) => entry[".tag"] === "file");
+    }
+    catch (error) {
+      Dropbox.refresh().then(()=>{
+        Dropbox.list(username);
+      });
+      // window.alert('Error listing files: ' + error);
+      // return undefined;
+    }
+  },
+    
+  async download(filepath: string, callback: (blob: Blob, contentHash: string) => void
+  ): Promise<Blob | void> {
+    try {
+      const response = await window.fetch(this.downloadUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Dropbox-API-Arg": JSON.stringify({ path: filepath }),
+        },
+      });
+
+      // Handle expired access token
+      if (response.status === 401) {
+        await this.refresh();
+        return this.download(filepath, callback);
+      }
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw `File download failed: ${errorMessage}`;
+      }
+
+      const metadataHeader = response.headers.get("Dropbox-API-Result");
+      if (!metadataHeader) {
+        throw "Missing Dropbox-API-Result header";
+      }
+
+      const metadata = JSON.parse(metadataHeader);
+      const fileBlob = await response.blob();
+      callback(fileBlob, metadata.content_hash);
+      Zotero.log("File downloaded successfully!");
+      return fileBlob;
+    } 
+    catch (error: any) {
+      Zotero.log("Error downloading file: " + error.message);
+    }
+  }
+
 }
 
 export default Dropbox;

@@ -291,6 +291,13 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
         icon: FaDropbox,
         data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
       }
+      
+      headerMenuItems.dropboxdownload = {
+        label: "Download from dropbox",
+        onClick: Actions.dropboxdownload,
+        icon: FaDropbox,
+        data: {callback: openCommonDialog, table: event.currentTarget.closest(".main-table")}
+      }
     }
 
     headerMenuItems.columnsort = {

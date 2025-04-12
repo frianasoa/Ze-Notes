@@ -1,6 +1,6 @@
 {
   "name": "Ze Notes",
-  "version": "1.0.0-beta004",
+  "version": "1.0.0-beta005",
   "description": "Manage your notes in Zotero",
   "homepage": "https://github.com/frianasoa/zn#readme",
   "bugs": {
@@ -35,6 +35,7 @@
     "events": "^3.3.0",
     "exceljs": "^4.4.0",
     "he": "^1.2.0",
+    "jszip": "^3.10.1",
     "pretty": "^2.0.0",
     "process": "^0.11.10",
     "react": "^19.0.0",

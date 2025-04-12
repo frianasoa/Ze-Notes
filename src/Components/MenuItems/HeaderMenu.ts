@@ -71,6 +71,7 @@ const Header = {
     sep: {label: "---"},
     exportas: {},
     dropboxupload: {},
+    dropboxdownload: {},
     sep2: {label: '---'},
     findinpage: { label: 'Find in page [CTRL+F]', icon: FaMagnifyingGlass, onClick: Actions.opentextfinder },
     reloadpage: { label: 'Reload page', icon: FaArrowsRotate, onClick: Actions.reload },

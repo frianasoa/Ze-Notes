@@ -30,35 +30,37 @@ const FileExporter = {
   async exportdone(obj: any, worked: boolean)
   {
     FileExporter.progress.close();
-			if (!worked) {
-				Zotero.alert(
-					window,
-					Zotero.getString('general.error'),
-					Zotero.getString('fileInterface.exportError')
-				);
-				FileExporter.progress.close();
-				return;
-			}
+    if (!worked) {
+      Zotero.alert(
+        window,
+        Zotero.getString('general.error'),
+        Zotero.getString('fileInterface.exportError')
+      );
+    }
   },
 
   attachments(collection: any): number[]
   {
+    FileExporter.progress.show("Getting attachments ...");
     let r:number[] = [];
     const items = collection.getChildItems(false, false);
     for(const item of items)
     {
-      r = r.concat(item.getAttachments())
+      r = r.concat(item.getAttachments());
+      FileExporter.progress.show("Getting attachment from "+item.title+"...");
     }
 
     for(const child of collection.getChildCollections())
     {
       r = r.concat(FileExporter.attachments(child));
     }
+    FileExporter.progress.close();
     return r;
   },
 
   collectionsize(collection: any)
   {
+    FileExporter.progress.show("Calculating collection size ...");
     let size = 0;
     const attachments = FileExporter.attachments(collection);
     const count = attachments.length;
@@ -75,6 +77,7 @@ const FileExporter = {
       {
       }
     }
+    FileExporter.progress.close();
     return {sizeb: size, count};
   },
 
@@ -142,6 +145,7 @@ const FileExporter = {
     const zippath = Zotero.File.pathToFile(Zotero.getTempDirectory().path+"\\zenotes-export.zip").path;
 
     try {
+      FileExporter.progress.show("Zipping directory ... ");
       await Zotero.File.zipDirectory(folderpath, zippath, {});
       const xhr = await Zotero.HTTP.request("GET", "file:///"+zippath, {responseType: 'arraybuffer'});
 

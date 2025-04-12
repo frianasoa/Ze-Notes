@@ -94,8 +94,8 @@ const FindBar = ({ win, init }: FindBarProps<any>) => {
     const handleInputKeyDown = (event: KeyboardEvent) => {
       if(event.key === 'Enter' && searchText) {
         event.preventDefault();
-        inputRef.current?.blur();
         handleSearch('down');
+        inputRef.current?.blur();
         findNextRef.current?.focus();
       }
     };
@@ -103,7 +103,7 @@ const FindBar = ({ win, init }: FindBarProps<any>) => {
     return () => {
       inputRef.current?.removeEventListener('keydown', handleInputKeyDown);
     };
-  }, [searchText, inputRef.current]);
+  }, [searchText]);
   
   // Handle clicking outside the findbar to hide it
   useEffect(() => {
@@ -131,7 +131,7 @@ const FindBar = ({ win, init }: FindBarProps<any>) => {
             ref={inputRef}
             type="text"
             value={searchText}
-            onChange={(e) => {setSearchText(e.target.value)}}
+            onInput={(e) => {setSearchText((e.target as HTMLInputElement).value)}}
             placeholder="Search..."
             className={styles.findinput}
           />
@@ -140,7 +140,7 @@ const FindBar = ({ win, init }: FindBarProps<any>) => {
               ref={findNextRef}
               className={styles.findbutton}
               onClick={() => handleSearch('down')}
-              title = "Find the next occurence of the phrase."
+              title = "Find the next occurrence of the phrase."
             >
               <FaAngleDown className={styles.icon}/>
             </button>
@@ -164,6 +164,7 @@ FindBar.init = (win: Window, container: HTMLElement) => {
   globalThis.document = win.document as Document & typeof globalThis;
   const root = ReactDOM.createRoot(container);
   root.render(<FindBar win={win} />);
+  return () => root.unmount();
 };
 
 export default FindBar;

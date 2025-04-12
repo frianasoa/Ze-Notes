@@ -15,6 +15,7 @@ import Tesseract from "../Ocr/Tesseract";
 import TableSettings from "./TableSettings";
 import DataSettings from "./DataSettings";
 import DropboxUploadDialog from "../../Components/Dialog/DropboxUploadDialog";
+import DropboxDownloadDialog from "../../Components/Dialog/DropboxDownloadDialog";
 import TranslationElement from "../../Components/Dialog/TranslationElement";
 import TableSortContents from "../../Components/Dialog/TableSortContents";
 import ColumnSortContents from "../../Components/Dialog/ColumnSortContents";
@@ -40,6 +41,7 @@ type ActionsType = {
   editnote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   editannotationcomment(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>): void;
+  dropboxdownload(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   exportas(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   showaidatasettings(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   showcolumnsortdialog(item: zty.ContextMenuData, celldata: Record<string, any>): void;
@@ -641,6 +643,28 @@ const Actions: ActionsType = {
 
     item?.data?.callback({
       title: "Upload to dropbox",
+      children: children,
+      isOpen: true
+    });
+  },
+  
+  dropboxdownload(item: zty.ContextMenuData, celldata: Record<string, any>)
+  {
+    const children = React.createElement(
+      DropboxDownloadDialog,
+      {
+        collectionid: celldata.collectionid, 
+        download: (email: string)=>{
+          window.alert(email);
+          // DataExporter.exportall(celldata.collectionid, email).then(()=>{
+             // item?.data?.callback({isOpen: false});
+          // })
+        }
+      }
+    );
+
+    item?.data?.callback({
+      title: "Download from dropbox",
       children: children,
       isOpen: true
     });
