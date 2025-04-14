@@ -1,3 +1,7 @@
+const { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs") as { OS: any };
+const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs') as {FilePicker: any}
+
+import Crypto from '../Crypto'
 import ZPrefs from '../ZPrefs'
 import Utils from '../Utils'
 import Page from '../Page'
@@ -190,8 +194,62 @@ const Dropbox = {
     catch (error: any) {
       Zotero.log("Error downloading file: " + error.message);
     }
+  },
+  
+  async exportsettings(win: Window)
+  {
+    const key = Crypto.generatekey();
+    
+    const settings = JSON.stringify({
+      'dropbox-access-token': await ZPrefs.getb('dropbox-access-token', ''),
+      'dropbox-refresh-token': await ZPrefs.getb('dropbox-refresh-token', ''),
+      'dropbox-client-id': await ZPrefs.getb('dropbox-client-id', ''),
+      'dropbox-client-secret': await ZPrefs.getb('dropbox-client-secret', ''),
+    });
+    const data = Crypto.encrypt(settings, key);
+    
+    const fp = new FilePicker();
+    fp.init(win, "Export dropbox settings", fp.modeSave);
+    fp.appendFilter("Dropbox settings", "*.dbs");
+    fp.defaultString = "zenotes-dropbox-settings.dbs";
+    const rv = await fp.show();
+    const filepath = fp.file;
+    return Zotero.File.putContentsAsync(filepath, data).then(()=>{
+      return key;
+    })
+  },
+  
+  async loadsettings(win: Window, key: string)
+  {
+    const fp = new FilePicker();
+    fp.init(win, "Import dropbox settings", fp.modeOpen);
+    fp.appendFilter("Dropbox settings", "*.dbs");
+    fp.defaultString = "zenotes-dropbox-settings.dbs";
+    const rv = await fp.show();
+    const filepath = fp.file;
+    
+    try {
+      const settings_encrypted = await Zotero.File.getContentsAsync(filepath) as string;
+      const settings_decrypted = await Crypto.decrypt(settings_encrypted, key);
+      if(settings_decrypted)
+      {
+        const settings = JSON.parse(settings_decrypted);
+        await ZPrefs.setb('dropbox-access-token', settings['dropbox-access-token']);
+        await ZPrefs.setb('dropbox-refresh-token', settings['dropbox-refresh-token']);
+        await ZPrefs.setb('dropbox-client-id', settings['dropbox-client-id']);
+        await ZPrefs.setb('dropbox-client-secret', settings['dropbox-client-secret']);
+        return "Settings loaded!";
+      }
+      else
+      {
+        return "Impossible to decrypt file.\nPlease check encryption key!";
+      }
+    }
+    catch(e)
+    {
+      return JSON.stringify(e);
+    }
   }
-
 }
 
 export default Dropbox;

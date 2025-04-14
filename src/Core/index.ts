@@ -12,6 +12,7 @@ import Utils from './Utils';
 import Crypto from './Crypto';
 import Server from './Server';
 import Garbage from './Garbage';
+import Cloud from './Cloud';
 
 type CoreType = {
   Page: typeof Page;
@@ -28,6 +29,7 @@ type CoreType = {
   Crypto: typeof Crypto;
   Server: typeof Server;
   Garbage: typeof Garbage;
+  Cloud: typeof Cloud;
   init(config: {rootURI: string}): void;
 };
 
@@ -46,6 +48,7 @@ const Core: CoreType = {
 	Crypto,
 	Server,
 	Garbage,
+	Cloud,
 	init({rootURI}:{rootURI: string}) 
 	{
 		this.Page.init({rootURI});

@@ -302,6 +302,25 @@ const ZeNotes_Preferences = {
     }
     container.appendChild(table);
   },
+  
+  async exportdropboxsettings()
+  {
+    const key = await Zotero.AppBase.Engine.Core.Cloud.Dropbox.exportsettings(window);
+    if(key)
+    {
+      alert("Settings exported. Please keep this key to be used on import: \n"+key);
+    }
+  },
+  
+  async loaddropboxsettings()
+  {
+    const key = prompt("Please enter the encryption key: ");
+    if(key)
+    {
+      const message = await Zotero.AppBase.Engine.Core.Cloud.Dropbox.loadsettings(window, key);
+      alert(message);
+    }
+  },
 
   savecustomaisettings()
   {

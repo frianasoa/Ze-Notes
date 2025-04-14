@@ -1,5 +1,8 @@
-# Ze Notes version 1
-Reactifying Ze Notes. Version 1 only works with Zotero 7. For now it may show compatibility with Zotero 6 but it will not work. I will fix the manifest.json later.
+# Ze Notes version 1 beta
+Reactifying Ze Notes. Version 1 only works with Zotero 7. For now it may show compatibility with Zotero 6 but it will not work. I will remove it later. 
+
+To see the README.md for the previous stable version.
+https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
 
 ## Description
 Ze Notes is a Zotero plugin that will help you manage and visualize your notes. It is helpfull if you intend to make a systematic review directly on your Zotero using notes and annotations from attachments. This tool will help you organize your notes on Zotero. It will show you on a table what you have been writing. You can edit your notes right on the table or add new notes. On the latest versions, you can add translations of your notes using Google or DeepL. You can also apply a generative AI prompts (Bard and ChatGPT for the moment) to the part of a note, a note, a quote, a cell, a row, a column, or the entire table. Some of these actions are also available right in the pdf reader of Zotero.
@@ -37,9 +40,11 @@ Form more on Add-ons see this page https://www.zotero.org/support/plugins
 https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
 
 ### Documentation page
-Under construction. \ 
+Under construction.
 https://frianasoa.github.io/Ze-Notes/
 
-### See README.MD of version 1.\
-https://github.com/frianasoa/Ze-Notes/blob/v1/README.md
+### See README.MD of version 1.
+https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
 ## Screenshots
+
+# Readme for previous version

@@ -1,6 +1,6 @@
 const { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs") as { OS: any };
+const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs') as {FilePicker: any}
 
-var { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs') as {FilePicker: any}
 import Html from './Html';
 import Xls from './Xls';
 import Xlsx from './Xlsx';
