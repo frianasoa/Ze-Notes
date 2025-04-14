@@ -266,17 +266,15 @@ const CellMenu = {
           ];
           MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
 
-
           if(target.dataset.itemtype=="note")
           {
-            context.MenuItems.main[key]["submenu"][key+"cell"]["label"] = "";
-            context.MenuItems.main[key]["submenu"][key+"row"]["label"] = "";
-
-            const params = [
+            const params_reset = [
+              {key: key, keys: key+"/submenu/"+key+"cell"},
+              {key: key, keys: key+"/submenu/"+key+"row"},
               {key: key, keys: key+"/submenu/customaicell"},
               {key: key, keys: key+"/submenu/customairow"},
             ];
-            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params_reset);
           }
           i++;
         }

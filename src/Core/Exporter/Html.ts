@@ -232,8 +232,6 @@ const Html = {
                   const filename = "image-"+fileidx+"."+extension;
                   let mimeType = 'image/png';
 
-                  Zotero.log("fillename: "+filename);
-
                   if (extension === 'jpg' || extension === 'jpeg') mimeType = 'image/jpeg';
                   else if (extension === 'svg') mimeType = 'image/svg+xml';
                   else if (extension === 'gif') mimeType = 'image/gif';
@@ -257,6 +255,12 @@ const Html = {
                   img.src = base64Data;
                   imageCache.set(imgUrl, base64Data);
                 }
+
+                if(img.alt.includes("data:image/"))
+                {
+                  img.removeAttribute("alt");
+                }
+
                 resolve();
               };
 

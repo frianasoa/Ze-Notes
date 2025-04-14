@@ -5,35 +5,35 @@ const Tessearct = {
   run(filename: string, lang="eng")
   {
     const params = ["-l", lang];
-    Zotero.log(params);
-    Zotero.log(filename);
+    //Zotero.log(params);
+    //Zotero.log(filename);
     return this.command(params, filename);
   },
-  
+
   async getexe() {
     const userpath = ZPrefs.get("tesseract-path", "");
     const paths = [
       // User path
       userpath,
-      
+
       // Linux paths
       "/usr/bin/tesseract",
       "/usr/local/bin/tesseract",
-      
+
       // Windows paths
       "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
       "C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe",
       "C:\\Tesseract-OCR\\tesseract.exe",
-      
+
       // macOS paths
       "/opt/homebrew/bin/tesseract",
       "/usr/local/homebrew/bin/tesseract",
     ];
-    
+
     for(const p of paths)
 		{
 			try {
-				var exists = await IOUtils.exists(p); 
+				var exists = await IOUtils.exists(p);
 				if(exists)
 				{
           ZPrefs.set("tesseract-path", p);
@@ -46,13 +46,13 @@ const Tessearct = {
 		}
     return ""
   },
-  
+
   async folder()
   {
     const exe = await this.getexe();
     return OS.Path.dirname(exe);
   },
-  
+
   async languages()
   {
     let main = [];
@@ -60,10 +60,10 @@ const Tessearct = {
     const entries: Record<string, string> = {};
     const mainpath = PathUtils.join(await this.folder(), "tessdata");
     const scriptpath = PathUtils.join(mainpath, "script");
-    
+
     const mainfiles = await IOUtils.getChildren(mainpath);
     const scriptfiles = await IOUtils.getChildren(scriptpath);
-    
+
     for(let file of mainfiles)
     {
       main.push(PathUtils.filename(file));
@@ -72,7 +72,7 @@ const Tessearct = {
     .map(f=>{
       return f.replace(".traineddata", "")
     });
-    
+
     for(let file of scriptfiles)
     {
       scripts.push(PathUtils.filename(file));
@@ -81,19 +81,19 @@ const Tessearct = {
     .map(f=>{
       return f.replace(".traineddata", "")
     });
-    
+
     for(let m of main)
 		{
 			entries[m] = this.langcodes()[m] || m;
 		}
-    
+
     for(let s of scripts)
 		{
 			entries["script/"+s] = s.replace("_", " ")+" [Script]"
-		} 
+		}
     return entries;
   },
-  
+
   randomfilename()
 	{
 		const now = new Date();
@@ -101,7 +101,7 @@ const Tessearct = {
 		const randomPart = Math.random().toString(36).substring(2, 10);
 		return `${timestamp}-${randomPart}`;
 	},
-  
+
   async command(params: string[], filepath:string): Promise<string>
 	{
 		return new Promise(async (resolve, reject) => {
@@ -119,9 +119,9 @@ const Tessearct = {
 					tempoutput = tempoutput+".txt";
 					params = [...params];
 				}
-				
+
 				var r = await Zotero.Utilities.Internal.exec(exe, params);
-				
+
 				var txt = await Zotero.File.getContentsAsync(tempoutput);
 				txt = (txt as string).split("\n\n").join("\n");
 				txt = txt.split("  ").join(" ");
@@ -131,7 +131,7 @@ const Tessearct = {
 			}
 		});
 	},
-  
+
   langname(code: string): string {
     let suffix = "";
     if(code.includes("script/"))
@@ -142,7 +142,7 @@ const Tessearct = {
     const codes = this.langcodes();
     return codes[code] || "";
   },
-  
+
   langcodes():Record<string, string> {
     return {
       "afr": "Afrikaans",

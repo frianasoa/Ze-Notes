@@ -115,14 +115,12 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
           <fieldset key={key}>
             <legend>{key}</legend>
             <table>
-              <tbody>
-                <Form
-                  data={settings}
-                  formState={formState}
-                  handleInputChange={handleInputChange}
-                  handleCheckboxChange={handleCheckboxChange}
-                />
-              </tbody>
+              <Form
+                data={settings}
+                formState={formState}
+                handleInputChange={handleInputChange}
+                handleCheckboxChange={handleCheckboxChange}
+              />
             </table>
           </fieldset>
         ))}

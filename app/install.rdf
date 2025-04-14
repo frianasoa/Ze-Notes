@@ -4,7 +4,7 @@
     <rdf:Description about="urn:mozilla:install-manifest">
         <ns1:id>zenotes@alefa.net</ns1:id>
         <ns1:name>Ze Notes</ns1:name>
-        <ns1:version>1.0.0-beta005</ns1:version>
+        <ns1:version>1.0.0-beta006</ns1:version>
         <ns1:multiprocessCompatible>true</ns1:multiprocessCompatible>
         <ns1:updateURL>https://github.com/frianasoa/zenotes/releases/download/release/zenotes-update.rdf</ns1:updateURL>
         <ns1:homepageURL>https://github.com/frianasoa/zenotes</ns1:homepageURL>

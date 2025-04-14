@@ -1,6 +1,6 @@
 {
   "name": "Ze Notes",
-  "version": "1.0.0-beta005",
+  "version": "1.0.0-beta006",
   "description": "Manage your notes in Zotero",
   "homepage": "https://github.com/frianasoa/zn#readme",
   "bugs": {
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
+    "@joplin/turndown-plugin-gfm": "^1.0.61",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "docx": "^9.3.0",
@@ -43,12 +44,15 @@
     "react-icons": "^5.5.0",
     "sanitize-html": "^2.14.0",
     "stream-browserify": "^3.0.0",
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2",
     "typescript": "^5.8.2"
   },
   "devDependencies": {
     "@types/he": "^1.2.3",
     "@types/react-dom": "^19.0.4",
     "@types/sanitize-html": "^2.13.0",
+    "@types/turndown": "^5.0.5",
     "esbuild": "0.25.1",
     "zotero-types": "^3.1.9"
   },

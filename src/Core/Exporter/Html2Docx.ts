@@ -94,8 +94,6 @@ const Html2Docx = {
           if (text) {
             text = text+" ";
             const textobj = {text, ...textStyle};
-            //Zotero.log(JSON.stringify(textStyle));
-            //Zotero.log(JSON.stringify(textobj));
             currentRuns.push(new TextRun(textobj));
           }
         }
