@@ -242,9 +242,9 @@ const Actions: ActionsType = {
   },
 
   async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {
-    const collection = Zotero.Items.get(item.data.collectionid);
+    const collection = Zotero.Collections.get(item.data.collectionid);
     const img = (item.data.event.currentTarget || item.data.event.target) as HTMLElement;
-    const imagekey = img.dataset.attachmentKey || "";
+    const imagekey = img.dataset.attachmentKey || "";    
     const attachmentid = Zotero.Items.getIDFromLibraryAndKey(collection.libraryID, imagekey);
 
     let attachment = null;
