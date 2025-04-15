@@ -16,6 +16,8 @@ const Main: any = {
     deletenote: {},
     sepnote: {label: '---'},
     
+    translateannotationcomment: {},
+    translateannotationpart: {},
     translateannotation: {},
     translateannotationwithdeepl: {},
     septranslate: {},
@@ -94,6 +96,8 @@ const Main: any = {
     "showattachedfile",
     "createnote",
     "sepnote",
+    "translateannotationcomment",
+    "translateannotationpart",
     "translateannotation",
     "translateannotationwithdeepl",
     "septranslate",

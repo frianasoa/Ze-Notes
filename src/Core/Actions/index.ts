@@ -51,6 +51,7 @@ type ActionsType = {
   showannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
+  translate(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
   customaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
   ocrannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
@@ -429,6 +430,68 @@ const Actions: ActionsType = {
     }
   },
 
+  async translate(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  {
+    if(!item.data)
+    {
+      return;
+    }
+    let target = null;
+    
+    if(item.data.target=="commentpart")
+    {
+      target = celldata.target;
+    }
+    
+    if(item.data.target=="comment")
+    {
+      target = celldata.target.closest(".comment");
+    }
+    
+    if(target)
+    {
+      const context = item.data.context;
+      if(!context)
+      {
+        return
+      }
+      const annotationid = celldata.target.dataset.annotationid;
+      const annotation = Zotero.Items.get(annotationid);
+      
+      context.setLoadingMessage("Loading translation, please wait...");
+      context.setIsLoading(true);
+      let machine = Google;
+      if(item.data.service=="DeepL")
+      {
+        machine = DeepL;
+      }
+      
+      const lang = ZPrefs.get('translation-language', "en") as string;
+      machine.translate(target.innerText, lang || "en").then((data: any)=>{
+        context.setIsLoading(false);
+        const children = React.createElement(
+          TranslationElement,
+          {data: data, save: (text)=>{
+            const currentcomment = annotation.annotationComment || "";
+            annotation.annotationComment = currentcomment+"\n\n<b>[[Translation "+item.data.target+"]]</b>\n"+text+"\n";
+            annotation.saveTx({skipSelect:true}).then(e=>{
+              Actions.reload(null, {});
+            });
+          }}
+        );
+
+        context.setTranslationDialogState?.({
+          title: "Translation dialog ["+item.data.service+"]",
+          children: children,
+          isOpen: true
+        });
+      }).catch(e=>{
+        context.setIsLoading(false);
+        window.alert("HTTP error. status: "+(e.status ?? e));
+      })
+    }
+  },
+  
   async openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
     if(!item.data)
