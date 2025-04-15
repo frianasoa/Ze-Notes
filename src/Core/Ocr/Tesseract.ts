@@ -5,8 +5,6 @@ const Tessearct = {
   run(filename: string, lang="eng")
   {
     const params = ["-l", lang];
-    //Zotero.log(params);
-    //Zotero.log(filename);
     return this.command(params, filename);
   },
 

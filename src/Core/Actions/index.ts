@@ -6,6 +6,7 @@ import Exporter from "../Exporter";
 import PromptFormat from "../Exporter/PromptFormat";
 import DataExporter from "../Exporter/DataExporter";
 import Prefs from "../Prefs";
+import ZPrefs from "../ZPrefs";
 import Google from "../Translation/Google";
 import DeepL from "../Translation/DeepL";
 import OpenAI from "../Ai/OpenAI";
@@ -254,7 +255,7 @@ const Actions: ActionsType = {
     attachment = Zotero.Items.get(attachmentid);
     const image = attachment?.getFilePath();
     const note = attachment.parentItem;
-    let lang = Zotero.Prefs.get('extensions.zenotes.tesseract-language', true);
+    let lang = ZPrefs.get('tesseract-language', "en");
 
     if(!lang){lang = "en"} else{lang = String(lang)}
 
