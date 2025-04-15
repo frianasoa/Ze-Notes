@@ -3,25 +3,25 @@
     "zenotes@alefa.net": {
       "updates": [
         {
-          "version": "1.0.0-beta008",
-          "update_link": "https://github.com/frianasoa/Ze-Notes/raw/refs/heads/v1/build/zenotes-v1.0.0-beta008.xpi",
+          "version": "1.0.0-beta009",
+          "update_link": "https://github.com/frianasoa/Ze-Notes/raw/refs/heads/v1/build/zenotes-v1.0.0-beta009.xpi",
           "applications": {
             "gecko": {
               "strict_min_version": "60.0"
             }
           },
-          "update_hash": "sha512:dd1eca7e28f5100c29efd3de6a5e7d222812936f39d9068d700cffbf2f62519e287902ac58750fe6771993b89f9f9c47aabc1e6431cee63ac59ff808d33f9326"
+          "update_hash": "sha512:6e62fdf74083059727364cca768391b6b9a12ac389c75ebbb10adc244fcac7c7556d65cbb644776d6e3ac39332af76a80fbe0c59380f15f6fd794b9d7aed1681"
         },
         {
-          "version": "1.0.0-beta008",
-          "update_link": "https://github.com/frianasoa/Ze-Notes/raw/refs/heads/v1/build/zenotes-v1.0.0-beta008.xpi",
+          "version": "1.0.0-beta009",
+          "update_link": "https://github.com/frianasoa/Ze-Notes/raw/refs/heads/v1/build/zenotes-v1.0.0-beta009.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.0",
               "strict_max_version": "7.0.*"
             }
           },
-          "update_hash": "sha512:dd1eca7e28f5100c29efd3de6a5e7d222812936f39d9068d700cffbf2f62519e287902ac58750fe6771993b89f9f9c47aabc1e6431cee63ac59ff808d33f9326"
+          "update_hash": "sha512:6e62fdf74083059727364cca768391b6b9a12ac389c75ebbb10adc244fcac7c7556d65cbb644776d6e3ac39332af76a80fbe0c59380f15f6fd794b9d7aed1681"
         }
       ]
     }

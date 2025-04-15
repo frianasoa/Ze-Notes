@@ -258,7 +258,6 @@ const Actions: ActionsType = {
     let lang = ZPrefs.get('tesseract-language', "en");
 
     if(!lang){lang = "en"} else{lang = String(lang)}
-
     if (!note || !image) {
       return;
     }
