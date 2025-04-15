@@ -319,7 +319,9 @@ const Actions: ActionsType = {
 
   ocrannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
-    Tesseract.run(item.data.annotationimage).then(ocrtext=>{
+    let lang = ZPrefs.get('tesseract-language', "en");
+    if(!lang){lang = "en"} else{lang = String(lang)}
+    Tesseract.run(item.data.annotationimage, lang).then(ocrtext=>{
       const children = React.createElement(
         TranslationElement,
         {data: [ocrtext], save: (text)=>{
