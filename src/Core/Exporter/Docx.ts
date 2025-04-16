@@ -14,7 +14,10 @@ const Docx = {
     const docRows = await Promise.all(
       rows.map(async (row) => {
         const docCells = await Promise.all(
-          Array.from(row.cells).map(async (cell) => new TableCell({children: await Html2Docx.parse(cell as HTMLTableCellElement)}))
+          Array.from(row.cells).map(async (cell) => new TableCell(
+          {
+            children: await Html2Docx.parse(cell as HTMLTableCellElement)
+          }))
         );
         return new TableRow({ children: docCells });
       })

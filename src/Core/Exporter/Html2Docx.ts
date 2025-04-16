@@ -146,7 +146,7 @@ const Html2Docx = {
       if (inlineStyle.color) textStyle.color = inlineStyle.color;
       if (inlineStyle.fontSize) textStyle.fontSize = parseInt(inlineStyle.fontSize, 10);
       if (inlineStyle.background) textStyle.shading = {
-        fill: Html2Docx.hexcolor(inlineStyle.background)
+        fill: Html2Docx.rgbaToBlendedHex(inlineStyle.background)
       }
     }
 
@@ -165,7 +165,7 @@ const Html2Docx = {
         if (computedStyle.color) textStyle.color = computedStyle.color;
         if (computedStyle.fontSize) textStyle.fontSize = parseInt(computedStyle.fontSize, 10);
         if (computedStyle.background) textStyle.shading = {
-          fill: Html2Docx.hexcolor(computedStyle.background)
+          fill: Html2Docx.rgbaToBlendedHex(computedStyle.background)
         }
       }
     }
@@ -194,7 +194,43 @@ const Html2Docx = {
       img.src = url;
     });
   },
+  rgbaToBlendedHex(rgba: string, bgColor: string = "#ffffff"): string {
+    const rgbaMatch = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/);
+    if (!rgbaMatch) throw new Error("Invalid RGBA format");
 
+    const r = parseInt(rgbaMatch[1]);
+    const g = parseInt(rgbaMatch[2]);
+    const b = parseInt(rgbaMatch[3]);
+    const a = rgbaMatch[4] !== undefined ? parseFloat(rgbaMatch[4]) : 1;
+
+    // Convert background to RGB
+    const bgMatch = bgColor.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+    if (!bgMatch) throw new Error("Invalid background color");
+
+    const br = parseInt(bgMatch[1], 16);
+    const bg = parseInt(bgMatch[2], 16);
+    const bb = parseInt(bgMatch[3], 16);
+
+    // Blend each channel
+    const blend = (fg: number, bg: number) => Math.round((1 - a) * bg + a * fg);
+    const toHex = (n: number) => n.toString(16).padStart(2, '0');
+
+    return `#${toHex(blend(r, br))}${toHex(blend(g, bg))}${toHex(blend(b, bb))}`;
+  },
+  rgbaToHex(rgba: string): string {
+    const result = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/);
+    if (!result) throw new Error("Invalid RGBA format");
+
+    const r = parseInt(result[1]);
+    const g = parseInt(result[2]);
+    const b = parseInt(result[3]);
+    const a = result[4] !== undefined ? Math.round(parseFloat(result[4]) * 255) : 255;
+
+    const toHex = (n: number) => n.toString(16).padStart(2, '0');
+    
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}${a !== 255 ? toHex(a) : ''}`;
+  },
+  
   hexcolor(color: string) {
     const rgbValues = color.match(/\d+/g);
     if (rgbValues && rgbValues.length === 3) {

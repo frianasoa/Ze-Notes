@@ -9,9 +9,10 @@ const Html = {
     const external = settings?.createfolder === "true";
     const clonedTable = table.cloneNode(true);
     const rows = (clonedTable as HTMLTableElement).querySelectorAll("tbody tr");
-    rows.forEach((row) => {
+    rows.forEach((row: Element, key: number, parent: NodeListOf<Element>) => {
       const style = window.getComputedStyle(row);
-      if (style?.display === "none" || style?.visibility === "hidden") {
+      const td = row as HTMLTableRowElement;
+      if (style?.display === "none" || style?.visibility === "hidden" || td.style.display==="none" || td.style.visibility==="hidden") {
         row.remove();
       }
     });

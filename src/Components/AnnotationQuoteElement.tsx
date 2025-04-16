@@ -17,7 +17,7 @@ const AnnotationQuoteElement: React.FC<AnnotationSelectionElementProps> = ({ ite
     setBackgroundColor(newColor);
   };
   
-  /** Move this somewhere up if needed */
+  /** Move this somewhere up (to parents) if needed */
   // useEffect(()=>{
     // emitter.addListener('opacityChanged', addopacity);
     // return () => {
