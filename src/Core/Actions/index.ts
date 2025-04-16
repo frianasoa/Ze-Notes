@@ -60,6 +60,8 @@ type ActionsType = {
   resetwidths(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   opentextfinder(item: zty.ContextMenuData, celldata: Record<string, any>): void;
   filesafename(name: string): string;
+  updatenote(noteid: number, title: string, contents: string): void;
+  updateannotation(noteid: number, title: string, contents: string): void;
 };
 
 const Actions: ActionsType = {
@@ -241,7 +243,44 @@ const Actions: ActionsType = {
   async opensettings(item: zty.ContextMenuData, celldata: Record<string, any>) {
     Zotero.Utilities.Internal.openPreferences(Config.id);
   },
-
+  
+  // Move these two functions somewhere later
+  updateannotation(annotationid: number, title: string, contents: string)
+  {
+    const annotation = Zotero.Items.get(annotationid);
+    const currentcomment = annotation.annotationComment || "";
+    annotation.annotationComment = currentcomment+"\n\n<b>[["+title+"]]</b>\n"+contents+"\n";
+    annotation.saveTx({skipSelect:true}).then(e=>{
+      Actions.reload(null, {});
+    });
+  },
+  
+  updatenote(noteid: number, title: string, contents: string)
+  {
+      const note = Zotero.Items.get(noteid);
+      const currentNoteHTML = note.getNote() || "";
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(currentNoteHTML, "text/html");
+      const fragment = doc.createDocumentFragment();
+      const p = doc.createElement("p");
+      p.innerHTML = contents;
+      fragment.appendChild(doc.createElement("br"));
+      const boldEl = doc.createElement("b");
+      boldEl.textContent = "[["+title+"]]";
+      fragment.appendChild(boldEl);
+      fragment.appendChild(doc.createElement("br"));
+      fragment.appendChild(p);
+      fragment.appendChild(doc.createElement("br"));
+      doc.body.appendChild(fragment);
+      const updatedHTML = doc.body.innerHTML || "";
+      
+      note.setNote(updatedHTML);
+      note.saveTx().then(() => {
+        Actions.reload(null, {});
+      });
+  },
+  
   async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {
     const collection = Zotero.Collections.get(item.data.collectionid);
     const img = (item.data.event.currentTarget || item.data.event.target) as HTMLElement;
@@ -443,9 +482,19 @@ const Actions: ActionsType = {
       target = celldata.target;
     }
     
-    if(item.data.target=="comment")
+    else if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
+    }
+    
+    else if(item.data.target=="notepart")
+    {
+      target = celldata.target;
+    }
+    
+    else if(item.data.target=="note")
+    {
+      target = celldata.target.closest(".note");
     }
     
     if(target)
@@ -456,7 +505,7 @@ const Actions: ActionsType = {
         return
       }
       const annotationid = celldata.target.dataset.annotationid;
-      const annotation = Zotero.Items.get(annotationid);
+      const noteid = item.data.noteid;
       
       context.setLoadingMessage("Loading translation, please wait...");
       context.setIsLoading(true);
@@ -471,13 +520,19 @@ const Actions: ActionsType = {
         context.setIsLoading(false);
         const children = React.createElement(
           TranslationElement,
-          {data: data, save: (text)=>{
-            const currentcomment = annotation.annotationComment || "";
-            annotation.annotationComment = currentcomment+"\n\n<b>[[Translation "+item.data.target+"]]</b>\n"+text+"\n";
-            annotation.saveTx({skipSelect:true}).then(e=>{
-              Actions.reload(null, {});
-            });
-          }}
+          {
+            data: data,
+            save: (text)=>{
+              if(noteid)
+              {
+                 Actions.updatenote(noteid, "Translation "+item.data.target, text.split("\n").join("<br/>"));
+              }
+              else if(annotationid)
+              {
+                Actions.updateannotation(annotationid, "Translation "+item.data.target, text);
+              }
+            }
+          }
         );
 
         context.setTranslationDialogState?.({
@@ -586,7 +641,9 @@ const Actions: ActionsType = {
       })
     }
   },
-
+  
+  
+  // merge this to translate();
   translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     let machine = Google;
@@ -596,7 +653,7 @@ const Actions: ActionsType = {
     }
 
     const annotation = Zotero.Items.get(item.data.annotationid);
-    let lang = Zotero.Prefs.get('extensions.zenotes.translation-language', true) as string;
+    const lang = ZPrefs.get('translation-language', "en") as string;
     machine.translate(item.data.annotationtext, lang || "en").then((data: any)=>{
       const children = React.createElement(
         TranslationElement,

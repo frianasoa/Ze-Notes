@@ -97,12 +97,13 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
       <legend className="main-legend">
         <img className='group-icon' src={Icons.data["note"]} />
       </legend>
-      <div ref={ref} data-type="note">
+      <div ref={ref} data-type="note" className="note">
         {Object.keys(htmls).map((title, index) => (
           <fieldset
             className="sub-fieldsets"
             onContextMenu={handleTextContextMenu}
             key={index}
+            data-noteid={item.noteid}
             style={{ marginBottom: '0.5em', border: 'dotted 1px' }}
           >
             <legend className="annotation-part sub-legend" style={{ fontWeight: "bold" }}>

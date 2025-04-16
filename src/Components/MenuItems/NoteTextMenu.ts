@@ -1,7 +1,9 @@
 import Actions from '../../Core/Actions';
 import CustomAiMenu from './CustomAiMenu';
 import MenuUtils from './MenuUtils';
-import {FaPencil, FaRegTrashCan, FaNoteSticky}  from "react-icons/fa6";
+import Languages from '../../Core/Translation/Languages';
+import ZPrefs from '../../Core/ZPrefs';
+import {FaPencil, FaRegTrashCan, FaNoteSticky, FaQuoteLeft, FaGoogle, FaD}  from "react-icons/fa6";
 
 const NoteTextMenu = {
   show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>, item: Record<string, any>) 
@@ -38,6 +40,74 @@ const NoteTextMenu = {
         keys: "sepnote",
       }
     ]);
+    
+    // Translation
+    const langiso = ZPrefs.get('translation-language', "en");
+    const langlabel = Languages.getlabel(String(langiso));
+    const deeplkey = ZPrefs.get('deepl-api-key', false);
+    
+    // Google
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    [
+      {
+        label: "Google translate",
+        key: "translatewithgoogle",
+        keys: "translatewithgoogle",
+        icon: FaGoogle,
+      },
+      {
+        label: "Note to "+langiso.toUpperCase(),
+        key: "translatewithgoogle",
+        keys: "translatewithgoogle/submenu/note",
+        icon: FaGoogle,
+        data: { target: "note", context: context, service: "Google", noteid: item.noteid, collectionid: context.collectionid, itemkey: item.itemkey },
+        onClick: Actions.translate,
+      },
+      
+      {
+        label: "Note part to "+langiso.toUpperCase(),
+        key: "translatewithgoogle",
+        keys: "translatewithgoogle/submenu/notepart",
+        icon: FaGoogle,
+        data: { target: "notepart", context: context, service: "Google", noteid: item.noteid, collectionid: context.collectionid, itemkey: item.itemkey},
+        onClick: Actions.translate,
+      },
+      {
+        label: "---",
+        key: "septranslate",
+        keys: "septranslate"
+      }
+    ])
+    
+    // DeepL
+    if(deeplkey)
+    {
+      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+      [
+        {
+          label: "DeepL translate",
+          key: "translatewithdeepl",
+          keys: "translatewithdeepl",
+          icon: FaD,
+        },
+        {
+          label: "Note to "+langiso.toUpperCase(),
+          key: "translatewithdeepl-note",
+          keys: "translatewithdeepl/submenu/note",
+          icon: FaD,
+          data: { target: "note", context: context, service: "DeepL", noteid: item.noteid, collectionid: context.collectionid, itemkey: item.itemkey },
+          onClick: Actions.translate,
+        },
+        {
+          label: "Note part to "+langiso.toUpperCase(),
+          key: "translatewithdeepl-notepart",
+          keys: "translatewithdeepl/submenu/notepart",
+          icon: FaD,
+          data: { target: "notepart", context: context, service: "DeepL", noteid: item.noteid, collectionid: context.collectionid, itemkey: item.itemkey },
+          onClick: Actions.translate,
+        }
+      ])
+    }
     
     // OpenAi
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
