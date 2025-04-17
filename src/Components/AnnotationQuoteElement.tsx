@@ -33,7 +33,7 @@ const AnnotationQuoteElement: React.FC<AnnotationSelectionElementProps> = ({ ite
   return (
     <div onContextMenu={onContextMenu} className="selection zcontent" data-legend="Direct quote" data-annotationid={item.annotationid} style={{background: backgroundColor, border: 'dotted 1px', padding: '0.3em'}}>
       <span className="annotation-quote">“{item.text}”</span>&nbsp;
-      <span className="annotation-source">{item.source}</span>
+      <span className="annotation-source" data-page={item.pagelabel}>{item.source}</span>
     </div>
   );
 };

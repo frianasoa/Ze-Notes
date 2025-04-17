@@ -75,6 +75,19 @@ const Html = {
         element.remove();
       });
     }
+    else if(settings?.displayauthor === "false") {
+      table.querySelectorAll('.annotation-source').forEach((element: HTMLElement) => {
+        const page = element.dataset.page;
+        if(page)
+        {
+          element.innerHTML="(p. "+page+")";
+        }
+        else
+        {
+          element.innerHTML="(n.p.)";
+        }
+      });
+    }
 
     if(settings?.removemainlegends === "true") {
       table.querySelectorAll('.main-legend').forEach((legend: HTMLElement) => {

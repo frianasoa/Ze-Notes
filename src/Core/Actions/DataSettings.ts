@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaNoteSticky, FaQuoteLeft, FaBook, FaCheckDouble} from 'react-icons/fa6';
+import { FaNoteSticky, FaQuoteLeft, FaBook, FaUserPen, FaCheckDouble} from 'react-icons/fa6';
 
 const DataSettings = {
   filesafename(name: string): string {
@@ -71,6 +71,16 @@ const DataSettings = {
       icon: FaBook,
     };
     
+    const author = {
+      label: "Author",
+      slug: "author",
+      options: ["true", "false"],
+      className: "data-checkbox",
+      style: { color: "red", fontWeight: "bolder" },
+      default: "true",
+      icon: FaUserPen,
+    };
+    
     const datasettings__ = typeof datasettings_ === 'object' && datasettings_ !== null ? datasettings_ : {};
     
     /** Sort settings by key */
@@ -85,6 +95,7 @@ const DataSettings = {
       "Default": {
         displayquote: quote,
         displaycitation: citation,
+        displayauthor: author,
       },
       "Tags and parts": {checkall: checkall, ...datasettings___},
     };

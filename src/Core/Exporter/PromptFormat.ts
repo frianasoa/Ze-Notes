@@ -27,12 +27,12 @@ const PromptFormat = {
       return this.defaultElement(element);
     }
   },
-  
+
   async filter(target: any, collectionid: string)
   {
     let datasettings = {};
     let settings = await Prefs.get("data-settings-fields/" + collectionid, null);
-    
+
     const clonedTarget = target.cloneNode(true);
     if(settings)
     {
@@ -43,7 +43,7 @@ const PromptFormat = {
           .map(([key, value]) => [key.replace("display-data-", ""), value])
       );
     }
-    
+
     if(settings?.displayquote === "false") {
       clonedTarget.querySelectorAll('.annotation-quote').forEach((element: HTMLElement) => {
         element.remove();
@@ -53,6 +53,11 @@ const PromptFormat = {
     if(settings?.displaycitation === "false") {
       clonedTarget.querySelectorAll('.annotation-source').forEach((element: HTMLElement) => {
         element.remove();
+      });
+    }
+    else if(settings?.displayauthor === "false") {
+      clonedTarget.querySelectorAll('.annotation-source').forEach((element: HTMLElement) => {
+        element.innerHTML=" ("+(element.dataset.page || "n.p.")+")";
       });
     }
 
@@ -70,11 +75,11 @@ const PromptFormat = {
     });
     return clonedTarget;
   },
-  
- 
+
+
   /** TODO here*/
-  
-  
+
+
   zcontent(element: HTMLElement): Record<string, any> {
     return {element: element.dataset.legend, value: element.innerText}
   },
@@ -91,7 +96,7 @@ const PromptFormat = {
     });
     return this.removeempty(data);
   },
-  
+
   row(element: HTMLElement) {
     const data = {};
     (element.querySelectorAll("td") as NodeListOf<HTMLElement>).forEach((td) => {
@@ -124,7 +129,7 @@ const PromptFormat = {
     }
     return obj;
   },
-  
+
   unwrap(obj: any, unwrapSingle: boolean = true): any {
     if (Array.isArray(obj)) {
         // If unwrapSingle is true, unwrap single-element arrays
