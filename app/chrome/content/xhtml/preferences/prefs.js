@@ -4,6 +4,7 @@ const ZeNotes_Preferences = {
     this.inittranslationlanguage();
     await this.inittesseractlanguage();
     await this.initopenaimodels();
+    await this.initgeminimodels();
     await this.initactions();
     await this.initvalues();
     await this.initcustomailist();
@@ -209,7 +210,61 @@ const ZeNotes_Preferences = {
       }
     }
   },
-
+  
+  async initgeminimodels() {
+    let models = {models: []};
+    try {
+      models = await Zotero.AppBase.Engine.Core.Ai.Gemini.models();
+      models.models = models.models
+      .filter(model =>
+        model.supportedGenerationMethods.includes("generateContent")
+      ).filter(model=>
+        !model.description || !model.description.includes("deprecated")
+      ).filter(model=>
+        !model.description || !model.description.toLowerCase().includes("image")
+      )
+    }
+    catch(e)
+    {
+      let message = "Error getting models";
+      if(e.status==401)
+      {
+        message = "Unauthorized access (401)";
+      }
+      else if(e.status==404)
+      {
+        message = "API URL error (404)";
+      }
+      else if(e.statusText && e.status)
+      {
+        message = e.statusText+" ("+e.status+")";
+      }
+      else
+      {
+        message = e;
+      }
+      
+      models = {
+        models: [{
+          displayName: "Error (Hover to see)",
+          name: "",
+          description: message,
+        }]
+      }
+    }
+    const div = document.querySelector("[data-key=gemini-model]");
+    div.innerHTML = "";
+    if (div) {
+      for (let model of models.models) {
+        let opt = document.createElement("option");
+        opt.innerHTML = model.displayName;
+        opt.value = model.name;
+        opt.title = model.description;
+        div.appendChild(opt);
+      }
+    }
+  },
+  
   async inittesseractlanguage() {
     try {
       const languages = await Zotero.AppBase.Engine.Core.Ocr.Tesseract.languages();

@@ -11,7 +11,7 @@ const OpenAI = {
     const maxtoken = parseInt(ZPrefs.get("openai-max-token", "0"));
         
     const systemmessage = ZPrefs.get("openai-system-message", "You are an academic assistant helping in literature review.");
-    const userprompt = ZPrefs.get("openai-user-prompt", "Summarize the following information (the format is json).");
+    const userprompt = ZPrefs.get("openai-user-prompt", "Summarize the following information (the input format is json).");
     
     const payload: any = {
       model: model,

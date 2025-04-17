@@ -80,30 +80,29 @@ const AnnotationCommentMenu = {
       ])
     }
     
-    // Open AI
+    // Gemini
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
     [
-      
       {
         label: "Prompt on comment",
-        key: "openaicomment",
-        keys: "openai/submenu/openaicomment",
+        key: "geminicomment",
+        keys: "gemini/submenu/geminicomment",
         icon: FaQuoteLeft,
         data: { target: "comment", context: context },
-        onClick: Actions.openaiprompt,
+        onClick: Actions.geminiprompt,
       },
       {
         label: "Prompt on part",
-        key: "openaicommentpart",
-        keys: "openai/submenu/openaicommentpart",
+        key: "geminicommentpart",
+        keys: "gemini/submenu/geminicommentpart",
         icon: FaQuoteLeft,
         data: { target: "commentpart", context: context },
-        onClick: Actions.openaiprompt,
+        onClick: Actions.geminiprompt,
       },
       {
         label: "---",
-        key: "openainotesep",
-        keys: "openai/submenu/openainotesep"
+        key: "gemininotesep",
+        keys: "gemini/submenu/gemininotesep"
       }
     ]);
     

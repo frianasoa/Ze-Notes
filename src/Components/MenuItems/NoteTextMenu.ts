@@ -135,6 +135,32 @@ const NoteTextMenu = {
       }
     ]);
     
+    // Gemini
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+    [
+      {
+        label: "Prompt on note",
+        key: "gemininote",
+        keys: "gemini/submenu/gemininote",
+        icon: FaNoteSticky,
+        data: { target: "note", context: context, noteid: item.noteid},
+        onClick: Actions.geminiprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "gemininotepart",
+        keys: "gemini/submenu/gemininotepart",
+        icon: FaNoteSticky,
+        data: { target: "notepart", context: context, title: "Prompt on "+title, noteid: item.noteid},
+        onClick: Actions.geminiprompt,
+      },
+      {
+        label: "---",
+        key: "gemininotesep",
+        keys: "gemini/submenu/gemininotesep"
+      }
+    ]);
+    
     // Custom Ai default
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
     [

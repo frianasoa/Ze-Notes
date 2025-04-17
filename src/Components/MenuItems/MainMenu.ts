@@ -39,7 +39,21 @@ const Main: any = {
       },
       label: ""
     },
-    gemini: {},
+    gemini: {
+      submenu: {
+        gemininote:{data: {target: "note"}},
+        gemininotepart:{data: {target: "notepart"}},
+        geminicomment:{data: {target: "comment"}},
+        geminicommentpart:{data: {target: "commentpart"}},
+        geminiquote:{data: {target: "quote"}},
+        gemininotesep: {label: ""},
+        geminicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.geminiprompt, data: {target: "cell"}},
+        geminirow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.geminiprompt, data: {target: "row"}},
+        geminicolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.geminiprompt, data: {target: "column"}},
+        geminitable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.geminiprompt, data: {target: "table"}},
+      },
+      label: ""
+    },
     customai: {
       submenu: {
         customainote:{data: {target: "note"}},
@@ -110,6 +124,9 @@ const Main: any = {
     "openai",
     "openai/submenu/openaicell",
     "openai/submenu/openairow",
+    "gemini",
+    "gemini/submenu/geminicell",
+    "gemini/submenu/geminirow",
     "customai",
     "customai/submenu/customaicell",
     "customai/submenu/customairow"

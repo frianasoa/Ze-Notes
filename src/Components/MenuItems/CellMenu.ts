@@ -4,7 +4,7 @@ import CustomAI from '../../Core/Ai/CustomAI';
 import MenuUtils from './MenuUtils';
 import React from 'react';
 
-import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
+import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
 
 const CellMenu = {
   show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
@@ -190,6 +190,66 @@ const CellMenu = {
             const params = [
               {key: "openaicell", keys: "openai/submenu/openaicell"},
               {key: "openaicell", keys: "openai/submenu/openairow"},
+            ]
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+          }
+        }
+      });
+      
+      // Gemini
+      ZPrefs.getb("gemini-apikey").then((key: string)=>{
+        if(key)
+        {
+          const params = [
+            {
+              label: "Using Gemini",
+              key: "gemini",
+              keys: "gemini",
+              onClick: Actions.geminiprompt,
+              icon: FaDiamond,
+            },
+            {
+              label: "Prompt on cell",
+              key: "geminicell",
+              keys: "gemini/submenu/geminicell",
+              data: { target: "cell", context: context },
+              onClick: Actions.geminiprompt,
+              icon: FaRegSquare
+            },
+            {
+              label: "Prompt on row",
+              key: "geminirow",
+              keys: "gemini/submenu/geminirow",
+              data: { target: "row", context: context },
+              onClick: Actions.geminiprompt,
+              icon: FaTableColumns
+            },
+            {
+              label: "Prompt on column",
+              key: "geminicolumn",
+              keys: "gemini/submenu/geminicolumn",
+              data: { target: "column", context: context },
+              onClick: Actions.geminiprompt,
+              icon: FaTableList
+            },
+            {
+              label: "Prompt on table",
+              key: "geminitable",
+              keys: "gemini/submenu/geminitable",
+              data: { target: "table", context: context },
+              onClick: Actions.geminiprompt,
+              icon: FaTableCells
+            }
+          ];
+
+          MenuUtils.aidata(context, target);
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+
+          if(target.dataset.itemtype=="note")
+          {
+            const params = [
+              {key: "geminicell", keys: "gemini/submenu/geminicell"},
+              {key: "geminicell", keys: "gemini/submenu/geminirow"},
             ]
             MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }

@@ -27,6 +27,24 @@ const AnnotationQuoteMenu = {
       }
     ]);
     
+    // Gemini
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    [
+      {
+        label: "Prompt on quote",
+        key: "geminiquote",
+        keys: "gemini/submenu/geminiquote",
+        icon: FaQuoteLeft,
+        data: { target: "quote", context: context },
+        onClick: Actions.openaiprompt,
+      },
+      {
+        label: "---",
+        key: "gemininotesep",
+        keys: "gemini/submenu/gemininotesep"
+      }
+    ]);
+    
     // Custom AI default
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
     [
