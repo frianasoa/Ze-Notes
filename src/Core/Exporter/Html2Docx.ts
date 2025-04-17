@@ -77,8 +77,21 @@ const Html2Docx = {
         } else if (tagName === "br") {
           currentRuns.push(new TextRun({ break: 1 }));
         } else if (tagName === "img") {
+          const img = node as HTMLElement;
+          const td = img.closest("td") as HTMLElement;
+          img.setAttribute("width", "100%");
+          img.setAttribute("height", "");
+          img.style.width = '100%';
+          img.style.height = "";
+          td.style.visibility = 'hidden';
+          td.style.position = 'absolute';
+          td.style.top = '-9999px';
+          td.style.left = '-9999px';
+          
+          window.document.body.appendChild(td);
           const image = await Html2Docx.processImage(element);
           currentRuns.push(image);
+          window.document.body.removeChild(td);
         } else if (tagName === "a") {
           let href = element.getAttribute("href");
           let linkText = element.textContent?.trim() || href || "";
@@ -143,10 +156,11 @@ const Html2Docx = {
       if (inlineStyle.textDecoration.includes("line-through")) textStyle.strike = true;
       if (inlineStyle.verticalAlign === "sub") textStyle.subscript = true;
       if (inlineStyle.verticalAlign === "super") textStyle.superscript = true;
-      if (inlineStyle.color) textStyle.color = inlineStyle.color;
+      if (inlineStyle.color) textStyle.color = Html2Docx.rgbaToBlendedHex(inlineStyle.color);
       if (inlineStyle.fontSize) textStyle.fontSize = parseInt(inlineStyle.fontSize, 10);
       if (inlineStyle.background) textStyle.shading = {
         fill: Html2Docx.rgbaToBlendedHex(inlineStyle.background)
+        // fill: inlineStyle.background
       }
     }
 
@@ -162,10 +176,11 @@ const Html2Docx = {
         if (computedStyle.textDecoration.includes("line-through")) textStyle.strike = true;
         if (computedStyle.verticalAlign === "sub") textStyle.subscript = true;
         if (computedStyle.verticalAlign === "super") textStyle.superscript = true;
-        if (computedStyle.color) textStyle.color = computedStyle.color;
+        if (computedStyle.color) textStyle.color = Html2Docx.rgbaToBlendedHex(computedStyle.color);
         if (computedStyle.fontSize) textStyle.fontSize = parseInt(computedStyle.fontSize, 10);
         if (computedStyle.background) textStyle.shading = {
           fill: Html2Docx.rgbaToBlendedHex(computedStyle.background)
+          // fill: computedStyle.background
         }
       }
     }
@@ -194,13 +209,19 @@ const Html2Docx = {
       img.src = url;
     });
   },
+  
   rgbaToBlendedHex(rgba: string, bgColor: string = "#ffffff"): string {
-    const rgbaMatch = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/);
-    if (!rgbaMatch) throw new Error("Invalid RGBA format");
+    Zotero.log("In: "+rgba);
+    const rgbaMatch = rgba.match(/rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\s*\)/i);
+    if (!rgbaMatch)
+    {
+      Zotero.log(`Error: Invalid RGB(${rgba}) format`);
+      return rgba;
+    }
 
-    const r = parseInt(rgbaMatch[1]);
-    const g = parseInt(rgbaMatch[2]);
-    const b = parseInt(rgbaMatch[3]);
+    const r = parseInt(rgbaMatch[1], 10);
+    const g = parseInt(rgbaMatch[2], 10);
+    const b = parseInt(rgbaMatch[3], 10);
     const a = rgbaMatch[4] !== undefined ? parseFloat(rgbaMatch[4]) : 1;
 
     // Convert background to RGB
@@ -211,12 +232,14 @@ const Html2Docx = {
     const bg = parseInt(bgMatch[2], 16);
     const bb = parseInt(bgMatch[3], 16);
 
-    // Blend each channel
+    // Blend function
     const blend = (fg: number, bg: number) => Math.round((1 - a) * bg + a * fg);
     const toHex = (n: number) => n.toString(16).padStart(2, '0');
-
-    return `#${toHex(blend(r, br))}${toHex(blend(g, bg))}${toHex(blend(b, bb))}`;
+    const v = `#${toHex(blend(r, br))}${toHex(blend(g, bg))}${toHex(blend(b, bb))}`;
+    Zotero.log("Out :"+v);
+    return v;
   },
+  
   rgbaToHex(rgba: string): string {
     const result = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/);
     if (!result) throw new Error("Invalid RGBA format");
@@ -228,7 +251,10 @@ const Html2Docx = {
 
     const toHex = (n: number) => n.toString(16).padStart(2, '0');
     
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}${a !== 255 ? toHex(a) : ''}`;
+    const v = `#${toHex(r)}${toHex(g)}${toHex(b)}${a !== 255 ? toHex(a) : ''}`;
+    
+    Zotero.log("out: "+v);
+    return v;
   },
   
   hexcolor(color: string) {
@@ -258,16 +284,14 @@ const Html2Docx = {
       const arrayBuffer = await blob.arrayBuffer();
       const mimeType = blob.type;
       const extension = mimeType.split("/")[1] as "jpg" | "png" | "gif" | "bmp";
-
-      let width = 100;
-      let height = 100;
-
+      let { width, height }  = await this.imagesize(el as HTMLImageElement);
+      
       if(el.className=="group-icon")
       {
         width = 10;
         height = 10;
       }
-
+      
       return new ImageRun({
         type: extension,
         data: arrayBuffer,
@@ -277,6 +301,32 @@ const Html2Docx = {
       console.error("Image error:", error);
       return new TextRun(`[Image error] ${error}`);
     }
+  },
+  
+  imagesize(img?: HTMLImageElement): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      if(!img)
+      {
+        return reject("No image found!");
+      }
+    
+      const maybeResolve = () => {
+        const rect = img.getBoundingClientRect();
+        const width = Math.round(img.naturalWidth);
+        const height = Math.round(img.naturalHeight);
+        resolve({ width: width, height: height });
+      };
+
+      // If img is still loading
+      if (img instanceof window.HTMLImageElement && (!img.complete || img.naturalWidth === 0)) {
+        img.onload = maybeResolve;
+        img.onerror = (e) => {
+          reject(e);
+        };
+      } else {
+        maybeResolve();
+      }
+    });
   }
 };
 

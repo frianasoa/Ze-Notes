@@ -114,7 +114,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
         {image ? (
           <div>
             <AnnotationCommentElement item={item} dataset={dataset} />
-            <img onContextMenu={handleImageAnnotationContextMenu} width="100%" src={image} style={{border: "solid 1px red"}} alt={image} />
+            <img onContextMenu={handleImageAnnotationContextMenu} width="100%"height="" src={image} style={{border: "solid 1px red"}} alt={image} />
           </div>
         ) : item.text ? (
           <div>

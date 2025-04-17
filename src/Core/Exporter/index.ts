@@ -71,7 +71,10 @@ const Exporter: ExporterType = {
       settings.createfolder = "false";
       const toObject = true;
       ({htmldata, files} =  await this.Html.start(table, fp.file, settings, toObject) as { htmldata: any; files: any});
+      
+      
       data = await this.Docx.start(htmldata);
+       
     }
     else if (ext=="md")
     {

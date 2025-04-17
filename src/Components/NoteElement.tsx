@@ -45,6 +45,7 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
           }
         }
         img.setAttribute("width", "100%");
+        img.setAttribute("height", "");
       }
     }
     
