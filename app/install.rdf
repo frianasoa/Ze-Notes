@@ -25,8 +25,8 @@
 
         <ns1:creator>Fanantenana Rianasoa Andriariniaina</ns1:creator>
         <ns1:type>2</ns1:type> 
-        <ns1:iconURL>chrome://zenotes/content/images/icon.png</ns1:iconURL>
-        <ns1:icon64URL>chrome://zenotes/content/images/icon64.png</ns1:icon64URL>
+        <ns1:iconURL>chrome://zenotes/content/icons/icon.png</ns1:iconURL>
+        <ns1:icon64URL>chrome://zenotes/content/icons/icon64.png</ns1:icon64URL>
         <ns1:bootstrap>true</ns1:bootstrap>
 
         <ns1:targetApplication>
