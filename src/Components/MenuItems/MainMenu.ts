@@ -39,6 +39,7 @@ const Main: any = {
       },
       label: ""
     },
+    
     gemini: {
       submenu: {
         gemininote:{data: {target: "note"}},
@@ -54,6 +55,23 @@ const Main: any = {
       },
       label: ""
     },
+    
+    deepseek: {
+      submenu: {
+        deepseeknote:{data: {target: "note"}},
+        deepseeknotepart:{data: {target: "notepart"}},
+        deepseekcomment:{data: {target: "comment"}},
+        deepseekcommentpart:{data: {target: "commentpart"}},
+        deepseekquote:{data: {target: "quote"}},
+        deepseeknotesep: {label: ""},
+        deepseekcell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.deepseekprompt, data: {target: "cell"}},
+        deepseekrow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.deepseekprompt, data: {target: "row"}},
+        deepseekcolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.deepseekprompt, data: {target: "column"}},
+        deepseektable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.deepseekprompt, data: {target: "table"}},
+      },
+      label: ""
+    },
+    
     customai: {
       submenu: {
         customainote:{data: {target: "note"}},
@@ -127,6 +145,9 @@ const Main: any = {
     "gemini",
     "gemini/submenu/geminicell",
     "gemini/submenu/geminirow",
+    "deepseek",
+    "deepseek/submenu/deepseekcell",
+    "deepseek/submenu/deepseekrow",
     "customai",
     "customai/submenu/customaicell",
     "customai/submenu/customairow"

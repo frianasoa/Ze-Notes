@@ -4,7 +4,7 @@ import CustomAI from '../../Core/Ai/CustomAI';
 import MenuUtils from './MenuUtils';
 import React from 'react';
 
-import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
+import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
 
 const CellMenu = {
   show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
@@ -250,6 +250,66 @@ const CellMenu = {
             const params = [
               {key: "geminicell", keys: "gemini/submenu/geminicell"},
               {key: "geminicell", keys: "gemini/submenu/geminirow"},
+            ]
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+          }
+        }
+      });
+      
+      // DeepSeek
+      ZPrefs.getb("deepseek-apikey").then((key: string)=>{
+        if(key)
+        {
+          const params = [
+            {
+              label: "Using DeepSeek",
+              key: "deepseek",
+              keys: "deepseek",
+              onClick: Actions.deepseekprompt,
+              icon: FaFish,
+            },
+            {
+              label: "Prompt on cell",
+              key: "deepseekcell",
+              keys: "deepseek/submenu/deepseekcell",
+              data: { target: "cell", context: context },
+              onClick: Actions.deepseekprompt,
+              icon: FaRegSquare
+            },
+            {
+              label: "Prompt on row",
+              key: "deepseekrow",
+              keys: "deepseek/submenu/deepseekrow",
+              data: { target: "row", context: context },
+              onClick: Actions.deepseekprompt,
+              icon: FaTableColumns
+            },
+            {
+              label: "Prompt on column",
+              key: "deepseekcolumn",
+              keys: "deepseek/submenu/deepseekcolumn",
+              data: { target: "column", context: context },
+              onClick: Actions.deepseekprompt,
+              icon: FaTableList
+            },
+            {
+              label: "Prompt on table",
+              key: "deepseektable",
+              keys: "deepseek/submenu/deepseektable",
+              data: { target: "table", context: context },
+              onClick: Actions.deepseekprompt,
+              icon: FaTableCells
+            }
+          ];
+
+          MenuUtils.aidata(context, target);
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+
+          if(target.dataset.itemtype=="note")
+          {
+            const params = [
+              {key: "deepseekcell", keys: "deepseek/submenu/deepseekcell"},
+              {key: "deepseekcell", keys: "deepseek/submenu/deepseekrow"},
             ]
             MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }

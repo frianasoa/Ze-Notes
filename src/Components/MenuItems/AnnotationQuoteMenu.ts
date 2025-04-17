@@ -36,12 +36,30 @@ const AnnotationQuoteMenu = {
         keys: "gemini/submenu/geminiquote",
         icon: FaQuoteLeft,
         data: { target: "quote", context: context },
-        onClick: Actions.openaiprompt,
+        onClick: Actions.geminiprompt,
       },
       {
         label: "---",
         key: "gemininotesep",
         keys: "gemini/submenu/gemininotesep"
+      }
+    ]);
+    
+    // DeepSeek
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    [
+      {
+        label: "Prompt on quote",
+        key: "deepseekquote",
+        keys: "deepseek/submenu/deepseekquote",
+        icon: FaQuoteLeft,
+        data: { target: "quote", context: context },
+        onClick: Actions.deepseekprompt,
+      },
+      {
+        label: "---",
+        key: "deepseeknotesep",
+        keys: "deepseek/submenu/deepseeknotesep"
       }
     ]);
     

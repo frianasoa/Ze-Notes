@@ -161,6 +161,32 @@ const NoteTextMenu = {
       }
     ]);
     
+    // DeepSeek
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+    [
+      {
+        label: "Prompt on note",
+        key: "deepseeknote",
+        keys: "deepseek/submenu/deepseeknote",
+        icon: FaNoteSticky,
+        data: { target: "note", context: context, noteid: item.noteid},
+        onClick: Actions.deepseekprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "deepseeknotepart",
+        keys: "deepseek/submenu/deepseeknotepart",
+        icon: FaNoteSticky,
+        data: { target: "notepart", context: context, title: "Prompt on "+title, noteid: item.noteid},
+        onClick: Actions.deepseekprompt,
+      },
+      {
+        label: "---",
+        key: "deepseeknotesep",
+        keys: "deepseek/submenu/deepseeknotesep"
+      }
+    ]);
+    
     // Custom Ai default
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
     [

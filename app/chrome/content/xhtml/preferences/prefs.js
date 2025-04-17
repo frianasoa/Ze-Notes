@@ -5,6 +5,7 @@ const ZeNotes_Preferences = {
     await this.inittesseractlanguage();
     await this.initopenaimodels();
     await this.initgeminimodels();
+    await this.initdeepseekmodels();
     await this.initactions();
     await this.initvalues();
     await this.initcustomailist();
@@ -200,6 +201,54 @@ const ZeNotes_Preferences = {
       }
     }
     const div = document.querySelector("[data-key=openai-model]");
+    div.innerHTML = "";
+    if (div) {
+      for (let model of models.data) {
+        let opt = document.createElement("option");
+        opt.innerHTML = model.id;
+        opt.value = model.id;
+        div.appendChild(opt);
+      }
+    }
+  },
+  
+  async initdeepseekmodels() {
+    let models = {data: []};
+    try {
+      models = await Zotero.AppBase.Engine.Core.Ai.DeepSeek.models();
+      // models.data = models.data
+      // .filter(e => e.id.toLowerCase().includes("gpt"))
+      // .filter(e => !e.id.toLowerCase().includes("audio"))
+      // .sort((a, b) => (b.created || 0) - (a.created || 0));
+    }
+    catch(e)
+    {
+      let message = "Error getting models";
+      if(e.status==401)
+      {
+        message = "Unauthorized access (401)";
+      }
+      else if(e.status==404)
+      {
+        message = "API URL error (404)";
+      }
+      else if(e.statusText && e.status)
+      {
+        message = e.statusText+" ("+e.status+")";
+      }
+      else
+      {
+        message = e;
+      }
+      
+      models = {
+        data: [{
+          id: message,
+          created: 0,
+        }]
+      }
+    }
+    const div = document.querySelector("[data-key=deepseek-model]");
     div.innerHTML = "";
     if (div) {
       for (let model of models.data) {

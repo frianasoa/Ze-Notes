@@ -106,6 +106,32 @@ const AnnotationCommentMenu = {
       }
     ]);
     
+    // DeepSeek
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    [
+      {
+        label: "Prompt on comment",
+        key: "deepseekcomment",
+        keys: "deepseek/submenu/deepseekcomment",
+        icon: FaQuoteLeft,
+        data: { target: "comment", context: context },
+        onClick: Actions.deepseekprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "deepseekcommentpart",
+        keys: "deepseek/submenu/deepseekcommentpart",
+        icon: FaQuoteLeft,
+        data: { target: "commentpart", context: context },
+        onClick: Actions.deepseekprompt,
+      },
+      {
+        label: "---",
+        key: "deepseeknotesep",
+        keys: "deepseek/submenu/deepseeknotesep"
+      }
+    ]);
+    
     // Custom AI default
     MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
     [
