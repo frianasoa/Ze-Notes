@@ -525,11 +525,11 @@ const Actions: ActionsType = {
             save: (text)=>{
               if(noteid)
               {
-                 Actions.updatenote(noteid, "Translation "+item.data.target, text.split("\n").join("<br/>"));
+                 Actions.updatenote(noteid, "Translation: "+item.data.target, text.split("\n").join("<br/>"));
               }
               else if(annotationid)
               {
-                Actions.updateannotation(annotationid, "Translation "+item.data.target, text);
+                Actions.updateannotation(annotationid, "Translation: "+item.data.target, text);
               }
             }
           }
