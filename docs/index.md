@@ -6,10 +6,10 @@ title: "Ze-Notes version 1 documentation"
 ---
 
 ## Get started
-Please see README.md to get started \
-https://github.com/frianasoa/Ze-Notes/blob/main/README.md \
+Please see README.md to get started
+https://github.com/frianasoa/Ze-Notes/blob/main/README.md
 
-For previous version README.MD:\
+For previous version README.MD:
 https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
 
 # Settings
@@ -29,11 +29,11 @@ You have Dropbox related menu in heading context menu if you add information rel
 Tesseract is a program that allows Optical Character Recognition (OCR). If you install Tesseract on your machine, Ze Notes will look for its path and use it to turn Images to text. You may also add a custom link if Tesseract is installed to a custom path. A menu will be added to the context menu. You may also choose from the languages available. 
 ![image](./images/settings-tesseract.png)
 
-Do downnload Tesseract, please check the link below.\
+Do downnload Tesseract, please check the link below.
 https://tesseract-ocr.github.io/tessdoc/Downloads.html
 
 ## Generative AI settings
-Ze Note can run prompt from Open AI, Gemini, and DeepSeek if information on the service are provided. Menu will be available from the context menu. You may run them on cell, row, column, table or parts of the cell. Just provide the settings, add system message and user prompt.\
+Ze Note can run prompt from Open AI, Gemini, and DeepSeek if information on the service are provided. Menu will be available from the context menu. You may run them on cell, row, column, table or parts of the cell. Just provide the settings, add system message and user prompt.
 
 Please see the screenshot below. You may refer to the section about API keys for more information (Coming soon. For now, Google is your friend).
 
