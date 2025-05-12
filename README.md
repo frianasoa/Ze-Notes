@@ -1,5 +1,7 @@
 # Ze Notes version 1
-The new version of Ze Notes is out. In order to make maintenance easier, the code was ported to NodeJS, using React. Version 1 only works with Zotero 7. Please read this document before installing.
+The new version of Ze Notes is out. In order to make maintenance easier, the code was ported to NodeJS, using React. Version 1 only works with Zotero 7. Please read this document before installing. 
+
+⚠️ Table display significantly changed. You can simulate legacy display by going to settings -> Table display -> check Legacy display. You can always change export settings if needed.
 
 ## Description
 Ze Notes is a Zotero plugin that will help you manage and visualize your notes and annotations in tables. It is helpfull if you intend to make a systematic review directly on your Zotero using notes and annotations from attachments. You can edit your notes right on the table or add new ones. 
