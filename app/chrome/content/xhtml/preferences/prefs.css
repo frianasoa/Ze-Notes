@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+}
+
+hr {
+  width: 100%;
+  border: none;
+  background-color: lightgray; 
+  height: 1px; 
+  margin-top: 1em;
+}
+
+.zenotes-values {
+  font-size: 1em;
+  padding: 0.4em;
+  margin: 0.1em;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  text-align: left;
+  min-width: 35em;
+  width: 100%;
+}
+
+textarea.zenotes-values {
+  min-height: 6em;
+  height: auto;
+}
+
+textarea.resizeable {
+  resize: vertical;
+}
+
+.setting-part {
+  width: 95%;
+}
+
+table {
+  width: 100%;
+}
+
+/* td { */
+  /* border: solid 1px red; */
+/* } */
+
+/* tr td:nth-child(2) * { */
+  /* width: 100%; */
+/* } */

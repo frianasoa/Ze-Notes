@@ -1,0 +1,63 @@
+{
+  "name": "Ze Notes",
+  "version": "1.0.0",
+  "description": "Manage your notes in Zotero",
+  "homepage": "https://github.com/frianasoa/zn#readme",
+  "bugs": {
+    "url": "https://github.com/frianasoa/zn/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frianasoa/zn.git"
+  },
+  "config": {
+    "id": "zenotes@alefa.net",
+    "name": "Ze Notes",
+    "slug": "zenotes",
+    "znkey": "6cbde5d2c9ba358a4bb284770044b9d409086d1975b9f4c38b8a920ba71c47a0"
+  },
+  "license": "ISC",
+  "author": "Fanantenana Rianasoa Andriariniaina",
+  "type": "commonjs",
+  "main": "app/chrome/core/engine.js",
+  "scripts": {
+    "test": "node app/chrome/core/engine.js",
+    "build": "node ./commands/build.mjs && node ./commands/postbuild.mjs",
+    "dev": "node ./commands/dev.mjs && node ./commands/postbuild.mjs"
+  },
+  "dependencies": {
+    "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
+    "@joplin/turndown-plugin-gfm": "^1.0.61",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.1",
+    "docx": "^9.3.0",
+    "esbuild-css-modules-plugin": "^3.1.4",
+    "esbuild-sass-plugin": "^3.3.1",
+    "events": "^3.3.0",
+    "exceljs": "^4.4.0",
+    "he": "^1.2.0",
+    "jszip": "^3.10.1",
+    "pretty": "^2.0.0",
+    "process": "^0.11.10",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "sanitize-html": "^2.14.0",
+    "stream-browserify": "^3.0.0",
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2",
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/he": "^1.2.3",
+    "@types/react-dom": "^19.0.4",
+    "@types/sanitize-html": "^2.13.0",
+    "@types/turndown": "^5.0.5",
+    "esbuild": "0.25.1",
+    "zotero-types": "^3.1.9"
+  },
+  "browser": {
+    "crypto": "crypto-browserify",
+    "stream": "stream-browserify"
+  }
+}

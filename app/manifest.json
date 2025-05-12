@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "Ze Notes",
+    "version": "1.0.0",
+    "description": "Advanced notes manager",
+    "author": "Fanantenana Rianasoa Andriariniaina",
+    "homepage_url": "https://github.com/frianasoa/zenotes",
+    "icons": {
+        "48": "chrome/content/icons/icon.png",
+        "64": "chrome/content/icons/icon64.png"
+    },
+    "applications": {
+        "zotero": {
+            "id": "zenotes@alefa.net",
+            "update_url": "https://github.com/frianasoa/zenotes/releases/download/release/zenotes-update.json",
+            "strict_min_version": "7.0",
+            "strict_max_version": "7.1.*"
+        }
+    }
+}

@@ -1,0 +1,40 @@
+<html:div class="setting-part" xmlns:html="http://www.w3.org/1999/xhtml" >
+  <html:table>
+    <html:tr>
+      <html:td>URL</html:td>
+      <html:td><html:input type="text" class="zenotes-values" data-key="custom-ai-url" /></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>API Key</html:td>
+      <html:td><html:input type="password" class="zenotes-values" data-key="custom-ai-api-key" /></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Model</html:td>
+      <html:td><html:input type="text" class="zenotes-values" data-key="custom-ai-model" /></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Options</html:td>
+      <html:td><html:textarea class="zenotes-values resizeable" data-key="custom-ai-options"></html:textarea></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Format</html:td>
+      <html:td><html:textarea class="zenotes-values resizeable" data-key="custom-ai-format"></html:textarea></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>System message</html:td>
+      <html:td><html:textarea class="zenotes-values" data-key="custom-ai-system-message"></html:textarea></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>User prompt</html:td>
+      <html:td><html:textarea class="zenotes-values" data-key="custom-ai-user-prompt"></html:textarea></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td></html:td>
+      <html:td><html:button onclick="ZeNotes_Preferences.savecustomaisettings();">Save</html:button></html:td>
+    </html:tr>
+    <html:tr>
+      <html:td>Saved Custom AI</html:td>
+      <html:td id="custom-ai-saved" ></html:td>
+    </html:tr>
+  </html:table>
+</html:div>

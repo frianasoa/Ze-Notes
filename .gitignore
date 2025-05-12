@@ -1,6 +1,12 @@
-build
+TODO.md
 run.cmd
 run7.cmd
 stats.py
 make.py
+beta.py
+docs.sh
+readme.sh
 upload.sh
+merge.sh
+node_modules/
+zn@alefa.net

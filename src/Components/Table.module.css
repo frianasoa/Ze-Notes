@@ -1,0 +1,45 @@
+.legacytbody fieldset {
+  border: none!important;
+  margin: 0;
+}
+
+.legacytbody legend {
+  all: unset;
+  display: block;
+  font-weight: bold; 
+  margin-bottom: 0.2em;
+}
+
+.legacytbody legend[data-legend="Main comment"] {
+  display: none;
+}
+
+.legacytbody legend img {
+  display: none;
+}
+
+.tbody {
+  
+}
+
+
+@media (prefers-color-scheme: light) {
+  .tr td, .tr th {
+    
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tr td, .tr th {
+    background-color :#121212!important;
+    color: white!important;
+  }
+  .tr td {
+    color: red;
+  }
+  
+  header {
+    color: white;
+  }
+}
+

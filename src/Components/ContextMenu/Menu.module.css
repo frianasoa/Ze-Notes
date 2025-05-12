@@ -1,0 +1,55 @@
+.menu {
+  font-size: 0.95em;
+}
+
+@media (prefers-color-scheme: light) {
+  .menu {
+    border: solid 1px lightgray;
+    background-color: #f2f2f2;
+  }
+  .ul {
+    background-color: white;
+    box-shadow: 0 1px 1px rgba(128, 128, 128, 0.1);
+    border: solid 1px lightgray;
+  }
+  .li {
+    background-color: white;
+  }
+  .lihover {
+    background-color: #f0f0f0;
+  }
+  .label {
+    
+  }
+  .icon {
+    
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu {
+    border: solid 1px lightgray;
+    background-color: #121212;
+    color: white;
+  }
+  .ul {
+    background-color: #121212;
+    box-shadow: 0 1px 1px rgba(12, 12, 12, 0.1);
+    border: solid 1px lightgray;
+  }
+  .li {
+    background-color: #121212;
+    color: white;
+  }
+  .lihover {
+    background-color: #ccc;
+    color: white;
+  }
+  .label {
+    color: white;
+  }
+  .icon {
+    color: white;
+    
+  }
+}

@@ -1,0 +1,68 @@
+@media (prefers-color-scheme: light) {  
+  .tablinks button {
+    background-color: #f1f1f1;
+  }
+
+  .tablinks button:hover {
+    background-color: #ddd;
+  }
+
+  .tablinks button.active {
+    background-color: #ddd;
+  }
+}
+
+@media (prefers-color-scheme: dark) {  
+  .tablinks button {
+    background-color: #333;
+    color: #fff;
+  }
+
+  .tablinks button:hover {
+    background-color: #444;
+  }
+
+  .tablinks button.active {
+    background-color: #555;
+  }
+}
+
+.sep {
+  flex: 1;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.tablinks {
+  display: flex;
+  justify-content: space-around;
+  border-radius: 0.3em;
+}
+
+.tablinks button {
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  border: none;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+
+.tabcontent {
+  padding: 20px;
+}
+
+.tabcontent.active {
+  display: block;
+}
+
+.container {
+  height: 100%;
+  overflow-y: auto;
+  background-color: gold;
+}
