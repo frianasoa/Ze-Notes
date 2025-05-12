@@ -13,7 +13,7 @@
         "zotero": {
             "id": "zenotes@alefa.net",
             "update_url": "https://github.com/frianasoa/zenotes/releases/download/release/zenotes-update.json",
-            "strict_min_version": "7.0",
+            "strict_min_version": "7.0.0-beta.70",
             "strict_max_version": "7.1.*"
         }
     }
