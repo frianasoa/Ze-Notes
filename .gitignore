@@ -7,5 +7,6 @@ beta.py
 docs.sh
 readme.sh
 upload.sh
+merge.sh
 node_modules/
 zn@alefa.net
