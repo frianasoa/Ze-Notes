@@ -6,13 +6,13 @@ const OpenAI = {
   async prompt(data: string) {
     const url = "https://api.openai.com/v1/chat/completions";
     const method = "POST";
-    const apikey = await ZPrefs.getb("openai-apikey");
+    const apikey = await ZPrefs.getb("openai-api-key");
     const model = ZPrefs.get("openai-model");
     const maxtoken = parseInt(ZPrefs.get("openai-max-token", "0"));
-        
+
     const systemmessage = ZPrefs.get("openai-system-message", "You are an academic assistant helping in literature review.");
     const userprompt = ZPrefs.get("openai-user-prompt", "Summarize the following information (the input format is json).");
-    
+
     const payload: any = {
       model: model,
 			messages: [
@@ -21,12 +21,12 @@ const OpenAI = {
 				{role: "user", content: data},
 			],
     }
-    
+
     if(maxtoken>0)
     {
       payload["max_tokens"] = maxtoken;
     }
-    
+
     var options = {
 			method: method,
 			headers: {
@@ -35,7 +35,7 @@ const OpenAI = {
 			},
 			body: JSON.stringify(payload),
 		}
-    
+
     const format = (data: any) => {
       return data.choices.map(function(e: any) {
           return e.message.content;
@@ -44,10 +44,10 @@ const OpenAI = {
 
     return Request.send(url, options, format);
   },
-  
+
   async models()
   {
-    const apikey = await ZPrefs.getb("openai-apikey");
+    const apikey = await ZPrefs.getb("openai-api-key");
     const url = "https://api.openai.com/v1/models";
     const options = {
       headers: {

@@ -2,7 +2,7 @@ import Config from "../Config";
 import Crypto from "./Crypto";
 
 const ZPrefs = {
-  prefix: "extensions."+Config.slug+".",
+  prefix: "extensions."+Config.slug+".v1.",
   set(key: string, value: string) {
     return Zotero.Prefs.set(this.prefix + key, value, true);
   },

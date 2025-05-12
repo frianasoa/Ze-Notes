@@ -1,17 +1,18 @@
 import ZPrefs from '../../Core/ZPrefs';
 import Actions from '../../Core/Actions';
 import CustomAI from '../../Core/Ai/CustomAI';
+import Languages from '../../Core/Translation/Languages';
 import MenuUtils from './MenuUtils';
 import React from 'react';
 
-import {FaHtml5, FaFilePdf, FaO, FaC, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
+import {FaHtml5, FaFilePdf, FaGoogle, FaO, FaC, FaD, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
 
 const CellMenu = {
   show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
   {
     var target = event.currentTarget || event.target;
     const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]");
-    
+
     if(context && attachments.length>0)
     {
       const submenu: Record<string, any> = {};
@@ -57,7 +58,61 @@ const CellMenu = {
         submenu: submenu
       }
     }
-    
+
+    // Translations
+    const langiso = ZPrefs.get('translation-language', "en");
+    const langlabel = Languages.getlabel(String(langiso));
+    const deeplkey = ZPrefs.get('deepl-api-key', false);
+
+    if(context)
+    {
+      // Google
+      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
+      [
+        {
+          label: "Google translate",
+          key: "translatewithgoogle",
+          keys: "translatewithgoogle",
+          icon: FaGoogle,
+        },
+        {
+          label: "Cell to "+langiso.toUpperCase(),
+          key: "translatewithgoogle-cell",
+          keys: "translatewithgoogle/submenu/cell",
+          icon: FaGoogle,
+          data: { target: "cell", context: context, service: "Google" },
+          onClick: Actions.translate,
+        },
+        {
+          label: "---",
+          key: "septranslate",
+          keys: "septranslate"
+        }
+      ])
+
+      // DeepL
+      if(deeplkey)
+      {
+        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
+        [
+          {
+            label: "DeepL translate",
+            key: "translatewithdeepl",
+            keys: "translatewithdeepl",
+            icon: FaD,
+          },
+          {
+            label: "Cell to "+langiso.toUpperCase(),
+            key: "translatewithdeepl-cell",
+            keys: "translatewithdeepl/submenu/cell",
+            icon: FaD,
+            data: { target: "cell", context: context, service: "DeepL" },
+            onClick: Actions.translate,
+          }
+        ])
+      }
+    }
+
     if(context)
     {
       if(dataset.itemtype!="note")
@@ -137,7 +192,7 @@ const CellMenu = {
       }
 
       // Open AI
-      ZPrefs.getb("openai-apikey").then((key: string)=>{
+      ZPrefs.getb("openai-api-key").then((key: string)=>{
         if(key)
         {
           const params = [
@@ -195,9 +250,9 @@ const CellMenu = {
           }
         }
       });
-      
+
       // Gemini
-      ZPrefs.getb("gemini-apikey").then((key: string)=>{
+      ZPrefs.getb("gemini-api-key").then((key: string)=>{
         if(key)
         {
           const params = [
@@ -255,9 +310,9 @@ const CellMenu = {
           }
         }
       });
-      
+
       // DeepSeek
-      ZPrefs.getb("deepseek-apikey").then((key: string)=>{
+      ZPrefs.getb("deepseek-api-key").then((key: string)=>{
         if(key)
         {
           const params = [

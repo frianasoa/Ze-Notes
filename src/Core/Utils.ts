@@ -1,3 +1,4 @@
+import ZPrefs from './ZPrefs'
 import sanitizeHtml from 'sanitize-html';
 
 const Utils = {
@@ -33,6 +34,7 @@ const Utils = {
   },
   
   splitcomment(comment: string): { [key: string]: string } {
+    const maincommentlabel = ZPrefs.get("main-comment-label", "");
     const result: { [key: string]: string } = {};
     // const regex = /(?:<b>)?\[([^\]]+)\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[|$)/g;
     const regex = this.splitregex;
@@ -48,7 +50,7 @@ const Utils = {
       if (match.index > lastIndex) {
         const preContent = comment.slice(lastIndex, match.index).trim();
         if (preContent) {
-          result["Main comment"] = (result["Main content"] || "") + (result["Main comment"] ? " " : "") + preContent;
+          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + preContent;
         }
       }
 
@@ -72,7 +74,7 @@ const Utils = {
     if (!matched || lastIndex < comment.length) {
       const remainingContent = comment.slice(lastIndex).trim();
       if (remainingContent) {
-        result["Main comment"] = (result["Main comment"] || "") + (result["Main comment"] ? " " : "") + remainingContent;
+        result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + remainingContent;
       }
     }
 
@@ -80,6 +82,7 @@ const Utils = {
   },
 
   splithtmlcomment(comment: string) {
+    const maincommentlabel = ZPrefs.get("main-comment-label", "");
     const result: any = {};
     const regex = this.splitregex;
 
@@ -94,7 +97,7 @@ const Utils = {
         if (preContent) {
           const autoClosedPreContent = this.autoCloseTags(preContent);
           if (this.isContentMeaningful(autoClosedPreContent)) {
-            result["Main comment"] = autoClosedPreContent;
+            result[maincommentlabel] = autoClosedPreContent;
             hasPreContent = true;
           }
         }
@@ -124,16 +127,15 @@ const Utils = {
       if (remainingContent) {
         const autoClosedRemainingContent = this.autoCloseTags(remainingContent);
         if (this.isContentMeaningful(autoClosedRemainingContent)) {
-          result["Main comment"] = (result["Main comment"] || "") + (result["Main comment"] ? " " : "") + autoClosedRemainingContent;
+          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + autoClosedRemainingContent;
         }
       }
     }
 
     // Remove empty `Main comment` if it exists
-    if (result["Main comment"] && !this.isContentMeaningful(result["Main comment"])) {
-      delete result["Main comment"];
+    if (result[maincommentlabel] && !this.isContentMeaningful(result[maincommentlabel])) {
+      delete result[maincommentlabel];
     }
-
     return result;
   },
 

@@ -18,7 +18,7 @@ const AnnotationCommentMenu = {
     const deeplkey = ZPrefs.get('deepl-api-key', false);
     
     // Google
-    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
     [
       {
         label: "Google translate",
@@ -53,13 +53,13 @@ const AnnotationCommentMenu = {
     // DeepL
     if(deeplkey)
     {
-      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
       [
         {
           label: "DeepL translate",
           key: "translatewithdeepl",
           keys: "translatewithdeepl",
-          icon: FaGoogle,
+          icon: FaD,
         },
         {
           label: "Comment to "+langiso.toUpperCase(),

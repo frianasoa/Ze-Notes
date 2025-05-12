@@ -1,17 +1,20 @@
 import pkg from "../../package.json";
 
 const Database = {
+	OLDDB: Zotero.DBConnection,
 	DB: Zotero.DBConnection,
   version: "v1",
-	async init()
+	async open()
 	{
+		Database.OLDDB = new Zotero.DBConnection("zenotes");
 		Database.DB = new Zotero.DBConnection(pkg.config.slug+"-"+Database.version);
 		await Database.create();  
 	},
 	
-	close()
+	async close(permanent=false)
 	{
-		Database.DB.closeDatabase(true);
+		await Database.OLDDB.closeDatabase(permanent);
+    await Database.DB.closeDatabase(permanent);
 	},
 	
 	async create()

@@ -40,6 +40,8 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     isOpen: false,
     buttons: [],
   });
+  
+  const [tBodyStyle, setTBodyStyle] = useState<string>(styles.tbody);
 
   const closeTranslationDialog = () =>{
     setTranslationDialogState({title: "", children: <p>Default</p>, isOpen: false, buttons: []});
@@ -237,6 +239,18 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   useEffect(() => {
     fetchFilter();
   }, []);
+  
+  useEffect(() => {
+    const legacydisplay = ZPrefs.get('legacy-display', 'FALSE').toUpperCase()==="TRUE";
+    if(legacydisplay)
+    {
+      setTBodyStyle(styles.legacytbody);
+    }
+    else
+    {
+      setTBodyStyle(styles.tbody);
+    }
+  }, []);
 
   const openTranslationDialog = (value: any) => {
     setTranslationDialogState?.(value);
@@ -397,7 +411,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={tBodyStyle}>
           {data.map((row, index) => (
             <tr className={styles.tr}
               key={index}

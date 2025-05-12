@@ -1,6 +1,25 @@
 <html:div class="setting-part" xmlns:html="http://www.w3.org/1999/xhtml" >
 <table xmlns="http://www.w3.org/1999/xhtml">
   <tr>
+    <td><label for="legacy-display">Legacy display</label></td>
+    <td>
+      <input class="zenotes-values" id="legacy-display" data-key="legacy-display" type="checkbox" />
+    </td>
+  </tr>
+  <tr>
+    <td><label for="main-comment-label">Main comment label</label></td>
+    <td>
+      <input class="zenotes-values" id="main-comment-label" data-key="main-comment-label" type="text" placeholder="Main comment" />
+    </td>
+  </tr>
+  <tr>
+    <td><label for="untagged-column-label">Untagged column label</label></td>
+    <td>
+      <input class="zenotes-values" id="untagged-column-label" data-key="untagged-column-label" type="text" placeholder="Untagged" />
+    </td>
+  </tr>
+  
+  <tr>
     <td>Highlight opacity</td>
     <td>
       <input onchange="Zotero.AppBase.Engine.Components.emitter.emit('opacityChanged', this.value);" class="zenotes-values" data-key="quote-bg-opacity" type="range" min="0" max="255" step="1" />

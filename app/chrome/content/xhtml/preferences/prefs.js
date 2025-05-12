@@ -1,5 +1,6 @@
 const ZeNotes_Preferences = {
   async init() {
+    this.loading();
     await this.include();
     this.inittranslationlanguage();
     await this.inittesseractlanguage();
@@ -9,6 +10,19 @@ const ZeNotes_Preferences = {
     await this.initactions();
     await this.initvalues();
     await this.initcustomailist();
+    this.loaded();
+  },
+  
+  loading()
+  {
+    document.getElementById("loading-container").removeAttribute("hidden")
+    document.getElementById("zenotes-preferences").setAttribute("hidden", "true");
+  },
+  
+  loaded()
+  {
+    document.getElementById("loading-container").setAttribute("hidden", "true");
+    document.getElementById("zenotes-preferences").removeAttribute("hidden");
   },
   
   async include()
@@ -80,7 +94,7 @@ const ZeNotes_Preferences = {
       elt.addEventListener("change", async (event) => {
         try {
           const target = event.currentTarget || event.target;
-          const value = target.value;
+          const value = target.checked || target.value;
           const key = target.dataset.key;
           const encrypt = target.type.toUpperCase() === "PASSWORD";
           const valid = await ZeNotes_Preferences.validate(key, value);
@@ -138,13 +152,22 @@ const ZeNotes_Preferences = {
       try {
         const key = elt.dataset.key;
         const encrypt = elt.type.toUpperCase() === "PASSWORD";
+        const ischeckbox = elt.type.toUpperCase() === "CHECKBOX";
         let value = "";
         if (encrypt) {
           value = await Zotero.AppBase.Engine.Core.ZPrefs.getb(key);
-        } else {
+        } 
+        else {
           value = Zotero.AppBase.Engine.Core.ZPrefs.get(key);
         }
-        elt.value = value;
+        if(ischeckbox)
+        {
+          elt.checked=value.toUpperCase()==="TRUE";
+        }
+        else
+        {
+          elt.value = value;
+        }
       } catch (error) {
         Zotero.log("Error initializing values:"+error);
       }
@@ -216,10 +239,6 @@ const ZeNotes_Preferences = {
     let models = {data: []};
     try {
       models = await Zotero.AppBase.Engine.Core.Ai.DeepSeek.models();
-      // models.data = models.data
-      // .filter(e => e.id.toLowerCase().includes("gpt"))
-      // .filter(e => !e.id.toLowerCase().includes("audio"))
-      // .sort((a, b) => (b.created || 0) - (a.created || 0));
     }
     catch(e)
     {

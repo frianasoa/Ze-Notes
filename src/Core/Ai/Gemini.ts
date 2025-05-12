@@ -4,12 +4,12 @@ import Request from "../Request";
 
 const Gemini = {
   async prompt(text: string) {
-    const apikey = await ZPrefs.getb("gemini-apikey");
+    const apikey = await ZPrefs.getb("gemini-api-key");
     const model = ZPrefs.get("gemini-model", "models/gemini-2.0-flash"); // default to Gemini Flash
-    
+
     const systemmessage = ZPrefs.get("gemini-system-message", "You are an academic assistant helping in literature review.");
     const userprompt = ZPrefs.get("gemini-user-prompt", "Summarize the following information (the input format is json).");
-    
+
     const url = `https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${apikey}`;
     const method = "POST";
 
@@ -54,7 +54,7 @@ const Gemini = {
   },
 
   async models() {
-    const apikey = await ZPrefs.getb("gemini-apikey");
+    const apikey = await ZPrefs.getb("gemini-api-key");
     const url = `https://generativelanguage.googleapis.com/v1beta/models?pageSize=100&key=${apikey}`;
 
     const options = {

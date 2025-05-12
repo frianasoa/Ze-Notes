@@ -47,7 +47,7 @@ const NoteTextMenu = {
     const deeplkey = ZPrefs.get('deepl-api-key', false);
     
     // Google
-    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
     [
       {
         label: "Google translate",
@@ -82,7 +82,7 @@ const NoteTextMenu = {
     // DeepL
     if(deeplkey)
     {
-      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
       [
         {
           label: "DeepL translate",

@@ -1,5 +1,6 @@
 import he from 'he';
 import Utils from './Utils'
+import ZPrefs from './ZPrefs'
 
 const Format = {
 	zpaths(item: _ZoteroTypes.Items): string {
@@ -122,7 +123,9 @@ const Format = {
 	
 	async tagged(item: _ZoteroTypes.Items) 
   {
-		var data = {};
+		const untaggedlabel = ZPrefs.get("untagged-column-label", "") || "Untagged";
+    
+    var data = {};
 		
 		// do not include item tags
 		// data = await this.addnotes(data, item, item.getTags());
@@ -134,13 +137,13 @@ const Format = {
 			{
 				var note = Zotero.Items.get(noteid);
 				let tags = note.getTags();
-				if(tags)
+				if(tags && tags.length>0)
 				{
 					data = await this.addnotes(data, note, tags, item);
 				}
 				else
 				{
-					data = await this.addnotes(data, note, [{tag: "Untagged"}], item);
+					data = await this.addnotes(data, note, [{tag: untaggedlabel}], item);
 				}
 			}
 		}
@@ -148,13 +151,13 @@ const Format = {
 		{
 			var note = Zotero.Items.get(item.id);
 			let tags = note.getTags();
-			if(tags)
+			if(tags && tags.length>0)
 			{
 				data = await this.addnotes(data, note, tags, item);
 			}
 			else
 			{
-				data = await this.addnotes(data, note, [{tag: "Untagged"}], item);
+				data = await this.addnotes(data, note, [{tag: untaggedlabel}], item);
 			}
 		}
 		
@@ -171,13 +174,13 @@ const Format = {
 					for(const annotation of annotations)
 					{
 						let tags = annotation.getTags();
-						if(tags)
+						if(tags && tags.length>0)
 						{
 							data = await this.addnotes(data, annotation, tags, item, attachmentid);
 						}
 						else
 						{
-							data = await this.addnotes(data, annotation, [{tag: "Untagged"}], item, attachmentid);
+							data = await this.addnotes(data, annotation, [{tag: untaggedlabel}], item, attachmentid);
 						}
 					}
 				}

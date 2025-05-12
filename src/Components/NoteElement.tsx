@@ -48,7 +48,7 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
         img.setAttribute("height", "");
       }
     }
-    
+
     const updatedHtml = body.querySelector("#temp-div")?.innerHTML || "";
     const processedHtmls = Utils.splithtmlcomment(Utils.removeHiddenText(updatedHtml));
     setHtmls(processedHtmls);
@@ -107,7 +107,7 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
             data-noteid={item.noteid}
             style={{ marginBottom: '0.5em', border: 'dotted 1px' }}
           >
-            <legend className="annotation-part sub-legend" style={{ fontWeight: "bold" }}>
+            <legend className="annotation-part sub-legend" style={{ fontWeight: "bold" }}  data-legend={title}>
               {title}
             </legend>
             <div className="note-container zcontent" data-legend={title} dangerouslySetInnerHTML={{ __html: htmls[title] }}></div>

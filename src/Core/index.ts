@@ -1,5 +1,6 @@
 import Page from './Page';
 import Data from './Data';
+import Migrator from './Migrator';
 import Database from './Database';
 import Ai from './Ai';
 import Format from './Format';
@@ -17,6 +18,7 @@ import Cloud from './Cloud';
 type CoreType = {
   Page: typeof Page;
   Data: typeof Data;
+  Migrator: typeof Migrator;
   Ai: typeof Ai;
   Database: typeof Database;
   Format: typeof Format;
@@ -36,6 +38,7 @@ type CoreType = {
 const Core: CoreType = {
   Page,
 	Data,
+	Migrator,
 	Ai,
 	Database,
 	Format,

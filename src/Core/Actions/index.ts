@@ -245,9 +245,12 @@ const Actions: ActionsType = {
   },
 
   async opensettings(item: zty.ContextMenuData, celldata: Record<string, any>) {
-    Zotero.Utilities.Internal.openPreferences(Config.id);
+    const win = Zotero.Utilities.Internal.openPreferences(Config.id);
+    win?.addEventListener('close', function () {
+      Actions.reload(null, {});
+    });
   },
-  
+
   // Move these two functions somewhere later
   updateannotation(annotationid: number, title: string, contents: string)
   {
@@ -258,12 +261,12 @@ const Actions: ActionsType = {
       Actions.reload(null, {});
     });
   },
-  
+
   updatenote(noteid: number, title: string, contents: string)
   {
       const note = Zotero.Items.get(noteid);
       const currentNoteHTML = note.getNote() || "";
-      
+
       const parser = new DOMParser();
       const doc = parser.parseFromString(currentNoteHTML, "text/html");
       const fragment = doc.createDocumentFragment();
@@ -278,17 +281,17 @@ const Actions: ActionsType = {
       fragment.appendChild(doc.createElement("br"));
       doc.body.appendChild(fragment);
       const updatedHTML = doc.body.innerHTML || "";
-      
+
       note.setNote(updatedHTML);
       note.saveTx().then(() => {
         Actions.reload(null, {});
       });
   },
-  
+
   async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {
     const collection = Zotero.Collections.get(item.data.collectionid);
     const img = (item.data.event.currentTarget || item.data.event.target) as HTMLElement;
-    const imagekey = img.dataset.attachmentKey || "";    
+    const imagekey = img.dataset.attachmentKey || "";
     const attachmentid = Zotero.Items.getIDFromLibraryAndKey(collection.libraryID, imagekey);
 
     let attachment = null;
@@ -393,17 +396,17 @@ const Actions: ActionsType = {
     let target = null;
     let tags = [];
     let noparent = false;
-    
+
     if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
     }
-    
+
     else if(item.data.target=="commentpart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
@@ -413,7 +416,7 @@ const Actions: ActionsType = {
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="notepart")
     {
       target = celldata.target;
@@ -480,27 +483,32 @@ const Actions: ActionsType = {
       return;
     }
     let target = null;
-    
+
     if(item.data.target=="commentpart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
     }
-    
+
     else if(item.data.target=="notepart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="note")
     {
       target = celldata.target.closest(".note");
     }
-    
+
+    else if(item.data.target=="cell")
+    {
+      target = celldata.target.closest("td");
+    }
+
     if(target)
     {
       const context = item.data.context;
@@ -510,7 +518,7 @@ const Actions: ActionsType = {
       }
       const annotationid = celldata.target.dataset.annotationid;
       const noteid = item.data.noteid;
-      
+
       context.setLoadingMessage("Loading translation, please wait...");
       context.setIsLoading(true);
       let machine = Google;
@@ -518,7 +526,7 @@ const Actions: ActionsType = {
       {
         machine = DeepL;
       }
-      
+
       const lang = ZPrefs.get('translation-language', "en") as string;
       machine.translate(target.innerText, lang || "en").then((data: any)=>{
         context.setIsLoading(false);
@@ -535,6 +543,11 @@ const Actions: ActionsType = {
               {
                 Actions.updateannotation(annotationid, "Translation: "+item.data.target, text);
               }
+              else
+              {
+                const contents = "[[Translation: "+item.data.target+"]]<br/>"+text.split("\n").join("<br/>");
+                Actions.createnote(item, celldata, event, contents);
+              }
             }
           }
         );
@@ -550,28 +563,28 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   async openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
     if(!item.data)
     {
       return;
     }
-    
+
     let target = null;
     let tags = [];
     let noparent = false;
-    
+
     if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
     }
-    
+
     else if(item.data.target=="commentpart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
@@ -581,12 +594,12 @@ const Actions: ActionsType = {
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="notepart")
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
@@ -625,14 +638,14 @@ const Actions: ActionsType = {
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
-      
+
       OpenAI.prompt(JSON.stringify(promptdata)).then((data: any)=>{
         let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
         if(item.data.target=="notepart")
         {
           contents = "[[AI output on \""+item.data.title+"\"]]<br/>\n"+data;
         }
-        
+
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
@@ -645,28 +658,28 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   async deepseekprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
     if(!item.data)
     {
       return;
     }
-    
+
     let target = null;
     let tags = [];
     let noparent = false;
-    
+
     if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
     }
-    
+
     else if(item.data.target=="commentpart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
@@ -676,12 +689,12 @@ const Actions: ActionsType = {
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="notepart")
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
@@ -720,14 +733,14 @@ const Actions: ActionsType = {
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
-      
+
       DeepSeek.prompt(JSON.stringify(promptdata)).then((data: any)=>{
         let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
         if(item.data.target=="notepart")
         {
           contents = "[[AI output on \""+item.data.title+"\"]]<br/>\n"+data;
         }
-        
+
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
@@ -740,7 +753,7 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   // Factor this later with OpenAI
   async geminiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
   {
@@ -748,21 +761,21 @@ const Actions: ActionsType = {
     {
       return;
     }
-    
+
     let target = null;
     let tags = [];
     let noparent = false;
-    
+
     if(item.data.target=="comment")
     {
       target = celldata.target.closest(".comment");
     }
-    
+
     else if(item.data.target=="commentpart")
     {
       target = celldata.target;
     }
-    
+
     else if(item.data.target=="quote")
     {
       target = celldata.target.closest(".zcontent");
@@ -772,12 +785,12 @@ const Actions: ActionsType = {
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="notepart")
     {
       target = celldata.target.closest(".zcontent");
     }
-    
+
     else if(item.data.target=="cell")
     {
       target = celldata.target.closest("td");
@@ -816,14 +829,14 @@ const Actions: ActionsType = {
       context.setLoadingMessage("Loading, please wait...<br/> Or close this window, <br/> and continue working while waiting for a note window to open!");
       context.setIsLoading(true);
       const promptdata = await PromptFormat.data(target, celldata.collectionid);
-      
+
       Gemini.prompt(JSON.stringify(promptdata)).then((data: any)=>{
         let contents = "[[AI output on this "+item.data.target+"]]<br/>\n"+data;
         if(item.data.target=="notepart")
         {
           contents = "[[AI output on \""+item.data.title+"\"]]<br/>\n"+data;
         }
-        
+
         AiNotes.create(item, celldata, contents, ()=>{Actions.reload(null, {})});
         context.setIsLoading(false)
       })
@@ -836,7 +849,7 @@ const Actions: ActionsType = {
       })
     }
   },
-  
+
   // merge this to translate();
   translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
@@ -906,7 +919,7 @@ const Actions: ActionsType = {
       emitter.emit('toggleFinder', true);
     }, 10);
   },
-  
+
   showattachment(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     var attachment = Zotero.Items.get(item.data.id);
@@ -942,13 +955,13 @@ const Actions: ActionsType = {
       Actions.reload(null, {});
     });
   },
-  
+
   dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     const children = React.createElement(
       DropboxUploadDialog,
       {
-        collectionid: celldata.collectionid, 
+        collectionid: celldata.collectionid,
         upload: (email: string)=>{
           DataExporter.exportall(celldata.collectionid, email).then(()=>{
              item?.data?.callback({isOpen: false});
@@ -963,13 +976,13 @@ const Actions: ActionsType = {
       isOpen: true
     });
   },
-  
+
   dropboxdownload(item: zty.ContextMenuData, celldata: Record<string, any>)
   {
     const children = React.createElement(
       DropboxDownloadDialog,
       {
-        collectionid: celldata.collectionid, 
+        collectionid: celldata.collectionid,
         download: (email: string)=>{
           window.alert(email);
           // DataExporter.exportall(celldata.collectionid, email).then(()=>{
@@ -1050,9 +1063,9 @@ const Actions: ActionsType = {
     }
     const allcolumns = item?.data?.headers;
     const buttons = [
-      {action: async ()=>{return TablePrefs.set(celldata.collectionid, "hide-key", "[]")}, label: "Show all"},
+			{action: async ()=>{close(); Actions.reload(item, celldata);}, label: "Reload"},
+			{action: async ()=>{return TablePrefs.set(celldata.collectionid, "hide-key", "[]")}, label: "Show all"},
       {action: async ()=>{return TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify(allcolumns))}, label: "Hide all"},
-      {action: async ()=>{close(); Actions.reload(item, celldata);}, label: "Reload"},
       {action: async ()=>{close()}, label: "Close"},
     ]
 
