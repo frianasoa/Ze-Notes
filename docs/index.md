@@ -6,11 +6,11 @@ title: "Ze-Notes version 1 documentation"
 ---
 
 ## Get started
-Please see README.md to get started
-https://github.com/frianasoa/Ze-Notes/blob/main/README.md
+Please see  
+[README.md to get started](https://github.com/frianasoa/Ze-Notes/blob/main/README.md)  
 
-For previous version README.MD:
-https://github.com/frianasoa/Ze-Notes/blob/v0/README.md
+For the previous version of README.md:  
+[README.md (v0)](https://github.com/frianasoa/Ze-Notes/blob/v0/README.md)
 
 # Settings
 ## General settings
