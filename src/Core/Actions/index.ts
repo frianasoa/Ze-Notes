@@ -900,7 +900,7 @@ const Actions: ActionsType = {
     }
     else if(attachment && annotationkey)
     {
-      window.alert("The attachment does not seem to have pages. Opening at the last location!");
+      Zotero.log("The attachment does not seem to have pages. Opening at the last location!");
       (Zotero as any).FileHandlers.open(attachment, {
         location: {
           annotationID: annotationkey
