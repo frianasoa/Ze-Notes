@@ -155,7 +155,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subM
           src={data.icon}
           alt={data.label || "icon"}
           title={data.title || data.label}
-          style={{ marginRight: "8px", width: "16px", height: "16px", backgroundColor: "drop-shadow(0px 0px 1px white)" }}
+          style={{
+            marginRight: "8px",
+            width: "16px",
+            height: "16px",
+            backgroundColor: "white",
+            filter: "drop-shadow(0px 0px 1px white)"
+          }}
         />
       )}
       

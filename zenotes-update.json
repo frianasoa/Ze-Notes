@@ -11,7 +11,7 @@
               "strict_max_version": "7.1.*"
             }
           },
-          "update_hash": "sha512:de840fdc56b1a2f702285a6cbf70133db79852f56ba827fcb16bb4715cbfa3bdeb57472a291f3f0b4085efc4b598424aaa13c4ee1f36f024b796ec6875602f7a"
+          "update_hash": "sha512:6d3a4fbb6fbd167ff5ebf9ad655577c2e9953adecda9806338b60d8eddf0d63e00d51821095ea1a61f77b793ec89195265a83782faa1a58a6e6a6326fb5e8c3d"
         }
       ]
     }
