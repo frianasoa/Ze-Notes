@@ -9,13 +9,17 @@ const Html = {
     const external = settings?.createfolder === "true";
     const clonedTable = table.cloneNode(true);
     const rows = (clonedTable as HTMLTableElement).querySelectorAll("tbody tr");
-    rows.forEach((row: Element, key: number, parent: NodeListOf<Element>) => {
-      const style = window.getComputedStyle(row);
-      const td = row as HTMLTableRowElement;
-      if (style?.display === "none" || style?.visibility === "hidden" || td.style.display==="none" || td.style.visibility==="hidden") {
-        row.remove();
-      }
-    });
+    // rows.forEach((row: Element, key: number, parent: NodeListOf<Element>) => {
+      // const style = window.getComputedStyle(row);
+      // const td = row as HTMLTableRowElement;
+      // if (style?.display === "none" || style?.visibility === "hidden" || td.style.display==="none" || td.style.visibility==="hidden") {
+        // row.remove();
+      // }
+    // });
+    const legends = (clonedTable as HTMLTableElement).querySelectorAll("legend");
+    this.removehidden(rows);
+    this.removehidden(legends);
+    
     this.filterdata(clonedTable, settings);
     this.format(clonedTable, settings);
 
@@ -28,6 +32,39 @@ const Html = {
     const filteredHTML = this.todocument((clonedTable as HTMLTableElement).outerHTML);
     return {htmldata: filteredHTML, files: files};
   },
+  
+  removehidden(items: any)
+  {
+    items.forEach((item: Element, key: number, parent: NodeListOf<Element>) => {
+      const style = this.getstyle(item as HTMLElement);
+      const i = item as HTMLElement;
+      if(style?.display === "none" || style?.visibility === "hidden" || i.style.display==="none" || i.style.visibility==="hidden") {
+        item.remove();
+      }
+    });
+  },
+  
+  getstyle(el: HTMLElement): CSSStyleDeclaration {
+    // Clone the element
+    const clone = el.cloneNode(true) as HTMLElement;
+
+    // Create a hidden container
+    const tempContainer = document.createElement('div');
+    tempContainer.style.cssText = 'position:absolute; left:-9999px; top:-9999px;';
+    document.body.appendChild(tempContainer);
+
+    // Append the clone to the container
+    tempContainer.appendChild(clone);
+
+    // Get computed style
+    const computed = window.getComputedStyle(clone)!;
+
+    // Clean up
+    document.body.removeChild(tempContainer);
+
+    return computed;
+  },
+
 
   sanitize(html: string) {
     const clean = sanitizeHtml(html, {
@@ -49,7 +86,7 @@ const Html = {
     table.querySelectorAll('.annotation-part').forEach((element: HTMLElement) => {
       const legendText = element.innerText.trim();
 
-      if (!datasettings.hasOwnProperty(legendText))
+      if (legendText && !datasettings.hasOwnProperty(legendText))
       {
         const fieldset = element.closest('fieldset');
         if (fieldset) {

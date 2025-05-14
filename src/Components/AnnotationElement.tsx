@@ -23,7 +23,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
   const [image, setImage] = useState<string | null>(null);
 
   const context = useContext(DataContext);
-  
+
   const openTranslationDialog = (value: any) => {
     if(context)
     {
@@ -54,7 +54,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
 
     checkImage();
   }, [item.image]);
-  
+
   const handleImageAnnotationContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     AnnotationImageMenu.show(event, context, item);
   }
@@ -63,7 +63,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
     if(context)
     {
       AnnotationQuoteMenu.show(context, event);
-      
+
       context.MenuItems.main["showannotation"] = {
         label: 'Show annotation',
         icon: FaNoteSticky,
@@ -84,9 +84,9 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
         const langiso = ZPrefs.get('translation-language', "en");
         const langlabel = Languages.getlabel(String(langiso));
         const deeplkey = ZPrefs.get('deepl-api-key', false);
-      
+
         // Google
-        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
         [
           {
             label: "Google translate",
@@ -109,11 +109,11 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
             keys: "septranslate"
           }
         ])
-        
+
         // DeepL
         if(deeplkey)
         {
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
           [
             {
               label: "DeepL translate",
@@ -158,7 +158,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
             <AnnotationQuoteElement onContextMenu={handleQuoteContextMenu} item={item} />
           </div>
         ): (
-          <div>error: {JSON.stringify(item)}</div>
+          <div>error:{/* {JSON.stringify(item)*/}</div>
         )}
       </div>
     </fieldset>

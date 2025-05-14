@@ -7,7 +7,10 @@
   all: unset;
   display: block;
   font-weight: bold; 
+  margin: 0;
+  padding: 0;
   margin-bottom: 0.2em;
+ 
 }
 
 .legacytbody legend[data-legend="Main comment"] {
@@ -15,6 +18,24 @@
 }
 
 .legacytbody legend img {
+  display: none;
+}
+
+.hidemainlegend :global(.main-legend) {
+  display: none;
+}
+
+.hidemainlegend :global(.main-fieldset) {
+  border: none!important;
+  margin: 0!important;
+  padding: 0!important;
+}
+
+legend[data-legend=""] {
+  display: none;
+}
+
+fieldset[data-legend=""] {
   display: none;
 }
 

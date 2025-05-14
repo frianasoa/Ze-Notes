@@ -241,15 +241,22 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   }, []);
   
   useEffect(() => {
-    const legacydisplay = ZPrefs.get('legacy-display', 'FALSE').toUpperCase()==="TRUE";
+    const legacydisplay = String(ZPrefs.get('legacy-display', false)).toUpperCase()==="TRUE";
+    const hidemainlegend = String(ZPrefs.get('hide-main-legend', false)).toUpperCase()==="TRUE";
+    
     if(legacydisplay)
     {
       setTBodyStyle(styles.legacytbody);
+    }
+    else if(hidemainlegend)
+    {
+      setTBodyStyle(styles.hidemainlegend);
     }
     else
     {
       setTBodyStyle(styles.tbody);
     }
+    
   }, []);
 
   const openTranslationDialog = (value: any) => {

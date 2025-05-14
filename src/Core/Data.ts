@@ -76,6 +76,7 @@ const Data = {
       date: [{type: "native-field", text: Format.date(item)}],
       journal: [{type: "native-field", text: Utils.toxhtml(item.getField("publicationTitle"))}],
       bookTitle: [{type: "native-field", text: Utils.toxhtml(item.getField("bookTitle"))}],
+      publisher: [{type: "native-field", text: Utils.toxhtml(item.getField("publisher"))}],
       source: [{type: "native-field", text: Format.source(item)}],
       zpaths: Format.zpaths(item)
     };

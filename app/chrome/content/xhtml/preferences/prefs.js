@@ -94,11 +94,17 @@ const ZeNotes_Preferences = {
       elt.addEventListener("change", async (event) => {
         try {
           const target = event.currentTarget || event.target;
-          const value = target.checked || target.value;
+          const ischeckbox = target.type.toUpperCase() === "CHECKBOX";
+          let value = target.value;
+          if(ischeckbox)
+          {
+            value = target.checked;
+          }
+          
           const key = target.dataset.key;
           const encrypt = target.type.toUpperCase() === "PASSWORD";
           const valid = await ZeNotes_Preferences.validate(key, value);
-          
+                    
           if(!valid)
           {
             target.value = "";
@@ -160,9 +166,10 @@ const ZeNotes_Preferences = {
         else {
           value = Zotero.AppBase.Engine.Core.ZPrefs.get(key);
         }
+        
         if(ischeckbox)
         {
-          elt.checked=value.toUpperCase()==="TRUE";
+          elt.checked=value===true || value==='TRUE' || value==='true';
         }
         else
         {
