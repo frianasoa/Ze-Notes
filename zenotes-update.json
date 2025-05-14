@@ -3,15 +3,15 @@
     "zenotes@alefa.net": {
       "updates": [
         {
-          "version": "1.0.1",
-          "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v1.0.1/zenotes-v1.0.1.xpi",
+          "version": "1.0.2",
+          "update_link": "https://github.com/frianasoa/Ze-Notes/releases/download/v1.0.2/zenotes-v1.0.2.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "7.0.0-beta.70",
               "strict_max_version": "7.1.*"
             }
           },
-          "update_hash": "sha512:6d3a4fbb6fbd167ff5ebf9ad655577c2e9953adecda9806338b60d8eddf0d63e00d51821095ea1a61f77b793ec89195265a83782faa1a58a6e6a6326fb5e8c3d"
+          "update_hash": "sha512:fab0a23c5ce9a9f37fdb928c5df459a9415b7c3884e54470c694b9c26c4b67ed256f81cb1abbbdee240a5297709d9c3a70099facc73cb134bb8e2e0cabfa72db"
         }
       ]
     }

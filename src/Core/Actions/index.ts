@@ -963,6 +963,11 @@ const Actions: ActionsType = {
       {
         collectionid: celldata.collectionid,
         upload: (email: string)=>{
+					if(email.length==0)
+			    {
+			      window.alert("Please input destination email address");
+			      return;
+			    }
           DataExporter.exportall(celldata.collectionid, email).then(()=>{
              item?.data?.callback({isOpen: false});
           })
