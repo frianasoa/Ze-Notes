@@ -28,7 +28,6 @@ const Notes: NotesType = {
     });
   },
 
-
   async show(win: Window, data: any, collectionID: string, collectionName: string, libraryID: string) {
     const container = win?.document?.getElementById('main-contents');
     const sortkeys = JSON.parse(await TablePrefs.get(collectionID, "column-sort-key", "[]"));
@@ -38,10 +37,14 @@ const Notes: NotesType = {
 
     if(container)
 		{
+      const item = {} as any;
+      const celldata = {collectionid: collectionID} as any;
+      
 			const root = ReactDOM.createRoot(container);
 			globalThis.window = win as Window & typeof globalThis;
 			globalThis.document = win.document as Document & typeof globalThis;
-			root.render(<div className="main-table-container"><Table data={this.sortdata(data, tablesortkeys)} sortkeys={sortkeys} hidekeys={hidekeys} rowhidekeys={rowhidekeys} collectionid={collectionID} collectionname={collectionName} libraryid={libraryID} /></div>);
+            
+			await root.render(<div className="main-table-container"><Table data={this.sortdata(data, tablesortkeys)} sortkeys={sortkeys} hidekeys={hidekeys} rowhidekeys={rowhidekeys} collectionid={collectionID} collectionname={collectionName} libraryid={libraryID} /></div>);
 		}
   }
 };

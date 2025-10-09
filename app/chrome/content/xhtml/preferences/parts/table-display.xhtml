@@ -1,5 +1,5 @@
 <html:div class="setting-part" xmlns:html="http://www.w3.org/1999/xhtml" >
-<table xmlns="http://www.w3.org/1999/xhtml">
+<table xmlns="http://www.w3.org/1999/xhtml" class="zn-settings1">
   <tr>
     <td><label for="legacy-display">Legacy display</label></td>
     <td>
@@ -29,6 +29,12 @@
     <td>Highlight opacity</td>
     <td>
       <input onchange="Zotero.AppBase.Engine.Components.emitter.emit('opacityChanged', this.value);" class="zenotes-values" data-key="quote-bg-opacity" type="range" min="0" max="255" step="1" />
+    </td>
+  </tr>
+  <tr>
+    <td><label for="always-show-column-sorter" title="Shows column sorter when no column is hidden. Check when you have many tags.">Show column sorter</label></td>
+    <td>
+      <input class="zenotes-values" id="always-show-column-sorter" data-key="always-show-column-sorter"  type="checkbox" />
     </td>
   </tr>
 </table>

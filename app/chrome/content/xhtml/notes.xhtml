@@ -50,14 +50,12 @@
 			iframe.contentWindow.addEventListener("load", (event) => {
         Engine = window.parent.Zotero.AppBase.Engine;
 				pageinfo = JSON.parse(iframe.dataset.info);
-				
         Engine.Core.Data.items(pageinfo).then(data=>{
           event.currentTarget.document.title = window.parent.Zotero.AppBase.Config.name;
           Engine.Components.Notes.show(event.currentTarget, data, Engine.Core.Data.collectionID, pageinfo.title, pageinfo.libraryID);
           document.getElementById("page-title").innerText=pageinfo.title;
-				})
-        
-        Engine.Components.FindBar.init(event.currentTarget, document.getElementById("zn-search-bar"));       
+				});
+        Engine.Components.FindBar.init(event.currentTarget, document.getElementById("zn-search-bar")); 
 			});
 		</script>
 </head>

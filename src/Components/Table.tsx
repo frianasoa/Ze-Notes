@@ -240,10 +240,12 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     fetchFilter();
   }, []);
   
+  
+  const [showSorter, setShowSorter] = useState(false);
   useEffect(() => {
     const legacydisplay = String(ZPrefs.get('legacy-display', false)).toUpperCase()==="TRUE";
     const hidemainlegend = String(ZPrefs.get('hide-main-legend', false)).toUpperCase()==="TRUE";
-    
+        
     if(legacydisplay)
     {
       setTBodyStyle(styles.legacytbody);
@@ -266,6 +268,48 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   const openCommonDialog = (value: any) => {
     setCommonDialogState?.(value);
   }
+  
+  type PropsShowSorterLink = {
+    collectionID: string;
+  };
+    
+  const [currentHideKeys, setCurrentHideKeys] = useState<string[]>(hidekeys);
+  
+  useEffect(() => {
+    (async () => {
+        setCurrentHideKeys(JSON.parse(await TablePrefs.get(collectionid, "hide-key", "[]")));
+        const val = await ZPrefs.get('always-show-column-sorter', false);
+        const alwaysshowcolumnsorter = String(val).toUpperCase() === "TRUE";
+        setShowSorter(alwaysshowcolumnsorter);
+      })();
+  }, [collectionid, headers]);
+  
+  /** Column sorter dialog */
+  const sorterTriggered = useRef(false);
+  useEffect(() => {
+    (async () => {
+      const hideKeys = JSON.parse(await TablePrefs.get(collectionid, "hide-key", "[]"));
+      setCurrentHideKeys(hideKeys);
+
+      const val = await ZPrefs.get('always-show-column-sorter', false);
+      const alwaysShow = String(val).toUpperCase() === "TRUE";
+      setShowSorter(alwaysShow);
+
+      // Auto open sorter once
+      if(hideKeys.length === 0 && alwaysShow && !sorterTriggered.current) {
+        sorterTriggered.current = true;
+        Actions.showcolumnsortdialog({
+          label: "Hide unncessary columns then reload",
+          state: "active",
+          data: { headers, callback: setCommonDialogState },
+          iconColor: "",
+          textColor: "",
+          bgColor: ""
+        }, { collectionid });
+      }
+    })();
+  }, [collectionid, headers]);
+  
 
   const handleHeaderContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     var index = "dataall";
@@ -389,71 +433,104 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
           }
         `}
       </style>
-      <table className="main-table" ref={tableRef} data-collectionname={collectionname} data-libraryid={libraryid}>
-        <thead>
-          <tr className={styles.tr}>
-            {headers.map((header: string) => (
-              <th
-                key={header}
-                className={header.replace(/[^a-zA-Z0-9-_]/g, '_')}
-                draggable
-                onDragStart={() => handleDragStart(header)}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDrop(header)}
-                onContextMenu={handleHeaderContextMenu}
-                data-column={header}
-                data-filter={filter}
-                data-altcolumn='-all-columns-'
-                data-collectionid={collectionid}
-                data-libraryid={libraryid}
-              >
-                <div style={{float: 'left', width: '98%'}} className="no-export-wrapper">{header}</div>
-                <ColumnResizer item={{
-                  column: '-all-columns-',
-                  originalcolumn: header,
-                  collectionid: collectionid,
-                  title: "Resize all columns"
-                }}/>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className={tBodyStyle}>
-          {data.map((row, index) => (
-            <tr className={styles.tr}
-              key={index}
-              style={{
-                height: '1px',
-                display:
-                ((filter === 'withouttags' && row.NoTags === "true") ||
-                 (filter === 'withtags' && row.NoTags !== "true") ||
-                 (filter === 'all') ||
-                 (filter === null && row.NoTags !== "true")) &&
-                 !rowhidekeys.includes(String(row.id[0].text))
-                    ? ''
-                    : 'none', // Hide rows that don't match the filter
-              }}
-            >
-              {headers.filter((i: string) => i !== "__no_column_selected__").map((header: string) => (
-                <Cell
+      {currentHideKeys.length === 0 && showSorter ? 
+        <table className="main-table" ref={tableRef} data-collectionname={collectionname} data-libraryid={libraryid}>
+          <thead>
+            <tr className={styles.tr}>
+              {[headers[0]].map((header: string) => (
+                <th
                   key={header}
-                  data={row[header]}
-                  dataset={{
-                    column: header,
+                  className={header.replace(/[^a-zA-Z0-9-_]/g, '_')}
+                  draggable
+                  onDragStart={() => handleDragStart(header)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(header)}
+                  onContextMenu={handleHeaderContextMenu}
+                  data-column={header}
+                  data-filter={filter}
+                  data-altcolumn='-all-columns-'
+                  data-collectionid={collectionid}
+                  data-libraryid={libraryid}
+                >
+                  <div style={{float: 'left', width: '98%'}} className="no-export-wrapper">__all_columns_selected__</div>
+                  <ColumnResizer item={{
+                    column: '-all-columns-',
+                    originalcolumn: header,
                     collectionid: collectionid,
-                    libraryid: libraryid,
-                    itemid: row.id[0].text,
-                    itemtype: row.itemtype,
-                    zpaths: JSON.stringify(row.zpaths),
-                    title: 'Resize column "' + header + '"',
-                  }}
-                />
+                    title: "Resize all columns"
+                  }}/>
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
+          </thead>
+        </table>
+      : (
+        <table className="main-table" ref={tableRef} data-collectionname={collectionname} data-libraryid={libraryid}>
+          <thead>
+            <tr className={styles.tr}>
+              {headers.map((header: string) => (
+                <th
+                  key={header}
+                  className={header.replace(/[^a-zA-Z0-9-_]/g, '_')}
+                  draggable
+                  onDragStart={() => handleDragStart(header)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(header)}
+                  onContextMenu={handleHeaderContextMenu}
+                  data-column={header}
+                  data-filter={filter}
+                  data-altcolumn='-all-columns-'
+                  data-collectionid={collectionid}
+                  data-libraryid={libraryid}
+                >
+                  <div style={{float: 'left', width: '98%'}} className="no-export-wrapper">{header}</div>
+                  <ColumnResizer item={{
+                    column: '-all-columns-',
+                    originalcolumn: header,
+                    collectionid: collectionid,
+                    title: "Resize all columns"
+                  }}/>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className={tBodyStyle}>
+            {data.map((row, index) => (
+              <tr className={styles.tr}
+                key={index}
+                style={{
+                  height: '1px',
+                  display:
+                  ((filter === 'withouttags' && row.NoTags === "true") ||
+                   (filter === 'withtags' && row.NoTags !== "true") ||
+                   (filter === 'all') ||
+                   (filter === null && row.NoTags !== "true")) &&
+                   !rowhidekeys.includes(String(row.id[0].text))
+                      ? ''
+                      : 'none', // Hide rows that don't match the filter
+                }}
+              >
+                {headers.filter((i: string) => i !== "__no_column_selected__").map((header: string) => (
+                  <Cell
+                    key={header}
+                    data={row[header]}
+                    dataset={{
+                      column: header,
+                      collectionid: collectionid,
+                      libraryid: libraryid,
+                      itemid: row.id[0].text,
+                      itemtype: row.itemtype,
+                      zpaths: JSON.stringify(row.zpaths),
+                      title: 'Resize column "' + header + '"',
+                    }}
+                  />
+                ))}
+              </tr>
+            ))}
+          </tbody>
 
-      </table>
+        </table>
+      )}
 
       <Menu items={mainMenuItems} handleClick={handleClick} handleClose={handleMenuClose} targetSelector=".target-element" />
       <Menu items={headerMenuItems} handleClick={handleHeaderClick}  targetSelector="th" />

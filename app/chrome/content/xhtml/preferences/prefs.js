@@ -1,4 +1,4 @@
-const ZeNotes_Preferences = {
+window.ZeNotes_Preferences = {
   async init() {
     this.loading();
     await this.include();

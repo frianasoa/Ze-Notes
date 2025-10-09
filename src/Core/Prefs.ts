@@ -6,13 +6,10 @@ const Prefs = {
     
     const q = "INSERT OR REPLACE INTO `preferences` (key, value) VALUES (?, ?)";
     await Database.DB.queryAsync(q, [key, value]);
-    
-    
   },
 
   async get(key: string, default_value?: any) 
   {
-    
     const q = "SELECT value FROM `preferences` WHERE key = ?";
     const result = await Database.DB.queryAsync(q, [key]);
     if (result && result.length > 0) 

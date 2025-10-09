@@ -38,6 +38,10 @@ table {
   width: 100%;
 }
 
+.zn-settings1 td {
+  border-bottom: solid 1px white;
+}
+
 /* td { */
   /* border: solid 1px red; */
 /* } */

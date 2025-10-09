@@ -1066,6 +1066,7 @@ const Actions: ActionsType = {
         isOpen: false
       });
     }
+        
     const allcolumns = item?.data?.headers;
     const buttons = [
 			{action: async ()=>{close(); Actions.reload(item, celldata);}, label: "Reload"},
@@ -1073,14 +1074,14 @@ const Actions: ActionsType = {
       {action: async ()=>{return TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify(allcolumns))}, label: "Hide all"},
       {action: async ()=>{close()}, label: "Close"},
     ]
-
+    
     const children = React.createElement(
       ColumnSortContents,
       {item: item, celldata: celldata, buttons: buttons}
     );
 
     item?.data?.callback({
-      title: "Column sort",
+      title: item.label ?? "Column select & sort",
       children: children,
       isOpen: true
     });
