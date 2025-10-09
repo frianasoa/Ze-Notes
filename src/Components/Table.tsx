@@ -414,6 +414,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   }, [collectionid, headers]);
   
   const getAffix = (t: "prefix" | "suffix", d: any[]) => {
+    if (!Array.isArray(d)) return t === "prefix" ? columnPrefix : columnSuffix;
     const hasNativeField = d.some(item => item.type === "native-field");
     if (hasNativeField) return "";
     return t === "prefix" ? columnPrefix : t === "suffix" ? columnSuffix : "";
