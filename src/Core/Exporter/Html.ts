@@ -8,6 +8,7 @@ const Html = {
   {
     const external = settings?.createfolder === "true";
     const clonedTable = table.cloneNode(true);
+    this.addBackgroundStyles(clonedTable as HTMLTableElement);
     const rows = (clonedTable as HTMLTableElement).querySelectorAll("tbody tr");
     // rows.forEach((row: Element, key: number, parent: NodeListOf<Element>) => {
       // const style = window.getComputedStyle(row);
@@ -31,6 +32,17 @@ const Html = {
 
     const filteredHTML = this.todocument((clonedTable as HTMLTableElement).outerHTML);
     return {htmldata: filteredHTML, files: files};
+  },
+  
+  addBackgroundStyles(table: HTMLTableElement) {
+    const cells = table.querySelectorAll("td, th") as NodeListOf<HTMLElement>;
+    cells.forEach((cell: HTMLElement) => {
+      const style = window.getComputedStyle(cell);
+      const bg = style?.backgroundColor;
+      if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") {
+        cell.style.backgroundColor = bg; // inline it for export
+      }
+    });
   },
   
   removehidden(items: any)
@@ -227,7 +239,7 @@ const Html = {
             width: 100%;
           }
           td, th {
-            border: solid 1px;
+            border: solid 1px black;
             vertical-align: top;
             padding: 0.3em;
           }

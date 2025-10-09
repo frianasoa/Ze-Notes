@@ -382,6 +382,33 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     }
   }
   
+  // Column formatting
+  const [columnPrefix, setColumnPrefix] = useState<string>("");
+  const [columnSuffix, setColumnSuffix] = useState<string>("");
+  
+  useEffect(() => {
+    (async () => {
+        setColumnPrefix(await ZPrefs.get("column-prefix", ""));
+        setColumnSuffix(await ZPrefs.get("column-suffix", ""));
+      })();
+  }, [collectionid, headers]);
+  
+  const [columnBgColors, setColumnBgColors] = useState<Record<string, string>>({});
+  const [columnFgColors, setColumnFgColors] = useState<Record<string, string>>({});
+  
+  useEffect(() => {
+    (async () => {
+      const bg = await TablePrefs.get(collectionid, "column-bgcolor", "{}");
+      const fg = await TablePrefs.get(collectionid, "column-fgcolor", "{}");
+      try {
+        setColumnBgColors(JSON.parse(bg));
+        setColumnFgColors(JSON.parse(fg));
+      } catch {
+        console.warn("Failed to parse column colors");
+      }
+    })();
+  }, [collectionid]);
+  
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
 	return (
@@ -434,7 +461,8 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
         `}
       </style>
       {currentHideKeys.length === 0 && showSorter ? 
-        <table className="main-table" ref={tableRef} data-collectionname={collectionname} data-libraryid={libraryid}>
+        <table className="main-table" ref={tableRef} data-collectionname={collectionname} data-libraryid={libraryid}
+        >
           <thead>
             <tr className={styles.tr}>
               {[headers[0]].map((header: string) => (
@@ -451,6 +479,11 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
                   data-altcolumn='-all-columns-'
                   data-collectionid={collectionid}
                   data-libraryid={libraryid}
+                  style={{
+                    backgroundColor: columnBgColors[header] || "inherit",
+                    color: columnFgColors[header] || "inherit",
+                    padding: "0.1em",
+                  }}
                 >
                   <div style={{float: 'left', width: '98%'}} className="no-export-wrapper">__all_columns_selected__</div>
                   <ColumnResizer item={{
@@ -482,8 +515,14 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
                   data-altcolumn='-all-columns-'
                   data-collectionid={collectionid}
                   data-libraryid={libraryid}
+                  style={{
+                    color: columnFgColors[header] || "inherit",
+                    padding: "0.1em",
+                    backgroundColor: columnBgColors[header] || "rgba(255,255,255,1)",
+                    backgroundClip: "content-box",
+                  }}
                 >
-                  <div style={{float: 'left', width: '98%'}} className="no-export-wrapper">{header}</div>
+                  <div style={{float: "left", margin: "auto", borderRadius: "0.1em", marginLeft: "0.5%", width: '99%'}} className="no-export-wrapper">{columnPrefix}{header}{columnSuffix}</div>
                   <ColumnResizer item={{
                     column: '-all-columns-',
                     originalcolumn: header,
