@@ -71,16 +71,36 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     }
     return {headers: headers_, allheaders: allheaders_};
   };
+  
+  const makeDataUnique = (data: Array<Record<string, any>>) => {
+    if(String(ZPrefs.get('allow-duplicate-rows', false)).toUpperCase() === "TRUE") return data;
+
+    const seen = new Set();
+    const uniqueData: Array<Record<string, any>> = [];
+
+    for (const item of data) {
+      const key = JSON.stringify(item);
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueData.push(item);
+      }
+    }
+    return uniqueData;
+  };
+
+
+  
+  const uniqueData = makeDataUnique(data);
   const h = createHeaders();
   const [allHeaders, setAllHeaders] = useState<any>(h["allheaders"]);
-  const [allRows, setAllRows] = useState<any>(data.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
+  const [allRows, setAllRows] = useState<any>(uniqueData.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
   const [headers, setHeaders] = useState<any>(h["headers"]);
 
   useEffect(() => {
     const columns = createHeaders();
     setAllHeaders(columns["allheaders"]);
     setHeaders(columns["headers"]);
-    setAllRows(data.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
+    setAllRows(uniqueData.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
   }, [data, sortkeys, hidekeys]);
 
   /** Column drag functions */
@@ -278,7 +298,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   useEffect(() => {
     (async () => {
         setCurrentHideKeys(JSON.parse(await TablePrefs.get(collectionid, "hide-key", "[]")));
-        const val = await ZPrefs.get('always-show-column-sorter', false);
+        const val = ZPrefs.get('always-show-column-sorter', false);
         const alwaysshowcolumnsorter = String(val).toUpperCase() === "TRUE";
         setShowSorter(alwaysshowcolumnsorter);
       })();
@@ -291,7 +311,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       const hideKeys = JSON.parse(await TablePrefs.get(collectionid, "hide-key", "[]"));
       setCurrentHideKeys(hideKeys);
 
-      const val = await ZPrefs.get('always-show-column-sorter', false);
+      const val = ZPrefs.get('always-show-column-sorter', false);
       const alwaysShow = String(val).toUpperCase() === "TRUE";
       setShowSorter(alwaysShow);
 
@@ -370,7 +390,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       state: 'active',
       icon: FaArrowDownAZ,
       onClick: Actions.showcolumnsortdialog,
-      data: {callback: openCommonDialog, headers: [...new Set(data.flatMap(Object.keys))]}
+      data: {callback: openCommonDialog, headers: [...new Set(uniqueData.flatMap(Object.keys))]}
     }
 
     headerMenuItems.tablesort = {
@@ -378,7 +398,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       state: 'active',
       icon: FaArrowDownAZ,
       onClick: Actions.showtablesortdialog,
-      data: {callback: openCommonDialog, headers: [...new Set(data.flatMap(Object.keys))]}
+      data: {callback: openCommonDialog, headers: [...new Set(uniqueData.flatMap(Object.keys))]}
     }
   }
   
@@ -388,10 +408,16 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   
   useEffect(() => {
     (async () => {
-        setColumnPrefix(await ZPrefs.get("column-prefix", ""));
-        setColumnSuffix(await ZPrefs.get("column-suffix", ""));
+        setColumnPrefix(ZPrefs.get("column-prefix", ""));
+        setColumnSuffix(ZPrefs.get("column-suffix", ""));
       })();
   }, [collectionid, headers]);
+  
+  const getAffix = (t: "prefix" | "suffix", d: any[]) => {
+    const hasNativeField = d.some(item => item.type === "native-field");
+    if (hasNativeField) return "";
+    return t === "prefix" ? columnPrefix : t === "suffix" ? columnSuffix : "";
+  };
   
   const [columnBgColors, setColumnBgColors] = useState<Record<string, string>>({});
   const [columnFgColors, setColumnFgColors] = useState<Record<string, string>>({});
@@ -522,7 +548,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
                     backgroundClip: "content-box",
                   }}
                 >
-                  <div style={{float: "left", margin: "auto", borderRadius: "0.1em", marginLeft: "0.5%", width: '99%'}} className="no-export-wrapper">{columnPrefix}{header}{columnSuffix}</div>
+                  <div style={{float: "left", margin: "auto", borderRadius: "0.1em", marginLeft: "0.5%", width: '99%'}} className="no-export-wrapper">{getAffix("prefix", data[0][header])}{header}{getAffix("suffix", data[0][header])}</div>
                   <ColumnResizer item={{
                     column: '-all-columns-',
                     originalcolumn: header,
@@ -534,7 +560,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
             </tr>
           </thead>
           <tbody className={tBodyStyle}>
-            {data.map((row, index) => (
+            {uniqueData.map((row, index) => (
               <tr className={styles.tr}
                 key={index}
                 style={{
