@@ -1,4 +1,6 @@
 # Ze Notes version 1
+Context menu bug fixed on Mac
+
 The new version of Ze Notes is out. In order to make maintenance easier, the code was ported to NodeJS, using React. Version 1 only works with Zotero 7. Please read this document before installing. 
 
 ⚠️ Table display significantly changed. You can simulate legacy display by going to settings -> Table display -> check Legacy display. You can always change export settings if needed. 
