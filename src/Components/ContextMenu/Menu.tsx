@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import MenuItem from "./MenuItem";
 import styles from "./Menu.module.css";
 import ZPrefs from '../../Core/ZPrefs'
@@ -24,6 +24,10 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
   // Handle outside clicks to close the context menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Only close on left-click (button 0), not right-click or other buttons
+      if (event.button !== 0) {
+        return;
+      }
       if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
         setContextMenuVisible(false);
         setAdjustedPosition(null);
@@ -33,26 +37,32 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
 
     window.addEventListener("click", handleClickOutside);
     return () => window.removeEventListener("click", handleClickOutside);
-  }, []);
+  }, [handleClose]);
 
   // Handle right-click to open the context menu
-  const handleContextMenu = (event: MouseEvent) => {
+  const handleContextMenu = useCallback((event: MouseEvent) => {
+    // Ensure it's a right-click (button 2) - important for macOS compatibility
+    if (event.button !== 2) {
+      return;
+    }
+    
     const target = event.target as HTMLElement;
     if (!target.closest(targetSelector)) {
       return;
     }
+    
+    event.preventDefault();
     
     const cdata =  JSON.parse(JSON.stringify((target.closest(targetSelector) as HTMLElement).dataset ||  target.dataset))
     // cdata.table = target.closest(".main-table");
     cdata["target"] = target;
     setCellData(cdata);
     
-    event.preventDefault();
     const { clientX, clientY } = event;
 
     setContextMenuPosition({ x: clientX, y: clientY });
     setContextMenuVisible(true);
-  };
+  }, [targetSelector]);
 
   // Adjust the context menu position if it exceeds the viewport size
   useEffect(() => {
@@ -89,16 +99,14 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
 		const cells = window.document.querySelectorAll(targetSelector);
 		cells.forEach(cell => {
       cell.addEventListener("contextmenu", handleContextMenu as EventListener);
-      cell.addEventListener("contextmenu", handleClick as EventListener);
     });
     
     return () => {
       cells.forEach(cell => {
         cell.removeEventListener("contextmenu", handleContextMenu as EventListener);
-        cell.removeEventListener("contextmenu", handleClick as EventListener);
       });
     };
-	}, [targetSelector]);
+	}, [targetSelector, handleContextMenu]);
 
 
   // Handle menu item click
