@@ -438,6 +438,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
+  const tableBgColor = String(ZPrefs.get('notes-bg-color', '#ffffff'));
 	return (
     <DataContext.Provider value={{collectionid, initColumnWidths, MenuItems, translationDialogState, setTranslationDialogState, commonDialogState, setCommonDialogState, setLoadingMessage, setIsLoading}}>
       <style>
@@ -454,7 +455,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
           table.main-table td, table.main-table th {
             border: solid 1px gray;
             padding: 0.3em;
-            background: white;
+            background: inherit;
             z-index: 3;
           }
 
@@ -473,7 +474,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
           table.main-table th:first-child, table.main-table td:first-child {
             position: sticky;
             left: 0;
-            background: white; /* Ensure the background doesn't overlap */
+            background: ${tableBgColor};
             z-index: 5; /* Ensure the first column is above other table cells */
           }
 
@@ -507,7 +508,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
                   data-collectionid={collectionid}
                   data-libraryid={libraryid}
                   style={{
-                    backgroundColor: columnBgColors[header] || "inherit",
+                    backgroundColor: columnBgColors[header] || tableBgColor,
                     color: columnFgColors[header] || "inherit",
                     padding: "0.1em",
                   }}
@@ -545,7 +546,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
                   style={{
                     color: columnFgColors[header] || "inherit",
                     padding: "0.1em",
-                    backgroundColor: columnBgColors[header] || "rgba(255,255,255,1)",
+                    backgroundColor: columnBgColors[header] || tableBgColor,
                     backgroundClip: "content-box",
                   }}
                 >

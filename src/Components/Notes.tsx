@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Table from './Table';
 import TablePrefs from '../Core/TablePrefs'
+import ZPrefs from '../Core/ZPrefs'
 
 type NotesType = {
   show(win: Window, data: any, collectionID: string, collectionName: string, libraryID: string): void;
@@ -37,10 +38,9 @@ const Notes: NotesType = {
 
     if(container)
 		{
-      const item = {} as any;
-      const celldata = {collectionid: collectionID} as any;
-      
 			const root = ReactDOM.createRoot(container);
+      const bgColor = String(ZPrefs.get('notes-bg-color', '#ffffff'));
+      if (bgColor) win.document.body.style.backgroundColor = bgColor;
 			globalThis.window = win as Window & typeof globalThis;
 			globalThis.document = win.document as Document & typeof globalThis;
             
