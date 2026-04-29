@@ -3,7 +3,7 @@ import CustomAiMenu from './CustomAiMenu';
 import MenuUtils from './MenuUtils';
 import Languages from '../../Core/Translation/Languages';
 import ZPrefs from '../../Core/ZPrefs';
-import {FaPencil, FaRegTrashCan, FaNoteSticky, FaQuoteLeft, FaGoogle, FaD}  from "react-icons/fa6";
+import {FaPencil, FaRegTrashCan, FaNoteSticky, FaQuoteLeft, FaGoogle, FaA, FaD}  from "react-icons/fa6";
 
 const NoteTextMenu = {
   show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>, item: Record<string, any>) 
@@ -187,8 +187,34 @@ const NoteTextMenu = {
       }
     ]);
     
+    // Claude
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
+    [
+      {
+        label: "Prompt on note",
+        key: "claudenote",
+        keys: "claude/submenu/claudenote",
+        icon: FaNoteSticky,
+        data: { target: "note", context: context, noteid: item.noteid},
+        onClick: Actions.claudeprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "claudenotepart",
+        keys: "claude/submenu/claudenotepart",
+        icon: FaNoteSticky,
+        data: { target: "notepart", context: context, title: "Prompt on "+title, noteid: item.noteid},
+        onClick: Actions.claudeprompt,
+      },
+      {
+        label: "---",
+        key: "claudenotesep",
+        keys: "claude/submenu/claudenotesep"
+      }
+    ]);
+
     // Custom Ai default
-    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, 
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
     [
       {
         label: "Prompt on note",

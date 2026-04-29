@@ -4,7 +4,7 @@ import Languages from '../../Core/Translation/Languages';
 import ZPrefs from '../../Core/ZPrefs';
 import CustomAiMenu from './CustomAiMenu';
 import MenuUtils from './MenuUtils';
-import {FaQuoteLeft, FaGoogle, FaD}  from "react-icons/fa6";
+import {FaQuoteLeft, FaGoogle, FaA, FaD}  from "react-icons/fa6";
 
 const AnnotationCommentMenu = {
   show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>) 
@@ -132,8 +132,34 @@ const AnnotationCommentMenu = {
       }
     ]);
     
+    // Claude
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
+    [
+      {
+        label: "Prompt on comment",
+        key: "claudecomment",
+        keys: "claude/submenu/claudecomment",
+        icon: FaQuoteLeft,
+        data: { target: "comment", context: context },
+        onClick: Actions.claudeprompt,
+      },
+      {
+        label: "Prompt on part",
+        key: "claudecommentpart",
+        keys: "claude/submenu/claudecommentpart",
+        icon: FaQuoteLeft,
+        data: { target: "commentpart", context: context },
+        onClick: Actions.claudeprompt,
+      },
+      {
+        label: "---",
+        key: "claudenotesep",
+        keys: "claude/submenu/claudenotesep"
+      }
+    ]);
+
     // Custom AI default
-    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
     [
       {
         label: "Prompt on comment",

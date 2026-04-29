@@ -5,7 +5,7 @@ import Languages from '../../Core/Translation/Languages';
 import MenuUtils from './MenuUtils';
 import React from 'react';
 
-import {FaHtml5, FaFilePdf, FaGoogle, FaO, FaC, FaD, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
+import {FaHtml5, FaFilePdf, FaGoogle, FaO, FaA, FaC, FaD, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
 
 const CellMenu = {
   show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
@@ -191,9 +191,66 @@ const CellMenu = {
         }
       }
 
-      // Open AI
-      ZPrefs.getb("openai-api-key").then((key: string)=>{
-        if(key)
+      // AI providers — sequential awaits so insertion order is deterministic
+      (async () => {
+        const claudeKey = await ZPrefs.getb("claude-api-key");
+        if(claudeKey)
+        {
+          const params = [
+            {
+              label: "Using Claude",
+              key: "claude",
+              keys: "claude",
+              onClick: Actions.claudeprompt,
+              icon: FaA,
+            },
+            {
+              label: "Prompt on cell",
+              key: "claudecell",
+              keys: "claude/submenu/claudecell",
+              data: { target: "cell", context: context },
+              onClick: Actions.claudeprompt,
+              icon: FaRegSquare
+            },
+            {
+              label: "Prompt on row",
+              key: "clauderow",
+              keys: "claude/submenu/clauderow",
+              data: { target: "row", context: context },
+              onClick: Actions.claudeprompt,
+              icon: FaTableColumns
+            },
+            {
+              label: "Prompt on column",
+              key: "claudecolumn",
+              keys: "claude/submenu/claudecolumn",
+              data: { target: "column", context: context },
+              onClick: Actions.claudeprompt,
+              icon: FaTableList
+            },
+            {
+              label: "Prompt on table",
+              key: "claudetable",
+              keys: "claude/submenu/claudetable",
+              data: { target: "table", context: context },
+              onClick: Actions.claudeprompt,
+              icon: FaTableCells
+            }
+          ];
+          MenuUtils.aidata(context, target);
+          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+          if(target.dataset.itemtype=="note")
+          {
+            const params = [
+              {key: "claudecell", keys: "claude/submenu/claudecell"},
+              {key: "claudecell", keys: "claude/submenu/clauderow"},
+            ]
+            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
+          }
+        }
+
+        const openaiKey = await ZPrefs.getb("openai-api-key");
+        if(openaiKey)
         {
           const params = [
             {
@@ -236,10 +293,8 @@ const CellMenu = {
               icon: FaTableCells
             }
           ];
-
           MenuUtils.aidata(context, target);
           MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-
           if(target.dataset.itemtype=="note")
           {
             const params = [
@@ -249,11 +304,9 @@ const CellMenu = {
             MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }
         }
-      });
 
-      // Gemini
-      ZPrefs.getb("gemini-api-key").then((key: string)=>{
-        if(key)
+        const geminiKey = await ZPrefs.getb("gemini-api-key");
+        if(geminiKey)
         {
           const params = [
             {
@@ -296,10 +349,8 @@ const CellMenu = {
               icon: FaTableCells
             }
           ];
-
           MenuUtils.aidata(context, target);
           MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-
           if(target.dataset.itemtype=="note")
           {
             const params = [
@@ -309,11 +360,9 @@ const CellMenu = {
             MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }
         }
-      });
 
-      // DeepSeek
-      ZPrefs.getb("deepseek-api-key").then((key: string)=>{
-        if(key)
+        const deepseekKey = await ZPrefs.getb("deepseek-api-key");
+        if(deepseekKey)
         {
           const params = [
             {
@@ -356,10 +405,8 @@ const CellMenu = {
               icon: FaTableCells
             }
           ];
-
           MenuUtils.aidata(context, target);
           MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-
           if(target.dataset.itemtype=="note")
           {
             const params = [
@@ -369,7 +416,7 @@ const CellMenu = {
             MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
           }
         }
-      });
+      })();
 
       // Custom AI
       CustomAI.settinglist().then(settings=>{

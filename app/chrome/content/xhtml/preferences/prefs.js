@@ -7,9 +7,11 @@ window.ZeNotes_Preferences = {
     await this.initopenaimodels();
     await this.initgeminimodels();
     await this.initdeepseekmodels();
+    await this.initclaudemodels();
     await this.initactions();
     await this.initvalues();
     await this.initcustomailist();
+    await this.inittesseractcorrectionaimodel();
     this.loaded();
   },
   
@@ -285,7 +287,50 @@ window.ZeNotes_Preferences = {
       }
     }
   },
-  
+
+  async initclaudemodels() {
+    let models = {data: []};
+    try {
+      models = await Zotero.AppBase.Engine.Core.Ai.Claude.models();
+    }
+    catch(e)
+    {
+      let message = "Error getting models";
+      if(e.status==401)
+      {
+        message = "Unauthorized access (401)";
+      }
+      else if(e.status==404)
+      {
+        message = "API URL error (404)";
+      }
+      else if(e.statusText && e.status)
+      {
+        message = e.statusText+" ("+e.status+")";
+      }
+      else
+      {
+        message = e;
+      }
+
+      models = {
+        data: [{
+          id: message,
+        }]
+      }
+    }
+    const div = document.querySelector("[data-key=claude-model]");
+    div.innerHTML = "";
+    if (div) {
+      for (let model of models.data) {
+        let opt = document.createElement("option");
+        opt.innerHTML = model.id;
+        opt.value = model.id;
+        div.appendChild(opt);
+      }
+    }
+  },
+
   async initgeminimodels() {
     let models = {models: []};
     try {
@@ -355,6 +400,63 @@ window.ZeNotes_Preferences = {
     } catch (error) {
       Zotero.log("Error initializing Tesseract languages:"+error);
     }
+  },
+
+  async inittesseractcorrectionaimodel() {
+    const div = document.querySelector("[data-key=tesseract-correction-ai-model]");
+    if (!div) return;
+    div.innerHTML = "";
+
+    const noneOpt = document.createElement("option");
+    noneOpt.innerHTML = "None";
+    noneOpt.value = "";
+    div.appendChild(noneOpt);
+
+    const openaiKey = await Zotero.AppBase.Engine.Core.ZPrefs.getb("openai-api-key");
+    if (openaiKey) {
+      const opt = document.createElement("option");
+      opt.innerHTML = "OpenAI";
+      opt.value = "openai";
+      div.appendChild(opt);
+    }
+
+    const geminiKey = await Zotero.AppBase.Engine.Core.ZPrefs.getb("gemini-api-key");
+    if (geminiKey) {
+      const opt = document.createElement("option");
+      opt.innerHTML = "Gemini";
+      opt.value = "gemini";
+      div.appendChild(opt);
+    }
+
+    const deepseekKey = await Zotero.AppBase.Engine.Core.ZPrefs.getb("deepseek-apikey");
+    if (deepseekKey) {
+      const opt = document.createElement("option");
+      opt.innerHTML = "DeepSeek";
+      opt.value = "deepseek";
+      div.appendChild(opt);
+    }
+
+    const claudeKey = await Zotero.AppBase.Engine.Core.ZPrefs.getb("claude-api-key");
+    if (claudeKey) {
+      const opt = document.createElement("option");
+      opt.innerHTML = "Claude";
+      opt.value = "claude";
+      div.appendChild(opt);
+    }
+
+    try {
+      const settings = await Zotero.AppBase.Engine.Core.Ai.CustomAI.settinglist();
+      for (const key of Object.keys(settings).sort()) {
+        const setting = settings[key];
+        const opt = document.createElement("option");
+        opt.innerHTML = setting.name;
+        opt.value = "custom:" + key;
+        div.appendChild(opt);
+      }
+    } catch(e) {}
+
+    const savedValue = Zotero.AppBase.Engine.Core.ZPrefs.get("tesseract-correction-ai-model");
+    if (savedValue) div.value = savedValue;
   },
   
   async initcustomailist() {

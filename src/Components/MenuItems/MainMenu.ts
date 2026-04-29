@@ -1,6 +1,6 @@
 import Actions from '../../Core/Actions';
 import Icons from "./Icons";
-import { FaArrowsRotate, FaEyeSlash, FaRegSquare, FaTableColumns, FaTableList, FaTableCells} from "react-icons/fa6";
+import { FaArrowsRotate, FaEyeSlash, FaRegSquare, FaTableColumns, FaTableList, FaTableCells } from "react-icons/fa6";
 
 const Main: any = {
   data: {
@@ -24,6 +24,22 @@ const Main: any = {
     translateannotationwithdeepl: {},
     septranslate: {},
     
+    claude: {
+      submenu: {
+        claudenote:{data: {target: "note"}},
+        claudenotepart:{data: {target: "notepart"}},
+        claudecomment:{data: {target: "comment"}},
+        claudecommentpart:{data: {target: "commentpart"}},
+        claudequote:{data: {target: "quote"}},
+        claudenotesep: {label: ""},
+        claudecell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.claudeprompt, data: {target: "cell"}},
+        clauderow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.claudeprompt, data: {target: "row"}},
+        claudecolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.claudeprompt, data: {target: "column"}},
+        claudetable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.claudeprompt, data: {target: "table"}},
+      },
+      label: ""
+    },
+
     openai: {
       submenu: {
         openainote:{data: {target: "note"}},
@@ -139,6 +155,9 @@ const Main: any = {
     "septranslate",
     "editannotationcomment",
     "ocrannotationimage",
+    "claude",
+    "claude/submenu/claudecell",
+    "claude/submenu/clauderow",
     "openai",
     "openai/submenu/openaicell",
     "openai/submenu/openairow",

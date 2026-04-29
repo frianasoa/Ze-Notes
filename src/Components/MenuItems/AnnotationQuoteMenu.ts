@@ -2,7 +2,7 @@ import Actions from '../../Core/Actions';
 import OpenAI from '../../Core/Ai/OpenAI';
 import CustomAiMenu from './CustomAiMenu';
 import MenuUtils from './MenuUtils';
-import {FaQuoteLeft}  from "react-icons/fa6";
+import {FaQuoteLeft, FaA}  from "react-icons/fa6";
 
 const AnnotationQuoteMenu = {
   show(context: any, event: React.MouseEvent<HTMLElement, MouseEvent>) 
@@ -63,8 +63,26 @@ const AnnotationQuoteMenu = {
       }
     ]);
     
+    // Claude
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
+    [
+      {
+        label: "Prompt on quote",
+        key: "claudequote",
+        keys: "claude/submenu/claudequote",
+        icon: FaQuoteLeft,
+        data: { target: "quote", context: context },
+        onClick: Actions.claudeprompt,
+      },
+      {
+        label: "---",
+        key: "claudenotesep",
+        keys: "claude/submenu/claudenotesep"
+      }
+    ]);
+
     // Custom AI default
-    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context, 
+    MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
     [
       {
         label: "Prompt on quote",

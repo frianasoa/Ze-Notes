@@ -1,5 +1,6 @@
 const { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs") as { OS: any };
 import ZPrefs from "../ZPrefs";
+import Ai from "../Ai";
 
 const Tessearct = {
   run(filename: string, lang="eng")
@@ -123,6 +124,10 @@ const Tessearct = {
 				var txt = await Zotero.File.getContentsAsync(tempoutput);
 				txt = (txt as string).split("\n\n").join("\n");
 				txt = txt.split("  ").join(" ");
+				const correctionProvider = ZPrefs.get("tesseract-correction-ai-model", "");
+				if (correctionProvider) {
+					txt = await Ai.correct(txt as string, correctionProvider);
+				}
 				resolve(txt);
 			} catch (error) {
 				reject(error);
