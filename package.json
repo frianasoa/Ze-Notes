@@ -1,6 +1,6 @@
 {
   "name": "Ze Notes",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Manage your notes in Zotero",
   "homepage": "https://github.com/frianasoa/zn#readme",
   "bugs": {
@@ -14,7 +14,7 @@
     "id": "zenotes@alefa.net",
     "name": "Ze Notes",
     "strict_min_version": "7.0.0-beta.70",
-    "strict_max_version": "8.1.*",
+    "strict_max_version": "9.*",
     "slug": "zenotes",
     "znkey": "6cbde5d2c9ba358a4bb284770044b9d409086d1975b9f4c38b8a920ba71c47a0"
   },
