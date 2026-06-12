@@ -11,7 +11,6 @@ const Google: Translator = {
     }
     catch(e) {
       throw e;
-      return false;
     }
   },
   
