@@ -26,7 +26,7 @@ const Format = {
 	date(item: _ZoteroTypes.Items): string 
 	{
 		var date = item.getField("date", true) || item.getField("issueDate", true) || item.getField("dateEnacted", true) || item.getField("dateDecided", true) || "n.d ";
-		return date.substr(0, 4).trim();
+		return date.substring(0, 4).trim();
 	},
   
 	source(item: _ZoteroTypes.Items, page: string = "", inline: boolean  = true): string {
