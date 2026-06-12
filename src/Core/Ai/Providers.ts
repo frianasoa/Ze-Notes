@@ -87,7 +87,8 @@ const configs: Record<string, zty.AiProviderConfig> = {
   deepseek: {
     id: "deepseek",
     label: "DeepSeek",
-    apikeypref: "deepseek-apikey",
+    apikeypref: "deepseek-api-key",
+    legacyapikeypref: "deepseek-apikey",
     modelpref: "deepseek-model",
     defaultmodel: "deepseek-chat",
     systempref: "deepseek-system-message",
@@ -150,8 +151,16 @@ const configs: Record<string, zty.AiProviderConfig> = {
 const Providers = {
   configs,
 
-  async request(config: zty.AiProviderConfig, params: { system: string; usercontents: string[] }): Promise<string[]> {
+  async apikey(config: zty.AiProviderConfig): Promise<string> {
     const apikey = await ZPrefs.getb(config.apikeypref);
+    if (!apikey && config.legacyapikeypref) {
+      return ZPrefs.getb(config.legacyapikeypref);
+    }
+    return apikey;
+  },
+
+  async request(config: zty.AiProviderConfig, params: { system: string; usercontents: string[] }): Promise<string[]> {
+    const apikey = await Providers.apikey(config);
     const model = ZPrefs.get(config.modelpref, config.defaultmodel);
     const maxtoken = config.maxtokenpref ? parseInt(ZPrefs.get(config.maxtokenpref, "0")) : 0;
 
@@ -179,7 +188,7 @@ const Providers = {
     if (!config.modelsurl) {
       return config.staticmodels ?? { data: [] };
     }
-    const apikey = await ZPrefs.getb(config.apikeypref);
+    const apikey = await Providers.apikey(config);
     try {
       return await Request.send(config.modelsurl(apikey), { headers: config.modelsheaders?.(apikey) ?? {} });
     } catch (e) {

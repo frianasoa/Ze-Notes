@@ -144,7 +144,7 @@ window.ZeNotes_Preferences = {
     element.style.borderColor = "#90EE90";
     element.style.boxShadow = "0 0 8px #90EE90";
     
-    if(key=="openai-apikey")
+    if(key=="openai-api-key")
     {
       this.initopenaimodels();
     }
@@ -428,7 +428,7 @@ window.ZeNotes_Preferences = {
       div.appendChild(opt);
     }
 
-    const deepseekKey = await Zotero.AppBase.Engine.Core.ZPrefs.getb("deepseek-apikey");
+    const deepseekKey = (await Zotero.AppBase.Engine.Core.ZPrefs.getb("deepseek-api-key")) || (await Zotero.AppBase.Engine.Core.ZPrefs.getb("deepseek-apikey"));
     if (deepseekKey) {
       const opt = document.createElement("option");
       opt.innerHTML = "DeepSeek";
