@@ -301,7 +301,8 @@ const Html = {
       {
         if (imageCache.has(imgUrl))
         {
-          img.src = imageCache.get(imgUrl) as string;
+          const cached = imageCache.get(imgUrl) as string;
+          img.src = external ? "./"+cached : cached;
           return Promise.resolve();
         }
 
@@ -325,8 +326,8 @@ const Html = {
                   else if (extension === 'webp') mimeType = 'image/webp';
                   const fileBlob = new Blob([arrayBuffer], { type: mimeType });
 
-                  if(imageCache.get(imgUrl)) {
-                    img.src = imageCache.get(imgUrl);
+                  if(imageCache.has(imgUrl)) {
+                    img.src = "./"+(imageCache.get(imgUrl) as string);
                   }
                   else {
                     img.src = "./"+filename;
