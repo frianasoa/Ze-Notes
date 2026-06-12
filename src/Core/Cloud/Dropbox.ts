@@ -150,11 +150,8 @@ const Dropbox = {
       return (data as any).entries?.filter((entry: any) => entry[".tag"] === "file");
     }
     catch (error) {
-      Dropbox.refresh().then(()=>{
-        Dropbox.list(username);
-      });
-      // window.alert('Error listing files: ' + error);
-      // return undefined;
+      Zotero.log("Error listing files: " + error);
+      throw error;
     }
   },
     
@@ -192,7 +189,8 @@ const Dropbox = {
       return fileBlob;
     } 
     catch (error: any) {
-      Zotero.log("Error downloading file: " + error.message);
+      Zotero.log("Error downloading file: " + (error?.message || error));
+      throw error;
     }
   },
   

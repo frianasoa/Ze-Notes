@@ -13,8 +13,14 @@ const DropboxDownloadDialog: React.FC<DropboxDownloadDialogProps> = ({ collectio
   useEffect(() => {
     const fetchFiles = async () => {
       const username = Zotero.Prefs.get("extensions.zotero.sync.server.username", true) as string;
-      const dropboxfiles = await Dropbox.list(username);
-      setFiles(dropboxfiles);
+      try {
+        const dropboxfiles = await Dropbox.list(username);
+        setFiles(dropboxfiles || []);
+      }
+      catch(e)
+      {
+        window.alert("Error listing Dropbox files: " + e);
+      }
     };
     fetchFiles();
   }, []);
@@ -29,6 +35,8 @@ const DropboxDownloadDialog: React.FC<DropboxDownloadDialogProps> = ({ collectio
   const handleDownload = (path: string) => {
     Dropbox.download(path, (blob: Blob, contentHash: string)=>{
       Importer.process(blob);
+    }).catch((e)=>{
+      window.alert("Error downloading file: " + e);
     });
   };
   return (
