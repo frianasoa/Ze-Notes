@@ -33,38 +33,38 @@ import { emitter } from '../../Components/EventEmitter';
 type ActionsType = {
 	rootURI: string;
   init(config: {rootURI: string}): void;
-  reload(item: zty.ContextMenuData | null, celldata: Record<string, any>): void;
-  hidecolumn(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  hiderow(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showcolumn(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showrow(item: zty.ContextMenuData, celldata: Record<string, any>): void;
+  reload(item: zty.ContextMenuData | null, celldata: zty.CellData): void;
+  hidecolumn(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  hiderow(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showcolumn(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showrow(item: zty.ContextMenuData, celldata: zty.CellData): void;
   movecolumn(target: string, source: string, collectionid: string): void;
-  showitem(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  deletenote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  createnote(item: zty.ContextMenuData, celldata: Record<string, any>, event: any, contents?: string|null, tags?: string[], noparent?: boolean): void;
-  editnote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  editannotationcomment(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  dropboxdownload(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  exportas(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showaidatasettings(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showcolumnsortdialog(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showtablesortdialog(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  filterdata(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  geminiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  deepseekprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  claudeprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  translate(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  customaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event:any): void;
-  ocrannotation(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  opensettings(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  showattachment(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  resetwidths(item: zty.ContextMenuData, celldata: Record<string, any>): void;
-  opentextfinder(item: zty.ContextMenuData, celldata: Record<string, any>): void;
+  showitem(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  deletenote(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  createnote(item: zty.ContextMenuData, celldata: zty.CellData, event: any, contents?: string|null, tags?: string[], noparent?: boolean): void;
+  editnote(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  editannotationcomment(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  dropboxupload(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  dropboxdownload(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  exportas(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showaidatasettings(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showcolumnsortdialog(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showtablesortdialog(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  filterdata(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  translateannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  translate(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  ocrannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  ocrnote(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  opensettings(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  showattachment(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  resetwidths(item: zty.ContextMenuData, celldata: zty.CellData): void;
+  opentextfinder(item: zty.ContextMenuData, celldata: zty.CellData): void;
   filesafename(name: string): string;
   updatenote(noteid: number, title: string, contents: string): void;
   updateannotation(noteid: number, title: string, contents: string): void;
@@ -77,7 +77,7 @@ const Actions: ActionsType = {
 		this.rootURI = rootURI;
 	},
 
-	reload(item: zty.ContextMenuData, celldata: Record<string, any>)
+	reload(item: zty.ContextMenuData, celldata: zty.CellData)
 	{
 		var browserid = "browser"+Zotero_Tabs._getTab(Zotero_Tabs.selectedID).tab.id;
 		var browser = Zotero.getMainWindow().document.getElementById(browserid);
@@ -87,7 +87,7 @@ const Actions: ActionsType = {
 		}
 	},
 
-  hidecolumn(item: zty.ContextMenuData, celldata: Record<string, any>)
+  hidecolumn(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string)=>{
       const hkeys = JSON.parse(k);
@@ -98,7 +98,7 @@ const Actions: ActionsType = {
     });
   },
 
-  hiderow(item: zty.ContextMenuData, celldata: Record<string, any>)
+  hiderow(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string)=>{
       const hkeys = JSON.parse(k);
@@ -109,7 +109,7 @@ const Actions: ActionsType = {
     });
   },
 
-  showrow(item: zty.ContextMenuData, celldata: Record<string, any>)
+  showrow(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string)=>{
       const hkeys = JSON.parse(k);
@@ -123,7 +123,7 @@ const Actions: ActionsType = {
     });
   },
 
-  showcolumn(item: zty.ContextMenuData, celldata: Record<string, any>)
+  showcolumn(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string)=>{
       const hkeys = JSON.parse(k);
@@ -174,12 +174,12 @@ const Actions: ActionsType = {
     });
   },
 
-  showitem(item: zty.ContextMenuData, celldata: Record<string, any>)
+  showitem(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     Zotero.getMainWindow().ZoteroPane.selectItems([parseInt(celldata.itemid)]);
   },
 
-  deletenote(item: zty.ContextMenuData, celldata: Record<string, any>)
+  deletenote(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const window_ = Zotero.getMainWindow();
     if(window_.confirm("Are you sure you want to delete this note?"))
@@ -190,7 +190,7 @@ const Actions: ActionsType = {
     }
   },
 
-  createnote(item: zty.ContextMenuData, celldata: Record<string, any>, event: any=null, contents: string | null = null, tags: string[]=[], noparent: boolean=false)
+  createnote(item: zty.ContextMenuData, celldata: zty.CellData, event: any=null, contents: string | null = null, tags: string[]=[], noparent: boolean=false)
   {
     const column = celldata.column;
     const itemid = celldata.itemid;
@@ -229,7 +229,7 @@ const Actions: ActionsType = {
     });
   },
 
-  editnote(item: zty.ContextMenuData, celldata: Record<string, any>)
+  editnote(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const window_ = Zotero.getMainWindow();
     const noteurl = "chrome://zotero/content/note.xhtml";
@@ -246,7 +246,7 @@ const Actions: ActionsType = {
     });
   },
 
-  async opensettings(item: zty.ContextMenuData, celldata: Record<string, any>) {
+  async opensettings(item: zty.ContextMenuData, celldata: zty.CellData) {
     const win = Zotero.Utilities.Internal.openPreferences(Config.id);
     win?.addEventListener('close', function () {
       Actions.reload(null, {});
@@ -290,7 +290,7 @@ const Actions: ActionsType = {
       });
   },
 
-  async ocrnote(item: zty.ContextMenuData, celldata: Record<string, any>) {
+  async ocrnote(item: zty.ContextMenuData, celldata: zty.CellData) {
     const collection = Zotero.Collections.get(item.data.collectionid);
     const img = (item.data.event.currentTarget || item.data.event.target) as HTMLElement;
     const imagekey = img.dataset.attachmentKey || "";
@@ -366,7 +366,7 @@ const Actions: ActionsType = {
     })
   },
 
-  ocrannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
+  ocrannotation(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     let lang = ZPrefs.get('tesseract-language', "en");
     if(!lang){lang = "en"} else{lang = String(lang)}
@@ -393,7 +393,7 @@ const Actions: ActionsType = {
     })
   },
 
-  async customaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     let target = null;
     let tags = [];
@@ -478,7 +478,7 @@ const Actions: ActionsType = {
     }
   },
 
-  async translate(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async translate(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     if(!item.data)
     {
@@ -566,7 +566,7 @@ const Actions: ActionsType = {
     }
   },
 
-  async openaiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     if(!item.data)
     {
@@ -661,7 +661,7 @@ const Actions: ActionsType = {
     }
   },
 
-  async deepseekprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     if(!item.data)
     {
@@ -757,7 +757,7 @@ const Actions: ActionsType = {
   },
 
   // Factor this later with OpenAI
-  async geminiprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     if(!item.data)
     {
@@ -852,7 +852,7 @@ const Actions: ActionsType = {
     }
   },
 
-  async claudeprompt(item: zty.ContextMenuData, celldata: Record<string, any>, event: any)
+  async claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
   {
     if(!item.data)
     {
@@ -948,7 +948,7 @@ const Actions: ActionsType = {
   },
 
   // merge this to translate();
-  translateannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
+  translateannotation(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     let machine = Google;
     if(item.data.service=="DeepL")
@@ -980,7 +980,7 @@ const Actions: ActionsType = {
     })
   },
 
-  showannotation(item: zty.ContextMenuData, celldata: Record<string, any>)
+  showannotation(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const attachmentid = item.data.attachmentid;
     const annotationpage = item.data.annotationpage;
@@ -1010,14 +1010,14 @@ const Actions: ActionsType = {
     }
   },
 
-  opentextfinder(item: zty.ContextMenuData, celldata: Record<string, any>)
+  opentextfinder(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     setTimeout(() => {
       emitter.emit('toggleFinder', true);
     }, 10);
   },
 
-  showattachment(item: zty.ContextMenuData, celldata: Record<string, any>)
+  showattachment(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     var attachment = Zotero.Items.get(item.data.id);
 
@@ -1035,7 +1035,7 @@ const Actions: ActionsType = {
       });
   },
 
-  resetwidths(item: zty.ContextMenuData, celldata: Record<string, any>)
+  resetwidths(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const keyword = "column-width/"+item.data.collectionid+"/";
     Prefs.deleteRecords(keyword).then(e=>{
@@ -1046,14 +1046,14 @@ const Actions: ActionsType = {
     })
   },
 
-  filterdata(item: zty.ContextMenuData, celldata: Record<string, any>)
+  filterdata(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     TablePrefs.set(celldata.collectionid, "data-filter", item.data.filter).then((k: any)=>{
       Actions.reload(null, {});
     });
   },
 
-  dropboxupload(item: zty.ContextMenuData, celldata: Record<string, any>)
+  dropboxupload(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const children = React.createElement(
       DropboxUploadDialog,
@@ -1082,7 +1082,7 @@ const Actions: ActionsType = {
     });
   },
 
-  dropboxdownload(item: zty.ContextMenuData, celldata: Record<string, any>)
+  dropboxdownload(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const children = React.createElement(
       DropboxDownloadDialog,
@@ -1104,7 +1104,7 @@ const Actions: ActionsType = {
     });
   },
 
-  editannotationcomment(item: zty.ContextMenuData, celldata: Record<string, any>)
+  editannotationcomment(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const children = React.createElement(
       AnnotationCommentEditor,
@@ -1132,7 +1132,7 @@ const Actions: ActionsType = {
       .replace(/[^a-z0-9\-]/g, "");
   },
 
-  async showtablesortdialog(item: zty.ContextMenuData, celldata: Record<string, any>)
+  async showtablesortdialog(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const close = () =>{
       item?.data?.callback({
@@ -1158,7 +1158,7 @@ const Actions: ActionsType = {
     });
   },
 
-  async showcolumnsortdialog(item: zty.ContextMenuData, celldata: Record<string, any>)
+  async showcolumnsortdialog(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const close = () =>{
       item?.data?.callback({
@@ -1187,7 +1187,7 @@ const Actions: ActionsType = {
     });
   },
 
-  async showaidatasettings(item: zty.ContextMenuData, celldata: Record<string, any>)
+  async showaidatasettings(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const datasettings = DataSettings.generate(item);
 
@@ -1224,7 +1224,7 @@ const Actions: ActionsType = {
     });
   },
 
-  async exportas(item: zty.ContextMenuData, celldata: Record<string, any>)
+  async exportas(item: zty.ContextMenuData, celldata: zty.CellData)
   {
     const datasettings = DataSettings.generate(item);
 

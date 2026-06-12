@@ -57,10 +57,10 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     let allheaders_ = [...new Set(data.flatMap(Object.keys))];
 
     // Filter
-    let headers_ = allheaders_.filter((h:any) => !hidekeys.includes(h))
+    let headers_ = allheaders_.filter((h: string) => !hidekeys.includes(h))
 
     // Sort
-    headers_ = headers_.sort((a: any, b: any) => {
+    headers_ = headers_.sort((a: string, b: string) => {
       const indexA = sortkeys.indexOf(a);
       const indexB = sortkeys.indexOf(b);
       return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
@@ -92,9 +92,9 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
   
   const uniqueData = makeDataUnique(data);
   const h = createHeaders();
-  const [allHeaders, setAllHeaders] = useState<any>(h["allheaders"]);
-  const [allRows, setAllRows] = useState<any>(uniqueData.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
-  const [headers, setHeaders] = useState<any>(h["headers"]);
+  const [allHeaders, setAllHeaders] = useState<string[]>(h["allheaders"]);
+  const [allRows, setAllRows] = useState<{title?: string; itemid?: string; source?: string}[]>(uniqueData.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
+  const [headers, setHeaders] = useState<string[]>(h["headers"]);
 
   useEffect(() => {
     const columns = createHeaders();
@@ -123,7 +123,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     MenuItems.resetmain(MenuItems.main);
   }
 
-  const handleClick = (event: any) =>{}
+  const handleClick = (event: React.MouseEvent<HTMLElement>) =>{}
 
   // Declare this here to use later
   const initColumnWidths = () =>{
@@ -136,59 +136,29 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
         globalColumnWidth = parseInt(pref[allckey]);
       }
 
-      const cells = tableRef?.current?.querySelectorAll("th") ?? [];
+      const cells = Array.from(tableRef?.current?.querySelectorAll("th") ?? []) as HTMLTableCellElement[];
       for(const cell of cells)
       {
-        const k = key+"/"+(cell as any).dataset?.column;
+        const k = key+"/"+cell.dataset?.column;
         if(Object.keys(pref).includes(k))
         {
           const width = pref[k];
-          (cell as any).style.width = `${width}px`;
+          cell.style.width = `${width}px`;
         }
         else if(globalColumnWidth>0)
         {
-          (cell as any).style.width = `${globalColumnWidth}px`;
+          cell.style.width = `${globalColumnWidth}px`;
         }
       }
     });
   }
   
-  /** Header context menu settings */
-  const addMenuItem = (menu: any, item: any) => {
-    var existingIndex = menu.findIndex((i: any) => i.label === item.label);
-    if (existingIndex !== -1)
-    {
-      menu[existingIndex] = item;
-    }
-    else
-    {
-      menu.push(item);
-    }
-  }
-  
-  const handleHeaderClick = async (event: any) =>{
+  const handleHeaderClick = async (event: React.MouseEvent<HTMLElement>) =>{
     // const column = event.currentTarget.dataset.column;
   };
 
   /** Column width settings */
   const [currentColumnWidth, setCurrentColumnWidth] = useState("200");
-  const [selectedColumnWidth, setSelectedColumnWidth] = useState("200");
-
-  const setColumnWidth = (menuitem: any, celldata: any, event: any) =>{
-    const column = menuitem.options.column;
-    const value = event.currentTarget.value;
-
-    if(column.includes("-all-columns-"))
-    {
-      setCurrentColumnWidth(value);
-    }
-    else
-    {
-      setSelectedColumnWidth(value);
-    }
-    const key = "column-width/"+collectionid+"/"+column;
-    Prefs.set(key, value);
-  }
 
   const [columnStyles, setColumnStyles] = useState<Record<string, any>>({});
   const generateDynamicStyles = () => {
@@ -211,12 +181,12 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     initColumnWidths();
   }, []);
 
-  const [mainMenuItems, setMainMenuItems] = useState<any>({});
-  const [headerMenuItems, setHeaderMenuItems] = useState<any>({});
+  const [mainMenuItems, setMainMenuItems] = useState<Record<string, zty.ContextMenuData>>({});
+  const [headerMenuItems, setHeaderMenuItems] = useState<Record<string, zty.ContextMenuData>>({});
   useEffect(() => { 
     const hiddencolumns = hidekeys.filter(h => allHeaders.includes(h));
     
-    const hiddenrows = allRows.filter((r:any)=>rowhidekeys.includes(String(r.itemid)));
+    const hiddenrows = allRows.filter((r)=>rowhidekeys.includes(String(r.itemid)));
     MenuItems.init(hiddencolumns, hiddenrows, initColumnWidths, collectionid);
 
     setMainMenuItems(MenuItems.main);
@@ -232,7 +202,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     const div = tableRef?.current?.closest("main") as HTMLDivElement;
     if(div)
     {
-      const handleScroll = (event: any) => {
+      const handleScroll = (event: Event) => {
         Prefs.set(xkey, String(div.scrollLeft));
         Prefs.set(ykey, String(div.scrollTop));
       };
@@ -347,15 +317,19 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       index = "datawithouttags";
     }
     // reset all first
-    headerMenuItems.datafilter.submenu["dataall"].iconColor = "";
-    headerMenuItems.datafilter.submenu["dataall"].textColor = "";
-    headerMenuItems.datafilter.submenu["datawithtags"].iconColor = "";
-    headerMenuItems.datafilter.submenu["datawithtags"].textColor = "";
-    headerMenuItems.datafilter.submenu["datawithouttags"].iconColor = "";
-    headerMenuItems.datafilter.submenu["datawithouttags"].textColor = "";
+    const datafiltermenu = headerMenuItems.datafilter?.submenu;
+    if(datafiltermenu)
+    {
+      datafiltermenu["dataall"].iconColor = "";
+      datafiltermenu["dataall"].textColor = "";
+      datafiltermenu["datawithtags"].iconColor = "";
+      datafiltermenu["datawithtags"].textColor = "";
+      datafiltermenu["datawithouttags"].iconColor = "";
+      datafiltermenu["datawithouttags"].textColor = "";
 
-    headerMenuItems.datafilter.submenu[index].textColor = "#0874ec";
-    headerMenuItems.datafilter.submenu[index].iconColor = "#0874ec";
+      datafiltermenu[index].textColor = "#0874ec";
+      datafiltermenu[index].iconColor = "#0874ec";
+    }
 
     headerMenuItems.exportas = {
       label: "Export",
@@ -413,7 +387,7 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
       })();
   }, [collectionid, headers]);
   
-  const getAffix = (t: "prefix" | "suffix", d: any[]) => {
+  const getAffix = (t: "prefix" | "suffix", d: string | zty.ItemData[]) => {
     if (!Array.isArray(d)) return t === "prefix" ? columnPrefix : columnSuffix;
     const hasNativeField = d.some(item => item.type === "native-field");
     if (hasNativeField) return "";

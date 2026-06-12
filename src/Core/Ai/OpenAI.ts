@@ -1,4 +1,3 @@
-import Base from "./Base";
 import ZPrefs from "../ZPrefs";
 import Request from "../Request";
 

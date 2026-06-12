@@ -2,7 +2,7 @@ import TablePrefs from '../TablePrefs'
 import Actions from '../Actions'
 
 const AiNotes = {
-  editnote(item: zty.ContextMenuData, note: any, callback: any, discardable=true)
+  editnote(item: zty.ContextMenuData, note: Zotero.Item, callback: () => void, discardable=true)
   {
     const window_ = Zotero.getMainWindow();
     const noteurl = "chrome://zotero/content/note.xhtml";
@@ -44,7 +44,7 @@ const AiNotes = {
       if(discardable)
       {
         const button = target.document.createElement("button");
-        button.dataset.noteid  = note.id;
+        button.dataset.noteid  = String(note.id);
         button.innerHTML = "Save";
         button.setAttribute("style", "margin-right: 0.3em;");
         button.addEventListener("click", function(e){
@@ -53,7 +53,7 @@ const AiNotes = {
         })
         
         const closebutton = target.document.createElement("button");
-        closebutton.dataset.noteid  = note.id;
+        closebutton.dataset.noteid  = String(note.id);
         closebutton.innerHTML = "Discard";
         closebutton.setAttribute("style", "margin-right: 0.3em;");
         closebutton.addEventListener("click", function(e){
@@ -67,7 +67,7 @@ const AiNotes = {
     });
   },
   
-  deletenote(win: Window, noteid: string, callback: any)
+  deletenote(win: Window, noteid: string, callback: () => void)
   {
     const window_ = win || Zotero.getMainWindow();
     if(!noteid)
@@ -88,7 +88,7 @@ const AiNotes = {
     }
   },
 
-  async create(item: zty.ContextMenuData, celldata: Record<string, any>, contents:string, callback: any) {
+  async create(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void) {
     if(item.data.target=="comment")
     {
       return this.comment(item, celldata, contents, callback);
@@ -123,7 +123,7 @@ const AiNotes = {
     }
   },
   
-  async cellnote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async cellnote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     let note = new Zotero.Item('note');
     note.setNote(contents);
@@ -134,7 +134,7 @@ const AiNotes = {
     });
   },
   
-  async note(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async note(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     const note = Zotero.Items.get(item.data.noteid);
     note.setNote(note.getNote()+"<br/><br/>\n\n"+contents);
@@ -146,7 +146,7 @@ const AiNotes = {
     });
   },
   
-  async rownote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async rownote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     let note = new Zotero.Item('note');
     note.setNote(contents);
@@ -157,7 +157,7 @@ const AiNotes = {
     });
   },
   
-  async columnnote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async columnnote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     const parentrow = await this.getrow(celldata.collectionid, celldata.libraryid);
     if(!parentrow)
@@ -175,7 +175,7 @@ const AiNotes = {
     });
   },
   
-  async tablenote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async tablenote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     let note = new Zotero.Item('note');
     note.setNote(contents);
@@ -186,7 +186,7 @@ const AiNotes = {
     });
   },
   
-  async quote(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async quote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
     const annotation = Zotero.Items.get(annotationid);
@@ -201,7 +201,7 @@ const AiNotes = {
     Actions.editannotationcomment(item, celldata);
   },
   
-  async comment(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async comment(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
     const annotation = Zotero.Items.get(annotationid);
@@ -216,7 +216,7 @@ const AiNotes = {
     Actions.editannotationcomment(item, celldata);
   },
   
-  async commentpart(item: zty.ContextMenuData, celldata: Record<string, any>, contents: any, callback: any)
+  async commentpart(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
     const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
     const annotation = Zotero.Items.get(annotationid);
