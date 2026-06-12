@@ -1,5 +1,5 @@
 import TablePrefs from '../TablePrefs'
-import Actions from '../Actions'
+import NoteActions from '../Actions/NoteActions'
 
 const AiNotes = {
   editnote(item: zty.ContextMenuData, note: Zotero.Item, callback: () => void, discardable=true)
@@ -186,49 +186,36 @@ const AiNotes = {
     });
   },
   
+  // quote, comment and commentpart all append the AI output to the
+  // annotation comment and open the annotation comment editor.
+  async appendtoannotation(item: zty.ContextMenuData, celldata: zty.CellData, contents: string)
+  {
+    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
+    const annotation = Zotero.Items.get(annotationid);
+    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
+    item.data.annotationid = annotationid;
+    item.data.callback = (value: any) => {
+      if(item.data.context)
+      {
+        item.data.context.setCommonDialogState?.(value);
+      }
+    }
+    NoteActions.editannotationcomment(item, celldata);
+  },
+
   async quote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
-    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    const annotation = Zotero.Items.get(annotationid);
-    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
-    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    item.data.callback = (value: any) => {
-      if(item.data.context)
-      {
-        item.data.context.setCommonDialogState?.(value);
-      }
-    }
-    Actions.editannotationcomment(item, celldata);
+    return this.appendtoannotation(item, celldata, contents);
   },
-  
+
   async comment(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
-    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    const annotation = Zotero.Items.get(annotationid);
-    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
-    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    item.data.callback = (value: any) => {
-      if(item.data.context)
-      {
-        item.data.context.setCommonDialogState?.(value);
-      }
-    }
-    Actions.editannotationcomment(item, celldata);
+    return this.appendtoannotation(item, celldata, contents);
   },
-  
+
   async commentpart(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void)
   {
-    const annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    const annotation = Zotero.Items.get(annotationid);
-    item.data.annotationcomment = annotation.annotationComment+"<br/><br/>"+contents;
-    item.data.annotationid = celldata.target.closest('[data-annotationid]').dataset.annotationid;
-    item.data.callback = (value: any) => {
-      if(item.data.context)
-      {
-        item.data.context.setCommonDialogState?.(value);
-      }
-    }
-    Actions.editannotationcomment(item, celldata);
+    return this.appendtoannotation(item, celldata, contents);
   },
   
   async getrow(collectionid: number, libraryid: number)
