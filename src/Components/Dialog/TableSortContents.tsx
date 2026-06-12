@@ -1,130 +1,64 @@
-import React, { useState, useEffect } from "react";
-import Utils from "../../Core/Utils";
-import pkg from "../../../package.json";
+import React, { useEffect } from "react";
 import TablePrefs from "../../Core/TablePrefs";
+import useColumnReorder from "./useColumnReorder";
 
-import { 
-  FaArrowDownAZ, 
-  FaArrowDownZA, 
-  FaAnglesDown, 
-  FaAnglesUp, 
-  FaAngleUp, 
-  FaAngleDown, 
-  FaEye, 
-  FaEyeSlash 
+import {
+  FaArrowDownAZ,
+  FaArrowDownZA,
+  FaAnglesDown,
+  FaAnglesUp,
+  FaAngleUp,
+  FaAngleDown,
 } from "react-icons/fa6";
 
 interface TableSortContentsProps {
   item: zty.ContextMenuData;
-  celldata: Record<string, any>;
+  celldata: zty.CellData;
   buttons: any;
 }
 
 const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, buttons }) => {
-  const [columns, setColumns] = useState<any[]>([]);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const save = (columns: zty.SortColumn[]) =>
+    TablePrefs.set(celldata.collectionid, "table-sort-key", JSON.stringify(columns));
+
+  const { columns, setColumns, dragIndex, persist, handleMove, onDragStart, onDragOver, onDrop } = useColumnReorder(save);
 
   useEffect(() => {
     // Use an async IIFE to allow await inside useEffect.
-    (async () => {  
-    
+    (async () => {
+
       // Load the saved columns (including order and reversed/hidden state) from TablePrefs.
-      let savedColumns: any[] = [];
+      let savedColumns: zty.SortColumn[] = [];
       try {
         const saved = await TablePrefs.get(celldata.collectionid, "table-sort-key", "[]");
         savedColumns = JSON.parse(saved);
       } catch (e) {
         console.error("Error parsing saved columns:", e);
       }
-  
+
       // Get current headers from the item.
       const headers: string[] = item?.data?.headers || [];
-  
+
       // For any header not present in savedColumns, add it.
       const missing = headers.filter(v => !savedColumns.some(sc => sc.value === v))
         .map(v => ({
           value: v,
           reversed: false,
         }));
-  
+
       // Merge saved columns with missing ones.
-      // Also, ensure that every column has the hidden property (if not, set it accordingly).
       const merged = [...savedColumns, ...missing].map(col => ({
         ...col
       }));
-  
+
       setColumns(merged);
     })();
   }, [item, celldata.collectionid]);
 
-  const handleMove = (action: string, index: number) => {
-    console.log(`Action ${action} for element at index ${index}`);
-    const newColumns = [...columns];
-
-    switch (action) {
-      case "moveToEnd": {
-        const [endElement] = newColumns.splice(index, 1);
-        newColumns.push(endElement);
-        break;
-      }
-      case "moveToStart": {
-        const [startElement] = newColumns.splice(index, 1);
-        newColumns.unshift(startElement);
-        break;
-      }
-      case "moveUp":
-        if (index > 0) {
-          [newColumns[index - 1], newColumns[index]] = [newColumns[index], newColumns[index - 1]];
-        }
-        break;
-      case "moveDown":
-        if (index < newColumns.length - 1) {
-          [newColumns[index + 1], newColumns[index]] = [newColumns[index], newColumns[index + 1]];
-        }
-        break;
-      default:
-        break;
-    }
-
-    TablePrefs.set(celldata.collectionid, "table-sort-key", JSON.stringify(newColumns)).then(() => {
-      setColumns(newColumns);
-    });
-  };
-
   const toggleReversed = (index: number) => {
     const newColumns = [...columns];
     newColumns[index].reversed = !newColumns[index].reversed;
-
-    TablePrefs.set(celldata.collectionid, "table-sort-key", JSON.stringify(newColumns)).then(() => {
-      setColumns(newColumns);
-    });
-  };
-
-  // Drag & Drop handlers
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    setDragIndex(index);
-    e.dataTransfer.effectAllowed = "move";
-  };
-
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, dropIndex: number) => {
-    e.preventDefault();
-    if (dragIndex === null || dragIndex === dropIndex) return;
-    
-    const newColumns = [...columns];
-    // Remove dragged element
-    const [draggedItem] = newColumns.splice(dragIndex, 1);
-    // Insert dragged element at the new position
-    newColumns.splice(dropIndex, 0, draggedItem);
-
-    TablePrefs.set(celldata.collectionid, "table-sort-key", JSON.stringify(newColumns)).then(() => {
-      setColumns(newColumns);
-      setDragIndex(null);
-    });
+    persist(newColumns);
   };
 
   return (
@@ -137,7 +71,7 @@ const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, b
       }}
     >
       <div style={{ flex: "1", border: "0", overflowY: "auto" }}>
-        {columns.map((column: any, index: number) => (
+        {columns.map((column, index: number) => (
           <div
             key={index}
             draggable
@@ -163,7 +97,7 @@ const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, b
                 {column.reversed ? <FaArrowDownZA style={{ color: "red" }} title="Click to sort ascending" /> : <FaArrowDownAZ title="Click to sort descending"/>}
               </button>
             </span>
-            
+
             {/* Column 3: commands */}
             <span style={{ display: "table-cell", padding: "0 1em", borderBottom: "1px solid #ccc" }}>
               <button onClick={() => handleMove("moveToStart", index)} title="Move to start">

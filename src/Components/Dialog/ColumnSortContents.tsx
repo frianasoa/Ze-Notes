@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import TablePrefs from "../../Core/TablePrefs";
+import useColumnReorder from "./useColumnReorder";
 import {
   FaAnglesDown,
   FaAnglesUp,
@@ -23,8 +24,14 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
   celldata,
   buttons,
 }) => {
-  const [columns, setColumns] = useState<any[]>([]);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const save = (newColumns: zty.SortColumn[]) =>
+    TablePrefs.set(
+      celldata.collectionid,
+      "column-sort-key",
+      JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean))
+    );
+
+  const { columns, setColumns, dragIndex, handleMove, onDragStart, onDragOver, onDrop } = useColumnReorder(save);
   const [reload, setReload] = useState<boolean>(true);
   const colorInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -115,46 +122,6 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       setColumns([...savedColumnsWithObjects, ...missing]);
     })();
   }, [item, celldata.collectionid, reload]);
-
-  // Move handlers
-  const handleMove = (action: string, index: number) => {
-    const newColumns = [...columns];
-
-    switch (action) {
-      case "moveToEnd": {
-        const [endElement] = newColumns.splice(index, 1);
-        newColumns.push(endElement);
-        break;
-      }
-      case "moveToStart": {
-        const [startElement] = newColumns.splice(index, 1);
-        newColumns.unshift(startElement);
-        break;
-      }
-      case "moveUp":
-        if (index > 0) {
-          [newColumns[index - 1], newColumns[index]] = [
-            newColumns[index],
-            newColumns[index - 1],
-          ];
-        }
-        break;
-      case "moveDown":
-        if (index < newColumns.length - 1) {
-          [newColumns[index + 1], newColumns[index]] = [
-            newColumns[index],
-            newColumns[index + 1],
-          ];
-        }
-        break;
-    }
-
-    TablePrefs.set(
-      celldata.collectionid,
-      "column-sort-key",
-      JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean))
-    ).then(() => setColumns(newColumns));
-  };
 
   // Hide / Show
   const toggleHidden = (index: number) => {
@@ -267,33 +234,6 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       if (colorInputRef.current === colorInput) {
         colorInputRef.current = null;
       }
-    });
-  };
-
-  // Drag & Drop
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    setDragIndex(index);
-    e.dataTransfer.effectAllowed = "move";
-  };
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, dropIndex: number) => {
-    e.preventDefault();
-    if (dragIndex === null || dragIndex === dropIndex) return;
-
-    const newColumns = [...columns];
-    const [draggedItem] = newColumns.splice(dragIndex, 1);
-    newColumns.splice(dropIndex, 0, draggedItem);
-
-    TablePrefs.set(
-      celldata.collectionid,
-      "column-sort-key",
-      JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean))
-    ).then(() => {
-      setColumns(newColumns);
-      setDragIndex(null);
     });
   };
 
