@@ -64,7 +64,7 @@ declare namespace zty {
 		label: string;
 		apikeypref: string;
 		modelpref: string;
-		defaultmodel?: string;
+		defaultmodel: string;
 		maxtokenpref?: string;
 		systempref: string;
 		defaultsystem: string;
@@ -72,10 +72,14 @@ declare namespace zty {
 		defaultuser: string;
 		url: (model: string, apikey: string) => string;
 		headers: (apikey: string) => Record<string, string>;
-		payload: (params: { model: string; system: string; user: string; data: string; maxtoken: number }) => unknown;
+		// usercontents holds the user-role contents in order; prompt() passes
+		// [userprompt, data] while correct() passes [text] only.
+		payload: (params: { model: string; system: string; usercontents: string[]; maxtoken: number }) => unknown;
 		format: (data: any) => string[];
 		modelsurl?: (apikey: string) => string;
 		modelsheaders?: (apikey: string) => Record<string, string>;
+		staticmodels?: { data: { id: string }[] };
+		errormodels?: { data: { id: string }[] };
 	};
 
 	// One AI menu entry target (cell, row, column, table, note, ...).
