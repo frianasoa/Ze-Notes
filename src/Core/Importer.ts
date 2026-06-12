@@ -39,7 +39,7 @@ const Importer = {
     {
       for(const child of collection.getChildCollections())
       {
-        Importer.activate(imported, collection);
+        await Importer.activate(imported, child);
       }
     }
     else
