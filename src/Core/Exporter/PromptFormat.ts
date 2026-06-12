@@ -28,46 +28,42 @@ const PromptFormat = {
     }
   },
 
-  async filter(target: any, collectionid: string)
-  {
+  async filter(target: any, collectionid: string) {
     let datasettings = {};
     let settings = await Prefs.get("data-settings-fields/" + collectionid, null);
 
     const clonedTarget = target.cloneNode(true);
-    if(settings)
-    {
+    if (settings) {
       settings = JSON.parse(settings);
       datasettings = Object.fromEntries(
         Object.entries(settings)
           .filter(([key, value]) => key.startsWith("display-data-") && value === "true")
-          .map(([key, value]) => [key.replace("display-data-", ""), value])
+          .map(([key, value]) => [key.replace("display-data-", ""), value]),
       );
     }
 
-    if(settings?.displayquote === "false") {
-      clonedTarget.querySelectorAll('.annotation-quote').forEach((element: HTMLElement) => {
+    if (settings?.displayquote === "false") {
+      clonedTarget.querySelectorAll(".annotation-quote").forEach((element: HTMLElement) => {
         element.remove();
       });
     }
 
-    if(settings?.displaycitation === "false") {
-      clonedTarget.querySelectorAll('.annotation-source').forEach((element: HTMLElement) => {
+    if (settings?.displaycitation === "false") {
+      clonedTarget.querySelectorAll(".annotation-source").forEach((element: HTMLElement) => {
         element.remove();
       });
-    }
-    else if(settings?.displayauthor === "false") {
-      clonedTarget.querySelectorAll('.annotation-source').forEach((element: HTMLElement) => {
-        element.innerHTML=" ("+(element.dataset.page || "n.p.")+")";
+    } else if (settings?.displayauthor === "false") {
+      clonedTarget.querySelectorAll(".annotation-source").forEach((element: HTMLElement) => {
+        element.innerHTML = " (" + (element.dataset.page || "n.p.") + ")";
       });
     }
 
     /** Filter data with selected settings */
-    clonedTarget.querySelectorAll('.annotation-part').forEach((element: HTMLElement) => {
+    clonedTarget.querySelectorAll(".annotation-part").forEach((element: HTMLElement) => {
       const legendText = element.innerText.trim();
 
-      if (!datasettings.hasOwnProperty(legendText))
-      {
-        const fieldset = element.closest('fieldset');
+      if (!datasettings.hasOwnProperty(legendText)) {
+        const fieldset = element.closest("fieldset");
         if (fieldset) {
           fieldset.remove();
         }
@@ -76,23 +72,21 @@ const PromptFormat = {
     return clonedTarget;
   },
 
-
   /** TODO here*/
 
-
   zcontent(element: HTMLElement): Record<string, any> {
-    return {element: element.dataset.legend, value: element.innerText}
+    return { element: element.dataset.legend, value: element.innerText };
   },
 
   cell(element: HTMLElement, data: Record<string, any>): Record<string, any> {
     const key = element.dataset.column;
     if (!key) return data;
     if (!data[key]) {
-        data[key] = [];
+      data[key] = [];
     }
 
     Array.from(element.querySelectorAll(".zcontent")).forEach((zcontent: any) => {
-      data[key].push(PromptFormat.zcontent(zcontent))
+      data[key].push(PromptFormat.zcontent(zcontent));
     });
     return this.removeempty(data);
   },
@@ -107,7 +101,7 @@ const PromptFormat = {
 
   table(element: HTMLElement) {
     const rows: any[] = [];
-    (element.querySelectorAll("tr") as NodeListOf<HTMLElement>).forEach((tr)=>{
+    (element.querySelectorAll("tr") as NodeListOf<HTMLElement>).forEach((tr) => {
       rows.push(this.row(tr));
     });
     return rows;
@@ -119,12 +113,14 @@ const PromptFormat = {
 
   removeempty(obj: any): any {
     if (Array.isArray(obj)) {
-      return obj.map(PromptFormat.removeempty).filter(item => !(typeof item === "object" && Object.keys(item).length === 0));
+      return obj
+        .map(PromptFormat.removeempty)
+        .filter((item) => !(typeof item === "object" && Object.keys(item).length === 0));
     } else if (typeof obj === "object" && obj !== null) {
       return Object.fromEntries(
         Object.entries(obj)
           .map(([key, value]) => [key, PromptFormat.removeempty(value)])
-          .filter(([_, value]) => !(typeof value === "object" && Object.keys(value).length === 0))
+          .filter(([_, value]) => !(typeof value === "object" && Object.keys(value).length === 0)),
       );
     }
     return obj;
@@ -132,24 +128,24 @@ const PromptFormat = {
 
   unwrap(obj: any, unwrapSingle: boolean = true): any {
     if (Array.isArray(obj)) {
-        // If unwrapSingle is true, unwrap single-element arrays
-        if (unwrapSingle && obj.length === 1) {
-            return obj[0];
-        } else {
-            return obj.map(item => this.unwrap(item, unwrapSingle));
+      // If unwrapSingle is true, unwrap single-element arrays
+      if (unwrapSingle && obj.length === 1) {
+        return obj[0];
+      } else {
+        return obj.map((item) => this.unwrap(item, unwrapSingle));
+      }
+    } else if (typeof obj === "object" && obj !== null) {
+      const newObj: any = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          newObj[key] = this.unwrap(obj[key], unwrapSingle);
         }
-    } else if (typeof obj === 'object' && obj !== null) {
-        const newObj: any = {};
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                newObj[key] = this.unwrap(obj[key], unwrapSingle);
-            }
-        }
-        return newObj;
+      }
+      return newObj;
     } else {
-        return obj;
+      return obj;
     }
-  }
+  },
 };
 
 export default PromptFormat;

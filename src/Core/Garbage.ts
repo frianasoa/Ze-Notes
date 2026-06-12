@@ -12,7 +12,7 @@ const Garbage = {
       const elem = doc?.getElementById(id);
       if (elem) elem.remove();
     }
-  }
+  },
 };
 
 export default Garbage;

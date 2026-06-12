@@ -16,47 +16,45 @@ const DropboxDownloadDialog: React.FC<DropboxDownloadDialogProps> = ({ collectio
       try {
         const dropboxfiles = await Dropbox.list(username);
         setFiles(dropboxfiles || []);
-      }
-      catch(e)
-      {
+      } catch (e) {
         window.alert("Error listing Dropbox files: " + e);
       }
     };
     fetchFiles();
   }, []);
-  
+
   const format = (d: string) => {
     const date = new Date(d);
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ` +
-           `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return (
+      `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ` +
+      `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+    );
   };
-  
+
   const handleDownload = (path: string) => {
-    Dropbox.download(path, (blob: Blob, contentHash: string)=>{
+    Dropbox.download(path, (blob: Blob, contentHash: string) => {
       Importer.process(blob);
-    }).catch((e)=>{
+    }).catch((e) => {
       window.alert("Error downloading file: " + e);
     });
   };
   return (
-    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+    <table style={{ borderCollapse: "collapse", width: "100%" }}>
       <thead>
         <tr>
-          <th style={{ border: '1px solid black', padding: '4px' }}>Name</th>
-          <th style={{ border: '1px solid black', padding: '4px' }}>Date</th>
-          <th style={{ border: '1px solid black', padding: '4px' }}></th>
+          <th style={{ border: "1px solid black", padding: "4px" }}>Name</th>
+          <th style={{ border: "1px solid black", padding: "4px" }}>Date</th>
+          <th style={{ border: "1px solid black", padding: "4px" }}></th>
         </tr>
       </thead>
       <tbody>
         {files.map((file: any, index: number) => (
           <tr key={index}>
-            <td style={{ border: '1px solid black', padding: '4px' }}>{file.name}</td>
-            <td style={{ border: '1px solid black', padding: '4px' }}>{format(file.server_modified)}</td>
-            <td style={{ border: '1px solid black', padding: '4px' }}>
-              <button onClick={() => handleDownload(file.path_lower)}>
-                download
-              </button>
+            <td style={{ border: "1px solid black", padding: "4px" }}>{file.name}</td>
+            <td style={{ border: "1px solid black", padding: "4px" }}>{format(file.server_modified)}</td>
+            <td style={{ border: "1px solid black", padding: "4px" }}>
+              <button onClick={() => handleDownload(file.path_lower)}>download</button>
             </td>
           </tr>
         ))}

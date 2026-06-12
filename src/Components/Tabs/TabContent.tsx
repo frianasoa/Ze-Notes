@@ -1,5 +1,5 @@
-import React from 'react'
-import styles from './Tabs.module.css';
+import React from "react";
+import styles from "./Tabs.module.css";
 
 const TabContent: React.FC<{ activeTab: number; tabId: number; content: React.ComponentType }> = ({
   activeTab,

@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext } from "react";
 
 interface DataContextType {
   collectionid?: string;

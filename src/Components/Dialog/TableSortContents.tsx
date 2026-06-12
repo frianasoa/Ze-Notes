@@ -2,14 +2,7 @@ import React, { useEffect } from "react";
 import TablePrefs from "../../Core/TablePrefs";
 import useColumnReorder from "./useColumnReorder";
 
-import {
-  FaArrowDownAZ,
-  FaArrowDownZA,
-  FaAnglesDown,
-  FaAnglesUp,
-  FaAngleUp,
-  FaAngleDown,
-} from "react-icons/fa6";
+import { FaArrowDownAZ, FaArrowDownZA, FaAnglesDown, FaAnglesUp, FaAngleUp, FaAngleDown } from "react-icons/fa6";
 
 interface TableSortContentsProps {
   item: zty.ContextMenuData;
@@ -21,12 +14,12 @@ const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, b
   const save = (columns: zty.SortColumn[]) =>
     TablePrefs.set(celldata.collectionid, "table-sort-key", JSON.stringify(columns));
 
-  const { columns, setColumns, dragIndex, persist, handleMove, onDragStart, onDragOver, onDrop } = useColumnReorder(save);
+  const { columns, setColumns, dragIndex, persist, handleMove, onDragStart, onDragOver, onDrop } =
+    useColumnReorder(save);
 
   useEffect(() => {
     // Use an async IIFE to allow await inside useEffect.
     (async () => {
-
       // Load the saved columns (including order and reversed/hidden state) from TablePrefs.
       let savedColumns: zty.SortColumn[] = [];
       try {
@@ -40,15 +33,16 @@ const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, b
       const headers: string[] = item?.data?.headers || [];
 
       // For any header not present in savedColumns, add it.
-      const missing = headers.filter(v => !savedColumns.some(sc => sc.value === v))
-        .map(v => ({
+      const missing = headers
+        .filter((v) => !savedColumns.some((sc) => sc.value === v))
+        .map((v) => ({
           value: v,
           reversed: false,
         }));
 
       // Merge saved columns with missing ones.
-      const merged = [...savedColumns, ...missing].map(col => ({
-        ...col
+      const merged = [...savedColumns, ...missing].map((col) => ({
+        ...col,
       }));
 
       setColumns(merged);
@@ -94,7 +88,11 @@ const TableSortContents: React.FC<TableSortContentsProps> = ({ item, celldata, b
             {/* Column 2: icon based on reversed */}
             <span style={{ display: "table-cell", padding: "0 1em", borderBottom: "1px solid #ccc" }}>
               <button onClick={() => toggleReversed(index)}>
-                {column.reversed ? <FaArrowDownZA style={{ color: "red" }} title="Click to sort ascending" /> : <FaArrowDownAZ title="Click to sort descending"/>}
+                {column.reversed ? (
+                  <FaArrowDownZA style={{ color: "red" }} title="Click to sort ascending" />
+                ) : (
+                  <FaArrowDownAZ title="Click to sort descending" />
+                )}
               </button>
             </span>
 

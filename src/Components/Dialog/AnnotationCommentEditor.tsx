@@ -7,41 +7,46 @@ interface AnnotationCommentEditorProps {
   save: (value: string) => void;
 }
 
-const noteurl = "chrome://"+pkg.config.slug+"/content/xhtml/annotationeditor.xhtml";
+const noteurl = "chrome://" + pkg.config.slug + "/content/xhtml/annotationeditor.xhtml";
 
 const AnnotationCommentEditor: React.FC<AnnotationCommentEditorProps> = ({ html, save }) => {
   const iframeref = useRef<HTMLIFrameElement>(null);
-  
+
   const lb2br = (h: string) => {
-    return Utils.sanitizeannotation(h)
-    .split("\n").join("<br/>");
-  }
-  
+    return Utils.sanitizeannotation(h).split("\n").join("<br/>");
+  };
+
   const br2lb = (h: string) => {
     return Utils.sanitizeannotation(h)
-      .split(" xmlns=\"http://www.w3.org/1999/xhtml\"").join("")
-      .split("<br />").join("\n")
-      .split("</div><div>").join("\n")
-      .replace(/<[^>]+><\/[^>]+>/g, '\n')
-      .replace(/<\/div><div>/g, '\n')
-      .split("<div>").join("")
-      .split("</div>").join("\n")
-      .split("<p>").join("")
-      .split("</p>").join("\n")
-  }
-  
+      .split(' xmlns="http://www.w3.org/1999/xhtml"')
+      .join("")
+      .split("<br />")
+      .join("\n")
+      .split("</div><div>")
+      .join("\n")
+      .replace(/<[^>]+><\/[^>]+>/g, "\n")
+      .replace(/<\/div><div>/g, "\n")
+      .split("<div>")
+      .join("")
+      .split("</div>")
+      .join("\n")
+      .split("<p>")
+      .join("")
+      .split("</p>")
+      .join("\n");
+  };
+
   useEffect(() => {
     const handleLoad = () => {
-      iframeref?.current?.contentWindow?.addEventListener("load", (event: any)=>{
+      iframeref?.current?.contentWindow?.addEventListener("load", (event: any) => {
         const div = event.currentTarget.document?.getElementById("annotation-content");
-        if(div)
-        {
+        if (div) {
           div.innerHTML = lb2br(html);
           div.contentEditable = "true";
           div.focus();
         }
-      })
-    }
+      });
+    };
     handleLoad();
   }, []);
 
@@ -54,9 +59,17 @@ const AnnotationCommentEditor: React.FC<AnnotationCommentEditorProps> = ({ html,
         gap: "1em",
       }}
     >
-      <iframe style={{flex: "1", border: "0"}} ref={iframeref} src={noteurl}></iframe>
+      <iframe style={{ flex: "1", border: "0" }} ref={iframeref} src={noteurl}></iframe>
       <div style={{ textAlign: "right" }}>
-        <button onClick={() => save(br2lb(iframeref?.current?.contentWindow?.document?.getElementById("annotation-content")?.innerHTML || ""))}>Save</button>
+        <button
+          onClick={() =>
+            save(
+              br2lb(iframeref?.current?.contentWindow?.document?.getElementById("annotation-content")?.innerHTML || ""),
+            )
+          }
+        >
+          Save
+        </button>
       </div>
     </div>
   );

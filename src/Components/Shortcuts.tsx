@@ -18,10 +18,10 @@ const Shortcuts = () => {
       if (table) {
         // Set font size for the table content
         table.style.fontSize = `${zoom}em`;
-        
+
         // Optionally, adjust headers as well
         // tableHeaders.forEach((header) => {
-          // header.style.fontSize = `${zoom}em`;
+        // header.style.fontSize = `${zoom}em`;
         // });
 
         Prefs.set("page-zoom", zoom.toFixed(2));
@@ -29,7 +29,7 @@ const Shortcuts = () => {
     };
 
     const initZoom = async () => {
-      const savedZoom = parseFloat(await Prefs.get("page-zoom") || "1.0");
+      const savedZoom = parseFloat((await Prefs.get("page-zoom")) || "1.0");
       applyZoom(savedZoom);
     };
 

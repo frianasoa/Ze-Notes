@@ -4,8 +4,7 @@ import { useState } from "react";
 // TableSortContents and ColumnSortContents. Persistence differs per dialog,
 // so the caller provides the save callback; the column list is only updated
 // once saving succeeds.
-export default function useColumnReorder(save: (columns: zty.SortColumn[]) => Promise<unknown>)
-{
+export default function useColumnReorder(save: (columns: zty.SortColumn[]) => Promise<unknown>) {
   const [columns, setColumns] = useState<zty.SortColumn[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
 

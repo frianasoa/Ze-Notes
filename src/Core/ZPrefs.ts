@@ -2,7 +2,7 @@ import Config from "../Config";
 import Crypto from "./Crypto";
 
 const ZPrefs = {
-  prefix: "extensions."+Config.slug+".v1.",
+  prefix: "extensions." + Config.slug + ".v1.",
   set(key: string, value: string) {
     return Zotero.Prefs.set(this.prefix + key, value, true);
   },
@@ -10,12 +10,11 @@ const ZPrefs = {
   get(key: string, default_value: any = "") {
     return Zotero.Prefs.get(this.prefix + key, true) ?? default_value;
   },
-  
-  clear(key: string)
-  {
+
+  clear(key: string) {
     Zotero.Prefs.clear(this.prefix + key, true);
   },
-  
+
   async setb(key: string, value: string) {
     try {
       const encryptedValue = Crypto.encrypt(value, Config.znkey);

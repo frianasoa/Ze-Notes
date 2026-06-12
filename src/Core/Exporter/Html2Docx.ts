@@ -26,10 +26,10 @@ const Html2Docx = {
       if (node.nodeType === TEXT_NODE) {
         let text = node.textContent?.trim();
         if (text) {
-          text = text+" ";
+          text = text + " ";
           let textStyle = Html2Docx.getstyles(node as HTMLElement);
 
-          const textobj = {text, ...textStyle};
+          const textobj = { text, ...textStyle };
           currentRuns.push(new TextRun(textobj));
         }
       } else if (node.nodeType === ELEMENT_NODE) {
@@ -39,29 +39,33 @@ const Html2Docx = {
         if (Html2Docx.blockElements.has(tagName)) {
           if (currentRuns.length > 0) {
             let parStyle = {}; //Html2Docx.getstyles(node as HTMLElement, true);
-            const parobject = { children: currentRuns, ...parStyle};
+            const parobject = { children: currentRuns, ...parStyle };
             children.push(new Paragraph(parobject));
             currentRuns = [];
           }
 
           if (Html2Docx.headingMap[tagName]) {
-            children.push(new Paragraph({
-              text: element.textContent?.trim() || "",
-              heading: Html2Docx.headingMap[tagName] as any
-            }));
+            children.push(
+              new Paragraph({
+                text: element.textContent?.trim() || "",
+                heading: Html2Docx.headingMap[tagName] as any,
+              }),
+            );
           } else if (tagName === "ul" || tagName === "ol") {
             let isOrdered = tagName === "ol";
             for (const child of Array.from(element.childNodes)) {
-              if(child) await processNode(child, listLevel + 1);
+              if (child) await processNode(child, listLevel + 1);
             }
           } else if (tagName === "li") {
-            children.push(new Paragraph({
-              text: element.textContent?.trim() || "",
-              bullet: { level: listLevel }
-            }));
+            children.push(
+              new Paragraph({
+                text: element.textContent?.trim() || "",
+                bullet: { level: listLevel },
+              }),
+            );
           } else {
             for (const child of Array.from(element.childNodes)) {
-              if(child) await processNode(child);
+              if (child) await processNode(child);
             }
             children.push(new Paragraph({}));
           }
@@ -72,13 +76,13 @@ const Html2Docx = {
           const td = img.closest("td") as HTMLElement;
           img.setAttribute("width", "100%");
           img.setAttribute("height", "");
-          img.style.width = '100%';
+          img.style.width = "100%";
           img.style.height = "";
-          td.style.visibility = 'hidden';
-          td.style.position = 'absolute';
-          td.style.top = '-9999px';
-          td.style.left = '-9999px';
-          
+          td.style.visibility = "hidden";
+          td.style.position = "absolute";
+          td.style.top = "-9999px";
+          td.style.left = "-9999px";
+
           window.document.body.appendChild(td);
           const image = await Html2Docx.processImage(element);
           currentRuns.push(image);
@@ -87,17 +91,19 @@ const Html2Docx = {
           let href = element.getAttribute("href");
           let linkText = element.textContent?.trim() || href || "";
           if (href) {
-            currentRuns.push(new TextRun({
-              text: linkText,
-              style: "Hyperlink",
-            }));
+            currentRuns.push(
+              new TextRun({
+                text: linkText,
+                style: "Hyperlink",
+              }),
+            );
           }
         } else {
           let textStyle = Html2Docx.getstyles(node as HTMLElement);
           let text = element.textContent?.trim();
           if (text) {
-            text = text+" ";
-            const textobj = {text, ...textStyle};
+            text = text + " ";
+            const textobj = { text, ...textStyle };
             currentRuns.push(new TextRun(textobj));
           }
         }
@@ -105,7 +111,7 @@ const Html2Docx = {
     }
 
     for (const node of Array.from(element.childNodes)) {
-      if(node) await processNode(node);
+      if (node) await processNode(node);
     }
 
     if (currentRuns.length > 0) {
@@ -114,12 +120,11 @@ const Html2Docx = {
     return children;
   },
 
-  getstyles(node: HTMLElement | null, self=false) {
+  getstyles(node: HTMLElement | null, self = false) {
     let textStyle: any = {};
 
     const tagName = node?.tagName?.toLowerCase();
-    if(tagName)
-    {
+    if (tagName) {
       if (tagName === "b" || tagName === "strong") textStyle.bold = true;
       if (tagName === "i" || tagName === "em") textStyle.italics = true;
       if (tagName === "u") textStyle.underline = {};
@@ -130,17 +135,13 @@ const Html2Docx = {
 
     let inlineStyle = null;
 
-    if(self)
-    {
+    if (self) {
       inlineStyle = node?.style;
-    }
-    else if(node?.closest)
-    {
+    } else if (node?.closest) {
       inlineStyle = (node?.closest("[style]") as HTMLElement)?.style;
     }
 
-    if(inlineStyle)
-    {
+    if (inlineStyle) {
       if (inlineStyle.fontWeight === "bold") textStyle.bold = true;
       if (inlineStyle.fontStyle === "italic") textStyle.italics = true;
       if (inlineStyle.textDecoration.includes("underline")) textStyle.underline = {};
@@ -149,18 +150,17 @@ const Html2Docx = {
       if (inlineStyle.verticalAlign === "super") textStyle.superscript = true;
       if (inlineStyle.color) textStyle.color = Html2Docx.rgbaToBlendedHex(inlineStyle.color);
       if (inlineStyle.fontSize) textStyle.fontSize = parseInt(inlineStyle.fontSize, 10);
-      if (inlineStyle.background) textStyle.shading = {
-        fill: Html2Docx.rgbaToBlendedHex(inlineStyle.background)
-        // fill: inlineStyle.background
-      }
+      if (inlineStyle.background)
+        textStyle.shading = {
+          fill: Html2Docx.rgbaToBlendedHex(inlineStyle.background),
+          // fill: inlineStyle.background
+        };
     }
 
     // Extract computed styles from CSS
-    if(node?.nodeType===ELEMENT_NODE)
-    {
+    if (node?.nodeType === ELEMENT_NODE) {
       const computedStyle = window.getComputedStyle(node as HTMLElement);
-      if(computedStyle)
-      {
+      if (computedStyle) {
         if (computedStyle.fontWeight === "bold") textStyle.bold = true;
         if (computedStyle.fontStyle === "italic") textStyle.italics = true;
         if (computedStyle.textDecoration.includes("underline")) textStyle.underline = {};
@@ -169,10 +169,11 @@ const Html2Docx = {
         if (computedStyle.verticalAlign === "super") textStyle.superscript = true;
         if (computedStyle.color) textStyle.color = Html2Docx.rgbaToBlendedHex(computedStyle.color);
         if (computedStyle.fontSize) textStyle.fontSize = parseInt(computedStyle.fontSize, 10);
-        if (computedStyle.background) textStyle.shading = {
-          fill: Html2Docx.rgbaToBlendedHex(computedStyle.background)
-          // fill: computedStyle.background
-        }
+        if (computedStyle.background)
+          textStyle.shading = {
+            fill: Html2Docx.rgbaToBlendedHex(computedStyle.background),
+            // fill: computedStyle.background
+          };
       }
     }
     return textStyle;
@@ -190,7 +191,7 @@ const Html2Docx = {
 
         if (ctx) {
           ctx.drawImage(img, 0, 0);
-          resolve(canvas.toDataURL('image/png'));
+          resolve(canvas.toDataURL("image/png"));
         } else {
           reject(new Error("Canvas context unavailable"));
         }
@@ -200,12 +201,11 @@ const Html2Docx = {
       img.src = url;
     });
   },
-  
+
   rgbaToBlendedHex(rgba: string, bgColor: string = "#ffffff"): string {
-    Zotero.log("In: "+rgba);
+    Zotero.log("In: " + rgba);
     const rgbaMatch = rgba.match(/rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\s*\)/i);
-    if (!rgbaMatch)
-    {
+    if (!rgbaMatch) {
       Zotero.log(`Error: Invalid RGB(${rgba}) format`);
       return rgba;
     }
@@ -225,12 +225,12 @@ const Html2Docx = {
 
     // Blend function
     const blend = (fg: number, bg: number) => Math.round((1 - a) * bg + a * fg);
-    const toHex = (n: number) => n.toString(16).padStart(2, '0');
+    const toHex = (n: number) => n.toString(16).padStart(2, "0");
     const v = `#${toHex(blend(r, br))}${toHex(blend(g, bg))}${toHex(blend(b, bb))}`;
-    Zotero.log("Out :"+v);
+    Zotero.log("Out :" + v);
     return v;
   },
-  
+
   rgbaToHex(rgba: string): string {
     const result = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/);
     if (!result) throw new Error("Invalid RGBA format");
@@ -240,19 +240,19 @@ const Html2Docx = {
     const b = parseInt(result[3]);
     const a = result[4] !== undefined ? Math.round(parseFloat(result[4]) * 255) : 255;
 
-    const toHex = (n: number) => n.toString(16).padStart(2, '0');
-    
-    const v = `#${toHex(r)}${toHex(g)}${toHex(b)}${a !== 255 ? toHex(a) : ''}`;
-    
-    Zotero.log("out: "+v);
+    const toHex = (n: number) => n.toString(16).padStart(2, "0");
+
+    const v = `#${toHex(r)}${toHex(g)}${toHex(b)}${a !== 255 ? toHex(a) : ""}`;
+
+    Zotero.log("out: " + v);
     return v;
   },
-  
+
   hexcolor(color: string) {
     const rgbValues = color.match(/\d+/g);
     if (rgbValues && rgbValues.length === 3) {
       const [r, g, b] = rgbValues.map(Number); // Convert strings to numbers
-      return `${(1 << 24 | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
+      return `${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
     } else {
       return color;
     }
@@ -262,8 +262,11 @@ const Html2Docx = {
     let src = el.getAttribute("src") || el.getAttribute("alt");
     if (!src) return new TextRun("[Image missing]");
 
-    if(src.toLowerCase().endsWith(".svg") || src.startsWith("data:image/svg+xml;") || src.startsWith("data:image/svg+xml,"))
-    {
+    if (
+      src.toLowerCase().endsWith(".svg") ||
+      src.startsWith("data:image/svg+xml;") ||
+      src.startsWith("data:image/svg+xml,")
+    ) {
       src = await this.convertSvgToPng(src);
     }
 
@@ -275,14 +278,13 @@ const Html2Docx = {
       const arrayBuffer = await blob.arrayBuffer();
       const mimeType = blob.type;
       const extension = mimeType.split("/")[1] as "jpg" | "png" | "gif" | "bmp";
-      let { width, height }  = await this.imagesize(el as HTMLImageElement);
-      
-      if(el.className=="group-icon")
-      {
+      let { width, height } = await this.imagesize(el as HTMLImageElement);
+
+      if (el.className == "group-icon") {
         width = 10;
         height = 10;
       }
-      
+
       return new ImageRun({
         type: extension,
         data: arrayBuffer,
@@ -293,14 +295,13 @@ const Html2Docx = {
       return new TextRun(`[Image error] ${error}`);
     }
   },
-  
+
   imagesize(img?: HTMLImageElement): Promise<{ width: number; height: number }> {
     return new Promise((resolve, reject) => {
-      if(!img)
-      {
+      if (!img) {
         return reject("No image found!");
       }
-    
+
       const maybeResolve = () => {
         const rect = img.getBoundingClientRect();
         const width = Math.round(img.naturalWidth);
@@ -318,7 +319,7 @@ const Html2Docx = {
         maybeResolve();
       }
     });
-  }
+  },
 };
 
 export default Html2Docx;

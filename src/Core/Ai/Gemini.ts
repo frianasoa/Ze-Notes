@@ -7,7 +7,7 @@ const Gemini = {
 
   async models() {
     return Providers.models(Providers.configs.gemini);
-  }
+  },
 };
 
 export default Gemini;

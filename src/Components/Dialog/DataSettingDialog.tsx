@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Prefs from "../../Core/Prefs";
 import { FaCheckDouble } from "react-icons/fa6";
-import Form from './Form';
+import Form from "./Form";
 
 interface DataSettingDialogProps {
   datasettings: Record<string, any>;
@@ -21,10 +21,13 @@ const DataSettingDialog: React.FC<DataSettingDialogProps> = ({ datasettings, onU
         setFormState(JSON.parse(savedState)); // Use saved state
       } else {
         // Initialize with default values if no saved state
-        const defaultState = Object.entries(datasettings).reduce((acc, [key, value]) => {
-          acc[key] = value.default || "";
-          return acc;
-        }, {} as Record<string, string>);
+        const defaultState = Object.entries(datasettings).reduce(
+          (acc, [key, value]) => {
+            acc[key] = value.default || "";
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
         setFormState(defaultState);
       }
       setIsLoading(false); // Loading complete
@@ -48,10 +51,13 @@ const DataSettingDialog: React.FC<DataSettingDialogProps> = ({ datasettings, onU
     const isChecked = event.currentTarget.checked;
 
     // Update the form state for all keys in datasettings
-    const updatedState = Object.keys(datasettings).reduce((acc, key) => {
-      acc[key] = isChecked ? "true" : "false";
-      return acc;
-    }, {} as Record<string, string>);
+    const updatedState = Object.keys(datasettings).reduce(
+      (acc, key) => {
+        acc[key] = isChecked ? "true" : "false";
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
 
     setFormState((prevState) => ({
       ...prevState,
@@ -76,7 +82,7 @@ const DataSettingDialog: React.FC<DataSettingDialogProps> = ({ datasettings, onU
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  
+
   return (
     <>
       {Object.entries(datasettings).map(([key, settings]) => (
@@ -93,7 +99,7 @@ const DataSettingDialog: React.FC<DataSettingDialogProps> = ({ datasettings, onU
         </fieldset>
       ))}
     </>
-  )
+  );
 };
 
 export default DataSettingDialog;

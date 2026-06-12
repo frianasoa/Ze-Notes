@@ -13,8 +13,8 @@ import Dialogs from "./Dialogs";
 import Cloud from "./Cloud";
 
 type ActionsType = {
-	rootURI: string;
-  init(config: {rootURI: string}): void;
+  rootURI: string;
+  init(config: { rootURI: string }): void;
   reload(item: zty.ContextMenuData | null, celldata: zty.CellData): void;
   hidecolumn(item: zty.ContextMenuData, celldata: zty.CellData): void;
   hiderow(item: zty.ContextMenuData, celldata: zty.CellData): void;
@@ -23,7 +23,14 @@ type ActionsType = {
   movecolumn(target: string, source: string, collectionid: string): void;
   showitem(item: zty.ContextMenuData, celldata: zty.CellData): void;
   deletenote(item: zty.ContextMenuData, celldata: zty.CellData): void;
-  createnote(item: zty.ContextMenuData, celldata: zty.CellData, event: any, contents?: string|null, tags?: string[], noparent?: boolean): void;
+  createnote(
+    item: zty.ContextMenuData,
+    celldata: zty.CellData,
+    event: any,
+    contents?: string | null,
+    tags?: string[],
+    noparent?: boolean,
+  ): void;
   editnote(item: zty.ContextMenuData, celldata: zty.CellData): void;
   editannotationcomment(item: zty.ContextMenuData, celldata: zty.CellData): void;
   dropboxupload(item: zty.ContextMenuData, celldata: zty.CellData): void;
@@ -35,12 +42,12 @@ type ActionsType = {
   filterdata(item: zty.ContextMenuData, celldata: zty.CellData): void;
   showannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
   translateannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
-  openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
-  geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
-  deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
-  claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
-  translate(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
-  customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event:any): void;
+  openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
+  geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
+  deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
+  claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
+  translate(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
+  customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any): void;
   ocrannotation(item: zty.ContextMenuData, celldata: zty.CellData): void;
   ocrnote(item: zty.ContextMenuData, celldata: zty.CellData): void;
   opensettings(item: zty.ContextMenuData, celldata: zty.CellData): void;
@@ -53,16 +60,14 @@ type ActionsType = {
 };
 
 const Actions: ActionsType = {
-	rootURI: "",
-	init({rootURI}:{rootURI: string})
-	{
-		this.rootURI = rootURI;
-	},
+  rootURI: "",
+  init({ rootURI }: { rootURI: string }) {
+    this.rootURI = rootURI;
+  },
 
-	reload(item: zty.ContextMenuData | null, celldata: zty.CellData)
-	{
-		Reload.reload(item, celldata);
-	},
+  reload(item: zty.ContextMenuData | null, celldata: zty.CellData) {
+    Reload.reload(item, celldata);
+  },
 
   ...Visibility,
   ...NoteActions,
@@ -71,28 +76,23 @@ const Actions: ActionsType = {
   ...Dialogs,
   ...Cloud,
 
-  openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
-  {
+  openaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any) {
     AiPrompt.runstandard(OpenAI, item, celldata);
   },
 
-  geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
-  {
+  geminiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any) {
     AiPrompt.runstandard(Gemini, item, celldata);
   },
 
-  deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
-  {
+  deepseekprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any) {
     AiPrompt.runstandard(DeepSeek, item, celldata);
   },
 
-  claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
-  {
+  claudeprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any) {
     AiPrompt.runstandard(Claude, item, celldata);
   },
 
-  customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any)
-  {
+  customaiprompt(item: zty.ContextMenuData, celldata: zty.CellData, event: any) {
     AiPrompt.runcustom(item, celldata);
   },
 
@@ -101,7 +101,7 @@ const Actions: ActionsType = {
       .toLowerCase()
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9\-]/g, "");
-  }
+  },
 };
 
 export default Actions;

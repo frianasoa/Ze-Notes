@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import MenuItem from "./MenuItem";
 import styles from "./Menu.module.css";
-import ZPrefs from '../../Core/ZPrefs'
+import ZPrefs from "../../Core/ZPrefs";
 
 type MenuProps = {
   items: Record<string, zty.ContextMenuData>;
@@ -10,7 +10,7 @@ type MenuProps = {
   handleClose?: () => void;
 };
 
-const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleClose}) => {
+const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleClose }) => {
   const [isContextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [fontSize, setFontSize] = useState<string | number>("0.95em");
@@ -19,8 +19,7 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
   const contextMenuRef = useRef<HTMLUListElement | null>(null);
   const subMenuLeftRef = useRef<HTMLDivElement | null>(null);
   const subMenuRightRef = useRef<HTMLDivElement | null>(null);
-  
-  
+
   // Handle outside clicks to close the context menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,29 +39,34 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
   }, [handleClose]);
 
   // Handle right-click to open the context menu
-  const handleContextMenu = useCallback((event: MouseEvent) => {
-    // Ensure it's a right-click (button 2) - important for macOS compatibility
-    if (event.button !== 2) {
-      return;
-    }
-    
-    const target = event.target as HTMLElement;
-    if (!target.closest(targetSelector)) {
-      return;
-    }
-    
-    event.preventDefault();
-    
-    const cdata =  JSON.parse(JSON.stringify((target.closest(targetSelector) as HTMLElement).dataset ||  target.dataset))
-    // cdata.table = target.closest(".main-table");
-    cdata["target"] = target;
-    setCellData(cdata);
-    
-    const { clientX, clientY } = event;
+  const handleContextMenu = useCallback(
+    (event: MouseEvent) => {
+      // Ensure it's a right-click (button 2) - important for macOS compatibility
+      if (event.button !== 2) {
+        return;
+      }
 
-    setContextMenuPosition({ x: clientX, y: clientY });
-    setContextMenuVisible(true);
-  }, [targetSelector]);
+      const target = event.target as HTMLElement;
+      if (!target.closest(targetSelector)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const cdata = JSON.parse(
+        JSON.stringify((target.closest(targetSelector) as HTMLElement).dataset || target.dataset),
+      );
+      // cdata.table = target.closest(".main-table");
+      cdata["target"] = target;
+      setCellData(cdata);
+
+      const { clientX, clientY } = event;
+
+      setContextMenuPosition({ x: clientX, y: clientY });
+      setContextMenuVisible(true);
+    },
+    [targetSelector],
+  );
 
   // Adjust the context menu position if it exceeds the viewport size
   useEffect(() => {
@@ -91,23 +95,22 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
 
       setAdjustedPosition({ x: adjustedX, y: adjustedY });
     }
-    setFontSize(ZPrefs.get("contextmenu-font-size", "0.95")+"em");
+    setFontSize(ZPrefs.get("contextmenu-font-size", "0.95") + "em");
   }, [isContextMenuVisible, contextMenuPosition]);
-  
+
   // Add event listener for right-click (context menu)
   useEffect(() => {
-		const cells = window.document.querySelectorAll(targetSelector);
-		cells.forEach(cell => {
+    const cells = window.document.querySelectorAll(targetSelector);
+    cells.forEach((cell) => {
       cell.addEventListener("contextmenu", handleContextMenu as EventListener);
     });
-    
+
     return () => {
-      cells.forEach(cell => {
+      cells.forEach((cell) => {
         cell.removeEventListener("contextmenu", handleContextMenu as EventListener);
       });
     };
-	}, [targetSelector, handleContextMenu]);
-
+  }, [targetSelector, handleContextMenu]);
 
   // Handle menu item click
   const handleMenuItemClick = (item: zty.ContextMenuData) => {
@@ -120,61 +123,60 @@ const Menu: React.FC<MenuProps> = ({ items, targetSelector, handleClick, handleC
       {isContextMenuVisible && (
         <div
           className={styles.menu}
-					style={{
-						position: "absolute",
-						top: adjustedPosition?.y ?? contextMenuPosition.y,
-						left: adjustedPosition?.x ?? contextMenuPosition.x,
-						visibility: adjustedPosition ? "visible" : "hidden",
+          style={{
+            position: "absolute",
+            top: adjustedPosition?.y ?? contextMenuPosition.y,
+            left: adjustedPosition?.x ?? contextMenuPosition.x,
+            visibility: adjustedPosition ? "visible" : "hidden",
             borderRadius: "0.2em",
             fontSize: fontSize,
-						zIndex: 1000,
-					}}
-				>
-          <div 
-          ref={subMenuLeftRef}
-					style = {{
-						position: "absolute",
-						backgroundColor: "white",
-						boxShadow: "0 1px 1px rgba(128, 128, 128, 0.1)",
-						borderRadius: "0.2em",
-						left: "-100px", 
-						width: "100px", 
-						padding: "0",
-						margin: "0"
-					}}
-					></div>
+            zIndex: 1000,
+          }}
+        >
+          <div
+            ref={subMenuLeftRef}
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              boxShadow: "0 1px 1px rgba(128, 128, 128, 0.1)",
+              borderRadius: "0.2em",
+              left: "-100px",
+              width: "100px",
+              padding: "0",
+              margin: "0",
+            }}
+          ></div>
           <ul
-						ref={contextMenuRef}
+            ref={contextMenuRef}
             className={styles.ul}
-						style = {{
+            style={{
               borderRadius: "0.2em",
               listStyle: "none",
-							padding: "0",
-							margin: "0",
-						}}
+              padding: "0",
+              margin: "0",
+            }}
           >
-          {Object.keys(items).map((id, index) => {
-            if (items[id].label) {
-              return (
-                <MenuItem
-                  key={index}
-                  contextMenuRef={contextMenuRef}
-                  subMenuRightRef={subMenuRightRef}
-                  subMenuLeftRef={subMenuLeftRef}
-                  cellData={cellData}
-                  data={items[id]}
-                  onClick={(event) => {
-                    handleMenuItemClick(items[id]);
-                    items[id]?.onClick?.(items[id], cellData, event);
-                    items[id]?.onClose?.();
-                    handleClose?.();
-                  }}
-                />
-              );
-            }
-            return null;
-          })}
-            
+            {Object.keys(items).map((id, index) => {
+              if (items[id].label) {
+                return (
+                  <MenuItem
+                    key={index}
+                    contextMenuRef={contextMenuRef}
+                    subMenuRightRef={subMenuRightRef}
+                    subMenuLeftRef={subMenuLeftRef}
+                    cellData={cellData}
+                    data={items[id]}
+                    onClick={(event) => {
+                      handleMenuItemClick(items[id]);
+                      items[id]?.onClick?.(items[id], cellData, event);
+                      items[id]?.onClose?.();
+                      handleClose?.();
+                    }}
+                  />
+                );
+              }
+              return null;
+            })}
           </ul>
           <div ref={subMenuRightRef}></div>
         </div>

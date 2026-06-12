@@ -1,11 +1,11 @@
-import Dropbox from './Dropbox';
+import Dropbox from "./Dropbox";
 
 type CloudType = {
   Dropbox: typeof Dropbox;
 };
 
 const Cloud: CloudType = {
-  Dropbox
+  Dropbox,
 };
 
 export default Cloud;

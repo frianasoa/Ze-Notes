@@ -1,8 +1,5 @@
-
 const One = {
-  Crypto: {
-    
-  }
-}
+  Crypto: {},
+};
 
 export default One;

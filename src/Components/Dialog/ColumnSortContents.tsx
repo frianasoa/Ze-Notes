@@ -19,16 +19,12 @@ interface ColumnSortContentsProps {
   buttons: any;
 }
 
-const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
-  item,
-  celldata,
-  buttons,
-}) => {
+const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({ item, celldata, buttons }) => {
   const save = (newColumns: zty.SortColumn[]) =>
     TablePrefs.set(
       celldata.collectionid,
       "column-sort-key",
-      JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean))
+      JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean)),
     );
 
   const { columns, setColumns, dragIndex, handleMove, onDragStart, onDragOver, onDrop } = useColumnReorder(save);
@@ -49,11 +45,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       // Load hidden columns
       let hiddenColumns: string[] = [];
       try {
-        const hiddenStr = await TablePrefs.get(
-          celldata.collectionid,
-          "hide-key",
-          "[]"
-        );
+        const hiddenStr = await TablePrefs.get(celldata.collectionid, "hide-key", "[]");
         hiddenColumns = JSON.parse(hiddenStr);
       } catch (e) {
         console.error("Error parsing hidden columns:", e);
@@ -62,11 +54,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       // Load saved column order
       let savedColumns: string[] = [];
       try {
-        const saved = await TablePrefs.get(
-          celldata.collectionid,
-          "column-sort-key",
-          "[]"
-        );
+        const saved = await TablePrefs.get(celldata.collectionid, "column-sort-key", "[]");
         savedColumns = JSON.parse(saved);
       } catch (e) {
         console.error("Error parsing saved columns:", e);
@@ -75,11 +63,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       // Load saved background colors
       let savedColors: Record<string, string> = {};
       try {
-        const colors = await TablePrefs.get(
-          celldata.collectionid,
-          "column-bgcolor",
-          "{}"
-        );
+        const colors = await TablePrefs.get(celldata.collectionid, "column-bgcolor", "{}");
         savedColors = JSON.parse(colors);
       } catch (e) {
         console.error("Error parsing saved colors:", e);
@@ -88,11 +72,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       // Load saved text colors
       let savedTextColors: Record<string, string> = {};
       try {
-        const textColors = await TablePrefs.get(
-          celldata.collectionid,
-          "column-fgcolor",
-          "{}"
-        );
+        const textColors = await TablePrefs.get(celldata.collectionid, "column-fgcolor", "{}");
         savedTextColors = JSON.parse(textColors);
       } catch (e) {
         console.error("Error parsing text colors:", e);
@@ -128,15 +108,13 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
     const newColumns = [...columns];
     newColumns[index].hidden = !newColumns[index].hidden;
 
-    const hiddenList = newColumns
-      .filter((col) => col.hidden)
-      .map((col) => col.value);
+    const hiddenList = newColumns.filter((col) => col.hidden).map((col) => col.value);
 
     Promise.all([
       TablePrefs.set(
         celldata.collectionid,
         "column-sort-key",
-        JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean))
+        JSON.stringify(newColumns.map((elt) => elt.value).filter(Boolean)),
       ),
       TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify(hiddenList)),
     ]).then(() => setColumns(newColumns));
@@ -152,31 +130,18 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       TablePrefs.set(
         celldata.collectionid,
         "column-bgcolor",
-        JSON.stringify(
-          Object.fromEntries(
-            newColumns
-              .filter((c) => c.bgcolor)
-              .map((c) => [c.value, c.bgcolor])
-          )
-        )
+        JSON.stringify(Object.fromEntries(newColumns.filter((c) => c.bgcolor).map((c) => [c.value, c.bgcolor]))),
       ),
       TablePrefs.set(
         celldata.collectionid,
         "column-fgcolor",
-        JSON.stringify(
-          Object.fromEntries(
-            newColumns
-              .filter((c) => c.textcolor)
-              .map((c) => [c.value, c.textcolor])
-          )
-        )
+        JSON.stringify(Object.fromEntries(newColumns.filter((c) => c.textcolor).map((c) => [c.value, c.textcolor]))),
       ),
     ]);
 
     setColumns(newColumns);
   };
 
-  
   const handleColor = (type: string, index: number) => {
     colorInputRef.current?.remove();
     const colorInput = document.createElement("input");
@@ -184,10 +149,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
     colorInput.style.position = "absolute";
     colorInput.style.left = "-9999px";
 
-    colorInput.value =
-      type === "text"
-        ? columns[index].textcolor || "#000000"
-        : columns[index].bgcolor || "#ffffff";
+    colorInput.value = type === "text" ? columns[index].textcolor || "#000000" : columns[index].bgcolor || "#ffffff";
 
     colorInput.addEventListener("input", async (e: any) => {
       const newColor = e.target.value;
@@ -199,13 +161,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
         await TablePrefs.set(
           celldata.collectionid,
           "column-fgcolor",
-          JSON.stringify(
-            Object.fromEntries(
-              newColumns
-                .filter((c) => c.textcolor)
-                .map((c) => [c.value, c.textcolor])
-            )
-          )
+          JSON.stringify(Object.fromEntries(newColumns.filter((c) => c.textcolor).map((c) => [c.value, c.textcolor]))),
         );
       } else {
         newColumns[index].bgcolor = newColor;
@@ -213,13 +169,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
         await TablePrefs.set(
           celldata.collectionid,
           "column-bgcolor",
-          JSON.stringify(
-            Object.fromEntries(
-              newColumns
-                .filter((c) => c.bgcolor)
-                .map((c) => [c.value, c.bgcolor])
-            )
-          )
+          JSON.stringify(Object.fromEntries(newColumns.filter((c) => c.bgcolor).map((c) => [c.value, c.bgcolor]))),
         );
       }
 
@@ -258,8 +208,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
               display: "table-row",
               padding: "0.5em",
               borderBottom: "1px solid #ccc",
-              backgroundColor:
-                dragIndex === index ? "#f0f0f0" : "transparent",
+              backgroundColor: dragIndex === index ? "#f0f0f0" : "transparent",
               cursor: "move",
             }}
           >
@@ -286,10 +235,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
             >
               <button onClick={() => toggleHidden(index)}>
                 {column.hidden ? (
-                  <FaEyeSlash
-                    title="Click to show column"
-                    style={{ color: "red" }}
-                  />
+                  <FaEyeSlash title="Click to show column" style={{ color: "red" }} />
                 ) : (
                   <FaEye title="Click to hide column" />
                 )}
@@ -338,15 +284,10 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
               >
                 <FaFont />
               </button>
-              
-              <button
-                onClick={() => resetColor(index)}
-                title="Reset colors"
-              >
+
+              <button onClick={() => resetColor(index)} title="Reset colors">
                 <FaEraser />
               </button>
-
-              
             </span>
           </div>
         ))}

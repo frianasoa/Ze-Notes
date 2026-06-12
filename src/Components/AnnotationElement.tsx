@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import AnnotationCommentElement from "./AnnotationCommentElement";
 import AnnotationQuoteElement from "./AnnotationQuoteElement";
-import Actions from '../Core/Actions';
+import Actions from "../Core/Actions";
 import DataContext from "./DataContext";
-import {FaNoteSticky}  from "react-icons/fa6";
-import AnnotationImageMenu from './MenuItems/AnnotationImageMenu'
-import AnnotationQuoteMenu from './MenuItems/AnnotationQuoteMenu'
-import TranslationMenu from './MenuItems/TranslationMenu';
-
+import { FaNoteSticky } from "react-icons/fa6";
+import AnnotationImageMenu from "./MenuItems/AnnotationImageMenu";
+import AnnotationQuoteMenu from "./MenuItems/AnnotationQuoteMenu";
+import TranslationMenu from "./MenuItems/TranslationMenu";
 
 type AnnotationElementProps = {
   item: Record<string, any>;
@@ -23,29 +22,24 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
   const context = useContext(DataContext);
 
   const openTranslationDialog = (value: any) => {
-    if(context)
-    {
+    if (context) {
       context.setTranslationDialogState?.(value);
     }
-  }
+  };
 
   const openCommonDialog = (value: any) => {
-    if(context)
-    {
+    if (context) {
       context.setCommonDialogState?.(value);
     }
-  }
+  };
 
   // Handle image loading
   useEffect(() => {
     const checkImage = async () => {
-      if (await IOUtils.exists(item.image))
-      {
-        const url = await Zotero.File.generateDataURI(item.image, 'image/png');
+      if (await IOUtils.exists(item.image)) {
+        const url = await Zotero.File.generateDataURI(item.image, "image/png");
         setImage(url);
-      }
-      else
-      {
+      } else {
         setImage(null);
       }
     };
@@ -55,29 +49,40 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
 
   const handleImageAnnotationContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     AnnotationImageMenu.show(event, context, item);
-  }
+  };
 
   const handleQuoteContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    if(context)
-    {
+    if (context) {
       AnnotationQuoteMenu.show(context, event);
 
       context.MenuItems.main["showannotation"] = {
-        label: 'Show annotation',
+        label: "Show annotation",
         icon: FaNoteSticky,
         onClick: Actions.showannotation,
-        data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey}
-      }
+        data: {
+          attachmentid: item.attachmentid,
+          annotationid: item.annotationid,
+          annotationpage: item.pagelabel,
+          annotationkey: item.annotationkey,
+        },
+      };
 
       context.MenuItems.main["editannotationcomment"] = {
-        label: 'Edit annotation comment',
+        label: "Edit annotation comment",
         icon: FaNoteSticky,
         onClick: Actions.editannotationcomment,
-        data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationcomment: item.comment, annotationkey: item.annotationkey, callback: openCommonDialog, service: "Google"}
-      }
+        data: {
+          attachmentid: item.attachmentid,
+          annotationid: item.annotationid,
+          annotationpage: item.pagelabel,
+          annotationcomment: item.comment,
+          annotationkey: item.annotationkey,
+          callback: openCommonDialog,
+          service: "Google",
+        },
+      };
 
-      if(item.text)
-      {
+      if (item.text) {
         // Translation — annotation quotes translate via translateannotation
         // and carry the annotation payload instead of a target element.
         TranslationMenu.insert(context, event, [
@@ -86,8 +91,15 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
             label: "Quote",
             basedata: false,
             onClick: Actions.translateannotation,
-            data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey, annotationtext: item.text, callback: openTranslationDialog}
-          }
+            data: {
+              attachmentid: item.attachmentid,
+              annotationid: item.annotationid,
+              annotationpage: item.pagelabel,
+              annotationkey: item.annotationkey,
+              annotationtext: item.text,
+              callback: openTranslationDialog,
+            },
+          },
         ]);
       }
     }
@@ -96,13 +108,24 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
   return (
     <fieldset className="main-fieldset">
       <legend className="main-legend">
-        <img className='group-icon' src={annotationicon} style={{backgroundColor:"white", filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.1))"}} />
+        <img
+          className="group-icon"
+          src={annotationicon}
+          style={{ backgroundColor: "white", filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.1))" }}
+        />
       </legend>
-      <div data-type="annotation" >
+      <div data-type="annotation">
         {image ? (
           <div>
             <AnnotationCommentElement item={item} dataset={dataset} />
-            <img onContextMenu={handleImageAnnotationContextMenu} width="100%"height="" src={image} style={{border: "solid 1px red"}} alt={image} />
+            <img
+              onContextMenu={handleImageAnnotationContextMenu}
+              width="100%"
+              height=""
+              src={image}
+              style={{ border: "solid 1px red" }}
+              alt={image}
+            />
           </div>
         ) : item.text ? (
           <div>
@@ -114,7 +137,7 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
             <AnnotationCommentElement item={item} dataset={dataset} />
             <AnnotationQuoteElement onContextMenu={handleQuoteContextMenu} item={item} />
           </div>
-        ): (
+        ) : (
           <div>error:{/* {JSON.stringify(item)*/}</div>
         )}
       </div>

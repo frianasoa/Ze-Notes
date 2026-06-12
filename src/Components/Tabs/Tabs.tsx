@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import styles from './Tabs.module.css';
-import TabContent from './TabContent'
+import React, { useState } from "react";
+import styles from "./Tabs.module.css";
+import TabContent from "./TabContent";
 
 interface Tab {
   title: string;
@@ -25,7 +25,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
           <button
             key={index}
             onClick={() => handleTabClick(index + 1)}
-            className={activeTab === index + 1 ? styles.active : ''}
+            className={activeTab === index + 1 ? styles.active : ""}
           >
             {tab.title}
           </button>
@@ -33,14 +33,14 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
         <div className={styles.sep}></div>
       </div>
       <div>
-      {tabs.map((tab, index) => (
-        <TabContent
-          key={index}
-          activeTab={activeTab}
-          tabId={index + 1}
-          content={tab.content}  // Pass the component reference
-        />
-      ))}
+        {tabs.map((tab, index) => (
+          <TabContent
+            key={index}
+            activeTab={activeTab}
+            tabId={index + 1}
+            content={tab.content} // Pass the component reference
+          />
+        ))}
       </div>
     </div>
   );

@@ -18,28 +18,31 @@ const DropboxUploadDialog: React.FC<DropboxUploadDialogProps> = ({ collectionid,
     upload(email);
   };
 
-   const formatTime = (seconds: number) => {
-      const days = Math.floor(seconds / 86400);
-      seconds %= 86400;
+  const formatTime = (seconds: number) => {
+    const days = Math.floor(seconds / 86400);
+    seconds %= 86400;
 
-      const hours = Math.floor(seconds / 3600);
-      seconds %= 3600;
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
 
-      const minutes = Math.floor(seconds / 60);
-      seconds = Math.floor(seconds % 60);
+    const minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
 
-      const parts: string[] = [];
+    const parts: string[] = [];
 
-      if (days > 0) parts.push(`${days}d`);
-      if (hours > 0) parts.push(`${hours}h`);
-      if (minutes > 0) parts.push(`${minutes}m`);
-      if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+    if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
 
-      return parts.join(" ");
-  }
+    return parts.join(" ");
+  };
 
   useEffect(() => {
-    const {time, count, size} = FileExporter.processingtime(Zotero.Collections.get(Number(collectionid)), exportSpeedMBps);
+    const { time, count, size } = FileExporter.processingtime(
+      Zotero.Collections.get(Number(collectionid)),
+      exportSpeedMBps,
+    );
     setProcessingTime(time);
     setProcessingCount(count);
     setProcessingSize(size);
@@ -63,8 +66,11 @@ const DropboxUploadDialog: React.FC<DropboxUploadDialogProps> = ({ collectionid,
             <input
               type="email"
               value={email}
-              style={{width: "20em"}}
-              onInput={async (e) => {setEmail((e.target as HTMLInputElement).value); await ZPrefs.setb("dropbox-last-target", (e.target as HTMLInputElement).value)}}
+              style={{ width: "20em" }}
+              onInput={async (e) => {
+                setEmail((e.target as HTMLInputElement).value);
+                await ZPrefs.setb("dropbox-last-target", (e.target as HTMLInputElement).value);
+              }}
               placeholder="Enter email"
             />
           </td>
@@ -73,21 +79,20 @@ const DropboxUploadDialog: React.FC<DropboxUploadDialogProps> = ({ collectionid,
         <tr>
           <td>Export time</td>
           <td>
-            <div style={{display: "flex", flexDirection: "row"}}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
               <input
-                style={{flex: "1"}}
-                min='0.5'
-                max='200'
-                step='0.5'
-                id='dropbox-mb-per-sec'
+                style={{ flex: "1" }}
+                min="0.5"
+                max="200"
+                step="0.5"
+                id="dropbox-mb-per-sec"
                 type="range"
                 value={exportSpeedMBps}
                 onInput={(e) => {
-                    const val = Number((e.target as HTMLInputElement).value);
-                    SetExportSpeedMBps(val);
-                    ZPrefs.set("dropbox-mb-per-sec", String(val))
-                  }
-                }
+                  const val = Number((e.target as HTMLInputElement).value);
+                  SetExportSpeedMBps(val);
+                  ZPrefs.set("dropbox-mb-per-sec", String(val));
+                }}
               />
               <div>{exportSpeedMBps} MBps</div>
             </div>
@@ -95,21 +100,15 @@ const DropboxUploadDialog: React.FC<DropboxUploadDialogProps> = ({ collectionid,
         </tr>
         <tr>
           <td></td>
-          <td>
-            Number of attachments: {processingCount}
-          </td>
+          <td>Number of attachments: {processingCount}</td>
         </tr>
         <tr>
           <td></td>
-          <td>
-            Total size: {Math.round(processingSize)} Mb
-          </td>
+          <td>Total size: {Math.round(processingSize)} Mb</td>
         </tr>
         <tr>
           <td></td>
-          <td>
-            Total processing time {formatTime(processingTime)}
-          </td>
+          <td>Total processing time {formatTime(processingTime)}</td>
         </tr>
         <tr>
           <td colSpan={2}>

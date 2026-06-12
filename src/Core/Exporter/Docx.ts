@@ -1,6 +1,6 @@
-import { Document, Packer, Table, TableCell, TableRow, TextRun, ImageRun, Paragraph, IImageOptions} from "docx";
-import Html2Docx from './Html2Docx'
-import HtmlElements from './HtmlElements'
+import { Document, Packer, Table, TableCell, TableRow, TextRun, ImageRun, Paragraph, IImageOptions } from "docx";
+import Html2Docx from "./Html2Docx";
+import HtmlElements from "./HtmlElements";
 
 const TEXT_NODE = 3;
 const ELEMENT_NODE = 1;
@@ -15,13 +15,15 @@ const Docx = {
     const docRows = await Promise.all(
       rows.map(async (row) => {
         const docCells = await Promise.all(
-          Array.from(row.cells).map(async (cell) => new TableCell(
-          {
-            children: await Html2Docx.parse(cell as HTMLTableCellElement)
-          }))
+          Array.from(row.cells).map(
+            async (cell) =>
+              new TableCell({
+                children: await Html2Docx.parse(cell as HTMLTableCellElement),
+              }),
+          ),
         );
         return new TableRow({ children: docCells });
-      })
+      }),
     );
 
     const doc = new Document({
@@ -34,7 +36,7 @@ const Docx = {
     });
   },
 
-/**
+  /**
   async parse(cell: HTMLTableCellElement): Promise<TableCell> {
     // const children = await Docx.parseChildren(cell);
     const children = await Docx.parseHtml(cell);

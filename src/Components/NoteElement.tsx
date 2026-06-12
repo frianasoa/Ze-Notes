@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { FaRegTrashCan, FaPencil } from "react-icons/fa6";
-import Utils from '../Core/Utils';
+import Utils from "../Core/Utils";
 import DataContext from "./DataContext";
 import NoteTextMenu from "./MenuItems/NoteTextMenu";
 import NoteImageMenu from "./MenuItems/NoteImageMenu";
@@ -11,7 +11,7 @@ type NoteElementProps = {
 };
 
 const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
-  const [htmls, setHtmls] = useState<any>({ "Default": item.text });
+  const [htmls, setHtmls] = useState<any>({ Default: item.text });
   const ref = useRef<HTMLDivElement | null>(null);
   const context = useContext(DataContext);
 
@@ -23,9 +23,12 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
   };
 
   // Right-click menu for images
-  const handleImageContextMenu = useCallback((event: Event) => {
-    NoteImageMenu.show(event, context, item);
-  }, [context, item]);
+  const handleImageContextMenu = useCallback(
+    (event: Event) => {
+      NoteImageMenu.show(event, context, item);
+    },
+    [context, item],
+  );
 
   // Load images from notes and replace with data URI
   const loadImages = async () => {
@@ -96,7 +99,7 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
   return (
     <fieldset className="main-fieldset">
       <legend className="main-legend">
-        <img className='group-icon' src={Icons.data["note"]} />
+        <img className="group-icon" src={Icons.data["note"]} />
       </legend>
       <div ref={ref} data-type="note" className="note">
         {Object.keys(htmls).map((title, index) => (
@@ -105,12 +108,16 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
             onContextMenu={handleTextContextMenu}
             key={index}
             data-noteid={item.noteid}
-            style={{ marginBottom: '0.5em', border: 'dotted 1px' }}
+            style={{ marginBottom: "0.5em", border: "dotted 1px" }}
           >
-            <legend className="annotation-part sub-legend" style={{ fontWeight: "bold" }}  data-legend={title}>
+            <legend className="annotation-part sub-legend" style={{ fontWeight: "bold" }} data-legend={title}>
               {title}
             </legend>
-            <div className="note-container zcontent" data-legend={title} dangerouslySetInnerHTML={{ __html: htmls[title] }}></div>
+            <div
+              className="note-container zcontent"
+              data-legend={title}
+              dangerouslySetInnerHTML={{ __html: htmls[title] }}
+            ></div>
           </fieldset>
         ))}
       </div>

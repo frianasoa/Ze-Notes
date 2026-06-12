@@ -1,10 +1,10 @@
-import OpenAI from './OpenAI';
-import Gemini from './Gemini';
-import DeepSeek from './DeepSeek';
-import CustomAI from './CustomAI';
-import AiNotes from './AiNotes';
-import Claude from './Claude';
-import Providers from './Providers';
+import OpenAI from "./OpenAI";
+import Gemini from "./Gemini";
+import DeepSeek from "./DeepSeek";
+import CustomAI from "./CustomAI";
+import AiNotes from "./AiNotes";
+import Claude from "./Claude";
+import Providers from "./Providers";
 
 type AiType = {
   OpenAI: typeof OpenAI;
@@ -41,7 +41,7 @@ const Ai: AiType = {
     }
 
     return text;
-  }
+  },
 };
 
 export default Ai;

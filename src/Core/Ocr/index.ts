@@ -1,11 +1,11 @@
-import Tesseract from './Tesseract';
+import Tesseract from "./Tesseract";
 
 type OcrType = {
   Tesseract: typeof Tesseract;
 };
 
 const Ocr: OcrType = {
-  Tesseract
+  Tesseract,
 };
 
 export default Ocr;
