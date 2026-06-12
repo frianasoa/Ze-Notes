@@ -29,7 +29,7 @@ const Html2Docx = {
 
   async parse(element: HTMLElement): Promise<Paragraph[]> {
     let children: Paragraph[] = [];
-    let currentRuns: TextRun[] = [];
+    let currentRuns: (TextRun | ImageRun)[] = [];
 
     async function processNode(node: Node, listLevel: number = 0): Promise<void> {
       if (node.nodeType === TEXT_NODE) {

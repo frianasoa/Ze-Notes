@@ -1,7 +1,31 @@
 import Config from "../../Config"
-var pretty = require("pretty");
+var beautify = require("js-beautify");
 
 import sanitizeHtml from 'sanitize-html';
+
+/**
+ * Port of the abandoned `pretty` package (js-beautify wrapper with its
+ * `ocd: true` cleanup), so we depend on js-beautify directly.
+ */
+function pretty(str: string): string {
+  const formatted = beautify.html(str, {
+    unformatted: ['code', 'pre', 'em', 'strong', 'span'],
+    indent_inner_html: true,
+    indent_char: ' ',
+    indent_size: 2,
+  });
+  return formatted
+    // trim whitespace-only lines, then condense repeated newlines
+    .split('\n').map((line: string) => (line.trim() === '' ? '' : line)).join('\n')
+    .replace(/\s+$/, '\n')
+    .replace(/(\r\n|\n|\u2424){2,}/g, '\n')
+    // remove empty whitespace at the top of the file
+    .replace(/^\s+/, '')
+    // add a space above each comment
+    .replace(/(\s*<!--)/g, '\n$1')
+    // bring closing comments up to the same line as the closing tag
+    .replace(/>(\s*)(?=<!--\s*\/)/g, '> ');
+}
 
 const Html = {
   async start(table: HTMLTableElement, filename: string, settings: Record<string, string>, toObject: boolean=false)
@@ -249,7 +273,7 @@ const Html = {
         ${html}
       </body>
     </html>
-    `, {ocd: true})
+    `)
   },
 
   urlextension(imgUrl: string)

@@ -1,6 +1,6 @@
 {
   "name": "Ze Notes",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Manage your notes in Zotero",
   "homepage": "https://github.com/frianasoa/zn#readme",
   "bugs": {
@@ -28,25 +28,27 @@
     "dev": "node ./commands/dev.mjs && node ./commands/postbuild.mjs"
   },
   "dependencies": {
-    "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
+    "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@joplin/turndown-plugin-gfm": "^1.0.61",
+    "browserify-cipher": "^1.0.1",
     "buffer": "^6.0.3",
-    "crypto-browserify": "^3.12.1",
-    "docx": "^9.3.0",
+    "create-hash": "^1.2.0",
+    "docx": "^9.7.1",
     "esbuild-css-modules-plugin": "^3.1.4",
     "esbuild-sass-plugin": "^3.3.1",
     "events": "^3.3.0",
     "exceljs": "^4.4.0",
     "he": "^1.2.0",
+    "js-beautify": "^1.15.4",
     "jszip": "^3.10.1",
-    "pretty": "^2.0.0",
     "process": "^0.11.10",
+    "randombytes": "^2.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "sanitize-html": "^2.14.0",
+    "sanitize-html": "^2.17.4",
     "stream-browserify": "^3.0.0",
-    "turndown": "^7.2.0",
+    "turndown": "^7.2.4",
     "turndown-plugin-gfm": "^1.0.2",
     "typescript": "^5.8.2"
   },
@@ -55,11 +57,16 @@
     "@types/react-dom": "^19.0.4",
     "@types/sanitize-html": "^2.13.0",
     "@types/turndown": "^5.0.5",
-    "esbuild": "0.25.1",
-    "zotero-types": "^3.1.9"
+    "esbuild": "0.28.0",
+    "zotero-types": "^4.1.2"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "^11.1.1"
+    }
   },
   "browser": {
-    "crypto": "crypto-browserify",
+    "crypto": "./src/Core/cryptoshim.js",
     "stream": "stream-browserify"
   }
 }
