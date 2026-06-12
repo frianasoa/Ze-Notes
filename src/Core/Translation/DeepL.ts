@@ -18,14 +18,12 @@ const DeepL:Translator = {
       if(usage.character_count>=usage.character_limit)
       {
         throw "Usage limit reached!";
-        return false;
       }
       return true;
     }
     catch(e)
     {
       throw e;
-      return false;
     }
   },
   
