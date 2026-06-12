@@ -34,71 +34,39 @@ const Utils = {
   },
   
   splitcomment(comment: string): { [key: string]: string } {
-    const maincommentlabel = ZPrefs.get("main-comment-label", "");
-    const result: { [key: string]: string } = {};
-    // const regex = /(?:<b>)?\[([^\]]+)\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[|$)/g;
-    const regex = this.splitregex;
-
-    let match;
-    let matched = false;
-    let lastIndex = 0; // Keep track of last processed index
-
-    while ((match = regex.exec(comment)) !== null) {
-      matched = true;
-
-      // Handle content before the first `[title]`
-      if (match.index > lastIndex) {
-        const preContent = comment.slice(lastIndex, match.index).trim();
-        if (preContent) {
-          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + preContent;
-        }
-      }
-
-      let title = match[1].trim();
-      const content = match[2].trim();
-
-      // Handle duplicate keys
-      if (result[title] !== undefined) {
-        let counter = 1;
-        while (result[`${title} ${counter}`] !== undefined) {
-          counter++;
-        }
-        title = `${title} ${counter}`;
-      }
-
-      result[title] = content;
-      lastIndex = regex.lastIndex; // Update last processed index
-    }
-
-    // Handle any remaining content after the last match
-    if (!matched || lastIndex < comment.length) {
-      const remainingContent = comment.slice(lastIndex).trim();
-      if (remainingContent) {
-        result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + remainingContent;
-      }
-    }
-
-    return result;
+    return this.splitcontents(comment, false);
   },
 
-  splithtmlcomment(comment: string) {
+  splithtmlcomment(comment: string): { [key: string]: string } {
+    return this.splitcontents(comment, true);
+  },
+
+  // Shared implementation behind splitcomment (plain text) and
+  // splithtmlcomment (html: contents are auto-closed and content before the
+  // first title only counts when meaningful).
+  splitcontents(comment: string, html: boolean): { [key: string]: string } {
     const maincommentlabel = ZPrefs.get("main-comment-label", "");
-    const result: any = {};
+    const result: { [key: string]: string } = {};
     const regex = this.splitregex;
+    const process = (s: string) => html ? this.autoCloseTags(s) : s;
 
     let match;
-    let lastIndex = 0; // Keep track of the last processed index
+    let lastIndex = 0; // Keep track of last processed index
     let hasPreContent = false; // Track if there is valid content before the first title
 
     while ((match = regex.exec(comment)) !== null) {
       // Handle content before the first `[title]`
-      if (!hasPreContent && match.index > lastIndex) {
+      if (match.index > lastIndex && (!html || !hasPreContent)) {
         const preContent = comment.slice(lastIndex, match.index).trim();
         if (preContent) {
-          const autoClosedPreContent = this.autoCloseTags(preContent);
-          if (this.isContentMeaningful(autoClosedPreContent)) {
-            result[maincommentlabel] = autoClosedPreContent;
-            hasPreContent = true;
+          const processed = process(preContent);
+          if (html) {
+            if (this.isContentMeaningful(processed)) {
+              result[maincommentlabel] = processed;
+              hasPreContent = true;
+            }
+          } else {
+            result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
           }
         }
       }
@@ -115,27 +83,26 @@ const Utils = {
         title = `${title} ${counter}`;
       }
 
-      // Auto-close any unbalanced tags in the content
-      const autoClosedContent = this.autoCloseTags(content);
-      result[title] = autoClosedContent;
-      lastIndex = regex.lastIndex; // Update the last processed index
+      result[title] = process(content);
+      lastIndex = regex.lastIndex; // Update last processed index
     }
 
-    // Handle any remaining content after the last `[title]`
+    // Handle any remaining content after the last match
     if (lastIndex < comment.length) {
       const remainingContent = comment.slice(lastIndex).trim();
       if (remainingContent) {
-        const autoClosedRemainingContent = this.autoCloseTags(remainingContent);
-        if (this.isContentMeaningful(autoClosedRemainingContent)) {
-          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + autoClosedRemainingContent;
+        const processed = process(remainingContent);
+        if (!html || this.isContentMeaningful(processed)) {
+          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
         }
       }
     }
 
-    // Remove empty `Main comment` if it exists
-    if (result[maincommentlabel] && !this.isContentMeaningful(result[maincommentlabel])) {
+    // Remove empty main comment if it exists
+    if (html && result[maincommentlabel] && !this.isContentMeaningful(result[maincommentlabel])) {
       delete result[maincommentlabel];
     }
+
     return result;
   },
 
