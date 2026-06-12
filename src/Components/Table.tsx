@@ -4,13 +4,13 @@ import Loading from './Loading';
 import DataContext from './DataContext';
 import Cell from './Cell';
 import Actions from '../Core/Actions'
-import Prefs from '../Core/Prefs'
 import ZPrefs from '../Core/ZPrefs'
 import Menu from './ContextMenu/Menu';
 import ColumnResizer from './ColumnResizer'
 import MenuItems from './MenuItems'
 import Dialog from './Dialog/Dialog'
 import TablePrefs from "../Core/TablePrefs";
+import { useColumnDrag, useColumnWidths, useScrollPersistence, useTableFilter } from './TableHooks';
 import styles from "./Table.module.css";
 
 import {FaArrowsRotate, FaEye, FaRegEye, FaEyeSlash, FaArrowDownAZ, FaFilePdf, FaHtml5, FaFile, FaVectorSquare, FaFileExport, FaDropbox} from "react-icons/fa6";
@@ -103,21 +103,19 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
     setAllRows(uniqueData.map(row => ({title: row.title?.[0]?.text, itemid: row.id?.[0]?.text, source: row.source?.[0].text})));
   }, [data, sortkeys, hidekeys]);
 
+  const tableRef = useRef<HTMLTableElement>(null);
+
   /** Column drag functions */
-  const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
-  const handleDragStart = (header: string) => {
-    setDraggedColumn(header);
-  };
+  const { handleDragStart, handleDragOver, handleDrop } = useColumnDrag(collectionid);
 
-  const handleDragOver = (e: React.DragEvent<HTMLTableHeaderCellElement>) => {
-    e.preventDefault();
-  };
+  /** Column width settings */
+  const { currentColumnWidth, initColumnWidths } = useColumnWidths(collectionid, tableRef);
 
-  const handleDrop = (targetHeader: string) => {
-    if(draggedColumn && draggedColumn !== targetHeader) {
-      Actions.movecolumn(targetHeader, draggedColumn, collectionid);
-    }
-  };
+  /** Scroll position persistence */
+  useScrollPersistence(collectionid, tableRef);
+
+  // Filters
+  const { filter } = useTableFilter(collectionid);
 
   const handleMenuClose = () =>{
     MenuItems.resetmain(MenuItems.main);
@@ -125,112 +123,25 @@ const Table: React.FC<TableProps> = ({data, sortkeys, hidekeys, rowhidekeys, col
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) =>{}
 
-  // Declare this here to use later
-  const initColumnWidths = () =>{
-    const key = "column-width/"+collectionid;
-    const allckey = "column-width/"+collectionid+"/-all-columns-";
-    Prefs.search(key).then(pref=>{
-      var globalColumnWidth = 0;
-      if(Object.keys(pref).includes(allckey))
-      {
-        globalColumnWidth = parseInt(pref[allckey]);
-      }
-
-      const cells = Array.from(tableRef?.current?.querySelectorAll("th") ?? []) as HTMLTableCellElement[];
-      for(const cell of cells)
-      {
-        const k = key+"/"+cell.dataset?.column;
-        if(Object.keys(pref).includes(k))
-        {
-          const width = pref[k];
-          cell.style.width = `${width}px`;
-        }
-        else if(globalColumnWidth>0)
-        {
-          cell.style.width = `${globalColumnWidth}px`;
-        }
-      }
-    });
-  }
-  
   const handleHeaderClick = async (event: React.MouseEvent<HTMLElement>) =>{
     // const column = event.currentTarget.dataset.column;
   };
 
-  /** Column width settings */
-  const [currentColumnWidth, setCurrentColumnWidth] = useState("200");
-
-  const [columnStyles, setColumnStyles] = useState<Record<string, any>>({});
-  const generateDynamicStyles = () => {
-    return Object.entries(columnStyles)
-      .map(([className, width]) => `.${className.replace('column-width/'+collectionid+'/', '').replace(/[^a-zA-Z0-9-_]/g, '_')} { width: ${width}px; }`)
-      .join("\n");
-  };
-
-  useEffect(() => {
-    const key = "column-width/"+collectionid+"/-all-columns-";
-    Prefs.get(key, "").then(value=>{
-      setCurrentColumnWidth(value);
-    });
-  }, []);
-
-  /** Init column widths */
-  const tableRef = useRef<HTMLTableElement>(null);
-
-  useEffect(() => {
-    initColumnWidths();
-  }, []);
-
   const [mainMenuItems, setMainMenuItems] = useState<Record<string, zty.ContextMenuData>>({});
   const [headerMenuItems, setHeaderMenuItems] = useState<Record<string, zty.ContextMenuData>>({});
-  useEffect(() => { 
+  // Mount-only: the previous [MenuItems] dependency was a static module
+  // object, which never changes, so this has always run once.
+  useEffect(() => {
     const hiddencolumns = hidekeys.filter(h => allHeaders.includes(h));
-    
+
     const hiddenrows = allRows.filter((r)=>rowhidekeys.includes(String(r.itemid)));
     MenuItems.init(hiddencolumns, hiddenrows, initColumnWidths, collectionid);
 
     setMainMenuItems(MenuItems.main);
     setHeaderMenuItems(MenuItems.header);
-  }, [MenuItems]);
-
-  const doScroll = async ()=>{
-    const xkey = "scroll-x/"+collectionid;
-    const ykey = "scroll-y/"+collectionid;
-    const x = parseInt(await Prefs.get(xkey, "0"));
-    const y = parseInt(await Prefs.get(ykey, "0"));
-
-    const div = tableRef?.current?.closest("main") as HTMLDivElement;
-    if(div)
-    {
-      const handleScroll = (event: Event) => {
-        Prefs.set(xkey, String(div.scrollLeft));
-        Prefs.set(ykey, String(div.scrollTop));
-      };
-      div.scrollTo(x, y);
-      div.addEventListener("scroll", handleScroll);
-      return () => {
-        div.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }
-  
-  useEffect(() => {
-    doScroll();
-  }, [])
-
-  // Filters
-  const [filter, setFilter] = useState('');
-  const fetchFilter = () => {
-    TablePrefs.get(collectionid, "data-filter").then(filterValue=>{
-      setFilter(filterValue);
-    })
-  };
-
-  useEffect(() => {
-    fetchFilter();
   }, []);
-  
-  
+
+
   const [showSorter, setShowSorter] = useState(false);
   useEffect(() => {
     const legacydisplay = String(ZPrefs.get('legacy-display', false)).toUpperCase()==="TRUE";
