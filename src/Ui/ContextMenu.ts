@@ -53,7 +53,7 @@ const ContextMenu: ContextMenuType = {
 
   addToAllWindows(callback: (win: Window) => void) {
     const windows = Zotero?.getMainWindows() ?? [];
-    for (let win of windows) {
+    for (const win of windows) {
       if (win?.ZoteroPane) {
         callback(win);
       }

@@ -9,7 +9,7 @@ interface FormData {
   style?: React.CSSProperties;
   icon?: React.ElementType; // If you are using React components as icons
   default?: string;
-  callback?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, handler: Function) => void;
+  callback?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, handler: (...args: any[]) => any) => void;
 }
 
 interface FormProps {

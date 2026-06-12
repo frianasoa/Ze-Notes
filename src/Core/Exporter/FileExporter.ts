@@ -92,7 +92,7 @@ const FileExporter = {
 
     translation.setTranslator(translator);
 
-    let options = {
+    const options = {
       exportNotes: true, // Export all notes (includes annotations)
       exportFileData: true, // Export all attachments (e.g., PDFs, images)
       includeAnnotations: true, // If using Zotero's built-in annotations on PDFs
@@ -117,8 +117,8 @@ const FileExporter = {
 
     const startTime = Date.now(); // in ms
     const timer = setInterval(() => {
-      let timeElapsed = (Date.now() - startTime) / 1000; // convert to seconds
-      let timeleft = Math.round(time - timeElapsed);
+      const timeElapsed = (Date.now() - startTime) / 1000; // convert to seconds
+      const timeleft = Math.round(time - timeElapsed);
       FileExporter.progress.show(`Waiting for export to finish: ${timeleft} s`);
     }, interval);
 

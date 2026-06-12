@@ -21,7 +21,7 @@ import {
 
 const CellMenu = {
   show(context: any, dataset: zty.CellData, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>) {
-    var target = event.currentTarget || event.target;
+    const target = event.currentTarget || event.target;
     const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]");
 
     if (context && attachments.length > 0) {

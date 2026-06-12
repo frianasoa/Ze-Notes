@@ -26,7 +26,7 @@ const NoteActions = {
   ) {
     const column = celldata.column;
     const itemid = celldata.itemid;
-    let note = new Zotero.Item("note");
+    const note = new Zotero.Item("note");
     let text = "&lt;&lt;" + celldata.column + "&gt;&gt;<br/>\nNew Note";
     if (contents) {
       text = contents;
@@ -107,7 +107,7 @@ const NoteActions = {
     const attachmentid = item.data.attachmentid;
     const annotationpage = item.data.annotationpage;
     const annotationkey = item.data.annotationkey;
-    var attachment = Zotero.Items.get(attachmentid);
+    const attachment = Zotero.Items.get(attachmentid);
     if (attachment && annotationkey && annotationpage) {
       (Zotero as any).FileHandlers.open(attachment, {
         location: {
@@ -128,7 +128,7 @@ const NoteActions = {
   },
 
   showattachment(item: zty.ContextMenuData, celldata: zty.CellData) {
-    var attachment = Zotero.Items.get(item.data.id);
+    const attachment = Zotero.Items.get(item.data.id);
 
     /**
         launchURL if linked url instead of imported url

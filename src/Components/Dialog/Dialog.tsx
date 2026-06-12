@@ -10,8 +10,6 @@ interface DialogProps {
 }
 
 const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, buttons }) => {
-  if (!isOpen) return null;
-
   const [size, setSize] = useState({ width: 600, height: 400 });
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [dragging, setDragging] = useState(false);
@@ -68,6 +66,9 @@ const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, butto
       document.removeEventListener("mouseup", handleMouseUp);
     };
   });
+
+  // Hooks must run on every render; bail out only after them.
+  if (!isOpen) return null;
 
   const inline_styles = {
     overlay: {

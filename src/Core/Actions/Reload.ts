@@ -4,8 +4,8 @@ import { Zotero_Tabs } from "../../globals";
 // the Actions index (avoids import cycles).
 const Reload = {
   reload(item: zty.ContextMenuData | null = null, celldata: zty.CellData = {}) {
-    var browserid = "browser" + Zotero_Tabs._getTab(Zotero_Tabs.selectedID).tab.id;
-    var browser = Zotero.getMainWindow().document.getElementById(browserid);
+    const browserid = "browser" + Zotero_Tabs._getTab(Zotero_Tabs.selectedID).tab.id;
+    const browser = Zotero.getMainWindow().document.getElementById(browserid);
     if (browser) {
       (browser as any).reload();
     }

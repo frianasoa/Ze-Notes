@@ -17,7 +17,7 @@ const Migrator = {
     let model = "";
     let options = "";
     let format = "";
-    let message = "";
+    const message = "";
     let prompts = [];
 
     if (openaikey) {

@@ -10,7 +10,7 @@ const TablePrefs = {
     const q = "SELECT value FROM `tableoptions` WHERE `collectionid` = ? AND `key` = ?";
     const values = [collectionid, key];
     const result = await Database.DB.queryAsync(q, values);
-    var r;
+    let r;
     if (result && result.length > 0) {
       return (result[0] as any).value;
     }
@@ -44,7 +44,7 @@ const TablePrefs = {
         reverse = [];
       }
 
-      let tablesortkey = sort.map((value: any) => ({ value, reversed: reverse.includes(value) }));
+      const tablesortkey = sort.map((value: any) => ({ value, reversed: reverse.includes(value) }));
 
       await TablePrefs.set(collectionid, "table-sort-key", JSON.stringify(tablesortkey));
     }

@@ -25,7 +25,9 @@
   "scripts": {
     "test": "node app/chrome/core/engine.js",
     "build": "node ./commands/build.mjs && node ./commands/postbuild.mjs",
-    "dev": "node ./commands/dev.mjs && node ./commands/postbuild.mjs"
+    "dev": "node ./commands/dev.mjs && node ./commands/postbuild.mjs",
+    "lint": "eslint src",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",

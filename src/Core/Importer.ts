@@ -48,16 +48,16 @@ const Importer = {
 
     const children = collection.getChildItems();
     for (const child of children) {
-      var attachments = child.getAttachments();
+      const attachments = child.getAttachments();
       for (const itemid of attachments) {
-        let attachment = Zotero.Items.get(itemid);
+        const attachment = Zotero.Items.get(itemid);
         if (attachment.isPDFAttachment()) {
           try {
             Zotero_File_Interface.Progress.show("Refreshing annotations " + itemid + " ... ");
-            let attachment = Zotero.Items.get(itemid);
-            let transfer = true;
-            let ispriority = true;
-            let pw = "";
+            const attachment = Zotero.Items.get(itemid);
+            const transfer = true;
+            const ispriority = true;
+            const pw = "";
             await Zotero.PDFWorker.import(itemid, ispriority, pw, transfer);
           } catch (error) {
             Zotero.log("Error importing annotations: " + error);
@@ -88,9 +88,9 @@ const Importer = {
   },
 
   process(blob: Blob) {
-    var outfile = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\zenotes-import.zip").path;
+    const outfile = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\zenotes-import.zip").path;
     Zotero.File.putContentsAsync(outfile, blob as any).then(() => {
-      var destfolder = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\zenotes-import").path;
+      const destfolder = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\zenotes-import").path;
       Importer.unzip(outfile, destfolder).then(() => {
         Importer.write(destfolder);
       });

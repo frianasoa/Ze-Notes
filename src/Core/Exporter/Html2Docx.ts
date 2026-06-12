@@ -19,7 +19,7 @@ const Html2Docx = {
   } as Record<string, string>, // Explicit typing
 
   async parse(element: HTMLElement): Promise<Paragraph[]> {
-    let children: Paragraph[] = [];
+    const children: Paragraph[] = [];
     let currentRuns: (TextRun | ImageRun)[] = [];
 
     async function processNode(node: Node, listLevel: number = 0): Promise<void> {
@@ -27,7 +27,7 @@ const Html2Docx = {
         let text = node.textContent?.trim();
         if (text) {
           text = text + " ";
-          let textStyle = Html2Docx.getstyles(node as HTMLElement);
+          const textStyle = Html2Docx.getstyles(node as HTMLElement);
 
           const textobj = { text, ...textStyle };
           currentRuns.push(new TextRun(textobj));
@@ -38,7 +38,7 @@ const Html2Docx = {
 
         if (Html2Docx.blockElements.has(tagName)) {
           if (currentRuns.length > 0) {
-            let parStyle = {}; //Html2Docx.getstyles(node as HTMLElement, true);
+            const parStyle = {}; //Html2Docx.getstyles(node as HTMLElement, true);
             const parobject = { children: currentRuns, ...parStyle };
             children.push(new Paragraph(parobject));
             currentRuns = [];
@@ -52,7 +52,7 @@ const Html2Docx = {
               }),
             );
           } else if (tagName === "ul" || tagName === "ol") {
-            let isOrdered = tagName === "ol";
+            const isOrdered = tagName === "ol";
             for (const child of Array.from(element.childNodes)) {
               if (child) await processNode(child, listLevel + 1);
             }
@@ -88,8 +88,8 @@ const Html2Docx = {
           currentRuns.push(image);
           window.document.body.removeChild(td);
         } else if (tagName === "a") {
-          let href = element.getAttribute("href");
-          let linkText = element.textContent?.trim() || href || "";
+          const href = element.getAttribute("href");
+          const linkText = element.textContent?.trim() || href || "";
           if (href) {
             currentRuns.push(
               new TextRun({
@@ -99,7 +99,7 @@ const Html2Docx = {
             );
           }
         } else {
-          let textStyle = Html2Docx.getstyles(node as HTMLElement);
+          const textStyle = Html2Docx.getstyles(node as HTMLElement);
           let text = element.textContent?.trim();
           if (text) {
             text = text + " ";
@@ -121,7 +121,7 @@ const Html2Docx = {
   },
 
   getstyles(node: HTMLElement | null, self = false) {
-    let textStyle: any = {};
+    const textStyle: any = {};
 
     const tagName = node?.tagName?.toLowerCase();
     if (tagName) {

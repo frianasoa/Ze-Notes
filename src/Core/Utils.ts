@@ -140,7 +140,7 @@ const Utils = {
   },
 
   headersafe(v: string) {
-    var charsToEncode = /[^\x00-\x7F]/g;
+    const charsToEncode = /[^\x00-\x7F]/g;
     return v.replace(charsToEncode, function (c) {
       return "\\u" + ("000" + c.charCodeAt(0).toString(16)).slice(-4);
     });

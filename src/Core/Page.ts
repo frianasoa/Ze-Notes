@@ -64,7 +64,7 @@ const Page: PageType = {
 
   data() {
     const activepane = Zotero.getActiveZoteroPane();
-    var data = {
+    const data = {
       collection: {
         key: activepane.getSelectedCollection()?.key,
         name: activepane.getSelectedCollection()?.name,
@@ -83,7 +83,7 @@ const Page: PageType = {
     };
 
     if (!data.collection.name && !data.group.name) {
-      var libraryID = activepane.getSelectedLibraryID();
+      const libraryID = activepane.getSelectedLibraryID();
       const library: any = Zotero.Libraries.get(libraryID);
       data.library.name = library.name;
       data.libraryID = libraryID;
