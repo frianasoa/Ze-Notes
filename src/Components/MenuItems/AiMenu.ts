@@ -1,8 +1,18 @@
-import Actions from '../../Core/Actions';
-import MenuUtils from './MenuUtils';
-import ZPrefs from '../../Core/ZPrefs';
-import Providers from '../../Core/Ai/Providers';
-import {FaA, FaO, FaC, FaDiamond, FaFish, FaRegSquare, FaTableColumns, FaTableList, FaTableCells} from "react-icons/fa6";
+import Actions from "../../Core/Actions";
+import MenuUtils from "./MenuUtils";
+import ZPrefs from "../../Core/ZPrefs";
+import Providers from "../../Core/Ai/Providers";
+import {
+  FaA,
+  FaO,
+  FaC,
+  FaDiamond,
+  FaFish,
+  FaRegSquare,
+  FaTableColumns,
+  FaTableList,
+  FaTableCells,
+} from "react-icons/fa6";
 
 type AiMenuProvider = {
   id: string;
@@ -69,12 +79,15 @@ const AiMenu = {
   // Inserts "<provider>/submenu/<provider><target>" prompt entries plus a
   // trailing separator for each listed provider. Not gated by API key —
   // matches the note/quote/comment menus.
-  insertprompts(context: zty.MenuContext, event: React.MouseEvent<HTMLElement, MouseEvent>, providerids: string[], targets: zty.AiMenuTarget[])
-  {
-    for(const id of providerids)
-    {
+  insertprompts(
+    context: zty.MenuContext,
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    providerids: string[],
+    targets: zty.AiMenuTarget[],
+  ) {
+    for (const id of providerids) {
       const provider = providers[id];
-      const params: any[] = targets.map(t => ({
+      const params: any[] = targets.map((t) => ({
         label: t.label,
         key: provider.id + t.key,
         keys: provider.id + "/submenu/" + provider.id + t.key,
@@ -95,13 +108,15 @@ const AiMenu = {
   // header plus cell/row/column/table prompts, gated by the provider's API
   // key. Sequential awaits keep the insertion order deterministic. On note
   // rows the cell and row prompts are reset (notes have no parent cell/row).
-  async insertcellprompts(context: zty.MenuContext, event: React.MouseEvent<HTMLElement, MouseEvent>, target: any, providerids: string[])
-  {
-    for(const id of providerids)
-    {
+  async insertcellprompts(
+    context: zty.MenuContext,
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    target: any,
+    providerids: string[],
+  ) {
+    for (const id of providerids) {
       const provider = providers[id];
-      if(!(await provider.enabled()))
-      {
+      if (!(await provider.enabled())) {
         continue;
       }
 
@@ -113,7 +128,7 @@ const AiMenu = {
           onClick: provider.onClick,
           icon: provider.icon,
         },
-        ...AiMenu.celltargets.map(t => ({
+        ...AiMenu.celltargets.map((t) => ({
           label: t.label,
           key: provider.id + t.key,
           keys: provider.id + "/submenu/" + provider.id + t.key,
@@ -126,11 +141,10 @@ const AiMenu = {
       MenuUtils.aidata(context, target);
       MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
 
-      if(target.dataset.itemtype=="note")
-      {
+      if (target.dataset.itemtype == "note") {
         MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, [
-          {key: provider.id+"cell", keys: provider.id+"/submenu/"+provider.id+"cell"},
-          {key: provider.id+"cell", keys: provider.id+"/submenu/"+provider.id+"row"},
+          { key: provider.id + "cell", keys: provider.id + "/submenu/" + provider.id + "cell" },
+          { key: provider.id + "cell", keys: provider.id + "/submenu/" + provider.id + "row" },
         ]);
       }
     }

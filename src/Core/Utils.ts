@@ -1,38 +1,38 @@
-import ZPrefs from './ZPrefs'
-import sanitizeHtml from 'sanitize-html';
+import ZPrefs from "./ZPrefs";
+import sanitizeHtml from "sanitize-html";
 
 const Utils = {
   splitregex: /(?:<b>)?\[\[([^\[]+?)\]\](?:<\/b>)?\s*([\s\S]*?)(?=(?:<b>)?\[\[|$)/g,
   toxhtml(html: string) {
     const clean = sanitizeHtml(html, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'br']),
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "br"]),
       allowedAttributes: {
-        img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading' , "data-attachment-key"]
+        img: ["src", "srcset", "alt", "title", "width", "height", "loading", "data-attachment-key"],
       },
-      allowedSchemes: [ 'data', 'http', 'https'],
-      disallowedTagsMode: 'recursiveEscape',
+      allowedSchemes: ["data", "http", "https"],
+      disallowedTagsMode: "recursiveEscape",
     });
     return clean;
   },
-  
+
   showState(msg: string) {
     const statusBar = document.getElementById("zn-status-bar");
     if (statusBar) {
       statusBar.innerHTML = msg;
       setTimeout(() => {
-        statusBar.innerHTML = '';
+        statusBar.innerHTML = "";
       }, 10000);
     }
   },
-  
+
   sanitizeannotation(html: string) {
     const clean = sanitizeHtml(html, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['br']),
-      disallowedTagsMode: 'recursiveEscape',
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["br"]),
+      disallowedTagsMode: "recursiveEscape",
     });
     return clean;
   },
-  
+
   splitcomment(comment: string): { [key: string]: string } {
     return this.splitcontents(comment, false);
   },
@@ -48,7 +48,7 @@ const Utils = {
     const maincommentlabel = ZPrefs.get("main-comment-label", "");
     const result: { [key: string]: string } = {};
     const regex = this.splitregex;
-    const process = (s: string) => html ? this.autoCloseTags(s) : s;
+    const process = (s: string) => (html ? this.autoCloseTags(s) : s);
 
     let match;
     let lastIndex = 0; // Keep track of last processed index
@@ -66,7 +66,8 @@ const Utils = {
               hasPreContent = true;
             }
           } else {
-            result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
+            result[maincommentlabel] =
+              (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
           }
         }
       }
@@ -93,7 +94,8 @@ const Utils = {
       if (remainingContent) {
         const processed = process(remainingContent);
         if (!html || this.isContentMeaningful(processed)) {
-          result[maincommentlabel] = (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
+          result[maincommentlabel] =
+            (result[maincommentlabel] || "") + (result[maincommentlabel] ? " " : "") + processed;
         }
       }
     }
@@ -123,12 +125,12 @@ const Utils = {
 
   removeHiddenText(input: string) {
     return input
-      .replace(/<<[^>]*>>\s*<br\s*\/?>?/g, '') // Removes unescaped <<>> and any <br>/<br/> following it
-      .replace(/&lt;&lt;.*?&gt;&gt;\s*<br\s*\/?>?/g, '') // Removes escaped <<>> and any <br>/<br/> following it
-      .replace(/<<[^>]*>>/g, '') // Removes any standalone unescaped <<>> (without <br>)
-      .replace(/&lt;&lt;.*?&gt;&gt;/g, ''); // Removes any standalone escaped <<>> (without <br>)
+      .replace(/<<[^>]*>>\s*<br\s*\/?>?/g, "") // Removes unescaped <<>> and any <br>/<br/> following it
+      .replace(/&lt;&lt;.*?&gt;&gt;\s*<br\s*\/?>?/g, "") // Removes escaped <<>> and any <br>/<br/> following it
+      .replace(/<<[^>]*>>/g, "") // Removes any standalone unescaped <<>> (without <br>)
+      .replace(/&lt;&lt;.*?&gt;&gt;/g, ""); // Removes any standalone escaped <<>> (without <br>)
   },
-  
+
   isContentMeaningful(content: string): boolean {
     // Remove all empty tags and whitespace
     const cleanedContent = content
@@ -136,15 +138,13 @@ const Utils = {
       .trim(); // Remove leading/trailing whitespace
     return content.includes("<img") || cleanedContent.length > 0; // Content is meaningful if there's any non-whitespace text
   },
-  
+
   headersafe(v: string) {
-		var charsToEncode = /[^\x00-\x7F]/g;
-		return v.replace(charsToEncode,
-			function(c) {
-				return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
-			}
-		);
-	}
+    var charsToEncode = /[^\x00-\x7F]/g;
+    return v.replace(charsToEncode, function (c) {
+      return "\\u" + ("000" + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+  },
 };
 
 export default Utils;

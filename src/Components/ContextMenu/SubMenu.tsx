@@ -4,7 +4,7 @@ import styles from "./Menu.module.css";
 
 type SubMenuProps = {
   submenudata: Record<string, zty.ContextMenuData>;
-  submenuPosition: { left: string, right: string, top: string | undefined, position: Position};
+  submenuPosition: { left: string; right: string; top: string | undefined; position: Position };
   onClick: (event: any) => void; // Function to handle submenu item click
   contextMenuRef?: React.RefObject<HTMLUListElement | null>;
   subMenuLeftRef?: React.RefObject<HTMLDivElement | null>;
@@ -12,7 +12,15 @@ type SubMenuProps = {
   cellData?: Record<string, any>;
 };
 
-const SubMenu: React.FC<SubMenuProps> = ({ submenudata, submenuPosition, onClick, contextMenuRef , subMenuLeftRef, subMenuRightRef, cellData}) => {
+const SubMenu: React.FC<SubMenuProps> = ({
+  submenudata,
+  submenuPosition,
+  onClick,
+  contextMenuRef,
+  subMenuLeftRef,
+  subMenuRightRef,
+  cellData,
+}) => {
   return (
     <ul
       className={styles.ul}
@@ -26,7 +34,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ submenudata, submenuPosition, onClick
         zIndex: 1001,
       }}
     >
-      {Object.keys(submenudata).map((id, index) => 
+      {Object.keys(submenudata).map((id, index) =>
         submenudata[id]?.label ? (
           <MenuItem
             key={index}
@@ -34,7 +42,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ submenudata, submenuPosition, onClick
             contextMenuRef={contextMenuRef}
             onClick={(event) => submenudata[id]?.onClick?.(submenudata[id], cellData!, event)}
           />
-        ) : null
+        ) : null,
       )}
     </ul>
   );

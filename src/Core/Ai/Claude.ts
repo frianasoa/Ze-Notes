@@ -7,7 +7,7 @@ const Claude = {
 
   async models() {
     return Providers.models(Providers.configs.claude);
-  }
+  },
 };
 
 export default Claude;

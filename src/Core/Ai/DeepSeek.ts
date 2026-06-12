@@ -7,7 +7,7 @@ const DeepSeek = {
 
   async models() {
     return Providers.models(Providers.configs.deepseek);
-  }
+  },
 };
 
 export default DeepSeek;

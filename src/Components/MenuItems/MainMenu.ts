@@ -1,21 +1,21 @@
-import Actions from '../../Core/Actions';
+import Actions from "../../Core/Actions";
 import Icons from "./Icons";
 import { FaArrowsRotate, FaEyeSlash, FaRegSquare, FaTableColumns, FaTableList, FaTableCells } from "react-icons/fa6";
 
 const Main: any = {
   data: {
-    showentry: { label: 'Show entry', icon: Icons.data["journal-article"], onClick: Actions.showitem },
+    showentry: { label: "Show entry", icon: Icons.data["journal-article"], onClick: Actions.showitem },
     showannotation: {},
     editannotationcomment: {},
     ocrannotationimage: {},
     showattachedfile: {},
-    sep1: {label: '---'},
+    sep1: { label: "---" },
     editnote: {},
     ocrnoteimage: {},
     createnote: {},
     deletenote: {},
-    sepnote: {label: '---'},
-    
+    sepnote: { label: "---" },
+
     translatewithgoogle: {},
     translatewithdeepl: {},
     translateannotationcomment: {},
@@ -23,89 +23,189 @@ const Main: any = {
     translateannotation: {},
     translateannotationwithdeepl: {},
     septranslate: {},
-    
+
     claude: {
       submenu: {
-        claudenote:{data: {target: "note"}},
-        claudenotepart:{data: {target: "notepart"}},
-        claudecomment:{data: {target: "comment"}},
-        claudecommentpart:{data: {target: "commentpart"}},
-        claudequote:{data: {target: "quote"}},
-        claudenotesep: {label: ""},
-        claudecell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.claudeprompt, data: {target: "cell"}},
-        clauderow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.claudeprompt, data: {target: "row"}},
-        claudecolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.claudeprompt, data: {target: "column"}},
-        claudetable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.claudeprompt, data: {target: "table"}},
+        claudenote: { data: { target: "note" } },
+        claudenotepart: { data: { target: "notepart" } },
+        claudecomment: { data: { target: "comment" } },
+        claudecommentpart: { data: { target: "commentpart" } },
+        claudequote: { data: { target: "quote" } },
+        claudenotesep: { label: "" },
+        claudecell: {
+          label: "Prompt on cell",
+          icon: FaRegSquare,
+          onClick: Actions.claudeprompt,
+          data: { target: "cell" },
+        },
+        clauderow: {
+          label: "Prompt on row",
+          icon: FaTableColumns,
+          onClick: Actions.claudeprompt,
+          data: { target: "row" },
+        },
+        claudecolumn: {
+          label: "Prompt on column",
+          icon: FaTableList,
+          onClick: Actions.claudeprompt,
+          data: { target: "column" },
+        },
+        claudetable: {
+          label: "Prompt on table",
+          icon: FaTableCells,
+          onClick: Actions.claudeprompt,
+          data: { target: "table" },
+        },
       },
-      label: ""
+      label: "",
     },
 
     openai: {
       submenu: {
-        openainote:{data: {target: "note"}},
-        openainotepart:{data: {target: "notepart"}},
-        openaicomment:{data: {target: "comment"}},
-        openaicommentpart:{data: {target: "commentpart"}},
-        openaiquote:{data: {target: "quote"}},
-        openainotesep: {label: ""},
-        openaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.openaiprompt, data: {target: "cell"}},
-        openairow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.openaiprompt, data: {target: "row"}},
-        openaicolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.openaiprompt, data: {target: "column"}},
-        openaitable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.openaiprompt, data: {target: "table"}},
+        openainote: { data: { target: "note" } },
+        openainotepart: { data: { target: "notepart" } },
+        openaicomment: { data: { target: "comment" } },
+        openaicommentpart: { data: { target: "commentpart" } },
+        openaiquote: { data: { target: "quote" } },
+        openainotesep: { label: "" },
+        openaicell: {
+          label: "Prompt on cell",
+          icon: FaRegSquare,
+          onClick: Actions.openaiprompt,
+          data: { target: "cell" },
+        },
+        openairow: {
+          label: "Prompt on row",
+          icon: FaTableColumns,
+          onClick: Actions.openaiprompt,
+          data: { target: "row" },
+        },
+        openaicolumn: {
+          label: "Prompt on column",
+          icon: FaTableList,
+          onClick: Actions.openaiprompt,
+          data: { target: "column" },
+        },
+        openaitable: {
+          label: "Prompt on table",
+          icon: FaTableCells,
+          onClick: Actions.openaiprompt,
+          data: { target: "table" },
+        },
       },
-      label: ""
+      label: "",
     },
-    
+
     gemini: {
       submenu: {
-        gemininote:{data: {target: "note"}},
-        gemininotepart:{data: {target: "notepart"}},
-        geminicomment:{data: {target: "comment"}},
-        geminicommentpart:{data: {target: "commentpart"}},
-        geminiquote:{data: {target: "quote"}},
-        gemininotesep: {label: ""},
-        geminicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.geminiprompt, data: {target: "cell"}},
-        geminirow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.geminiprompt, data: {target: "row"}},
-        geminicolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.geminiprompt, data: {target: "column"}},
-        geminitable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.geminiprompt, data: {target: "table"}},
+        gemininote: { data: { target: "note" } },
+        gemininotepart: { data: { target: "notepart" } },
+        geminicomment: { data: { target: "comment" } },
+        geminicommentpart: { data: { target: "commentpart" } },
+        geminiquote: { data: { target: "quote" } },
+        gemininotesep: { label: "" },
+        geminicell: {
+          label: "Prompt on cell",
+          icon: FaRegSquare,
+          onClick: Actions.geminiprompt,
+          data: { target: "cell" },
+        },
+        geminirow: {
+          label: "Prompt on row",
+          icon: FaTableColumns,
+          onClick: Actions.geminiprompt,
+          data: { target: "row" },
+        },
+        geminicolumn: {
+          label: "Prompt on column",
+          icon: FaTableList,
+          onClick: Actions.geminiprompt,
+          data: { target: "column" },
+        },
+        geminitable: {
+          label: "Prompt on table",
+          icon: FaTableCells,
+          onClick: Actions.geminiprompt,
+          data: { target: "table" },
+        },
       },
-      label: ""
+      label: "",
     },
-    
+
     deepseek: {
       submenu: {
-        deepseeknote:{data: {target: "note"}},
-        deepseeknotepart:{data: {target: "notepart"}},
-        deepseekcomment:{data: {target: "comment"}},
-        deepseekcommentpart:{data: {target: "commentpart"}},
-        deepseekquote:{data: {target: "quote"}},
-        deepseeknotesep: {label: ""},
-        deepseekcell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.deepseekprompt, data: {target: "cell"}},
-        deepseekrow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.deepseekprompt, data: {target: "row"}},
-        deepseekcolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.deepseekprompt, data: {target: "column"}},
-        deepseektable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.deepseekprompt, data: {target: "table"}},
+        deepseeknote: { data: { target: "note" } },
+        deepseeknotepart: { data: { target: "notepart" } },
+        deepseekcomment: { data: { target: "comment" } },
+        deepseekcommentpart: { data: { target: "commentpart" } },
+        deepseekquote: { data: { target: "quote" } },
+        deepseeknotesep: { label: "" },
+        deepseekcell: {
+          label: "Prompt on cell",
+          icon: FaRegSquare,
+          onClick: Actions.deepseekprompt,
+          data: { target: "cell" },
+        },
+        deepseekrow: {
+          label: "Prompt on row",
+          icon: FaTableColumns,
+          onClick: Actions.deepseekprompt,
+          data: { target: "row" },
+        },
+        deepseekcolumn: {
+          label: "Prompt on column",
+          icon: FaTableList,
+          onClick: Actions.deepseekprompt,
+          data: { target: "column" },
+        },
+        deepseektable: {
+          label: "Prompt on table",
+          icon: FaTableCells,
+          onClick: Actions.deepseekprompt,
+          data: { target: "table" },
+        },
       },
-      label: ""
+      label: "",
     },
-    
+
     customai: {
       submenu: {
-        customainote:{data: {target: "note"}},
-        customainotepart:{data: {target: "notepart"}},
-        customaiquote:{data: {target: "quote"}},
-        customaicomment:{data: {target: "comment"}},
-        customaicommentpart:{data: {target: "commentpart"}},
-        customainotesep: {label: ""},
-        customaicell:{label: "Prompt on cell", icon: FaRegSquare,  onClick: Actions.customaiprompt, data: {target: "cell", key: "custom-ai"}},
-        customairow:{label: "Prompt on row", icon: FaTableColumns,  onClick: Actions.customaiprompt, data: {target: "row", key: "custom-ai"}},
-        customaicolumn:{label: "Prompt on column", icon: FaTableList,  onClick: Actions.customaiprompt, data: {target: "column", key: "custom-ai"}},
-        customaitable:{label: "Prompt on table", icon: FaTableCells,  onClick: Actions.customaiprompt, data: {target: "table", key: "custom-ai"}},
+        customainote: { data: { target: "note" } },
+        customainotepart: { data: { target: "notepart" } },
+        customaiquote: { data: { target: "quote" } },
+        customaicomment: { data: { target: "comment" } },
+        customaicommentpart: { data: { target: "commentpart" } },
+        customainotesep: { label: "" },
+        customaicell: {
+          label: "Prompt on cell",
+          icon: FaRegSquare,
+          onClick: Actions.customaiprompt,
+          data: { target: "cell", key: "custom-ai" },
+        },
+        customairow: {
+          label: "Prompt on row",
+          icon: FaTableColumns,
+          onClick: Actions.customaiprompt,
+          data: { target: "row", key: "custom-ai" },
+        },
+        customaicolumn: {
+          label: "Prompt on column",
+          icon: FaTableList,
+          onClick: Actions.customaiprompt,
+          data: { target: "column", key: "custom-ai" },
+        },
+        customaitable: {
+          label: "Prompt on table",
+          icon: FaTableCells,
+          onClick: Actions.customaiprompt,
+          data: { target: "table", key: "custom-ai" },
+        },
       },
-      label: ""
+      label: "",
     },
-    
+
     aidatasettings: {},
-    
+
     sepcustomai: {},
     customai00: {},
     customai01: {},
@@ -128,16 +228,16 @@ const Main: any = {
     customai18: {},
     customai19: {},
     sepai: {},
-    
-    hidecolumn: { label: 'Hide column', icon: FaEyeSlash, iconColor: 'red', onClick: Actions.hidecolumn },
-    hiderow: { label: 'Hide row', icon: FaEyeSlash, iconColor: 'red', onClick: Actions.hiderow },
-    sep: { label: '---' },
+
+    hidecolumn: { label: "Hide column", icon: FaEyeSlash, iconColor: "red", onClick: Actions.hidecolumn },
+    hiderow: { label: "Hide row", icon: FaEyeSlash, iconColor: "red", onClick: Actions.hiderow },
+    sep: { label: "---" },
     exportas: {},
-    sep2: {label: '---'},
-    reloadpage: { label: 'Reload page', icon: FaArrowsRotate, onClick: Actions.reload },
-    settings: {label: 'Open settings', icon: Icons.data["settings"], onClick: Actions.opensettings }
+    sep2: { label: "---" },
+    reloadpage: { label: "Reload page", icon: FaArrowsRotate, onClick: Actions.reload },
+    settings: { label: "Open settings", icon: Icons.data["settings"], onClick: Actions.opensettings },
   } as any,
-  
+
   resetkeys: [
     "showannotation",
     "editnote",
@@ -169,34 +269,31 @@ const Main: any = {
     "deepseek/submenu/deepseekrow",
     "customai",
     "customai/submenu/customaicell",
-    "customai/submenu/customairow"
+    "customai/submenu/customairow",
   ],
-  
-  reset(menu: any = Main.data)
-  {
+
+  reset(menu: any = Main.data) {
     // add customai items
-    for(let i = 0; i<20; i++)
-    {
+    for (let i = 0; i < 20; i++) {
       const key = `customai${String(i).padStart(2, "0")}`;
-      if(!Main.resetkeys.includes(key))
-      {
+      if (!Main.resetkeys.includes(key)) {
         Main.resetkeys.push("aidatasettings");
         Main.resetkeys.push(key);
-        Main.resetkeys.push(key+"/submenu/customainote");
-        Main.resetkeys.push(key+"/submenu/customainotepart");
-        Main.resetkeys.push(key+"/submenu/customaiquote");
-        Main.resetkeys.push(key+"/submenu/customaicomment");
-        Main.resetkeys.push(key+"/submenu/customaicommentpart");
-        Main.resetkeys.push(key+"/submenu/customaipartsep");  
-        Main.resetkeys.push(key+"/submenu/customaicell");
-        Main.resetkeys.push(key+"/submenu/customairow");
-        Main.resetkeys.push(key+"/submenu/customaicolumn");
-        Main.resetkeys.push(key+"/submenu/customaitable");
-      }     
+        Main.resetkeys.push(key + "/submenu/customainote");
+        Main.resetkeys.push(key + "/submenu/customainotepart");
+        Main.resetkeys.push(key + "/submenu/customaiquote");
+        Main.resetkeys.push(key + "/submenu/customaicomment");
+        Main.resetkeys.push(key + "/submenu/customaicommentpart");
+        Main.resetkeys.push(key + "/submenu/customaipartsep");
+        Main.resetkeys.push(key + "/submenu/customaicell");
+        Main.resetkeys.push(key + "/submenu/customairow");
+        Main.resetkeys.push(key + "/submenu/customaicolumn");
+        Main.resetkeys.push(key + "/submenu/customaitable");
+      }
     }
-    
+
     // dynamically reset initialized menuitems
-    for(const k of Main.resetkeys as string[]) {
+    for (const k of Main.resetkeys as string[]) {
       const keys = k.split("/");
       let currentLevel = menu;
 
@@ -204,7 +301,7 @@ const Main: any = {
         const key = keys[i];
         if (!currentLevel[key]) {
           // return;
-          currentLevel[key] = {}
+          currentLevel[key] = {};
         }
         currentLevel = currentLevel[key];
         if (i === keys.length - 1 && currentLevel.label) {
@@ -212,7 +309,7 @@ const Main: any = {
         }
       }
     }
-  }
-}
+  },
+};
 
 export default Main;

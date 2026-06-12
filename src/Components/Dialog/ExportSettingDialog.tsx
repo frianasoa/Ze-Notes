@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Prefs from "../../Core/Prefs";
-import {FaCheckDouble}  from "react-icons/fa6";
-import Tabs from '../Tabs/Tabs';
-import Form from './Form';
+import { FaCheckDouble } from "react-icons/fa6";
+import Tabs from "../Tabs/Tabs";
+import Form from "./Form";
 
 interface ExportSettingDialogProps {
   datasettings: Record<string, any>;
@@ -11,32 +11,39 @@ interface ExportSettingDialogProps {
   collectionid?: string;
 }
 
-const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings, tablesettings, onUpdate, collectionid}) => {
+const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({
+  datasettings,
+  tablesettings,
+  onUpdate,
+  collectionid,
+}) => {
   const [formState, setFormState] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true); // To handle async loading
 
   // Load saved state asynchronously when the component mounts
   useEffect(() => {
     const loadFormState = async () => {
-      const savedState = await Prefs.get("export-fields/"+collectionid, null); // Fetch saved data
+      const savedState = await Prefs.get("export-fields/" + collectionid, null); // Fetch saved data
       if (savedState) {
         setFormState(JSON.parse(savedState)); // Use saved state
       } else {
         // Initialize with default values if no saved state
         // const defaultState = Object.entries(datasettings).reduce((acc, [key, value]) => {
-          // acc[key] = value.default || "";
-          // return acc;
+        // acc[key] = value.default || "";
+        // return acc;
         // }, {} as Record<string, string>);
-        
-        
-        const defaultState = Object.values(datasettings).reduce((acc, group) => {
-          Object.entries(group).forEach(([key, value]) => {
-            const v = value as any;
-            acc[key] = v.default || "";
-          });
-          return acc;
-        }, {} as Record<string, string>);
-        
+
+        const defaultState = Object.values(datasettings).reduce(
+          (acc, group) => {
+            Object.entries(group).forEach(([key, value]) => {
+              const v = value as any;
+              acc[key] = v.default || "";
+            });
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+
         setFormState(defaultState);
       }
       setIsLoading(false); // Loading complete
@@ -49,20 +56,23 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
   useEffect(() => {
     if (!isLoading) {
       const saveFormState = async () => {
-        await Prefs.set("export-fields/"+collectionid, JSON.stringify(formState));
+        await Prefs.set("export-fields/" + collectionid, JSON.stringify(formState));
       };
       saveFormState();
       onUpdate(formState); // Notify parent about the update
     }
   }, [formState, isLoading]);
 
-  const checkAll = (isChecked: boolean) => {    
-    const updatedState = Object.values(datasettings).reduce((acc, group) => {
-      Object.keys(group).forEach((key) => {
-        acc[key] = isChecked ? "true" : "false";
-      });
-      return acc;
-    }, {} as Record<string, string>);
+  const checkAll = (isChecked: boolean) => {
+    const updatedState = Object.values(datasettings).reduce(
+      (acc, group) => {
+        Object.keys(group).forEach((key) => {
+          acc[key] = isChecked ? "true" : "false";
+        });
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
 
     setFormState((prevState) => ({
       ...prevState,
@@ -106,8 +116,8 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
         ))}
       </>
     );
-  }
-  
+  };
+
   const Data: React.FC = () => {
     return (
       <>
@@ -127,7 +137,7 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
       </>
     );
   };
-  
+
   const tabs = [
     {
       title: "Select data",
@@ -136,10 +146,10 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({ datasettings,
     {
       title: "Advanced settings",
       content: Table,
-    }
+    },
   ];
-  
-  return (<Tabs tabs={tabs} />);
+
+  return <Tabs tabs={tabs} />;
 };
 
 export default ExportSettingDialog;

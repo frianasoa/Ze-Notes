@@ -3,53 +3,49 @@ import Prefs from "../Prefs";
 import Reload from "./Reload";
 
 const Visibility = {
-  hidecolumn(item: zty.ContextMenuData, celldata: zty.CellData)
-  {
-    TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string)=>{
+  hidecolumn(item: zty.ContextMenuData, celldata: zty.CellData) {
+    TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string) => {
       const hkeys = JSON.parse(k);
       hkeys.push(celldata.column);
-      TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify([...new Set(hkeys)])).then(()=>{
+      TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify([...new Set(hkeys)])).then(() => {
         Reload.reload(item, celldata);
-      })
+      });
     });
   },
 
-  hiderow(item: zty.ContextMenuData, celldata: zty.CellData)
-  {
-    TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string)=>{
+  hiderow(item: zty.ContextMenuData, celldata: zty.CellData) {
+    TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string) => {
       const hkeys = JSON.parse(k);
       hkeys.push(celldata.itemid);
-      TablePrefs.set(celldata.collectionid, "row-hide-key", JSON.stringify([...new Set(hkeys)])).then(()=>{
+      TablePrefs.set(celldata.collectionid, "row-hide-key", JSON.stringify([...new Set(hkeys)])).then(() => {
         Reload.reload(item, celldata);
-      })
+      });
     });
   },
 
-  showrow(item: zty.ContextMenuData, celldata: zty.CellData)
-  {
-    TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string)=>{
+  showrow(item: zty.ContextMenuData, celldata: zty.CellData) {
+    TablePrefs.get(celldata.collectionid, "row-hide-key", "[]").then((k: string) => {
       const hkeys = JSON.parse(k);
       const index = hkeys.indexOf(String(item.data.itemid));
       if (index > -1) {
         hkeys.splice(index, 1);
       }
-      TablePrefs.set(celldata.collectionid, "row-hide-key", JSON.stringify([...new Set(hkeys)])).then(()=>{
+      TablePrefs.set(celldata.collectionid, "row-hide-key", JSON.stringify([...new Set(hkeys)])).then(() => {
         Reload.reload(item, celldata);
-      })
+      });
     });
   },
 
-  showcolumn(item: zty.ContextMenuData, celldata: zty.CellData)
-  {
-    TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string)=>{
+  showcolumn(item: zty.ContextMenuData, celldata: zty.CellData) {
+    TablePrefs.get(celldata.collectionid, "hide-key", "[]").then((k: string) => {
       const hkeys = JSON.parse(k);
       const index = hkeys.indexOf(item.label);
       if (index > -1) {
         hkeys.splice(index, 1);
       }
-      TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify([...new Set(hkeys)])).then(()=>{
+      TablePrefs.set(celldata.collectionid, "hide-key", JSON.stringify([...new Set(hkeys)])).then(() => {
         Reload.reload(item, celldata);
-      })
+      });
     });
   },
 
@@ -90,16 +86,17 @@ const Visibility = {
     });
   },
 
-  resetwidths(item: zty.ContextMenuData, celldata: zty.CellData)
-  {
-    const keyword = "column-width/"+item.data.collectionid+"/";
-    Prefs.deleteRecords(keyword).then(e=>{
-      Reload.reload();
-    }).catch(e=>{
-      Zotero.log("Actions.resetwidths: ");
-      Zotero.log(e);
-    })
-  }
+  resetwidths(item: zty.ContextMenuData, celldata: zty.CellData) {
+    const keyword = "column-width/" + item.data.collectionid + "/";
+    Prefs.deleteRecords(keyword)
+      .then((e) => {
+        Reload.reload();
+      })
+      .catch((e) => {
+        Zotero.log("Actions.resetwidths: ");
+        Zotero.log(e);
+      });
+  },
 };
 
 export default Visibility;

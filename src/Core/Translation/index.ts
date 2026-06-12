@@ -1,6 +1,6 @@
-import Google from './Google';
-import Languages from './Languages';
-import DeepL from './DeepL';
+import Google from "./Google";
+import Languages from "./Languages";
+import DeepL from "./DeepL";
 
 type TranslationType = {
   Languages: typeof Languages;
@@ -11,7 +11,7 @@ type TranslationType = {
 const Translation: TranslationType = {
   Google,
   DeepL,
-  Languages
+  Languages,
 };
 
 export default Translation;

@@ -6,7 +6,4 @@ function createXULElement(document: Document, tag: string): Element {
 const Zotero_Tabs = Zotero.getMainWindow().Zotero_Tabs;
 globalThis.console = Zotero.getMainWindow().console;
 
-export {
-	createXULElement,
-	Zotero_Tabs
-}
+export { createXULElement, Zotero_Tabs };

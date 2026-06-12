@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Table from './Table';
-import TablePrefs from '../Core/TablePrefs'
-import ZPrefs from '../Core/ZPrefs'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Table from "./Table";
+import TablePrefs from "../Core/TablePrefs";
+import ZPrefs from "../Core/ZPrefs";
 
 type NotesType = {
   show(win: Window, data: any, collectionID: string, collectionName: string, libraryID: string): void;
@@ -30,23 +30,34 @@ const Notes: NotesType = {
   },
 
   async show(win: Window, data: any, collectionID: string, collectionName: string, libraryID: string) {
-    const container = win?.document?.getElementById('main-contents');
+    const container = win?.document?.getElementById("main-contents");
     const sortkeys = JSON.parse(await TablePrefs.get(collectionID, "column-sort-key", "[]"));
     const tablesortkeys = JSON.parse(await TablePrefs.get(collectionID, "table-sort-key", "[]"));
     const hidekeys = JSON.parse(await TablePrefs.get(collectionID, "hide-key", "[]"));
     const rowhidekeys = JSON.parse(await TablePrefs.get(collectionID, "row-hide-key", "[]"));
 
-    if(container)
-		{
-			const root = ReactDOM.createRoot(container);
-      const bgColor = String(ZPrefs.get('notes-bg-color', '#ffffff'));
+    if (container) {
+      const root = ReactDOM.createRoot(container);
+      const bgColor = String(ZPrefs.get("notes-bg-color", "#ffffff"));
       if (bgColor) win.document.body.style.backgroundColor = bgColor;
-			globalThis.window = win as Window & typeof globalThis;
-			globalThis.document = win.document as Document & typeof globalThis;
-            
-			await root.render(<div className="main-table-container"><Table data={this.sortdata(data, tablesortkeys)} sortkeys={sortkeys} hidekeys={hidekeys} rowhidekeys={rowhidekeys} collectionid={collectionID} collectionname={collectionName} libraryid={libraryID} /></div>);
-		}
-  }
+      globalThis.window = win as Window & typeof globalThis;
+      globalThis.document = win.document as Document & typeof globalThis;
+
+      await root.render(
+        <div className="main-table-container">
+          <Table
+            data={this.sortdata(data, tablesortkeys)}
+            sortkeys={sortkeys}
+            hidekeys={hidekeys}
+            rowhidekeys={rowhidekeys}
+            collectionid={collectionID}
+            collectionname={collectionName}
+            libraryid={libraryID}
+          />
+        </div>,
+      );
+    }
+  },
 };
 
 export default Notes;

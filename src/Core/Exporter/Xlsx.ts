@@ -1,17 +1,17 @@
-import ExcelJS from 'exceljs';
-import HtmlElements from './HtmlElements';
+import ExcelJS from "exceljs";
+import HtmlElements from "./HtmlElements";
 
 const Xlsx = {
   blockElements: HtmlElements.blockElements,
 
   inlineElements: HtmlElements.inlineElements,
-  
+
   superBlockElements: new Set(["div", "p", "fieldset"]),
-  
+
   async start(table: HTMLTableElement) {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet1');
-    
+    const worksheet = workbook.addWorksheet("Sheet1");
+
     const rows = Array.from(table.rows);
     rows.forEach((row, rowIndex) => {
       const cells = Array.from((row as HTMLTableRowElement).cells);
@@ -19,19 +19,17 @@ const Xlsx = {
         worksheet.getCell(rowIndex + 1, colIndex + 1).value = this.render(cell as HTMLTableCellElement);
       });
     });
-    
+
     const blob = await workbook.xlsx.writeBuffer();
-    return new Blob([blob], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    return new Blob([blob], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
   },
-  
+
   render(cell: HTMLElement): string {
     const TEXT_NODE = 3;
     const ELEMENT_NODE = 1;
-    
+
     // Explicitly filter out nulls and ensure types are ChildNode
-    const children: ChildNode[] = Array.from(cell.childNodes).filter(
-      (child): child is ChildNode => child !== null
-    );
+    const children: ChildNode[] = Array.from(cell.childNodes).filter((child): child is ChildNode => child !== null);
 
     return children
       .map((child) => {
@@ -48,8 +46,7 @@ const Xlsx = {
 
           if (this.blockElements.has(element.tagName.toLowerCase())) {
             let extrabreak = "";
-            if(this.superBlockElements.has(element.tagName.toLowerCase()))
-            {
+            if (this.superBlockElements.has(element.tagName.toLowerCase())) {
               extrabreak = "\n";
             }
             return `${renderedContent}\n${extrabreak}`;
@@ -70,7 +67,6 @@ const Xlsx = {
       .join("")
       .trim();
   },
-
-}
+};
 
 export default Xlsx;

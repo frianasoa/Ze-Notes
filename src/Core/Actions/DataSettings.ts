@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaNoteSticky, FaQuoteLeft, FaBook, FaUserPen, FaCheckDouble} from 'react-icons/fa6';
+import React from "react";
+import { FaNoteSticky, FaQuoteLeft, FaBook, FaUserPen, FaCheckDouble } from "react-icons/fa6";
 
 const DataSettings = {
   filesafename(name: string): string {
@@ -8,18 +8,18 @@ const DataSettings = {
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9\-]/g, "");
   },
-  
+
   generate(item: any) {
     /**
       Annotation-part is also used in notes
       May need to use a cleaner name to refer to both
     */
-    
-    const datasettings_ = Array.from(item.data.table.querySelectorAll(".annotation-part"))
-      .reduce((acc: Record<string, any>, e: any) => {
+
+    const datasettings_ = Array.from(item.data.table.querySelectorAll(".annotation-part")).reduce(
+      (acc: Record<string, any>, e: any) => {
         const label = e.innerText.trim();
         const key = `display-data-${label}`;
-        
+
         if (label) {
           acc[key] = {
             label: label,
@@ -31,8 +31,10 @@ const DataSettings = {
           };
         }
         return acc;
-      }, {});
-    
+      },
+      {},
+    );
+
     const checkall = {
       label: "Check all",
       slug: "--check-all--",
@@ -41,16 +43,22 @@ const DataSettings = {
       options: ["true", "false"],
       default: "true",
       icon: FaCheckDouble,
-      callback: (event: React.ChangeEvent<HTMLInputElement>, handleCheckboxChange: (key: string, checked: boolean) => void)=>{
+      callback: (
+        event: React.ChangeEvent<HTMLInputElement>,
+        handleCheckboxChange: (key: string, checked: boolean) => void,
+      ) => {
         const checked = event.currentTarget.checked;
-        event.currentTarget.closest("table")?.querySelectorAll("input[type='checkbox']")?.forEach((i:Element) => {
-          const input = i as HTMLInputElement;
-          const key = input.dataset.key || ""; 
-          handleCheckboxChange(key, checked);
-        })
-      }
+        event.currentTarget
+          .closest("table")
+          ?.querySelectorAll("input[type='checkbox']")
+          ?.forEach((i: Element) => {
+            const input = i as HTMLInputElement;
+            const key = input.dataset.key || "";
+            handleCheckboxChange(key, checked);
+          });
+      },
     };
-    
+
     const quote = {
       label: "Quotes",
       slug: "quote",
@@ -70,7 +78,7 @@ const DataSettings = {
       default: "true",
       icon: FaBook,
     };
-    
+
     const author = {
       label: "Author",
       slug: "author",
@@ -80,9 +88,9 @@ const DataSettings = {
       default: "true",
       icon: FaUserPen,
     };
-    
-    const datasettings__ = typeof datasettings_ === 'object' && datasettings_ !== null ? datasettings_ : {};
-    
+
+    const datasettings__ = typeof datasettings_ === "object" && datasettings_ !== null ? datasettings_ : {};
+
     /** Sort settings by key */
     const datasettings___ = Object.keys(datasettings__)
       .sort()
@@ -90,16 +98,16 @@ const DataSettings = {
         sortedObj[key] = datasettings__[key];
         return sortedObj;
       }, {});
-    
+
     return {
-      "Default": {
+      Default: {
         displayquote: quote,
         displaycitation: citation,
         displayauthor: author,
       },
-      "Tags and parts": {checkall: checkall, ...datasettings___},
+      "Tags and parts": { checkall: checkall, ...datasettings___ },
     };
-  }
+  },
 };
 
 export default DataSettings;

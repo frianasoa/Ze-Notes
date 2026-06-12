@@ -7,7 +7,7 @@ const OpenAI = {
 
   async models() {
     return Providers.models(Providers.configs.openai);
-  }
+  },
 };
 
 export default OpenAI;

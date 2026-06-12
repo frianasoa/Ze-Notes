@@ -9,7 +9,7 @@ interface DialogProps {
   buttons: any[];
 }
 
-const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, buttons}) => {
+const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, buttons }) => {
   if (!isOpen) return null;
 
   const [size, setSize] = useState({ width: 600, height: 400 });
@@ -95,7 +95,7 @@ const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, butto
       display: "flex",
       flexDirection: "column" as const,
     },
-    
+
     header: {
       display: "flex",
       justifyContent: "space-between",
@@ -135,11 +135,7 @@ const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, butto
 
   return (
     <div style={inline_styles.overlay} className={styles.overlay} onClick={onClose}>
-      <div
-        style={inline_styles.content}
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+      <div style={inline_styles.content} onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
         <div
           className={styles.header}
           style={inline_styles.header}
@@ -151,16 +147,15 @@ const Dialog: React.FC<DialogProps> = ({ title, isOpen, onClose, children, butto
             &times;
           </button>
         </div>
-        <div 
-          className={styles.body}
-          style={inline_styles.body}
-          >
-            {children}
-          </div>
+        <div className={styles.body} style={inline_styles.body}>
+          {children}
+        </div>
 
         <div style={inline_styles.buttonwrapper}>
           {buttons?.map((button, index) => (
-            <button key={index} onClick={button.action}>{button.label}</button>
+            <button key={index} onClick={button.action}>
+              {button.label}
+            </button>
           ))}
         </div>
 

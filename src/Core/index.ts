@@ -1,20 +1,20 @@
-import Page from './Page';
-import Data from './Data';
-import Migrator from './Migrator';
-import Database from './Database';
-import Ai from './Ai';
-import Format from './Format';
-import Translation from './Translation';
-import Ocr from './Ocr';
-import ZPrefs from './ZPrefs';
-import Prefs from './Prefs';
-import TablePrefs from './TablePrefs';
-import Utils from './Utils';
-import Crypto from './Crypto';
-import Server from './Server';
-import Garbage from './Garbage';
-import Cloud from './Cloud';
-import Actions from './Actions';
+import Page from "./Page";
+import Data from "./Data";
+import Migrator from "./Migrator";
+import Database from "./Database";
+import Ai from "./Ai";
+import Format from "./Format";
+import Translation from "./Translation";
+import Ocr from "./Ocr";
+import ZPrefs from "./ZPrefs";
+import Prefs from "./Prefs";
+import TablePrefs from "./TablePrefs";
+import Utils from "./Utils";
+import Crypto from "./Crypto";
+import Server from "./Server";
+import Garbage from "./Garbage";
+import Cloud from "./Cloud";
+import Actions from "./Actions";
 
 type CoreType = {
   Page: typeof Page;
@@ -34,31 +34,30 @@ type CoreType = {
   Garbage: typeof Garbage;
   Cloud: typeof Cloud;
   Actions: typeof Actions;
-  init(config: {rootURI: string}): void;
+  init(config: { rootURI: string }): void;
 };
 
 const Core: CoreType = {
   Page,
-	Data,
-	Migrator,
-	Ai,
-	Database,
-	Format,
+  Data,
+  Migrator,
+  Ai,
+  Database,
+  Format,
   Translation,
   Ocr,
-	Prefs,
-	ZPrefs,
-	TablePrefs,
-	Utils,
-	Crypto,
-	Server,
-	Garbage,
-	Cloud,
-	Actions,
-	init({rootURI}:{rootURI: string}) 
-	{
-		this.Page.init({rootURI});
-	}
+  Prefs,
+  ZPrefs,
+  TablePrefs,
+  Utils,
+  Crypto,
+  Server,
+  Garbage,
+  Cloud,
+  Actions,
+  init({ rootURI }: { rootURI: string }) {
+    this.Page.init({ rootURI });
+  },
 };
 
 export default Core;

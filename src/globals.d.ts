@@ -4,6 +4,6 @@ declare global {
   var Zotero_Tabs: _ZoteroTypes.Zotero_Tabs;
 }
 
-declare module '*.module.css'
+declare module "*.module.css";
 
-export {}; 
+export {};

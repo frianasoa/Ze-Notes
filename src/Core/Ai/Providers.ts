@@ -28,16 +28,13 @@ const configs: Record<string, zty.AiProviderConfig> = {
     defaultuser: SUMMARIZE_USER,
     url: () => "https://api.openai.com/v1/chat/completions",
     headers: (apikey) => ({
-      "Authorization": "Bearer " + apikey,
+      Authorization: "Bearer " + apikey,
       "Content-Type": "application/json",
     }),
     payload: ({ model, system, usercontents, maxtoken }) => {
       const payload: any = {
         model: model,
-        messages: [
-          { role: "system", content: system },
-          ...usercontents.map((content) => ({ role: "user", content })),
-        ],
+        messages: [{ role: "system", content: system }, ...usercontents.map((content) => ({ role: "user", content }))],
       };
       if (maxtoken > 0) {
         payload["max_tokens"] = maxtoken;
@@ -47,7 +44,7 @@ const configs: Record<string, zty.AiProviderConfig> = {
     format: (data: any) => data.choices.map((e: any) => e.message.content),
     modelsurl: () => "https://api.openai.com/v1/models",
     modelsheaders: (apikey) => ({
-      "Authorization": "Bearer " + apikey,
+      Authorization: "Bearer " + apikey,
       "Content-Type": "application/json",
     }),
     errormodels: { data: [{ id: "gpt-api-key-error" }] },
@@ -68,7 +65,7 @@ const configs: Record<string, zty.AiProviderConfig> = {
       "Content-Type": "application/json",
     }),
     payload: ({ system, usercontents }) => ({
-      "system_instruction": { parts: [{ text: system }] },
+      system_instruction: { parts: [{ text: system }] },
       contents: [{ parts: usercontents.map((text) => ({ text })) }],
     }),
     format: (data: any) => {
@@ -97,15 +94,12 @@ const configs: Record<string, zty.AiProviderConfig> = {
     defaultuser: SUMMARIZE_USER,
     url: () => "https://api.deepseek.com/chat/completions",
     headers: (apikey) => ({
-      "Authorization": "Bearer " + apikey,
+      Authorization: "Bearer " + apikey,
       "Content-Type": "application/json",
     }),
     payload: ({ model, system, usercontents }) => ({
       model: model,
-      messages: [
-        { role: "system", content: system },
-        ...usercontents.map((content) => ({ role: "user", content })),
-      ],
+      messages: [{ role: "system", content: system }, ...usercontents.map((content) => ({ role: "user", content }))],
       stream: false,
     }),
     format: (data: any) => data.choices.map((e: any) => e.message.content),
@@ -134,9 +128,7 @@ const configs: Record<string, zty.AiProviderConfig> = {
       model,
       max_tokens: maxtoken > 0 ? maxtoken : 1024,
       system: system,
-      messages: [
-        { role: "user", content: usercontents.join("\n\n") },
-      ],
+      messages: [{ role: "user", content: usercontents.join("\n\n") }],
     }),
     format: (data: any) => data.content.map((e: any) => e.text),
     modelsurl: () => "https://api.anthropic.com/v1/models",
