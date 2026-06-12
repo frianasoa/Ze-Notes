@@ -30,11 +30,11 @@ const Cell: React.FC<CellProps> = ({ data, dataset, children }) => {
       </div>
     );
   } else if (Array.isArray(data) || typeof data === "object") {
-    var index = 0;
+    const index = 0;
     html = (
       <div style={{ float: "left", width: "98%" }} className="no-export-wrapper">
         {data.map((item, index) => {
-          let c = [];
+          const c = [];
           if (item.type === "note") {
             c.push(<NoteElement key={`${index}-note`} item={item} />);
           } else if (item.type === "file") {

@@ -34,7 +34,7 @@ export function useColumnWidths(collectionid: string, tableRef: React.RefObject<
     const key = "column-width/" + collectionid;
     const allckey = "column-width/" + collectionid + "/-all-columns-";
     Prefs.search(key).then((pref) => {
-      var globalColumnWidth = 0;
+      let globalColumnWidth = 0;
       if (Object.keys(pref).includes(allckey)) {
         globalColumnWidth = parseInt(pref[allckey]);
       }

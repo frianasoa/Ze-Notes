@@ -49,8 +49,8 @@ const ReaderMenu = {
   },
 
   async addgroup(event: AnnotationContextMenuEvent, menus: ReaderMenuEntry[]) {
-    let { reader, params, append } = event;
-    let groupedMenus: ReaderMenuEntry[] = [];
+    const { reader, params, append } = event;
+    const groupedMenus: ReaderMenuEntry[] = [];
     for (const menu of menus) {
       let annotation: Zotero.Item | undefined;
       for (const id of params.ids) {

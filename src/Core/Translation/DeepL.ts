@@ -27,7 +27,7 @@ const DeepL: Translator = {
   async translate(sentence: string, language: string) {
     const apikey = await ZPrefs.getb("deepl-api-key");
     const url = "https://api-free.deepl.com/v2/translate";
-    var payload = { text: [sentence], target_lang: language.toUpperCase() };
+    const payload = { text: [sentence], target_lang: language.toUpperCase() };
 
     const options = {
       method: "POST",

@@ -52,7 +52,7 @@ const Data = {
 
     const rows: any[] = [];
     for (const item of items) {
-      let formatted = (await this.format(item)) || {};
+      const formatted = (await this.format(item)) || {};
       rows.push(formatted);
     }
     return rows;

@@ -19,12 +19,12 @@ const Google: Translator = {
     }
 
     const url = `https://translation.googleapis.com/language/translate/v2?key=${apikey}`;
-    var payload = {
+    const payload = {
       q: sentence,
       target: language,
     };
 
-    var options = {
+    const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",

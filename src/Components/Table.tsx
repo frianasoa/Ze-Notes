@@ -73,7 +73,7 @@ const Table: React.FC<TableProps> = ({
   /** Init column list */
   const createHeaders = () => {
     // set all existing columns, including tags
-    let allheaders_ = [...new Set(data.flatMap(Object.keys))];
+    const allheaders_ = [...new Set(data.flatMap(Object.keys))];
 
     // Filter
     let headers_ = allheaders_.filter((h: string) => !hidekeys.includes(h));
@@ -232,7 +232,7 @@ const Table: React.FC<TableProps> = ({
   }, [collectionid, headers]);
 
   const handleHeaderContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    var index = "dataall";
+    let index = "dataall";
     const f = event.currentTarget.dataset.filter;
     if (f == "dataall") {
       index = "dataall";

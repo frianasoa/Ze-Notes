@@ -30,7 +30,7 @@ const Tessearct = {
 
     for (const p of paths) {
       try {
-        var exists = await IOUtils.exists(p);
+        const exists = await IOUtils.exists(p);
         if (exists) {
           ZPrefs.set("tesseract-path", p);
           return p;
@@ -57,7 +57,7 @@ const Tessearct = {
     const mainfiles = await IOUtils.getChildren(mainpath);
     const scriptfiles = await IOUtils.getChildren(scriptpath);
 
-    for (let file of mainfiles) {
+    for (const file of mainfiles) {
       main.push(PathUtils.filename(file));
     }
     main = main
@@ -66,7 +66,7 @@ const Tessearct = {
         return f.replace(".traineddata", "");
       });
 
-    for (let file of scriptfiles) {
+    for (const file of scriptfiles) {
       scripts.push(PathUtils.filename(file));
     }
     scripts = scripts
@@ -75,11 +75,11 @@ const Tessearct = {
         return f.replace(".traineddata", "");
       });
 
-    for (let m of main) {
+    for (const m of main) {
       entries[m] = this.langcodes()[m] || m;
     }
 
-    for (let s of scripts) {
+    for (const s of scripts) {
       entries["script/" + s] = s.replace("_", " ") + " [Script]";
     }
     return entries;
@@ -97,7 +97,7 @@ const Tessearct = {
       try {
         const exe = await this.getexe();
         const filename = this.randomfilename();
-        var tempoutput = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\annotation-cache-" + filename).path;
+        let tempoutput = Zotero.File.pathToFile(Zotero.getTempDirectory().path + "\\annotation-cache-" + filename).path;
         if (filepath != null) {
           params = [filepath, tempoutput, ...params];
           tempoutput = tempoutput + ".txt";
@@ -106,9 +106,9 @@ const Tessearct = {
           params = [...params];
         }
 
-        var r = await Zotero.Utilities.Internal.exec(exe, params);
+        const r = await Zotero.Utilities.Internal.exec(exe, params);
 
-        var txt = await Zotero.File.getContentsAsync(tempoutput);
+        let txt = await Zotero.File.getContentsAsync(tempoutput);
         txt = (txt as string).split("\n\n").join("\n");
         txt = txt.split("  ").join(" ");
         const correctionProvider = ZPrefs.get("tesseract-correction-ai-model", "");
@@ -123,7 +123,7 @@ const Tessearct = {
   },
 
   langname(code: string): string {
-    let suffix = "";
+    const suffix = "";
     if (code.includes("script/")) {
       if (code.endsWith("_vert")) {
         code = code.replace("_vert", "_vertical");

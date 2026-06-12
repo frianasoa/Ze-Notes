@@ -97,7 +97,7 @@ const AiNotes = {
   },
 
   async cellnote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void) {
-    let note = new Zotero.Item("note");
+    const note = new Zotero.Item("note");
     note.setNote(contents);
     note.parentID = celldata.itemid;
     note.addTag(celldata.column);
@@ -118,7 +118,7 @@ const AiNotes = {
   },
 
   async rownote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void) {
-    let note = new Zotero.Item("note");
+    const note = new Zotero.Item("note");
     note.setNote(contents);
     note.parentID = celldata.itemid;
     note.addTag("[AI row notes]");
@@ -134,7 +134,7 @@ const AiNotes = {
       return;
     }
 
-    let note = new Zotero.Item("note");
+    const note = new Zotero.Item("note");
     note.setNote(contents);
     note.parentID = parentrow.id;
     note.addTag(celldata.column);
@@ -144,7 +144,7 @@ const AiNotes = {
   },
 
   async tablenote(item: zty.ContextMenuData, celldata: zty.CellData, contents: string, callback: () => void) {
-    let note = new Zotero.Item("note");
+    const note = new Zotero.Item("note");
     note.setNote(contents);
     note.addToCollection(celldata.collectionid);
     note.addTag("[AI table notes]");
@@ -191,7 +191,7 @@ const AiNotes = {
 
     const items = await search.search();
     if (items.length > 0) {
-      let row = await Zotero.Items.getAsync(items[0]);
+      const row = await Zotero.Items.getAsync(items[0]);
       await this.showrow(String(collectionid), row.id);
       return row;
     } else {

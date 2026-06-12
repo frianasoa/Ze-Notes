@@ -34,7 +34,7 @@ const Ocr = {
           data: [ocrtext],
           save: (text) => {
             // Retrieve the current note's HTML string.
-            let currentNoteHTML = note.getNote() || "";
+            const currentNoteHTML = note.getNote() || "";
 
             // Parse the HTML string into a document.
             const parser = new DOMParser();

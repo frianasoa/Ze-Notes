@@ -1,5 +1,5 @@
 import Config from "../../Config";
-var beautify = require("js-beautify");
+const beautify = require("js-beautify");
 
 import sanitizeHtml from "sanitize-html";
 

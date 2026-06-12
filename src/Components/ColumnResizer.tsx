@@ -14,7 +14,7 @@ const resizeColumn = (td: HTMLTableCellElement, width: number) => {
   const columnIndex = td.cellIndex;
   const columnname = td.dataset.column;
   const rows = (td.closest("table") as HTMLTableElement)?.rows;
-  for (let row of rows!) {
+  for (const row of rows!) {
     const cell = (row as HTMLTableRowElement).cells[columnIndex] as HTMLTableCellElement;
     cell.style.width = `${width}px`;
   }
@@ -34,8 +34,8 @@ const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
 
 const handleDrag = (event: React.DragEvent<HTMLDivElement>) => {
   const cursor = event.target as HTMLDivElement;
-  var target;
-  var allcolumns = false;
+  let target;
+  const allcolumns = false;
   const td = cursor.closest("td") as HTMLTableCellElement;
   const th = cursor.closest("th") as HTMLTableCellElement;
 

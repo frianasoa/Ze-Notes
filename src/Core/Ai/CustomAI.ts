@@ -54,7 +54,7 @@ const CustomAi = {
   },
 
   async prompt(data: string, key: string) {
-    let params = (await this.params(key)) as any;
+    const params = (await this.params(key)) as any;
     params.data = data;
     let options = {} as any;
     try {
@@ -101,7 +101,7 @@ const CustomAi = {
   },
 
   eval(code: string, data: any) {
-    var sb = new Zotero.Translate.SandboxManager();
+    const sb = new Zotero.Translate.SandboxManager();
     sb.sandbox.data = data;
     sb.eval("this.sandbox.data=" + code, []);
     return sb.sandbox.data;

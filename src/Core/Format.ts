@@ -9,8 +9,8 @@ const Format = {
     }
 
     return item.getAttachments().map((id: number) => {
-      let attachment = Zotero.Items.get(id);
-      let library: any = Zotero.Libraries.get(item.libraryID);
+      const attachment = Zotero.Items.get(id);
+      const library: any = Zotero.Libraries.get(item.libraryID);
       if (library.isGroup) {
         return {
           type: "file",
@@ -32,7 +32,7 @@ const Format = {
   },
 
   date(item: _ZoteroTypes.Items): string {
-    var date =
+    const date =
       item.getField("date", true) ||
       item.getField("issueDate", true) ||
       item.getField("dateEnacted", true) ||
@@ -42,7 +42,7 @@ const Format = {
   },
 
   source(item: _ZoteroTypes.Items, page: string = "", inline: boolean = true): string {
-    var s = Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators())
+    let s = Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators())
       .split("\u2068")
       .join("")
       .split("\u2069")
@@ -121,16 +121,16 @@ const Format = {
   async tagged(item: _ZoteroTypes.Items) {
     const untaggedlabel = ZPrefs.get("untagged-column-label", "") || "Untagged";
 
-    var data = {};
+    let data = {};
 
     // do not include item tags
     // data = await this.addnotes(data, item, item.getTags());
 
     if (!item.isNote()) {
-      var noteids = item.getNotes(false);
+      const noteids = item.getNotes(false);
       for (const noteid of noteids) {
-        var note = Zotero.Items.get(noteid);
-        let tags = note.getTags();
+        const note = Zotero.Items.get(noteid);
+        const tags = note.getTags();
         if (tags && tags.length > 0) {
           data = await this.addnotes(data, note, tags, item);
         } else {
@@ -138,8 +138,8 @@ const Format = {
         }
       }
     } else {
-      var note = Zotero.Items.get(item.id);
-      let tags = note.getTags();
+      const note = Zotero.Items.get(item.id);
+      const tags = note.getTags();
       if (tags && tags.length > 0) {
         data = await this.addnotes(data, note, tags, item);
       } else {
@@ -149,13 +149,13 @@ const Format = {
 
     // From attachments
     if (!item.isAttachment()) {
-      var attachmentids = item.getAttachments(false);
+      const attachmentids = item.getAttachments(false);
       for (const attachmentid of attachmentids) {
-        var attachment = Zotero.Items.get(attachmentid);
+        const attachment = Zotero.Items.get(attachmentid);
         if (attachment.isFileAttachment()) {
-          var annotations = attachment.getAnnotations(false);
+          const annotations = attachment.getAnnotations(false);
           for (const annotation of annotations) {
-            let tags = annotation.getTags();
+            const tags = annotation.getTags();
             if (tags && tags.length > 0) {
               data = await this.addnotes(data, annotation, tags, item, attachmentid);
             } else {
