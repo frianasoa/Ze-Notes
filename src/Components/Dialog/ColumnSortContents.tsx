@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TablePrefs from "../../Core/TablePrefs";
 import {
   FaAnglesDown,
@@ -26,6 +26,16 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
   const [columns, setColumns] = useState<any[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [reload, setReload] = useState<boolean>(true);
+  const colorInputRef = useRef<HTMLInputElement | null>(null);
+
+  // The color picker input lives outside the React tree; make sure it does
+  // not outlive the dialog.
+  useEffect(() => {
+    return () => {
+      colorInputRef.current?.remove();
+      colorInputRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -201,6 +211,7 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
 
   
   const handleColor = (type: string, index: number) => {
+    colorInputRef.current?.remove();
     const colorInput = document.createElement("input");
     colorInput.type = "color";
     colorInput.style.position = "absolute";
@@ -248,9 +259,15 @@ const ColumnSortContents: React.FC<ColumnSortContentsProps> = ({
       setColumns(newColumns);
     });
 
+    colorInputRef.current = colorInput;
     document.body.appendChild(colorInput);
     colorInput.click();
-    colorInput.addEventListener("blur", () => colorInput.remove());
+    colorInput.addEventListener("blur", () => {
+      colorInput.remove();
+      if (colorInputRef.current === colorInput) {
+        colorInputRef.current = null;
+      }
+    });
   };
 
   // Drag & Drop
