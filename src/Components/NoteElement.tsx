@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { FaRegTrashCan, FaPencil } from "react-icons/fa6";
 import Utils from '../Core/Utils';
 import DataContext from "./DataContext";
@@ -23,9 +23,9 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
   };
 
   // Right-click menu for images
-  const handleImageContextMenu = (event: Event) => {
+  const handleImageContextMenu = useCallback((event: Event) => {
     NoteImageMenu.show(event, context, item);
-  };
+  }, [context, item]);
 
   // Load images from notes and replace with data URI
   const loadImages = async () => {
@@ -91,7 +91,7 @@ const NoteElement: React.FC<NoteElementProps> = ({ item }) => {
         });
       });
     };
-  }, [htmls]);
+  }, [htmls, handleImageContextMenu]);
 
   return (
     <fieldset className="main-fieldset">
