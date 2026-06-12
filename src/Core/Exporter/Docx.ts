@@ -1,13 +1,14 @@
 import { Document, Packer, Table, TableCell, TableRow, TextRun, ImageRun, Paragraph, IImageOptions} from "docx";
 import Html2Docx from './Html2Docx'
+import HtmlElements from './HtmlElements'
 
 const TEXT_NODE = 3;
 const ELEMENT_NODE = 1;
 
 const Docx = {
-  blockElements: new Set(["address", "article", "aside", "audio", "blockquote", "body", "canvas", "dd", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hr", "html", "iframe", "legend", "main", "nav", "noscript", "ol", "output", "p", "pre", "section", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "tr", "ul"]),
-  
-  inlineElements: new Set(["a", "abbr", "b", "bdi", "bdo", "br", "button", "cite", "code", "data", "datalist", "del", "dfn", "em", "i", "iframe", "img", "input", "ins", "kbd", "label", "map", "mark", "meter", "noscript", "object", "output", "picture", "q", "ruby", "s", "samp", "select", "small", "span", "strong", "sub", "sup", "svg", "template", "textarea", "time", "u", "var", "wbr"]),
+  blockElements: HtmlElements.blockElements,
+
+  inlineElements: HtmlElements.inlineElements,
 
   async start(table: HTMLTableElement): Promise<Blob> {
     const rows = Array.from(table.rows) as HTMLTableRowElement[];
