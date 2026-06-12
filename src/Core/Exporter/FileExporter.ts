@@ -75,6 +75,7 @@ const FileExporter = {
       }
       catch(e)
       {
+        Zotero.log("FileExporter.collectionsize: "+e);
       }
     }
     FileExporter.progress.close();
@@ -156,6 +157,8 @@ const FileExporter = {
     catch(e)
     {
       FileExporter.progress.close();
+      Zotero.log("FileExporter.upload: "+e);
+      window.alert("Dropbox upload failed: "+e);
     }
   }
 };

@@ -31,7 +31,9 @@ const TablePrefs = {
 
     try {
       ({ hidden, order, sort, reverse } = JSON.parse(contents));
-    } catch (e) {};
+    } catch (e) {
+      Zotero.log("TablePrefs.migrateone: "+e);
+    };
     
     if(hidden && hidden.length>0)
     {
