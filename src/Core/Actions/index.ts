@@ -1067,6 +1067,9 @@ const Actions: ActionsType = {
 			    }
           DataExporter.exportall(celldata.collectionid, email).then(()=>{
              item?.data?.callback({isOpen: false});
+          }).catch((e: any)=>{
+             Zotero.log("Actions.dropboxupload: "+e);
+             window.alert("Dropbox upload failed: "+e);
           })
         }
       }
