@@ -295,7 +295,7 @@ const Html2Docx = {
       return new ImageRun({
         type: extension,
         data: arrayBuffer,
-        transformation: { width: height, height: height },
+        transformation: { width: width, height: height },
       } as IImageOptions);
     } catch (error) {
       console.error("Image error:", error);
