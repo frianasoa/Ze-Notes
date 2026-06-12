@@ -63,6 +63,8 @@ declare namespace zty {
 		id: string;
 		label: string;
 		apikeypref: string;
+		// Older versions stored the key under a different name; read as fallback.
+		legacyapikeypref?: string;
 		modelpref: string;
 		defaultmodel: string;
 		maxtokenpref?: string;
@@ -88,6 +90,7 @@ declare namespace zty {
 		label: string;
 		target: string;
 		icon?: any;
+		data?: Record<string, any>;
 	};
 
 	// A sortable column entry used by the sort dialogs.

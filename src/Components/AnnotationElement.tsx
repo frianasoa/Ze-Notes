@@ -2,13 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import AnnotationCommentElement from "./AnnotationCommentElement";
 import AnnotationQuoteElement from "./AnnotationQuoteElement";
 import Actions from '../Core/Actions';
-import ZPrefs from '../Core/ZPrefs';
-import Languages from '../Core/Translation/Languages';
 import DataContext from "./DataContext";
-import {FaGoogle, FaD, FaNoteSticky}  from "react-icons/fa6";
+import {FaNoteSticky}  from "react-icons/fa6";
 import AnnotationImageMenu from './MenuItems/AnnotationImageMenu'
 import AnnotationQuoteMenu from './MenuItems/AnnotationQuoteMenu'
-import MenuUtils from './MenuItems/MenuUtils';
+import TranslationMenu from './MenuItems/TranslationMenu';
 
 
 type AnnotationElementProps = {
@@ -80,58 +78,17 @@ const AnnotationElement: React.FC<AnnotationElementProps> = ({ item, dataset }) 
 
       if(item.text)
       {
-        // Translation
-        const langiso = ZPrefs.get('translation-language', "en");
-        const langlabel = Languages.getlabel(String(langiso));
-        const deeplkey = ZPrefs.get('deepl-api-key', false);
-
-        // Google
-        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
-        [
+        // Translation — annotation quotes translate via translateannotation
+        // and carry the annotation payload instead of a target element.
+        TranslationMenu.insert(context, event, [
           {
-            label: "Google translate",
-            key: "translatewithgoogle",
-            keys: "translatewithgoogle",
-            icon: FaGoogle,
-          },
-          {
-            label: "Quote to "+langiso.toUpperCase(),
-            key: "translatewithgoogle-quote",
-            keys: "translatewithgoogle/submenu/quote",
-            icon: FaGoogle,
-            // data: { target: "quote", context: context, service: "Google" },
+            key: "quote",
+            label: "Quote",
+            basedata: false,
             onClick: Actions.translateannotation,
-            data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey, annotationtext: item.text, callback: openTranslationDialog, service: "Google"}
-          },
-          {
-            label: "---",
-            key: "septranslate",
-            keys: "septranslate"
+            data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey, annotationtext: item.text, callback: openTranslationDialog}
           }
-        ])
-
-        // DeepL
-        if(deeplkey)
-        {
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event,
-          [
-            {
-              label: "DeepL translate",
-              key: "translatewithdeepl",
-              keys: "translatewithdeepl",
-              icon: FaD,
-            },
-            {
-              label: "Quote to "+langiso.toUpperCase(),
-              key: "translatewithdeepl-quote",
-              keys: "translatewithdeepl/submenu/quote",
-              icon: FaD,
-              // data: { target: "quote", context: context, service: "DeepL" },
-              onClick: Actions.translateannotation,
-              data: {attachmentid: item.attachmentid, annotationid: item.annotationid, annotationpage: item.pagelabel, annotationkey: item.annotationkey, annotationtext: item.text, callback: openTranslationDialog, service: "DeepL"}
-            }
-          ])
-        }
+        ]);
       }
     }
   };

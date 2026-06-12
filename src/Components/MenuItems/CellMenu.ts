@@ -1,14 +1,15 @@
 import ZPrefs from '../../Core/ZPrefs';
 import Actions from '../../Core/Actions';
 import CustomAI from '../../Core/Ai/CustomAI';
-import Languages from '../../Core/Translation/Languages';
 import MenuUtils from './MenuUtils';
+import AiMenu from './AiMenu';
+import TranslationMenu from './TranslationMenu';
 import React from 'react';
 
-import {FaHtml5, FaFilePdf, FaGoogle, FaO, FaA, FaC, FaD, FaFileImage, FaFile, FaFileExport, FaArrowsRotate, FaEyeSlash, FaRegSquare, FaDiamond, FaFish, FaTableColumns, FaTableList, FaTableCells, FaWrench, FaListCheck}  from "react-icons/fa6";
+import {FaHtml5, FaFilePdf, FaFileImage, FaFile, FaFileExport, FaRegSquare, FaTableColumns, FaTableList, FaTableCells, FaWrench}  from "react-icons/fa6";
 
 const CellMenu = {
-  show(context: any, dataset: Record<string, any>, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
+  show(context: any, dataset: zty.CellData, event: React.MouseEvent<HTMLTableCellElement, MouseEvent>)
   {
     var target = event.currentTarget || event.target;
     const attachments = JSON.parse((event?.currentTarget as HTMLTableCellElement)?.dataset?.zpaths || "[]");
@@ -59,62 +60,13 @@ const CellMenu = {
       }
     }
 
-    // Translations
-    const langiso = ZPrefs.get('translation-language', "en");
-    const langlabel = Languages.getlabel(String(langiso));
-    const deeplkey = ZPrefs.get('deepl-api-key', false);
-
     if(context)
     {
-      // Google
-      MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
-      [
-        {
-          label: "Google translate",
-          key: "translatewithgoogle",
-          keys: "translatewithgoogle",
-          icon: FaGoogle,
-        },
-        {
-          label: "Cell to "+langiso.toUpperCase(),
-          key: "translatewithgoogle-cell",
-          keys: "translatewithgoogle/submenu/cell",
-          icon: FaGoogle,
-          data: { target: "cell", context: context, service: "Google" },
-          onClick: Actions.translate,
-        },
-        {
-          label: "---",
-          key: "septranslate",
-          keys: "septranslate"
-        }
-      ])
+      // Translations
+      TranslationMenu.insert(context, event, [
+        {key: "cell", label: "Cell"},
+      ]);
 
-      // DeepL
-      if(deeplkey)
-      {
-        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, context,
-        [
-          {
-            label: "DeepL translate",
-            key: "translatewithdeepl",
-            keys: "translatewithdeepl",
-            icon: FaD,
-          },
-          {
-            label: "Cell to "+langiso.toUpperCase(),
-            key: "translatewithdeepl-cell",
-            keys: "translatewithdeepl/submenu/cell",
-            icon: FaD,
-            data: { target: "cell", context: context, service: "DeepL" },
-            onClick: Actions.translate,
-          }
-        ])
-      }
-    }
-
-    if(context)
-    {
       if(dataset.itemtype!="note")
       {
         context.MenuItems.main["createnote"] = {
@@ -132,291 +84,8 @@ const CellMenu = {
         data: {callback: (value: any)=>{context.setCommonDialogState?.(value)}, table: event?.currentTarget.closest(".main-table")}
       }
 
-      // Custom AI
-      if(ZPrefs.get("custom-ai-url", "").trim())
-      {
-        const params =
-        [
-          {
-            label: "Using Custom AI",
-            key: "customai",
-            keys: "customai",
-            onClick: Actions.customaiprompt,
-            icon: FaC,
-          },
-          {
-            label: "Prompt on cell",
-            key: "customaicell",
-            keys: "customai/submenu/customaicell",
-            data: { target: "cell", context: context, key: "custom-ai"},
-            onClick: Actions.customaiprompt,
-            icon: FaRegSquare,
-          },
-          {
-            label: "Prompt on row",
-            key: "customairow",
-            keys: "customai/submenu/customairow",
-            data: { target: "row", context: context, key: "custom-ai"},
-            onClick: Actions.customaiprompt,
-            icon: FaTableColumns,
-          },
-          {
-            label: "Prompt on column",
-            key: "customaicolumn",
-            keys: "customai/submenu/customaicolumn",
-            data: { target: "column", context: context, key: "custom-ai" },
-            onClick: Actions.customaiprompt,
-            icon: FaTableList,
-          },
-          {
-            label: "Prompt on table",
-            key: "customaitable",
-            keys: "customai/submenu/customaitable",
-            data: { target: "table", context: context, key: "custom-ai"},
-            onClick: Actions.customaiprompt,
-            icon: FaTableCells,
-          },
-        ];
-
-        MenuUtils.aidata(context, target);
-        MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-
-        if(target.dataset.itemtype=="note")
-        {
-          const params = [
-            {key: "customaicell", keys: "customai/submenu/customaicell"},
-            {key: "customairow", keys: "customai/submenu/customairow"},
-          ]
-          MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-        }
-      }
-
-      // AI providers — sequential awaits so insertion order is deterministic
-      (async () => {
-        const claudeKey = await ZPrefs.getb("claude-api-key");
-        if(claudeKey)
-        {
-          const params = [
-            {
-              label: "Using Claude",
-              key: "claude",
-              keys: "claude",
-              onClick: Actions.claudeprompt,
-              icon: FaA,
-            },
-            {
-              label: "Prompt on cell",
-              key: "claudecell",
-              keys: "claude/submenu/claudecell",
-              data: { target: "cell", context: context },
-              onClick: Actions.claudeprompt,
-              icon: FaRegSquare
-            },
-            {
-              label: "Prompt on row",
-              key: "clauderow",
-              keys: "claude/submenu/clauderow",
-              data: { target: "row", context: context },
-              onClick: Actions.claudeprompt,
-              icon: FaTableColumns
-            },
-            {
-              label: "Prompt on column",
-              key: "claudecolumn",
-              keys: "claude/submenu/claudecolumn",
-              data: { target: "column", context: context },
-              onClick: Actions.claudeprompt,
-              icon: FaTableList
-            },
-            {
-              label: "Prompt on table",
-              key: "claudetable",
-              keys: "claude/submenu/claudetable",
-              data: { target: "table", context: context },
-              onClick: Actions.claudeprompt,
-              icon: FaTableCells
-            }
-          ];
-          MenuUtils.aidata(context, target);
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          if(target.dataset.itemtype=="note")
-          {
-            const params = [
-              {key: "claudecell", keys: "claude/submenu/claudecell"},
-              {key: "claudecell", keys: "claude/submenu/clauderow"},
-            ]
-            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          }
-        }
-
-        const openaiKey = await ZPrefs.getb("openai-api-key");
-        if(openaiKey)
-        {
-          const params = [
-            {
-              label: "Using OpenAI",
-              key: "openai",
-              keys: "openai",
-              onClick: Actions.openaiprompt,
-              icon: FaO,
-            },
-            {
-              label: "Prompt on cell",
-              key: "openaicell",
-              keys: "openai/submenu/openaicell",
-              data: { target: "cell", context: context },
-              onClick: Actions.openaiprompt,
-              icon: FaRegSquare
-            },
-            {
-              label: "Prompt on row",
-              key: "openairow",
-              keys: "openai/submenu/openairow",
-              data: { target: "row", context: context },
-              onClick: Actions.openaiprompt,
-              icon: FaTableColumns
-            },
-            {
-              label: "Prompt on column",
-              key: "openaicolumn",
-              keys: "openai/submenu/openaicolumn",
-              data: { target: "column", context: context },
-              onClick: Actions.openaiprompt,
-              icon: FaTableList
-            },
-            {
-              label: "Prompt on table",
-              key: "openaitable",
-              keys: "openai/submenu/openaitable",
-              data: { target: "table", context: context },
-              onClick: Actions.openaiprompt,
-              icon: FaTableCells
-            }
-          ];
-          MenuUtils.aidata(context, target);
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          if(target.dataset.itemtype=="note")
-          {
-            const params = [
-              {key: "openaicell", keys: "openai/submenu/openaicell"},
-              {key: "openaicell", keys: "openai/submenu/openairow"},
-            ]
-            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          }
-        }
-
-        const geminiKey = await ZPrefs.getb("gemini-api-key");
-        if(geminiKey)
-        {
-          const params = [
-            {
-              label: "Using Gemini",
-              key: "gemini",
-              keys: "gemini",
-              onClick: Actions.geminiprompt,
-              icon: FaDiamond,
-            },
-            {
-              label: "Prompt on cell",
-              key: "geminicell",
-              keys: "gemini/submenu/geminicell",
-              data: { target: "cell", context: context },
-              onClick: Actions.geminiprompt,
-              icon: FaRegSquare
-            },
-            {
-              label: "Prompt on row",
-              key: "geminirow",
-              keys: "gemini/submenu/geminirow",
-              data: { target: "row", context: context },
-              onClick: Actions.geminiprompt,
-              icon: FaTableColumns
-            },
-            {
-              label: "Prompt on column",
-              key: "geminicolumn",
-              keys: "gemini/submenu/geminicolumn",
-              data: { target: "column", context: context },
-              onClick: Actions.geminiprompt,
-              icon: FaTableList
-            },
-            {
-              label: "Prompt on table",
-              key: "geminitable",
-              keys: "gemini/submenu/geminitable",
-              data: { target: "table", context: context },
-              onClick: Actions.geminiprompt,
-              icon: FaTableCells
-            }
-          ];
-          MenuUtils.aidata(context, target);
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          if(target.dataset.itemtype=="note")
-          {
-            const params = [
-              {key: "geminicell", keys: "gemini/submenu/geminicell"},
-              {key: "geminicell", keys: "gemini/submenu/geminirow"},
-            ]
-            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          }
-        }
-
-        const deepseekKey = await ZPrefs.getb("deepseek-api-key");
-        if(deepseekKey)
-        {
-          const params = [
-            {
-              label: "Using DeepSeek",
-              key: "deepseek",
-              keys: "deepseek",
-              onClick: Actions.deepseekprompt,
-              icon: FaFish,
-            },
-            {
-              label: "Prompt on cell",
-              key: "deepseekcell",
-              keys: "deepseek/submenu/deepseekcell",
-              data: { target: "cell", context: context },
-              onClick: Actions.deepseekprompt,
-              icon: FaRegSquare
-            },
-            {
-              label: "Prompt on row",
-              key: "deepseekrow",
-              keys: "deepseek/submenu/deepseekrow",
-              data: { target: "row", context: context },
-              onClick: Actions.deepseekprompt,
-              icon: FaTableColumns
-            },
-            {
-              label: "Prompt on column",
-              key: "deepseekcolumn",
-              keys: "deepseek/submenu/deepseekcolumn",
-              data: { target: "column", context: context },
-              onClick: Actions.deepseekprompt,
-              icon: FaTableList
-            },
-            {
-              label: "Prompt on table",
-              key: "deepseektable",
-              keys: "deepseek/submenu/deepseektable",
-              data: { target: "table", context: context },
-              onClick: Actions.deepseekprompt,
-              icon: FaTableCells
-            }
-          ];
-          MenuUtils.aidata(context, target);
-          MenuUtils.insertitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          if(target.dataset.itemtype=="note")
-          {
-            const params = [
-              {key: "deepseekcell", keys: "deepseek/submenu/deepseekcell"},
-              {key: "deepseekcell", keys: "deepseek/submenu/deepseekrow"},
-            ]
-            MenuUtils.resetitems(context.MenuItems.main, context.MenuItems.resetkeys, event, params);
-          }
-        }
-      })();
+      // AI providers — gated by API key; order is deterministic
+      AiMenu.insertcellprompts(context, event, target, ["customai", "claude", "openai", "gemini", "deepseek"]);
 
       // Custom AI
       CustomAI.settinglist().then(settings=>{
@@ -447,15 +116,6 @@ const CellMenu = {
             {keys: key+"/submenu/customainotepart", init: "true"},
             {keys: key+"/submenu/customaiannotation", init: "true"},
             {keys: key+"/submenu/customaipartsep", init: "true"},
-            // {
-              // label: "",
-              // key: key,
-              // keys: key+"/submenu/customaiannotation",
-              // icon: FaWrench,
-              // data: {target: "annotation"},
-              // onClick: Actions.customaiprompt,
-              // init: "true",
-            // },
             {
               label: "Prompt on cell",
               keys: key+"/submenu/customaicell",
