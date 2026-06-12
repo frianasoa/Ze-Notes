@@ -9,8 +9,8 @@ import DataContext from "./DataContext";
 import {FaHtml5, FaFilePdf, FaO, FaFileImage, FaFile, FaFileExport}  from "react-icons/fa6";
 
 type CellProps = {
-  data: string | zty.ItemData[] | any[];
-  dataset: Record<string, any>;
+  data: string | number | zty.ItemData[];
+  dataset: zty.CellData;
   children?: React.ReactNode;
 };
 

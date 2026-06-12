@@ -35,7 +35,66 @@ declare namespace zty {
 		comment?: string;
 		pagelabel?: string;
 		image?: string;
+		[key: string]: any;
 };
+
+	// Data describing the cell a context menu / action was invoked on.
+	// Fields stay loosely typed while call sites are migrated; they document
+	// the shape produced from the cell's data-* attributes.
+	type CellData = {
+		target?: any;       // HTMLElement the menu was opened on
+		collectionid?: any; // string
+		itemid?: any;       // number | string
+		key?: any;          // string
+		column?: any;       // string
+		[key: string]: any;
+	};
+
+	// The context object threaded from Table.tsx through menus and actions.
+	type MenuContext = {
+		MenuItems?: any;
+		setIsLoading?: (value: boolean) => void;
+		setLoadingMessage?: (message: string) => void;
+		[key: string]: any;
+	};
+
+	// Configuration describing one AI provider (OpenAI, Gemini, DeepSeek, Claude).
+	type AiProviderConfig = {
+		id: string;
+		label: string;
+		apikeypref: string;
+		modelpref: string;
+		defaultmodel?: string;
+		maxtokenpref?: string;
+		systempref: string;
+		defaultsystem: string;
+		userpref: string;
+		defaultuser: string;
+		url: (model: string, apikey: string) => string;
+		headers: (apikey: string) => Record<string, string>;
+		payload: (params: { model: string; system: string; user: string; data: string; maxtoken: number }) => unknown;
+		format: (data: any) => string[];
+		modelsurl?: (apikey: string) => string;
+		modelsheaders?: (apikey: string) => Record<string, string>;
+	};
+
+	// One AI menu entry target (cell, row, column, table, note, ...).
+	type AiMenuTarget = {
+		key: string;
+		label: string;
+		target: string;
+		icon?: any;
+	};
+
+	// A sortable column entry used by the sort dialogs.
+	type SortColumn = {
+		value: string;
+		reversed?: boolean;
+		hidden?: boolean;
+		bgcolor?: string;
+		textcolor?: string;
+		[key: string]: any;
+	};
 
 }
 
