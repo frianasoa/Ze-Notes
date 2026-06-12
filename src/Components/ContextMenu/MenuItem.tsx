@@ -1,6 +1,6 @@
 import SubMenu from './SubMenu'
 import Prefs from '../../Core/Prefs'
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import styles from "./Menu.module.css";
 
@@ -55,32 +55,36 @@ const MenuItem: React.FC<MenuItemProps> = ({ data, onClick, contextMenuRef, subM
     data.bgColor = "";
   }
 	
-	useEffect(() => {
+	useLayoutEffect(() => {
     if (submenuVisible && menuItemRef.current) {
       const menuItemRect = menuItemRef.current.getBoundingClientRect();
       const contextMenuRect = contextMenuRef?.current?.getBoundingClientRect();
-  
+
       // Check if the submenu overflows the right edge of the window
-			if (menuItemRect.right + Math.max(submenuWidth, subMenuMinWidth) > windowWidth) 
+			if (menuItemRect.right + Math.max(submenuWidth, subMenuMinWidth) > windowWidth)
 			{
         setSubmenuPosition({ left: "0", right: "", top: "0", position: "relative", overflow: true });
-				
-				if (subMenuLeftRef?.current) 
+
+				if (subMenuLeftRef?.current)
 				{
-					setSubmenuWidth(Math.max(getWidestChildWidth(subMenuLeftRef), subMenuMinWidth));
-					const left = (contextMenuRect?.left ?? 0) - submenuWidth;
+					// The portal container lives outside this component's render tree,
+					// so it is positioned directly; use the freshly measured width here
+					// instead of the (stale) submenuWidth state.
+					const width = Math.max(getWidestChildWidth(subMenuLeftRef), subMenuMinWidth);
+					setSubmenuWidth(width);
+					const left = (contextMenuRect?.left ?? 0) - width;
 					subMenuLeftRef.current.style.position = "fixed";
 					subMenuLeftRef.current.style.top = menuItemRect.top+"px";
 					subMenuLeftRef.current.style.left = left+"px";
-					subMenuLeftRef.current.style.width = submenuWidth+"px";
+					subMenuLeftRef.current.style.width = width+"px";
 				}
-      } 
-			else 
+      }
+			else
 			{
         setSubmenuPosition({ left: "100%", right: "", top: "0", position: "absolute", overflow: false });
       }
     }
-  }, [submenuVisible]);
+  }, [submenuVisible, submenuWidth, windowWidth, contextMenuRef, subMenuLeftRef]);
   
   if(data.label=="---")
   {
