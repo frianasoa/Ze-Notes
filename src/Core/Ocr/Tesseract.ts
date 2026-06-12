@@ -41,6 +41,7 @@ const Tessearct = {
 			}
 			catch(e)
 			{
+				Zotero.log("Tesseract.getexe: "+e);
 			}
 		}
     return ""
