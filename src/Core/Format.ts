@@ -41,12 +41,16 @@ const Format = {
     return date.substring(0, 4).trim();
   },
 
-  source(item: _ZoteroTypes.Items, page: string = "", inline: boolean = true): string {
-    let s = Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators())
+  author(item: _ZoteroTypes.Items): string {
+    return Zotero.Items.getFirstCreatorFromData(item.itemTypeID, item.getCreators())
       .split("\u2068")
       .join("")
       .split("\u2069")
       .join("");
+  },
+
+  source(item: _ZoteroTypes.Items, page: string = "", inline: boolean = true): string {
+    let s = this.author(item);
     if (inline) {
       if (page) {
         s += " (" + this.date(item) + ", p. " + page + ")";

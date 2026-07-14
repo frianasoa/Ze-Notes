@@ -22,35 +22,30 @@ const ExportSettingDialog: React.FC<ExportSettingDialogProps> = ({
 
   // Load saved state asynchronously when the component mounts
   useEffect(() => {
+    const buildDefaults = (groups: Record<string, any>) =>
+      Object.values(groups).reduce(
+        (acc, group) => {
+          Object.entries(group as Record<string, any>).forEach(([key, value]) => {
+            acc[key] = (value as any).default || "";
+          });
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+
     const loadFormState = async () => {
+      // Seed every known field's default first (covers a fresh dialog and any field added since
+      // the last save), then layer the user's saved choices on top so their picks still win.
+      const defaultState = { ...buildDefaults(datasettings), ...buildDefaults(tablesettings) };
       const savedState = await Prefs.get("export-fields/" + collectionid, null); // Fetch saved data
-      if (savedState) {
-        setFormState(JSON.parse(savedState)); // Use saved state
-      } else {
-        // Initialize with default values if no saved state
-        // const defaultState = Object.entries(datasettings).reduce((acc, [key, value]) => {
-        // acc[key] = value.default || "";
-        // return acc;
-        // }, {} as Record<string, string>);
+      const savedFields = savedState ? JSON.parse(savedState) : {};
 
-        const defaultState = Object.values(datasettings).reduce(
-          (acc, group) => {
-            Object.entries(group).forEach(([key, value]) => {
-              const v = value as any;
-              acc[key] = v.default || "";
-            });
-            return acc;
-          },
-          {} as Record<string, string>,
-        );
-
-        setFormState(defaultState);
-      }
+      setFormState({ ...defaultState, ...savedFields });
       setIsLoading(false); // Loading complete
     };
 
     loadFormState();
-  }, [datasettings]);
+  }, [datasettings, tablesettings]);
 
   // Save updated formState asynchronously whenever it changes
   useEffect(() => {

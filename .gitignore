@@ -11,3 +11,4 @@ merge.sh
 node_modules/
 zn@alefa.net
 build/
+.claude.md

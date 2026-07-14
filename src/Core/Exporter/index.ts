@@ -7,6 +7,7 @@ import Html from "./Html";
 import Xls from "./Xls";
 import Xlsx from "./Xlsx";
 import Docx from "./Docx";
+import YDocx from "./YDocx";
 import Markdown from "./Markdown";
 
 type ExporterType = {
@@ -14,6 +15,7 @@ type ExporterType = {
   Xls: typeof Xls;
   Xlsx: typeof Xlsx;
   Docx: typeof Docx;
+  YDocx: typeof YDocx;
   Markdown: typeof Markdown;
   savefiles: (files: Map<string, Blob>, directory: string) => void;
   start: (table: HTMLTableElement, filename: string, settings: Record<string, string>) => Promise<string | null>;
@@ -24,6 +26,7 @@ const Exporter: ExporterType = {
   Xls,
   Xlsx,
   Docx,
+  YDocx,
   Markdown,
   async start(table: HTMLTableElement, filename: string, settings: Record<string, string>) {
     let data: any = "";
@@ -36,6 +39,7 @@ const Exporter: ExporterType = {
     fp.appendFilter("Microsoft Excel Workbook", "*.xlsx");
     fp.appendFilter("Microsoft Excel 97-2003 Workbook", "*.xls");
     fp.appendFilter("Microsoft Word", "*.docx");
+    fp.appendFilter("Word Documents (Flat, ZIP)", "*.zip");
 
     fp.defaultString = filename + ".html";
     const rv = await fp.show();
@@ -79,6 +83,15 @@ const Exporter: ExporterType = {
       });
 
       data = await this.Docx.start(htmldata);
+    } else if (ext == "zip") {
+      settings.createfolder = "false";
+      const toObject = true;
+      ({ htmldata, files } = (await this.Html.start(table, fp.file, settings, toObject)) as {
+        htmldata: any;
+        files: any;
+      });
+
+      data = await this.YDocx.start(table, htmldata, settings);
     } else if (ext == "md") {
       const toObject = true;
       ({ htmldata, files } = (await this.Html.start(table, fp.file, settings, toObject)) as {
