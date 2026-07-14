@@ -4,6 +4,8 @@ import Html2Docx from "./Html2Docx";
 import Format from "../Format";
 
 const ILLEGAL_FILENAME_CHARS = /[\\/:*?"<>|\x00-\x1f]/g;
+const CONTENT_TYPES = "[Content_Types].xml";
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 type MetadataField = {
   label: string;
@@ -165,6 +167,31 @@ const YDocx = {
     return "Untitled-" + (rowindex + 1);
   },
 
+  /**
+   * Re-packs a Packer-produced .docx into a Word-like OPC package so Office.js's package-editing
+   * APIs (customXmlParts.add, settings.saveAsync) accept it. The docx library's ZIP includes
+   * explicit directory entries and does not place [Content_Types].xml first; Word's reader is
+   * lenient about both, but Office.js's in-place package *writer* is strict and rejects them with
+   * "NotAllowed" - which is why re-saving in Word (which normalizes the package) currently fixes
+   * it. Every part is copied byte-for-byte; only the entry order/dir-entries change.
+   */
+  async repackage(blob: Blob): Promise<Blob> {
+    const src = await JSZip.loadAsync(blob);
+    const out = new JSZip();
+
+    const names = Object.keys(src.files).filter((name) => !src.files[name].dir);
+    if (names.includes(CONTENT_TYPES)) {
+      names.splice(names.indexOf(CONTENT_TYPES), 1);
+      names.unshift(CONTENT_TYPES);
+    }
+
+    for (const name of names) {
+      out.file(name, await src.files[name].async("uint8array"), { createFolders: false });
+    }
+
+    return out.generateAsync({ type: "blob", compression: "DEFLATE", mimeType: DOCX_MIME });
+  },
+
   metarow(label: string, value: string, bold = false): TableRow {
     const cell = (text: string) =>
       new TableCell({
@@ -252,7 +279,7 @@ const YDocx = {
       }
 
       const doc = new Document({ sections: [{ children }] });
-      const blob = await Packer.toBlob(doc);
+      const blob = await this.repackage(await Packer.toBlob(doc));
 
       zip.file(filenames[i] + ".docx", blob);
     }
