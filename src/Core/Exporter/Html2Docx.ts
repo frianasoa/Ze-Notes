@@ -18,9 +18,15 @@ const Html2Docx = {
     h6: "Heading6",
   } as Record<string, string>, // Explicit typing
 
-  async parse(element: HTMLElement): Promise<Paragraph[]> {
+  /**
+   * `label`, when given, prefixes every resulting paragraph with "Label: " (bold) - used by
+   * YDocx's interview style, where each paragraph of a column repeats the column name as a
+   * speaker-style tag instead of the column name appearing once as a heading.
+   */
+  async parse(element: HTMLElement, label?: string): Promise<Paragraph[]> {
     const children: Paragraph[] = [];
     let currentRuns: (TextRun | ImageRun)[] = [];
+    const prefixrun = (): TextRun[] => (label ? [new TextRun({ text: label + ": ", bold: true })] : []);
 
     async function processNode(node: Node, listLevel: number = 0): Promise<void> {
       if (node.nodeType === TEXT_NODE) {
@@ -39,17 +45,23 @@ const Html2Docx = {
         if (Html2Docx.blockElements.has(tagName)) {
           if (currentRuns.length > 0) {
             const parStyle = {}; //Html2Docx.getstyles(node as HTMLElement, true);
-            const parobject = { children: currentRuns, ...parStyle };
+            const parobject = { children: [...prefixrun(), ...currentRuns], ...parStyle };
             children.push(new Paragraph(parobject));
             currentRuns = [];
           }
 
           if (Html2Docx.headingMap[tagName]) {
+            const text = element.textContent?.trim() || "";
             children.push(
-              new Paragraph({
-                text: element.textContent?.trim() || "",
-                heading: Html2Docx.headingMap[tagName] as any,
-              }),
+              label
+                ? new Paragraph({
+                    children: [...prefixrun(), new TextRun({ text })],
+                    heading: Html2Docx.headingMap[tagName] as any,
+                  })
+                : new Paragraph({
+                    text,
+                    heading: Html2Docx.headingMap[tagName] as any,
+                  }),
             );
           } else if (tagName === "ul" || tagName === "ol") {
             const isOrdered = tagName === "ol";
@@ -57,11 +69,17 @@ const Html2Docx = {
               if (child) await processNode(child, listLevel + 1);
             }
           } else if (tagName === "li") {
+            const text = element.textContent?.trim() || "";
             children.push(
-              new Paragraph({
-                text: element.textContent?.trim() || "",
-                bullet: { level: listLevel },
-              }),
+              label
+                ? new Paragraph({
+                    children: [...prefixrun(), new TextRun({ text })],
+                    bullet: { level: listLevel },
+                  })
+                : new Paragraph({
+                    text,
+                    bullet: { level: listLevel },
+                  }),
             );
           } else {
             for (const child of Array.from(element.childNodes)) {
@@ -115,7 +133,9 @@ const Html2Docx = {
     }
 
     if (currentRuns.length > 0) {
-      children.push(new Paragraph({ children: currentRuns }));
+      children.push(new Paragraph({ children: [...prefixrun(), ...currentRuns] }));
+    } else if (label && children.length === 0) {
+      children.push(new Paragraph({ children: prefixrun() }));
     }
     return children;
   },
