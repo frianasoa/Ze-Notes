@@ -49,3 +49,71 @@ table {
 /* tr td:nth-child(2) * { */
   /* width: 100%; */
 /* } */
+
+/* Browser bridge (parts/bridge.xhtml). Scoped to that section so the rest of the pane is
+   untouched. .zenotes-values sets min-width: 35em, which suits a long text field but
+   stretches a checkbox into a wide box and makes a port number look like a paragraph. */
+#bridge-settings td:first-child {
+  white-space: nowrap;
+  padding-right: 1em;
+}
+
+#bridge-settings input[type="checkbox"].zenotes-values {
+  min-width: 0;
+  width: auto;
+}
+
+#bridge-settings #bridge-port {
+  min-width: 0;
+  width: 7em;
+}
+
+#bridge-settings .bridge-token-row {
+  white-space: nowrap;
+}
+
+#bridge-settings #bridge-token {
+  min-width: 0;
+  width: 26em;
+  max-width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+  padding: 0.4em;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+}
+
+#bridge-settings #bridge-status {
+  font-weight: 600;
+}
+
+/* The row that adds a page: the field and its button on one line. */
+#bridge-settings .bridge-origin-add {
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+#bridge-settings #bridge-origin-new {
+  min-width: 0;
+  flex: 1 1 22em;
+}
+
+/* The table of pages: checkboxes sit in their cells rather than filling them, which is what
+   the generic `#bridge-settings input` width above would otherwise make them do. */
+#bridge-settings #bridge-origins-table input[type="checkbox"] {
+  min-width: 0;
+  width: auto;
+  margin: 0;
+}
+
+#bridge-settings #bridge-origins-table td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+}
+
+#bridge-settings #bridge-origins-table th {
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+}

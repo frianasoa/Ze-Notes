@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ze-Notes bridge</title>
+<style>
+  :root { --bg:#fbfbfa; --fg:#1d1c1a; --line:#dcd9d4; --ok:#2f5d50; --bad:#9c2c2c; --mut:#6b665f; --hl:#f2efe9; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#16181a; --fg:#e9e7e3; --line:#32363a; --ok:#7fb8a5; --bad:#e0817d; --mut:#9a958d; --hl:#1e2124; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--fg);
+         font:14px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  h1 { font-size:18px; margin:0 0 2px; }
+  p.sub { margin:0 0 16px; color:var(--mut); }
+  fieldset { border:1px solid var(--line); border-radius:8px; margin:0 0 12px; padding:12px; }
+  legend { padding:0 6px; color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+  label { display:inline-flex; flex-direction:column; gap:3px; margin:0 12px 8px 0; font-size:12px; color:var(--mut); }
+  input, select { font:inherit; padding:6px 8px; border:1px solid var(--line); border-radius:6px;
+                  background:var(--bg); color:var(--fg); min-width:12ch; max-width:100%; }
+  input.wide { min-width:32ch; }
+  button { font:inherit; padding:7px 12px; margin:0 6px 6px 0; border:1px solid var(--line);
+           border-radius:6px; background:transparent; color:var(--fg); cursor:pointer; }
+  button:hover { border-color:var(--ok); color:var(--ok); }
+  #grid { overflow:auto; max-height:34vh; margin-top:8px; }
+  table { border-collapse:collapse; font-size:12px; }
+  th, td { border:1px solid var(--line); padding:4px 7px; text-align:left; vertical-align:top;
+           max-width:26ch; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  th { background:var(--hl); position:sticky; top:0; }
+  td.pick { cursor:pointer; }
+  td.pick:hover { background:var(--hl); }
+  #log { border:1px solid var(--line); border-radius:8px; padding:10px; max-height:46vh; overflow:auto;
+         font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+         white-space:pre-wrap; overflow-wrap:anywhere; }
+  .e { border-left:3px solid var(--line); padding-left:8px; margin:0 0 8px; }
+  .e.ok { border-left-color:var(--ok); }
+  .e.err { border-left-color:var(--bad); color:var(--bad); }
+  .e b { font-weight:600; }
+  .t { color:var(--mut); }
+</style>
+</head>
+<body>
+<h1>Ze-Notes bridge</h1>
+<p class="sub">Host this page on an origin the bridge allows. This origin:
+  <b id="origin"></b></p>
+
+<fieldset>
+  <legend>Connection</legend>
+  <label>Port <input id="port" value="23120" /></label>
+  <label>Token (blank unless token mode is on) <input id="token" class="wide" /></label>
+  <button id="b-status">/status</button>
+  <button id="b-cols">Collections</button>
+</fieldset>
+
+<fieldset>
+  <legend>Matrix</legend>
+  <label>Collection <select id="coll"><option value="">(press Collections)</option></select></label>
+  <button id="b-matrix">Load matrix</button>
+  <div id="grid"></div>
+</fieldset>
+
+<fieldset>
+  <legend>Write one cell</legend>
+  <label>Item key <input id="item" /></label>
+  <label>Column (blank = untagged) <input id="col" /></label>
+  <label>New HTML <input id="html" class="wide" value="&lt;p&gt;Edited from the browser&lt;/p&gt;" /></label>
+  <br />
+  <button id="b-put">Write cell, then re-read</button>
+  <button id="b-stale">Write with a stale date (expect 409)</button>
+  <span class="t">Click a cell in the table above to fill these in.</span>
+</fieldset>
+
+<fieldset>
+  <legend>Live changes</legend>
+  <button id="b-sse">Connect SSE</button>
+  <button id="b-sse-off">Disconnect</button>
+  <button id="b-poll">Poll /changes</button>
+  <button id="b-poll-off">Stop polling</button>
+  <button id="b-clear">Clear log</button>
+</fieldset>
+
+<div id="log"></div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  $("origin").textContent = location.origin;
+
+  var logEl = $("log");
+  function add(kind, title, body) {
+    var row = document.createElement("div");
+    row.className = "e " + kind;
+    var head = document.createElement("b");
+    head.textContent = title;
+    var when = document.createElement("span");
+    when.className = "t";
+    when.textContent = "  " + new Date().toLocaleTimeString();
+    row.appendChild(head);
+    row.appendChild(when);
+    if (body !== undefined) {
+      var pre = document.createElement("div");
+      pre.textContent = typeof body === "string" ? body : JSON.stringify(body, null, 2);
+      row.appendChild(pre);
+    }
+    logEl.insertBefore(row, logEl.firstChild);
+  }
+
+  function base() { return "http://127.0.0.1:" + ($("port").value || "23120").trim(); }
+  function token() { return $("token").value.trim(); }
+
+  async function call(method, path, payload) {
+    var opts = { method: method, headers: {}, mode: "cors" };
+    if (token()) opts.headers["Authorization"] = "Bearer " + token();
+    if (payload !== undefined) {
+      opts.headers["Content-Type"] = "application/json";
+      opts.body = JSON.stringify(payload);
+    }
+    add("", method + " " + path, payload);
+    try {
+      var res = await fetch(base() + path, opts);
+      var text = await res.text();
+      var data;
+      try { data = JSON.parse(text); } catch (e) { data = text; }
+      add(res.ok ? "ok" : "err",
+          res.status + " " + res.statusText + "   ACAO=" +
+            (res.headers.get("access-control-allow-origin") || "(none)"),
+          data);
+      return { res: res, data: data };
+    } catch (e) {
+      add("err", "network / CORS failure", String(e) +
+        "\nA CORS rejection looks exactly like this. Check the devtools Network tab, " +
+        "and that this origin is in the bridge's allow list.");
+      return null;
+    }
+  }
+
+  $("b-status").onclick = async function () {
+    var r = await call("GET", "/status");
+    if (r && r.data && r.data.writeEnabled === false) {
+      add("", "writes are off", "The bridge is read-only; write buttons will answer 403.");
+    }
+  };
+
+  $("b-cols").onclick = async function () {
+    var r = await call("GET", "/ze-notes/v1/collections");
+    if (!r || !r.data || !r.data.collections) return;
+    var select = $("coll");
+    select.innerHTML = "";
+    r.data.collections.forEach(function (c) {
+      var option = document.createElement("option");
+      option.value = c.key;
+      option.textContent = c.name + "  (" + c.key + ")";
+      select.appendChild(option);
+    });
+    add("ok", "collections loaded", r.data.collections.length + " in total");
+  };
+
+  var matrix = null;
+
+  $("b-matrix").onclick = async function () {
+    var key = $("coll").value;
+    if (!key) return add("err", "no collection chosen", "press Collections first");
+    var r = await call("GET", "/ze-notes/v1/collections/" + key + "/matrix");
+    if (!r || !r.data || !r.data.rows) return;
+    matrix = r.data;
+    add("ok", "matrix summary",
+      matrix.rows.length + " rows, " + matrix.columns.length + " columns: " +
+      matrix.columns.map(function (c) { return c.tag === "" ? "(untagged)" : c.tag; }).join(", "));
+    draw();
+  };
+
+  function draw() {
+    var grid = $("grid");
+    grid.innerHTML = "";
+    if (!matrix) return;
+    var table = document.createElement("table");
+    var head = document.createElement("tr");
+    ["Source", "Title"].concat(matrix.columns.map(function (c) {
+      return c.tag === "" ? "(untagged)" : c.tag;
+    })).forEach(function (label) {
+      var th = document.createElement("th");
+      th.textContent = label;
+      head.appendChild(th);
+    });
+    table.appendChild(head);
+
+    matrix.rows.forEach(function (row) {
+      var tr = document.createElement("tr");
+      var first = document.createElement("td");
+      first.textContent = row.itemKey || "";
+      tr.appendChild(first);
+      var title = document.createElement("td");
+      title.textContent = (row.csl && row.csl.title) || "";
+      title.title = title.textContent;
+      tr.appendChild(title);
+
+      matrix.columns.forEach(function (column) {
+        var td = document.createElement("td");
+        td.className = "pick";
+        var cells = row.cells[column.tag] || [];
+        td.textContent = cells.map(function (cell) {
+          return cell.type === "note"
+            ? (cell.html || "").replace(/<[^>]*>/g, " ").trim()
+            : (cell.text || cell.comment || "");
+        }).join(" | ").slice(0, 80);
+        td.title = td.textContent;
+        td.onclick = function () {
+          $("item").value = row.itemKey || "";
+          $("col").value = column.tag;
+          var note = cells.filter(function (c) { return c.type === "note"; })[0];
+          add("", "cell chosen", {
+            itemKey: row.itemKey, column: column.tag,
+            notes: cells.filter(function (c) { return c.type === "note"; }).length,
+            annotations: cells.filter(function (c) { return c.type === "annotation"; }).length,
+            noteKey: note ? note.key : null,
+            dateModified: note ? note.dateModified : null
+          });
+        };
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+    grid.appendChild(table);
+  }
+
+  function cellsPath() {
+    return "/ze-notes/v1/collections/" + $("coll").value + "/cells";
+  }
+
+  $("b-put").onclick = async function () {
+    if (!$("coll").value) return add("err", "no collection chosen", "press Collections first");
+    if (!$("item").value) return add("err", "no item key", "click a cell in the table");
+    var r = await call("PUT", cellsPath(), {
+      itemKey: $("item").value.trim(),
+      column: $("col").value,
+      html: $("html").value
+    });
+    if (r && r.res.ok) {
+      add("ok", "written, reloading the matrix", r.data);
+      await $("b-matrix").onclick();
+    }
+  };
+
+  $("b-stale").onclick = function () {
+    if (!$("coll").value) return add("err", "no collection chosen", "press Collections first");
+    call("PUT", cellsPath(), {
+      itemKey: $("item").value.trim(),
+      column: $("col").value,
+      html: "<p>should not land</p>",
+      ifDateModified: "1999-01-01 00:00:00"
+    });
+  };
+
+  var stream = null;
+  $("b-sse").onclick = function () {
+    if (stream) stream.close();
+    var url = base() + "/ze-notes/v1/events" +
+      (token() ? "?token=" + encodeURIComponent(token()) : "");
+    add("", "EventSource " + url);
+    stream = new EventSource(url);
+    stream.onopen = function () { add("ok", "SSE open", "edit a note or a tag in Zotero"); };
+    stream.onmessage = function (m) { add("ok", "SSE event id=" + m.lastEventId, m.data); };
+    stream.onerror = function () {
+      add("err", "SSE error", "readyState " + (stream && stream.readyState));
+    };
+  };
+  $("b-sse-off").onclick = function () {
+    if (stream) { stream.close(); stream = null; add("", "SSE closed"); }
+  };
+
+  var timer = null, since = 0, boot = null;
+  $("b-poll").onclick = function () {
+    if (timer) clearInterval(timer);
+    add("", "polling /changes every 3 s");
+    timer = setInterval(async function () {
+      var r = await call("GET", "/ze-notes/v1/changes?since=" + since + (boot ? "&bootId=" + boot : ""));
+      if (!r || !r.data) return;
+      if (r.data.reset) { add("err", "reset", "re-read the matrix from scratch"); since = 0; }
+      boot = r.data.bootId || boot;
+      var events = r.data.events || [];
+      if (events.length) since = events[events.length - 1].seq;
+    }, 3000);
+  };
+  $("b-poll-off").onclick = function () {
+    if (timer) { clearInterval(timer); timer = null; add("", "polling stopped"); }
+  };
+
+  $("b-clear").onclick = function () { logEl.textContent = ""; };
+})();
+</script>
+</body>
+</html>

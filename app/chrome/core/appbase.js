@@ -49,6 +49,7 @@ AppBase = {
   
   async close()
   {
+    await this.Engine.Core.Bridge.stop();
     this.Engine.Core.Database.close(true);
   },
 	

@@ -1,0 +1,71 @@
+<html:div class="setting-part" id="bridge-settings" xmlns:html="http://www.w3.org/1999/xhtml">
+<table xmlns="http://www.w3.org/1999/xhtml" class="zn-settings1">
+
+  <tr>
+    <td>
+      <label for="bridge-enabled"
+             title="Lets a web page you name read this collection's notes. Off closes the socket completely and Ze-Notes behaves as if the bridge were not there.">Enable bridge</label>
+    </td>
+    <td>
+      <input class="zenotes-values" id="bridge-enabled" data-key="bridge-enabled" type="checkbox"
+             onchange="ZeNotes_Bridge.changed()" />
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <label for="bridge-port"
+             title="Listens on 127.0.0.1 only, never on the network. Zotero's own server uses 23119.">Port</label>
+    </td>
+    <td>
+      <input class="zenotes-values" id="bridge-port" data-key="bridge-port" type="text"
+             oninput="ZeNotes_Preferences.validatenumber(event, 1, 65535);"
+             onchange="ZeNotes_Bridge.changed()" />
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <label for="bridge-origin-new"
+             title="One page per row, matched exactly, for example https://ariadne.alefa.net. Anything not listed is refused. Each row says what that page may do; a change takes effect on the next request.">Pages allowed in</label>
+    </td>
+    <td>
+      <div class="bridge-origin-add">
+        <input id="bridge-origin-new" type="text" placeholder="https://ariadne.alefa.net"
+               onkeydown="if (event.key === 'Enter') { event.preventDefault(); ZeNotes_Bridge.addorigin(); }" />
+        <button onclick="ZeNotes_Bridge.addorigin()">Add</button>
+      </div>
+      <div id="bridge-origins-table"></div>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <label for="bridge-require-token"
+             title="Asks every request for the token below. Also lets local scripts, which send no origin, connect.">Require pairing token</label>
+    </td>
+    <td>
+      <input class="zenotes-values" id="bridge-require-token" data-key="bridge-require-token"
+             type="checkbox" onchange="ZeNotes_Bridge.changed()" />
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <label for="bridge-token"
+             title="32 random bytes. Regenerating it disconnects anything already paired.">Token</label>
+    </td>
+    <td class="bridge-token-row">
+      <input id="bridge-token" type="text" readonly="readonly" />
+      <button onclick="ZeNotes_Bridge.copytoken()">Copy</button>
+      <button onclick="ZeNotes_Bridge.regenerate()">Regenerate</button>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Status</td>
+    <td><span id="bridge-status">…</span></td>
+  </tr>
+
+</table>
+</html:div>
