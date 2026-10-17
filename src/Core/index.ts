@@ -12,6 +12,7 @@ import TablePrefs from "./TablePrefs";
 import Utils from "./Utils";
 import Crypto from "./Crypto";
 import Server from "./Server";
+import Bridge from "./Bridge";
 import Garbage from "./Garbage";
 import Cloud from "./Cloud";
 import Actions from "./Actions";
@@ -31,6 +32,7 @@ type CoreType = {
   Utils: typeof Utils;
   Crypto: typeof Crypto;
   Server: typeof Server;
+  Bridge: typeof Bridge;
   Garbage: typeof Garbage;
   Cloud: typeof Cloud;
   Actions: typeof Actions;
@@ -52,6 +54,7 @@ const Core: CoreType = {
   Utils,
   Crypto,
   Server,
+  Bridge,
   Garbage,
   Cloud,
   Actions,

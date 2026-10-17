@@ -78,6 +78,15 @@ const NoteActions = {
     });
   },
 
+  // Saving a note's HTML, with nothing around it: no dialog, no reload, no formatting.
+  // updatenote() below is the interactive wrapper; the browser bridge calls this directly,
+  // because it replaces a note's contents rather than appending to them.
+  applynote(noteid: number, html: string) {
+    const note = Zotero.Items.get(noteid);
+    note.setNote(html);
+    return note.saveTx();
+  },
+
   updatenote(noteid: number, title: string, contents: string) {
     const note = Zotero.Items.get(noteid);
     const currentNoteHTML = note.getNote() || "";
@@ -97,8 +106,7 @@ const NoteActions = {
     doc.body.appendChild(fragment);
     const updatedHTML = doc.body.innerHTML || "";
 
-    note.setNote(updatedHTML);
-    note.saveTx().then(() => {
+    NoteActions.applynote(noteid, updatedHTML).then(() => {
       Reload.reload();
     });
   },
