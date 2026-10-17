@@ -3,6 +3,7 @@ const { OS } = ChromeUtils.importESModule("chrome://zotero/content/osfile.mjs") 
 const Zotero_File_Interface = Zotero.getMainWindow().Zotero_File_Interface as any;
 
 import JSZip from "jszip";
+import Utils from "./Utils";
 
 const Importer = {
   async unzip(zipPath: string, extractTo: string) {
@@ -38,7 +39,7 @@ const Importer = {
         await Importer.activate(imported, child);
       }
     } else {
-      collection = Zotero.getActiveZoteroPane().getSelectedCollection();
+      collection = Utils.selectedCollection();
     }
 
     if (!collection) {
