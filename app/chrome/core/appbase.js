@@ -49,6 +49,7 @@ AppBase = {
   
   async close()
   {
+    if (!this.Engine) return;
     await this.Engine.Core.Bridge.stop();
     this.Engine.Core.Database.close(true);
   },
@@ -90,12 +91,12 @@ AppBase = {
 	
 	removeFromWindow(window) {
 		var doc = window.document;
-    this.Engine.Core.Garbage.freeall(doc);
+    this.Engine?.Core.Garbage.freeall(doc);
 		// Remove all elements added to DOM
 		for (let id of this.addedElementIDs) {
 			doc.getElementById(id)?.remove();
 		}
-		doc.querySelector("[href='"+AppBase.Config.slug+".ftl']").remove();
+		doc.querySelector("[href='"+AppBase.Config?.slug+".ftl']")?.remove();
 	},
 	
 	removeFromAllWindows() {

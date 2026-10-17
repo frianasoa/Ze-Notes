@@ -33,8 +33,11 @@ export const DEFAULT_PORT = 23120;
  * - `write`  notes and annotation comments. Also needs the master "Allow writes" switch.
  * - `ai`     run a command (AI, translation, OCR) through this Zotero. This is the one that
  *   spends the user's own API quota, so it is off unless it is asked for by name.
+ * - `files`  hand an attachment's file (PDF) to the page. Not a kind of `read`: reading a
+ *   table of notes and carrying whole files out of the library are not the same trust, so it
+ *   is off for every page until it is ticked.
  */
-export const CAPABILITIES = ["read", "arrange", "write", "ai"] as const;
+export const CAPABILITIES = ["read", "arrange", "write", "ai", "files"] as const;
 
 export type Capability = (typeof CAPABILITIES)[number];
 
@@ -48,6 +51,7 @@ function rule(origin: string, granted: Partial<Record<Capability, boolean>> = {}
     arrange: granted.arrange === true,
     write: granted.write === true,
     ai: granted.ai === true,
+    files: granted.files === true,
   };
 }
 
@@ -133,6 +137,9 @@ export const BridgePrefs = {
                 arrange: truthy(e["arrange"]),
                 write: truthy(e["write"]),
                 ai: truthy(e["ai"]),
+                // A row stored before FILES existed has no key, so it reads false: nobody is
+                // granted it by the upgrade.
+                files: truthy(e["files"]),
               }),
             ];
           });
@@ -153,12 +160,13 @@ export const BridgePrefs = {
    * that global answer into a column is the whole of why the switch could then be retired.
    *
    * **`ai` is never granted by migration**: nobody has ever agreed to let a page spend their
-   * API quota, and a migration is not the place to decide that they did.
+   * API quota, and a migration is not the place to decide that they did. Nor is `files`,
+   * for the same reason: nobody agreed to let a page carry PDFs out of the library.
    */
   migratedRules(): OriginRule[] {
     const writes = this.allowWrites();
     return this.legacyOrigins().map((origin) =>
-      rule(origin, { read: true, arrange: true, write: writes, ai: false }),
+      rule(origin, { read: true, arrange: true, write: writes, ai: false, files: false }),
     );
   },
 
@@ -177,6 +185,7 @@ export const BridgePrefs = {
           arrange: r.arrange === true,
           write: r.write === true,
           ai: r.ai === true,
+          files: r.files === true,
         }),
       );
     ZPrefs.set(PREF.originRules, JSON.stringify(clean));
@@ -188,7 +197,8 @@ export const BridgePrefs = {
    * `origin` is null for a local script vouched for by the pairing token, which has no name
    * to hang a rule on. It keeps read, arrange and write, and never gets `ai`: a command
    * spends real money, and the only honest way to consent to that is against something you
-   * can point at. A script that needs it can be given an origin of its own to send.
+   * can point at. A script that needs it can be given an origin of its own to send. It does
+   * get `files`, like `read`: it is not a browser page, and the token already vouches for it.
    *
    * **The row is the whole answer.** There was a master "Allow writes" switch above this
    * table; it is gone. Two gates saying different things about one row is how a person comes
@@ -197,10 +207,10 @@ export const BridgePrefs = {
    * the row out; **Enable bridge** off is still the one click that stops everything.
    */
   can(origin: string | null): Record<Capability, boolean> {
-    if (origin === null) return { read: true, arrange: true, write: true, ai: false };
+    if (origin === null) return { read: true, arrange: true, write: true, ai: false, files: true };
     const found = this.rules().find((r) => r.origin === origin);
-    if (!found) return { read: false, arrange: false, write: false, ai: false };
-    return { read: found.read, arrange: found.arrange, write: found.write, ai: found.ai };
+    if (!found) return { read: false, arrange: false, write: false, ai: false, files: false };
+    return { read: found.read, arrange: found.arrange, write: found.write, ai: found.ai, files: found.files };
   },
 
   /**

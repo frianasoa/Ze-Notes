@@ -650,6 +650,7 @@ window.ZeNotes_Bridge = {
       arrange: "Change how the table is arranged - hide a column, colour it, sort it. Not the notes.",
       write: "Change notes and annotation comments. Also needs Allow writes below.",
       ai: "Ask this Zotero to run AI, translation or OCR. That spends your own API quota.",
+      files: "Hand a PDF from your library to this page, so it can be analysed there. The page keeps its own copy.",
     };
 
     const table = document.createElement("table");
@@ -715,8 +716,8 @@ window.ZeNotes_Bridge = {
    * Adds a page.
    *
    * It arrives able to read and to arrange the table, which is what "let this page work with
-   * my library" has always meant here, and **not** able to write or to run anything: those
-   * two are the ones that cost something, so they are ticked on purpose or not at all.
+   * my library" has always meant here, and **not** able to write, to run anything or to take
+   * files: those are the ones that cost something, so they are ticked on purpose or not at all.
    *
    * An origin is a scheme, a host and a port - no path, no trailing slash - because that is
    * the exact string a browser sends and the exact string it is compared against.
@@ -757,7 +758,7 @@ window.ZeNotes_Bridge = {
       return;
     }
 
-    rules.push({ origin: origin, read: true, arrange: true, write: false, ai: false });
+    rules.push({ origin: origin, read: true, arrange: true, write: false, ai: false, files: false });
     this.bridge.setRules(rules);
     field.value = "";
     this.initorigins();

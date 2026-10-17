@@ -11,7 +11,9 @@
 #
 # Also optional: SETTINGS_COLLECTION_KEY (a real collection, to read/write column widths on
 # — the width check uses a made-up column tag, so it never touches a real one) and
-# ATTACHMENT_ITEM_KEY (an item with at least one file attachment).
+# ATTACHMENT_ITEM_KEY (an item with at least one file attachment). The FILES checks use
+# PDF_KEY (a PDF attachment), NOT_PDF_KEY (any other attachment) and FILES_DENIED_ORIGIN (an
+# allowed origin with FILES unticked).
 PORT="${1:-23120}"
 ORIGIN="${2:-https://ariadne.alefa.net}"
 TOKEN="${3:-}"
@@ -319,6 +321,50 @@ else
   skipped "item attachments checks" "set ATTACHMENT_ITEM_KEY=<an item with a file attachment>"
 fi
 
+echo "== attachment file (FILES) =="
+# The route announces itself by `files` appearing in `can`; there is no bridgeApi bump.
+check "can lists files" "yes" "$(echo "$CAN" | grep -q '"files"' && echo yes || echo no)"
+# The preflight fix must hold on this path too: no token, allowed origin -> 204.
+check "preflight for ...file -> 204" 204 \
+  "$(code -X OPTIONS -H "Origin: $ORIGIN" -H "Access-Control-Request-Method: GET" \
+    -H "Access-Control-Request-Headers: authorization" "$BASE/zotero/v1/attachments/ZZZZ9999/file")"
+# A page with FILES unticked is refused by name, whatever the key. Tick everything but FILES
+# for a throwaway origin and set FILES_DENIED_ORIGIN to it to run this.
+if [ -n "$FILES_DENIED_ORIGIN" ]; then
+  check "an origin without FILES -> files_not_allowed" "files_not_allowed" \
+    "$(body -H "Origin: $FILES_DENIED_ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/ZZZZ9999/file" \
+      | grep -o 'files_not_allowed' | head -1)"
+else
+  skipped "an origin without FILES is refused" "set FILES_DENIED_ORIGIN to an origin with FILES unticked"
+fi
+if echo "$CAN" | grep -q '"files":true'; then
+  check "unknown attachment file -> 404" 404 \
+    "$(code -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/ZZZZ9999/file")"
+  if [ -n "$PDF_KEY" ]; then
+    check "PDF file -> 200" 200 \
+      "$(code -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/$PDF_KEY/file")"
+    check "PDF file is application/pdf" "application/pdf" \
+      "$(head1 content-type -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/$PDF_KEY/file")"
+    # Bytes, not text: the signature survives only through sendBytes().
+    check "PDF file starts with %PDF" "%PDF" \
+      "$(curl -s -m 30 -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/$PDF_KEY/file" | head -c 4)"
+  else
+    skipped "a real PDF round-trips" "set PDF_KEY=<a PDF attachment key>"
+  fi
+  if [ -n "$NOT_PDF_KEY" ]; then
+    check "a non-PDF attachment -> not_a_pdf" "not_a_pdf" \
+      "$(body -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/$NOT_PDF_KEY/file" \
+        | grep -o 'not_a_pdf' | head -1)"
+  else
+    skipped "a non-PDF is refused as not_a_pdf" "set NOT_PDF_KEY=<a non-PDF attachment key>"
+  fi
+else
+  check "FILES unticked for $ORIGIN -> files_not_allowed" "files_not_allowed" \
+    "$(body -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/attachments/ZZZZ9999/file" \
+      | grep -o 'files_not_allowed' | head -1)"
+  skipped "attachment file checks" "tick FILES for $ORIGIN to run them"
+fi
+
 if [ -n "$TOKEN" ]; then
   echo "== token mode =="
   check "wrong token -> 401" 401 \
@@ -328,6 +374,12 @@ if [ -n "$TOKEN" ]; then
     "$(code -H "Origin: $ORIGIN" -H "Authorization: Bearer $TOKEN" "$BASE/status")"
   check "no Origin but a token -> 200" 200 \
     "$(code -H "Authorization: Bearer $TOKEN" "$BASE/status")"
+  check "preflight needs no token -> 204" 204 \
+    "$(code -X OPTIONS -H "Origin: $ORIGIN" -H "Access-Control-Request-Method: GET" \
+      -H "Access-Control-Request-Headers: authorization" "$BASE/status")"
+  check "preflight from a disallowed origin -> 403" 403 \
+    "$(code -X OPTIONS -H "Origin: https://evil.example" -H "Access-Control-Request-Method: GET" \
+      -H "Access-Control-Request-Headers: authorization" "$BASE/status")"
 else
   echo "== token mode =="
   skipped "token checks" "pass the token as argument 3 with token mode on"

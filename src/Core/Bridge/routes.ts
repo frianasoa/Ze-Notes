@@ -90,6 +90,9 @@ function itemFor(request: BridgeRequest, key: string): any | null {
  */
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
+/** The biggest PDF `…/attachments/:key/file` will send: Clew's own import cap for a file. */
+const MAX_FILE_BYTES = 64 * 1024 * 1024;
+
 /** An attachment's file on disk. `getFilePathAsync` resolves linked files too. */
 async function filePathOf(attachment: any): Promise<string | null> {
   try {
@@ -234,6 +237,9 @@ function capabilityFor(method: string, path: string): Capability | null {
     return method === "PUT" ? "arrange" : "read";
   }
 
+  // A whole file out of the library is its own consent, not a kind of read (FILES column).
+  if (/^\/zotero\/v1\/attachments\/[A-Z0-9]+\/file$/i.test(path)) return "files";
+
   if (method === "GET") return "read";
   return "write";
 }
@@ -323,6 +329,10 @@ const Routes = {
 
       const attachmentImage = rest.match(/^attachments\/([A-Z0-9]+)\/image$/i);
       if (method === "GET" && attachmentImage) return this.attachmentImage(ctx, attachmentImage[1]);
+
+      // A PDF, whole. Behind `files`, which `capabilityFor()` has already asked.
+      const attachmentFile = rest.match(/^attachments\/([A-Z0-9]+)\/file$/i);
+      if (method === "GET" && attachmentFile) return this.attachmentFile(ctx, attachmentFile[1]);
     }
 
     return sendError(response, 404, "no_route", `No route for ${method} ${path}`, origin);
@@ -344,6 +354,8 @@ const Routes = {
         // `POST …/collections/:key/notes`, which is how a new row is made. A client that only
         // knows an earlier number keeps working: it simply never offers what it has not heard
         // of, and a write it sends under the old label key is still understood.
+        // `can.files` (no version): `GET …/attachments/:key/file`. A bridge without the route
+        // never lists the key.
         bridgeApi: 8,
         userLibraryUri: userLibraryUri(),
         bootId: ctx.bootId,
@@ -946,11 +958,42 @@ const Routes = {
       return sendError(ctx.response, 404, "not_found", `No attachment ${key}`, ctx.origin);
     }
     const contentType = String(attachment.attachmentContentType ?? "");
-    // The one rule that keeps this from being a way to read a PDF out of the library.
+    // The one rule that keeps this route from being a way to read a PDF out of the library —
+    // that is `…/file`, behind FILES.
     if (!contentType.startsWith("image/")) {
       return sendError(ctx.response, 415, "not_an_image", `${key} is not an image`, ctx.origin);
     }
     return sendImage(ctx, await filePathOf(attachment), contentType);
+  },
+
+  /**
+   * An attachment's PDF, whole, for a page that has FILES ticked. PDFs only: widening it to
+   * EPUB or snapshots is a new decision, not this one.
+   */
+  async attachmentFile(ctx: RouteContext, key: string): Promise<void> {
+    const attachment: any = itemFor(ctx.request, key);
+    if (!attachment?.isAttachment?.()) {
+      return sendError(ctx.response, 404, "not_found", `No attachment ${key}`, ctx.origin);
+    }
+    if (String(attachment.attachmentContentType ?? "") !== "application/pdf") {
+      return sendError(ctx.response, 415, "not_a_pdf", `${key} is not a PDF`, ctx.origin);
+    }
+    // `filePathOf` is null for a linked URL; a synced file never downloaded is not on disk.
+    const path = await filePathOf(attachment);
+    if (!path || !(await IOUtils.exists(path))) {
+      return sendError(
+        ctx.response,
+        404,
+        "no_file",
+        "The file is not on this computer. Open it once in Zotero to download it.",
+        ctx.origin,
+      );
+    }
+    const { size } = await IOUtils.stat(path);
+    if ((size ?? 0) > MAX_FILE_BYTES) {
+      return sendError(ctx.response, 413, "file_too_large", `File is over ${MAX_FILE_BYTES} bytes`, ctx.origin);
+    }
+    sendBytes(ctx.response, await IOUtils.read(path), "application/pdf", ctx.origin);
   },
 
   /** The SSE stream. Left unfinished on purpose; `Changes` owns the response from here. */

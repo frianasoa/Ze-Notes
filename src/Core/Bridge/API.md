@@ -25,7 +25,7 @@ Ze-Notes → Settings → **Browser bridge**:
 
 ### Capabilities
 
-Each allowed origin carries four, and every request needs exactly one of them. They are stored
+Each allowed origin carries five, and every request needs exactly one of them. They are stored
 as one JSON array in `extensions.zenotes.v1.bridge-origin-rules` and read synchronously on each
 request: a permission check must not wait on a database, or have to decide what to do when one
 will not open.
@@ -36,6 +36,7 @@ will not open.
 | `arrange` | `PUT …/settings` — hiding, ordering, colouring, widths, sort | `403 arrange_not_allowed` |
 | `write` | notes and annotation comments | `403 writes_disabled` |
 | `ai` | running a command through this Zotero (AI, translation, OCR) | `403 commands_not_allowed` |
+| `files` | an attachment's file (PDF only), `GET …/attachments/:key/file` | `403 files_not_allowed` |
 
 `arrange` is deliberately not `write`: letting a page tidy your table is not letting it rewrite
 your notes, and the two are worth saying separately.
@@ -43,13 +44,19 @@ your notes, and the two are worth saying separately.
 `ai` is the only one that spends the user's own API quota, so **nothing grants it implicitly** —
 not a new origin, not the migration from the old one-per-line list, not the pairing token.
 
+`files` is not a kind of `read`: reading a table of notes and carrying whole files out of the
+library are not the same trust. It is off for every row that predates it (a stored row without
+the key reads as false), for every page added later, and after the migration. Ticking it is the
+consent.
+
 A profile that predates the table keeps working: each line of the old `bridge-origins` list
 becomes a row with `read` and `arrange` on and `write` set to whatever the master switch said.
 The old preference is then left alone and never written again.
 
 A request with **no Origin at all** — a local script vouched for by the pairing token — has no
-row to look up. It keeps `read`, `arrange` and `write` as it always had, and never gets `ai`:
-consent to spend money has to point at something.
+row to look up. It keeps `read`, `arrange` and `write` as it always had, gets `files` like
+`read` (it is not a browser page, and the token vouches for it), and never gets `ai`: consent to
+spend money has to point at something.
 
 There is no master "Allow writes" switch any more. The row is the whole answer: two gates
 disagreeing about one row is how a person comes to read `WRITE ☑` while writes are refused.
@@ -74,7 +81,9 @@ Every request is checked in this order, before any work is done.
      lets `curl` and local scripts work without pretending to be a page.
 3. **Token**, when token mode is on: `Authorization: Bearer <token>`, compared in constant
    time. The **only** exception is the SSE stream, which may pass `?token=` because
-   `EventSource` cannot set headers.
+   `EventSource` cannot set headers. A CORS preflight (`OPTIONS`) from an allowed origin is
+   answered without the token — browsers never send credentials on one — and serves only the
+   CORS headers.
 4. **Capability**: the route's capability must be ticked for that origin, else `403` with the
    code from the table above. `/status` is the one route that needs none — it is how a page
    learns what it may do, so asking cannot itself require permission. A route not named in the
@@ -148,7 +157,7 @@ address a group library; the default is the user library.
 { "plugin": "ze-notes", "pluginVersion": "1.2.0", "zoteroVersion": "9.0.6",
   "bridgeApi": 8, "userLibraryUri": "http://zotero.org/users/local/AbCdEfGh",
   "bootId": "MHMsg1tFscuv", "seq": 0,
-  "can": { "read": true, "arrange": true, "write": false, "ai": false },
+  "can": { "read": true, "arrange": true, "write": false, "ai": false, "files": false },
   "writeEnabled": false, "tokenRequired": false, "streams": 0 }
 ```
 
@@ -157,6 +166,10 @@ address a group library; the default is the user library.
 `can` is **this caller's** row in the origins table, so a page can offer only what will work
 rather than finding out by being refused. It is additive and carries no version of its own: a
 client that has never heard of it behaves exactly as before.
+
+`can` may hold `files`. Its **presence** is how a client learns that
+`GET …/attachments/:key/file` exists — `bridgeApi` stays at 8 for it. A bridge without the
+route never lists the key.
 
 `writeEnabled` is the same answer as `can.write` and stays because clients read it. It now means
 "this page may write" rather than "writes are on for everybody" — which is what a client always
@@ -565,7 +578,8 @@ Both routes:
 - **Are reads**, so they are *not* behind "Allow writes" — but they are behind the Host,
   Origin and token gate like everything else, because `authorise()` runs before routing.
 - **Serve images only.** `attachmentContentType` must start with `image/`. This is what
-  stops the route being a way to read a PDF, or anything else, out of the library.
+  stops the route being a way to read a PDF, or anything else, out of the library. Handing a
+  PDF over is `…/attachments/:key/file`, below, behind its own `files` capability.
 - Send bytes through `sendBytes()`, never `response.write()` — see the warning in `http.ts`.
   Most of a PNG is bytes above 0x7F, so `write()` would destroy it even more thoroughly than
   it destroys Japanese text.
@@ -573,6 +587,31 @@ Both routes:
   only for the SSE stream. That is deliberate — a token in a URL lands in history and
   referrers. A client fetches the bytes with the bearer header and makes a blob URL, which
   is what Clew does in both modes.
+
+### `GET /zotero/v1/attachments/:key/file` — `files`, announced by `can.files`
+
+An attachment's PDF, whole, so a page can analyse it as a document linked to its item. This
+route crosses the line the image routes draw, deliberately, so it needs `files` rather than
+`read`.
+
+```
+GET /zotero/v1/attachments/:key/file[?library=<libraryID>]
+→ 200  Content-Type: application/pdf   Cache-Control: no-store   <bytes>
+→ 403  { "error": { "code": "files_not_allowed" } }  this page has no FILES box ticked
+→ 404  { "error": { "code": "not_found" } }          no such attachment (or not an attachment)
+→ 404  { "error": { "code": "no_file" } }            linked URL, or the file is not on this disk
+→ 413  { "error": { "code": "file_too_large" } }     over 64 MB
+→ 415  { "error": { "code": "not_a_pdf" } }          attachmentContentType is not application/pdf
+```
+
+- `?library=` works as on every other item route.
+- **PDFs only**, checked on `attachmentContentType`, as the image route checks `image/`.
+  Widening to EPUB or HTML snapshots later is a new decision, not this one.
+- `no_file` says, for a person: "The file is not on this computer. Open it once in Zotero to
+  download it." File sync without "download at sync time" leaves a file on the server only.
+- 64 MB is Clew's own import cap for a transcript file. The file is read into memory before it
+  is written, as the images are.
+- Like the images, it is fetched with the bearer header, never `?token=`.
 
 ## Testing
 

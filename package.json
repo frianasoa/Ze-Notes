@@ -14,7 +14,7 @@
     "id": "zenotes@alefa.net",
     "name": "Ze Notes",
     "strict_min_version": "7.0.0-beta.70",
-    "strict_max_version": "10.*",
+    "strict_max_version": "11.*",
     "slug": "zenotes",
     "znkey": "6cbde5d2c9ba358a4bb284770044b9d409086d1975b9f4c38b8a920ba71c47a0"
   },
