@@ -15,6 +15,30 @@ const Utils = {
     return clean;
   },
 
+  // Newer Zotero removed getSelectedCollection() in favour of getSelectedCollections()
+  selectedCollection(pane: any = Zotero.getActiveZoteroPane()): Zotero.Collection | undefined {
+    if (typeof pane?.getSelectedCollections === "function") {
+      return pane.getSelectedCollections()?.[0];
+    }
+    return pane?.getSelectedCollection?.();
+  },
+
+  // Newer Zotero removed getSelectedGroup() in favour of getCollectionTreeRows() filtered by isGroup()
+  selectedGroup(pane: any = Zotero.getActiveZoteroPane()): Zotero.Group | undefined {
+    if (typeof pane?.getCollectionTreeRows === "function") {
+      return pane.getCollectionTreeRows()?.find((row: any) => row.isGroup?.())?.ref;
+    }
+    return pane?.getSelectedGroup?.();
+  },
+
+  // Newer Zotero removed getSelectedLibraryID() in favour of getSelectedLibraryIDs()
+  selectedLibraryID(pane: any = Zotero.getActiveZoteroPane()): number | undefined {
+    if (typeof pane?.getSelectedLibraryIDs === "function") {
+      return pane.getSelectedLibraryIDs()?.[0];
+    }
+    return pane?.getSelectedLibraryID?.();
+  },
+
   showState(msg: string) {
     const statusBar = document.getElementById("zn-status-bar");
     if (statusBar) {

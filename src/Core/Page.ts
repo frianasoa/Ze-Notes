@@ -1,6 +1,7 @@
 import { createXULElement, Zotero_Tabs } from "../globals";
 import pkg from "../../package.json";
 import Crypto from "./Crypto";
+import Utils from "./Utils";
 
 type PageType = {
   tab: any;
@@ -64,29 +65,31 @@ const Page: PageType = {
 
   data() {
     const activepane = Zotero.getActiveZoteroPane();
+    const collection = Utils.selectedCollection(activepane);
+    const group = Utils.selectedGroup(activepane);
+    const selectedLibraryID = Utils.selectedLibraryID(activepane);
     const data = {
       collection: {
-        key: activepane.getSelectedCollection()?.key,
-        name: activepane.getSelectedCollection()?.name,
-        id: activepane.getSelectedCollection()?.id,
+        key: collection?.key,
+        name: collection?.name,
+        id: collection?.id,
       },
       group: {
-        id: activepane.getSelectedGroup()?.id,
-        name: activepane.getSelectedGroup()?.name,
+        id: group?.id,
+        name: group?.name,
       },
       library: {
-        id: activepane?.getSelectedLibraryID(),
+        id: selectedLibraryID,
         name: "",
       },
       title: "",
-      libraryID: activepane?.getSelectedCollection()?.libraryID,
+      libraryID: collection?.libraryID,
     };
 
     if (!data.collection.name && !data.group.name) {
-      const libraryID = activepane.getSelectedLibraryID();
-      const library: any = Zotero.Libraries.get(libraryID);
-      data.library.name = library.name;
-      data.libraryID = libraryID;
+      const library: any = Zotero.Libraries.get(selectedLibraryID as number);
+      data.library.name = library?.name;
+      data.libraryID = selectedLibraryID;
     }
     data.title = data.collection.name || data.group.name || data.library.name;
     return data;
