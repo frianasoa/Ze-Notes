@@ -2,7 +2,8 @@
  * Every request passes through here before any work is done.
  *
  * The order is fixed: Host, then Origin, then token, then (for a write) the write switch.
- * A request that fails any of them never reaches a handler, and a request from a
+ * A CORS preflight (`OPTIONS`) from an allowed origin stops after Origin, because browsers
+ * never send credentials on one; it serves only CORS headers. A request that fails any of them never reaches a handler, and a request from a
  * disallowed origin gets no CORS headers at all, so the browser reports it as a CORS
  * failure rather than letting the page read the body.
  *
@@ -94,6 +95,14 @@ export async function authorise(request: BridgeRequest, port: number, isStream: 
 
   const echo = originAllowed ? origin : null;
 
+  // A CORS preflight never carries credentials - the browser strips `Authorization` from it
+  // by design - so asking it for the token refuses every request that would carry one, and
+  // the page sees a network failure, not a 401. It is answered on the origin alone and serves
+  // no data; the request it clears still has to bring the token below.
+  if (request.method === "OPTIONS" && echo !== null) {
+    return { ok: true, origin: echo };
+  }
+
   // 3. Token, when the user asked for one.
   if (tokenRequired && !tokenValid) {
     return deny(401, "unauthorized", "Missing or invalid bearer token", echo);
@@ -126,5 +135,6 @@ export const DENIED_CODE: Record<Capability, string> = {
   arrange: "arrange_not_allowed",
   write: "writes_disabled",
   ai: "commands_not_allowed",
+  files: "files_not_allowed",
 };
 

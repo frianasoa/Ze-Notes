@@ -8,10 +8,10 @@
           "applications": {
             "zotero": {
               "strict_min_version": "7.0.0-beta.70",
-              "strict_max_version": "10.*"
+              "strict_max_version": "11.*"
             }
           },
-          "update_hash": "sha512:03c66d2e5b901326d256b25a325638dac9acc0e718b73af9ab744cd1fa91b5f04feb602b0833f242ea47e536ca92792ad5d4a1edc55f0a3689e43bbbd5a3980d"
+          "update_hash": "sha512:2af08d006235d904825727e93c104025dfebaa672367a8d9ff2512ce5b43d34f1212145e26b3ee9f024f35e02e4d7464180d48287281d90a283258c253478443"
         }
       ]
     }

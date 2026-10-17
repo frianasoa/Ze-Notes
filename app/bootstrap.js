@@ -22,7 +22,7 @@ function registerchrome(rootURI, slug)
 async function startup({ id, version, rootURI }) {
 	log("Starting ZeNotes");
 	Services.scriptloader.loadSubScript(rootURI + '/chrome/core/appbase.js');
-	AppBase.init({ id, version, rootURI });
+	await AppBase.init({ id, version, rootURI });
   
   registerchrome(rootURI, AppBase.Config.slug);
   

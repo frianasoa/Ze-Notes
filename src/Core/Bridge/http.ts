@@ -57,7 +57,7 @@ export function utf8Writer(response: BridgeResponse): (text: string) => void {
 }
 
 /**
- * Raw bytes: an image, and so far nothing else.
+ * Raw bytes: an image, or a PDF from `…/attachments/:key/file`.
  *
  * The same stream `utf8Writer` uses, without the encoder. `response.write()` would mangle
  * these exactly as it mangles non-ASCII text, and far more visibly — most of a PNG is bytes
