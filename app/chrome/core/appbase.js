@@ -50,7 +50,7 @@ AppBase = {
   async close()
   {
     if (!this.Engine) return;
-    await this.Engine.Core.Bridge.stop();
+    await this.Engine.Core.Extensions.stop();
     this.Engine.Core.Database.close(true);
   },
 	

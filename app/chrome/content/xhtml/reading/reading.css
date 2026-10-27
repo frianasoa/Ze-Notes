@@ -1,0 +1,93 @@
+/* The reading pass's window — AI zone. Plain and quiet, in Zotero's own font. */
+body {
+  font: message-box;
+  font-size: 13px;
+  margin: 0;
+  padding: 16px 20px 72px;
+  color: -moz-DialogText;
+  background: -moz-Dialog;
+}
+h1 { font-size: 1.4em; margin: 0 0 4px; }
+.brand { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.brand img { flex: 0 0 auto; }
+.brand h1 { margin: 0; }
+.product { margin: 0; font-size: 0.85em; font-weight: 600; letter-spacing: 0.04em; color: #d00000; }
+h2 { font-size: 1.1em; margin: 20px 0 8px; }
+label { display: block; margin: 12px 0 0; font-weight: 600; }
+label .muted { font-weight: normal; }
+input[type="text"], textarea, select { display: block; width: 100%; box-sizing: border-box; margin-top: 4px; font: inherit; }
+.muted { opacity: 0.75; }
+.problem { color: #b4471a; }
+.actions { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+button { font: inherit; padding: 4px 12px; }
+button.primary { font-weight: 600; }
+ol#found { list-style: none; padding: 0; margin: 0; }
+ol#found li { border: 1px solid rgba(128, 128, 128, 0.35); border-radius: 6px; padding: 10px 12px; margin: 8px 0; }
+ol#found li.saved { opacity: 0.6; }
+.head { display: flex; gap: 8px; align-items: center; }
+.swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+blockquote { margin: 8px 0; padding: 4px 10px; border-left: 4px solid currentColor; }
+.notice { border: 1px solid rgba(128, 128, 128, 0.35); border-radius: 6px; padding: 10px 12px; margin-top: 12px; }
+.notice p { margin: 0; }
+.small { font-size: 0.92em; margin: 6px 0 0; }
+.choices .detail { opacity: 0.7; }
+button.link { border: 0; background: none; padding: 0; color: LinkText; text-decoration: underline; cursor: pointer; }
+fieldset { border: 0; padding: 0; margin: 12px 0 0; }
+legend { font-weight: 600; padding: 0; }
+.choices { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 4px; }
+.choices label { display: inline-flex; gap: 4px; align-items: center; margin: 0; font-weight: normal; }
+.row textarea { width: 100%; margin-top: 6px; }
+ul#missing li { margin: 4px 0; opacity: 0.75; }
+/* The one window: branding, a strip of tabs, and the tab on show filling the rest. */
+body.host { padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.host-brand { padding: 10px 20px 4px; margin: 0; }
+.tabs { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid rgba(128, 128, 128, 0.35); overflow-x: auto; flex: 0 0 auto; }
+.tab { display: inline-flex; gap: 8px; align-items: center; max-width: 260px; padding: 6px 10px; border: 1px solid transparent; border-bottom: 0; border-radius: 6px 6px 0 0; background: none; font: inherit; cursor: pointer; }
+.tab span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab.selected { border-color: rgba(128, 128, 128, 0.35); background: -moz-Dialog; font-weight: 600; margin-bottom: -1px; }
+.tab-batch span:first-child::before { content: "\2630\00a0"; opacity: 0.6; }
+.tab-close { opacity: 0.6; padding: 0 2px; border-radius: 3px; }
+.tab-close:hover { opacity: 1; background: rgba(128, 128, 128, 0.2); }
+.frames { flex: 1 1 auto; position: relative; }
+.tab-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* A page shown in a tab leaves the branding to the window around it. */
+body.framed > header.brand { display: none; }
+/* The settings fold, in both windows. */
+details.accordion { border: 1px solid rgba(128, 128, 128, 0.35); border-radius: 6px; padding: 6px 12px; margin-top: 12px; }
+details.accordion > summary { cursor: pointer; padding: 4px 0; }
+details.accordion > summary .label { font-weight: 600; }
+details.accordion[open] > summary { margin-bottom: 4px; }
+label.inline { display: inline-flex; gap: 6px; align-items: center; font-weight: normal; margin-top: 8px; }
+label.inline input { display: inline-block; width: auto; margin-top: 0; }
+.pass-delete { margin-left: auto; flex: 0 0 auto; }
+/* Saved settings, at the top of both windows' forms. */
+.presets { margin-top: 12px; }
+.presets .label { margin: 0; font-weight: 600; }
+.presets ul { list-style: none; padding: 0; margin: 4px 0 0; }
+.presets li { margin: 2px 0; }
+.preset-name { font-weight: 600; }
+/* The reading window's list of passes, filter and settings. */
+.passes { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.passes label { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-weight: normal; padding: 4px 6px; border-radius: 4px; }
+.passes label:has(input:checked) { background: rgba(46, 168, 229, 0.12); }
+.passes .title { display: block; opacity: 0.75; font-size: 0.92em; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; margin: 8px 0; }
+label.switch { display: inline-flex; gap: 6px; align-items: center; margin: 0; font-weight: normal; }
+#settings { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+#settings dt { font-weight: 600; }
+#settings dd { margin: 0; white-space: pre-wrap; }
+#settings dd.prompt { font-family: monospace; font-size: 0.92em; }
+.item-actions { display: flex; gap: 8px; margin-top: 6px; }
+li.deleted .state { color: #b4471a; }
+/* The batch window's list of papers. */
+table#papers { width: 100%; border-collapse: collapse; }
+table#papers th, table#papers td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid rgba(128, 128, 128, 0.25); }
+table#papers th:first-child, table#papers td:first-child { width: 1%; }
+table#papers .title { display: block; opacity: 0.75; font-size: 0.92em; }
+table#papers td.pages { text-align: right; font-variant-numeric: tabular-nums; }
+#estimate { margin-left: auto; }
+table#papers tr.unavailable { opacity: 0.55; }
+table#papers tr.working { background: rgba(46, 168, 229, 0.12); }
+.ok { color: #2e7d32; }
+.failed { color: #b4471a; }
+footer { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 20px; background: -moz-Dialog; border-top: 1px solid rgba(128, 128, 128, 0.35); display: flex; gap: 12px; align-items: center; }

@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!-- The reading pass's window — AI zone (see src/Core/Extensions.ts and src/Core/Reading/). -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Reading pass · Ze-Notes</title>
+  <link rel="icon" href="chrome://zenotes/content/icons/reading-pass.png" />
+  <link rel="stylesheet" href="chrome://zenotes/content/xhtml/reading/reading.css" />
+</head>
+<body>
+  <header class="brand">
+    <picture>
+      <source srcset="chrome://zenotes/content/icons/reading-pass-dark.png" media="(prefers-color-scheme: dark)" />
+      <img src="chrome://zenotes/content/icons/reading-pass.png" alt="" width="40" height="41" />
+    </picture>
+    <div>
+      <p class="product">Ze-Notes</p>
+      <h1>Reading pass</h1>
+    </div>
+  </header>
+  <p id="paper" class="muted"></p>
+
+  <section id="ask">
+    <!-- Every setting in one fold, so the review below has the room; open while there is no pass yet. -->
+    <details id="settings-acc" class="accordion">
+    <summary><span class="label">Settings</span> <span id="settings-summary" class="muted"></span></summary>
+    <div id="presets-box" class="presets">
+      <p class="label">Saved settings</p>
+      <ul id="presets"></ul>
+    </div>
+    <div id="no-provider" class="notice" hidden="hidden">
+      <p>
+        No AI is set up for Ze-Notes yet. Add an API key and a model for one of the providers, or a
+        Custom AI, in Ze-Notes' settings. Then press Check again.
+      </p>
+      <div class="actions">
+        <button id="settings-big" type="button" class="primary">Open Ze-Notes settings</button>
+        <button id="recheck" type="button">Check again</button>
+      </div>
+    </div>
+    <!-- Radio buttons, not a <select>: a select's drop-down does not draw in this dialog window. -->
+    <fieldset id="provider-box">
+      <legend>AI</legend>
+      <div id="provider" class="choices" role="radiogroup" aria-label="AI"></div>
+      <p id="not-usable" class="muted small" hidden="hidden">
+        <span id="not-usable-list"></span>
+        <button id="settings-small" type="button" class="link">Ze-Notes settings</button>
+      </p>
+    </fieldset>
+    <label>Columns <span class="muted">(comma-separated; each becomes a tag, and so a column of the table)</span>
+      <input id="columns" type="text" />
+    </label>
+    <label>What to look for
+      <textarea id="instruction" rows="3"></textarea>
+    </label>
+    <fieldset>
+      <legend>Comments</legend>
+      <p class="muted small">
+        Each comment is in Ze-Notes' parts. A summary of what the passage says is always there; a
+        paraphrase and a translation of the quote can be added below it.
+      </p>
+      <div class="choices">
+        <label><input type="checkbox" checked="checked" disabled="disabled" /> <span>[[Summary]]</span></label>
+        <label><input id="paraphrase" type="checkbox" /> <span>[[Paraphrase]]</span></label>
+        <label><input id="translation" type="checkbox" /> <span>[[Translation]]</span></label>
+      </div>
+      <label class="inline">Writing language <input id="language" type="text" size="16" /></label>
+    </fieldset>
+    <fieldset>
+      <legend>This window</legend>
+      <div id="window-mode" class="choices" role="radiogroup" aria-label="This window"></div>
+      <p class="muted small">Takes effect the next time this window opens.</p>
+    </fieldset>
+    <p class="small"><button id="save-preset" type="button" class="link">Save these settings for any PDF…</button></p>
+    <p class="muted">
+      The text of this PDF is sent to the AI you choose. Every quote it proposes is checked against
+      the page, and one that is not in the PDF word for word is never saved. Nothing is saved
+      until you press Save.
+    </p>
+    <div class="actions">
+      <button id="run" type="button" class="primary">Read this PDF</button>
+      <span id="status" class="muted" role="status"></span>
+    </div>
+    </details>
+  </section>
+
+  <!-- The passes and the open pass each fold apart, so either can be put away to focus on the rest. -->
+  <section id="passes-box" hidden="hidden">
+    <details id="passes-acc" class="accordion" open="open">
+    <summary><span class="label">Passes on this PDF</span> <span id="passes-count" class="muted"></span></summary>
+    <p class="muted small">
+      Every pass is kept with the settings it ran with. Open one to save more of it, change or
+      delete its highlights, or add a deleted one back.
+    </p>
+    <div id="passes" class="passes" role="radiogroup" aria-label="Passes on this PDF"></div>
+    </details>
+  </section>
+
+  <section id="review" hidden="hidden">
+    <details id="review-acc" class="accordion" open="open">
+    <summary><span id="summary" class="label"></span></summary>
+    <p class="muted small">
+      <span id="run-info"></span>
+      <button id="show-settings" type="button" class="link">Settings used</button>
+    </p>
+    <div id="settings-box" class="notice" hidden="hidden">
+      <dl id="settings"></dl>
+      <div class="actions">
+        <button id="use-settings" type="button">Use these settings</button>
+        <button id="save-settings" type="button">Save them for any PDF…</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div id="filter" class="choices" role="radiogroup" aria-label="Show"></div>
+      <label class="switch"><input id="allow-edit" type="checkbox" /> Allow editing saved highlights</label>
+    </div>
+    <div id="problems-box" class="notice" hidden="hidden">
+      <p>Some of the reading did not work:</p>
+      <ul id="problems"></ul>
+    </div>
+    <ol id="found"></ol>
+    <details id="missing-box" hidden="hidden">
+      <summary id="missing-summary"></summary>
+      <p class="muted">The AI gave these, but they are not in the PDF word for word, so they cannot be highlighted.</p>
+      <ul id="missing"></ul>
+    </details>
+    </details>
+  </section>
+
+  <footer>
+    <button id="save" type="button" class="primary" disabled="disabled">Save to Zotero</button>
+    <button id="close" type="button">Close</button>
+    <span id="result" role="status"></span>
+  </footer>
+
+  <script src="chrome://zenotes/content/xhtml/reading/common.js"></script>
+  <script src="chrome://zenotes/content/xhtml/reading/reading.js"></script>
+</body>
+</html>

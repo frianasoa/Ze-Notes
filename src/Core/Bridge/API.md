@@ -142,6 +142,9 @@ the JSON structurally. `test.sh` asserts this stays fixed.
 `not_found` · `no_route` · `not_implemented` · `bad_json` · `bad_request` · `too_large` ·
 `stale` · `ambiguous_cell` · `too_many_streams` · `internal`
 
+`POST /zotero/v1/annotations` also returns codes inside `results`, one per entry, rather than as
+the whole response. That section lists them.
+
 `writes_disabled` keeps its name from when writes were one switch for everyone: clients match on
 that code, and renaming it would break them in order to say the same thing.
 
@@ -158,6 +161,7 @@ address a group library; the default is the user library.
   "bridgeApi": 8, "userLibraryUri": "http://zotero.org/users/local/AbCdEfGh",
   "bootId": "MHMsg1tFscuv", "seq": 0,
   "can": { "read": true, "arrange": true, "write": false, "ai": false, "files": false },
+  "creates": ["annotations"],
   "writeEnabled": false, "tokenRequired": false, "streams": 0 }
 ```
 
@@ -170,6 +174,11 @@ client that has never heard of it behaves exactly as before.
 `can` may hold `files`. Its **presence** is how a client learns that
 `GET …/attachments/:key/file` exists — `bridgeApi` stays at 8 for it. A bridge without the
 route never lists the key.
+
+`creates` names what this bridge can make from a page's JSON. `["annotations"]` means
+`POST /zotero/v1/annotations` exists. Like `can.files`, it does not bump `bridgeApi`. If the
+key is absent, the bridge cannot create anything. It says what the bridge supports, not what
+this page may do: creating still needs `write`.
 
 `writeEnabled` is the same answer as `can.write` and stays because clients read it. It now means
 "this page may write" rather than "writes are on for everybody" — which is what a client always
@@ -544,6 +553,75 @@ stale precondition carries `current.comment` rather than `current.html`.
 `annotationText` is deliberately **not** writable: it is the words on the page, and changing
 it would make the excerpt disagree with the PDF. `color` and `tags` are still Milestone 2.
 
+### `POST /zotero/v1/annotations` — write, announced by `creates`
+
+Makes PDF highlights and underlines from JSON the page sends. Zotero's reader saves its own
+annotations through `Zotero.Annotations.saveFromJSON`, and this route calls the same function.
+The page fetches the PDF through `…/attachments/:key/file`. pdf.js then gives it each word's box
+in PDF user space, which is the coordinate space `position.rects` uses.
+
+```jsonc
+{ "annotations": [
+  { "attachmentKey": "WAZ5MEF8",
+    "key": "9GAYS72S",                 // optional; see idempotency
+    "type": "highlight",               // "highlight" | "underline"
+    "text": "A sample of 1175 respondents …",
+    "comment": "",                     // optional
+    "color": "#2ea8e5",
+    "pageLabel": "2",                  // optional; defaults to pageIndex + 1
+    "sortIndex": "00001|000328|00252",
+    "position": { "pageIndex": 1, "rects": [[192.0, 440.2, 401.3, 450.7]] },
+    "tags": ["Method"] } ] }
+```
+
+```json
+{ "results": [
+  { "key": "9GAYS72S", "created": true, "dateModified": "2026-10-26 02:10:00" },
+  { "error": "bad_color", "message": "color must be one of #ffd400 …" } ] }
+```
+
+- **A batch of 1 to 100.** Each entry is validated and saved separately, so one refused entry
+  does not stop the rest. A refused entry appears in `results` at its own position, as
+  `{ error, message }`. The whole request fails only when the body is not a batch:
+  `400 bad_request` when `annotations` is missing or empty, `413 too_large` when it has more
+  than 100 entries, and `400 bad_json` when the body is not JSON.
+- **Only text-anchored types**: `highlight` and `underline`. Ink, image and note annotations
+  are drawn by hand in the reader, so a page has no good way to describe them.
+- **Checks made before Zotero is called**, with the code each failure returns:
+
+  | Code | Rule |
+  |---|---|
+  | `bad_request` | the entry is not an object, `attachmentKey` is missing, or `text` / `comment` / `pageLabel` is not a string |
+  | `bad_key` | `key` is given but is not a Zotero object key (8 characters from `23456789ABCDEFGHIJKLMNPQRSTUVWXYZ`) |
+  | `bad_type` | `type` is not `highlight` or `underline` |
+  | `bad_color` | `color` is not one of Zotero's eight colours: `#ffd400 #ff6666 #5fb236 #2ea8e5 #a28ae5 #e56eee #f19837 #aaaaaa` (case-insensitive, stored in lower case) |
+  | `bad_sort_index` | `sortIndex` does not match `^\d{5}\|\d{6}\|\d{5}$` |
+  | `bad_position` | `pageIndex` is not a whole number ≥ 0; there are not 1–200 rects; a rect is not four finite numbers; or the position is over `ANNOTATION_POSITION_MAX_SIZE` as JSON |
+  | `too_long` | `text` or `comment` is over 10 000 characters, or `pageLabel` is over 100 |
+  | `bad_tags` | `tags` is not a list of at most 20 non-empty strings |
+  | `not_found` | no attachment has that key |
+  | `not_a_pdf` | the attachment is not `application/pdf` |
+  | `read_only` | the attachment's library cannot be edited |
+  | `key_taken` | `key` already belongs to an item that is not an annotation on this attachment |
+  | `save_failed` | Zotero refused the save after these checks passed; `message` is Zotero's error |
+
+- **Only `pageIndex` and `rects` are kept from `position`.** The route builds a new position
+  object from those two fields, so any other field the page sends is never stored.
+- **Tags**: Zotero's annotation JSON expects tags as `{ name }` objects, so the route converts
+  each string to that shape before calling `saveFromJSON`. If a tag is still missing after the
+  save, it is added with `addTag` and the annotation is saved again. Each tag is the
+  annotation's column in both tables.
+- **Idempotency by key.** A client can send a key it generated. If an annotation with that key
+  already exists on the same attachment, its slot returns `created: false` with that
+  annotation's key and `dateModified`, and nothing changes. So a client that lost the reply can
+  send the same batch again without creating duplicates. If the key belongs to any other item in
+  the library, the slot returns `key_taken`. If no key is sent, Zotero generates one.
+- **The change stream** reports each new annotation through the Notifier like any other write.
+- **The capability is `write`, not a new one.** `write` already lets a page delete a note, and
+  creating a highlight changes less than that. If a person should approve each proposed
+  highlight, the approval belongs in the client's review screen, where the highlights are shown,
+  not in another checkbox in Zotero.
+
 ### `GET /zotero/v1/annotations/:key/image` — since API 2
 
 The picture an image annotation was cut from: the same file the table shows, read from
@@ -731,8 +809,6 @@ Settings writing has since been built (see `PUT …/settings` above). The rest a
   existing `…/notes` and `…/annotations`. What is still missing is *browsing* — a
   collection's items and sub-collections, full-library search, and the tag list.
 - **`PATCH /zotero/v1/annotations/:key`** — `color`, `tags` (`comment` has been writable
-  since API 3, see above).
-- **`POST /zotero/v1/annotations`** — create from client JSON via
-  `Zotero.Annotations.saveFromJSON`.
+  since API 3, see above). Creating annotations is built: see `POST /zotero/v1/annotations`.
 - **`POST /ze-notes/v1/collections/:key/export`** — run a Ze-Notes export server-side and
   return the file, if that turns out to be more useful to Clew than exporting its own.

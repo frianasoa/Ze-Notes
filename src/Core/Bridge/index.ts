@@ -11,8 +11,8 @@
  * for Zotero's bookmarklet origin, so a page could never talk to it.
  *
  * Wiring, in full:
- *   - `src/index.ts`                   calls `Bridge.init()` at startup
- *   - `app/chrome/core/appbase.js`     calls `Bridge.stop()` at shutdown
+ *   - `../Extensions.ts`               calls `Bridge.init()` at startup and `Bridge.stop()` at
+ *                                      shutdown (`src/index.ts` and `appbase.js` call it)
  *   - `parts/bridge.xhtml`             calls `Bridge.restart()` when a setting changes
  */
 import pkg from "../../../package.json";

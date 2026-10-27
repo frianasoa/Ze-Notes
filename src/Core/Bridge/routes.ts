@@ -14,6 +14,7 @@ import { patchFrom, readSettings, RevisionMismatch, writeSettings } from "./sett
 import { BridgePrefs, redact } from "./prefs";
 import { capabilities, DENIED_CODE } from "./security";
 import { catalogue, characterCap, job, pieceFor, start } from "./commands";
+import { createAnnotations, MAX_BATCH } from "./annotations";
 import type { Piece, TargetRef } from "./commands";
 import type { Capability } from "./prefs";
 import type { BridgeRequest, BridgeResponse } from "./http";
@@ -318,6 +319,9 @@ const Routes = {
       if (method === "PATCH" && note) return this.patchNote(ctx, note[1]);
       if (method === "DELETE" && note) return this.deleteNote(ctx, note[1]);
 
+      // Making highlights. A write like any other, which `capabilityFor()` has already asked.
+      if (method === "POST" && rest === "annotations") return this.postAnnotations(ctx);
+
       const annotation = rest.match(/^annotations\/([A-Z0-9]+)$/i);
       if (method === "PATCH" && annotation) return this.patchAnnotation(ctx, annotation[1]);
 
@@ -355,8 +359,10 @@ const Routes = {
         // knows an earlier number keeps working: it simply never offers what it has not heard
         // of, and a write it sends under the old label key is still understood.
         // `can.files` (no version): `GET …/attachments/:key/file`. A bridge without the route
-        // never lists the key.
+        // never lists the key. `creates` (no version either) names what this bridge can make
+        // from a page's JSON; absent means nothing.
         bridgeApi: 8,
+        creates: ["annotations"],
         userLibraryUri: userLibraryUri(),
         bootId: ctx.bootId,
         seq: Changes.seq,
@@ -932,6 +938,40 @@ const Routes = {
     await annotation.saveTx({ skipSelect: true });
     const saved: any = Zotero.Items.get(annotation.id);
     sendJson(response, 200, { key: saved.key, dateModified: saved.dateModified }, origin);
+  },
+
+  /**
+   * Makes PDF highlights and underlines from a page's JSON — see `annotations.ts`.
+   *
+   * The whole request is refused only when it is not a batch at all; past that, each entry is
+   * judged on its own and a refusal takes its place in `results`, so one bad rectangle does
+   * not cost the rest. New annotations reach the change stream through the Notifier, like any
+   * other write.
+   */
+  async postAnnotations(ctx: RouteContext): Promise<void> {
+    const { response, origin } = ctx;
+
+    const raw = readBody(ctx.request);
+    if (raw === null) {
+      return sendError(response, 413, "too_large", "Request body is over 2 MB", origin);
+    }
+    let payload: any;
+    try {
+      payload = JSON.parse(raw);
+    } catch (e) {
+      return sendError(response, 400, "bad_json", String(e), origin);
+    }
+
+    const proposals = payload?.annotations;
+    if (!Array.isArray(proposals) || proposals.length === 0) {
+      return sendError(response, 400, "bad_request", "annotations is required and must not be empty", origin);
+    }
+    if (proposals.length > MAX_BATCH) {
+      return sendError(response, 413, "too_large", `At most ${MAX_BATCH} annotations per request`, origin);
+    }
+
+    const results = await createAnnotations(libraryID(ctx.request), proposals);
+    sendJson(response, 200, { results }, origin);
   },
 
   /**

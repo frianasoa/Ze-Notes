@@ -145,15 +145,43 @@ window.ZeNotes_Preferences = {
     element.style.borderColor = "#90EE90";
     element.style.boxShadow = "0 0 8px #90EE90";
     
-    if(key=="openai-api-key")
-    {
-      this.initopenaimodels();
-    }
-    
+    this.refreshai(key);
+
     setTimeout(() => {
         element.style.borderColor = "";
         element.style.boxShadow = "";
     }, 1400);
+  },
+
+  // An API key changed: reload what depends on it, then show the saved choice again
+  // (rebuilding a select otherwise shows its first option, which is not what is saved).
+  async refreshai(key) {
+    const modellists = {
+      "openai-api-key": ["openai-model", () => this.initopenaimodels()],
+      "gemini-api-key": ["gemini-model", () => this.initgeminimodels()],
+      "claude-api-key": ["claude-model", () => this.initclaudemodels()],
+    };
+    const aikeys = ["openai-api-key", "gemini-api-key", "deepseek-api-key", "claude-api-key"];
+
+    if(modellists[key])
+    {
+      const [modelkey, init] = modellists[key];
+      await init();
+      this.restorevalue(modelkey);
+    }
+
+    if(aikeys.includes(key))
+    {
+      await this.inittesseractcorrectionaimodel();
+    }
+  },
+
+  restorevalue(key) {
+    const elt = document.querySelector("[data-key="+key+"]");
+    if(elt)
+    {
+      elt.value = Zotero.AppBase.Engine.Core.ZPrefs.get(key);
+    }
   },
 
   async initvalues() {

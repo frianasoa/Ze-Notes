@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- The one Reading pass window, a tab per thing being read — AI zone (see src/Core/Reading/host.ts). -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Reading pass · Ze-Notes</title>
+  <link rel="icon" href="chrome://zenotes/content/icons/reading-pass.png" />
+  <link rel="stylesheet" href="chrome://zenotes/content/xhtml/reading/reading.css" />
+</head>
+<body class="host">
+  <header class="brand host-brand">
+    <picture>
+      <source srcset="chrome://zenotes/content/icons/reading-pass-dark.png" media="(prefers-color-scheme: dark)" />
+      <img src="chrome://zenotes/content/icons/reading-pass.png" alt="" width="32" height="33" />
+    </picture>
+    <div>
+      <p class="product">Ze-Notes</p>
+      <h1>Reading pass</h1>
+    </div>
+  </header>
+  <div id="tabs" class="tabs" role="tablist" aria-label="Open in this window"></div>
+  <div id="frames" class="frames"></div>
+  <script src="chrome://zenotes/content/xhtml/reading/host.js"></script>
+</body>
+</html>

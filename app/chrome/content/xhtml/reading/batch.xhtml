@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!-- The reading pass for many papers — AI zone (see src/Core/Extensions.ts and src/Core/Reading/batch.ts). -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Reading pass · Ze-Notes</title>
+  <link rel="icon" href="chrome://zenotes/content/icons/reading-pass.png" />
+  <link rel="stylesheet" href="chrome://zenotes/content/xhtml/reading/reading.css" />
+</head>
+<body>
+  <header class="brand">
+    <picture>
+      <source srcset="chrome://zenotes/content/icons/reading-pass-dark.png" media="(prefers-color-scheme: dark)" />
+      <img src="chrome://zenotes/content/icons/reading-pass.png" alt="" width="40" height="41" />
+    </picture>
+    <div>
+      <p class="product">Ze-Notes</p>
+      <h1>Reading pass</h1>
+    </div>
+  </header>
+  <p id="scope" class="muted"></p>
+
+  <section id="ask">
+    <!-- Every setting in one fold, so the list of papers has the room. -->
+    <details id="settings-acc" class="accordion">
+    <summary><span class="label">Settings</span> <span id="settings-summary" class="muted"></span></summary>
+    <div id="presets-box" class="presets">
+      <p class="label">Saved settings</p>
+      <ul id="presets"></ul>
+    </div>
+    <div id="no-provider" class="notice" hidden="hidden">
+      <p>
+        No AI is set up for Ze-Notes yet. Add an API key and a model for one of the providers, or a
+        Custom AI, in Ze-Notes' settings. Then press Check again.
+      </p>
+      <div class="actions">
+        <button id="settings-big" type="button" class="primary">Open Ze-Notes settings</button>
+        <button id="recheck" type="button">Check again</button>
+      </div>
+    </div>
+    <fieldset id="provider-box">
+      <legend>AI</legend>
+      <div id="provider" class="choices" role="radiogroup" aria-label="AI"></div>
+      <p id="not-usable" class="muted small" hidden="hidden">
+        <span id="not-usable-list"></span>
+        <button id="settings-small" type="button" class="link">Ze-Notes settings</button>
+      </p>
+    </fieldset>
+    <label>Columns <span class="muted">(comma-separated; each becomes a tag, and so a column of the table)</span>
+      <input id="columns" type="text" />
+    </label>
+    <label>What to look for
+      <textarea id="instruction" rows="3"></textarea>
+    </label>
+    <fieldset>
+      <legend>Comments</legend>
+      <p class="muted small">
+        Each comment is in Ze-Notes' parts. A summary of what the passage says is always there; a
+        paraphrase and a translation of the quote can be added below it.
+      </p>
+      <div class="choices">
+        <label><input type="checkbox" checked="checked" disabled="disabled" /> <span>[[Summary]]</span></label>
+        <label><input id="paraphrase" type="checkbox" /> <span>[[Paraphrase]]</span></label>
+        <label><input id="translation" type="checkbox" /> <span>[[Translation]]</span></label>
+      </div>
+      <label class="inline">Writing language <input id="language" type="text" size="16" /></label>
+    </fieldset>
+    <p class="small"><button id="save-preset" type="button" class="link">Save these settings for any PDF…</button></p>
+    </details>
+  </section>
+
+  <section>
+    <h2>Papers</h2>
+    <p class="muted small">
+      Each ticked paper is read on its own, one after another, and its proposals are kept. Nothing
+      is saved to Zotero here: press Review on a paper to look over its proposals and save them.
+      Your ticks are remembered for this collection. The first time, papers read before are not
+      ticked; reading one again adds a new pass beside the earlier ones.
+    </p>
+    <table id="papers">
+      <thead>
+        <tr>
+          <th><input id="all" type="checkbox" aria-label="Tick every paper with a PDF" /></th>
+          <th>Paper</th>
+          <th>Pages</th>
+          <th>Words</th>
+          <th>Last reading pass</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="paper-rows"></tbody>
+    </table>
+  </section>
+
+  <footer>
+    <button id="run" type="button" class="primary" disabled="disabled">Read the ticked papers</button>
+    <button id="stop" type="button" hidden="hidden">Stop after this paper</button>
+    <button id="close" type="button">Close</button>
+    <span id="estimate" class="muted"></span>
+    <span id="status" role="status"></span>
+  </footer>
+
+  <script src="chrome://zenotes/content/xhtml/reading/common.js"></script>
+  <script src="chrome://zenotes/content/xhtml/reading/batch.js"></script>
+</body>
+</html>

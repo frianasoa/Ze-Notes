@@ -13,7 +13,8 @@
 # — the width check uses a made-up column tag, so it never touches a real one) and
 # ATTACHMENT_ITEM_KEY (an item with at least one file attachment). The FILES checks use
 # PDF_KEY (a PDF attachment), NOT_PDF_KEY (any other attachment) and FILES_DENIED_ORIGIN (an
-# allowed origin with FILES unticked).
+# allowed origin with FILES unticked). Creating a highlight uses ANNOTATE_PDF_KEY (a throwaway
+# PDF attachment; real highlights land on it) and ANNOTATE_ITEM_KEY (its parent item).
 PORT="${1:-23120}"
 ORIGIN="${2:-https://ariadne.alefa.net}"
 TOKEN="${3:-}"
@@ -319,6 +320,87 @@ if [ -n "$ATTACHMENT_ITEM_KEY" ]; then
     "$(echo "$ATTACH_BODY" | grep -q '"linkMode"' && echo yes || echo no)"
 else
   skipped "item attachments checks" "set ATTACHMENT_ITEM_KEY=<an item with a file attachment>"
+fi
+
+echo "== creating annotations =="
+# Announced by `creates` in /status, with no bridgeApi bump.
+check "status lists creates: annotations" "yes" \
+  "$(body -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/status" | grep -q '"creates":\[[^]]*"annotations"' && echo yes || echo no)"
+ANNURL="$BASE/zotero/v1/annotations"
+# One word per slot: its error code, or created / existing.
+slots() {
+  python -c "
+import json,sys
+try:
+    d=json.load(sys.stdin)
+except Exception:
+    print('BROKEN'); raise SystemExit
+print(','.join(r.get('error') or ('created' if r.get('created') else 'existing') for r in d.get('results',[])))
+"
+}
+# A fresh Zotero-format key, so a rerun never collides with the last one.
+newkey() {
+  local a=23456789ABCDEFGHIJKLMNPQRSTUVWXYZ k="" i
+  for i in 1 2 3 4 5 6 7 8; do k="$k${a:$((RANDOM % ${#a})):1}"; done
+  echo "$k"
+}
+# $1 attachment key, $2 annotation key, $3 type, $4 colour, $5 sortIndex, $6 rects JSON
+ann() {
+  printf '{"attachmentKey":"%s","key":"%s","type":"%s","text":"bridge test highlight","color":"%s","pageLabel":"1","sortIndex":"%s","position":{"pageIndex":0,"rects":%s},"tags":["__bridge_test__"]}' \
+    "$1" "$2" "$3" "$4" "$5" "$6"
+}
+RECT='[[72.0,700.0,300.0,712.0]]'
+RECTS201="[$(for i in $(seq 201); do printf '[1,2,3,4]'; [ "$i" -lt 201 ] && printf ','; done)]"
+if [ -n "$WRITE_ENABLED" ]; then
+  check "no annotations -> bad_request" "bad_request" \
+    "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+      -d '{}' "$ANNURL" | grep -o 'bad_request' | head -1)"
+  # Validation runs before the attachment is looked up, so these need no real PDF and write nothing.
+  REFUSALS="{\"annotations\":[
+    $(ann ZZZZ9999 "$(newkey)" highlight '#ffd400' 00000\|000000\|00000 "$RECT"),
+    $(ann ZZZZ9999 "$(newkey)" highlight '#123456' 00000\|000000\|00000 "$RECT"),
+    $(ann ZZZZ9999 "$(newkey)" highlight '#ffd400' '1|2|3' "$RECT"),
+    $(ann ZZZZ9999 "$(newkey)" highlight '#ffd400' 00000\|000000\|00000 "$RECTS201"),
+    $(ann ZZZZ9999 "$(newkey)" ink '#ffd400' 00000\|000000\|00000 "$RECT"),
+    $(ann ZZZZ9999 lowercase highlight '#ffd400' 00000\|000000\|00000 "$RECT")]}"
+  check "each refusal in its own slot" "not_found,bad_color,bad_sort_index,bad_position,bad_type,bad_key" \
+    "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+      -d "$REFUSALS" "$ANNURL" | slots)"
+  # Making one really adds a highlight to that PDF, so it is opt-in. ANNOTATE_ITEM_KEY is the
+  # PDF's parent item, to read the highlight back.
+  if [ -n "$ANNOTATE_PDF_KEY" ] && [ -n "$ANNOTATE_ITEM_KEY" ]; then
+    K1="$(newkey)"
+    GOOD="$(ann "$ANNOTATE_PDF_KEY" "$K1" highlight '#2ea8e5' 00000\|000000\|00000 "$RECT")"
+    check "a highlight is created" "created" \
+      "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+        -d "{\"annotations\":[$GOOD]}" "$ANNURL" | slots)"
+    check "...and reads back with its tag" "yes" \
+      "$(body -H "Origin: $ORIGIN" "${auth[@]}" "$BASE/zotero/v1/items/$ANNOTATE_ITEM_KEY/annotations" \
+        | python -c "
+import json,sys
+d=json.load(sys.stdin)
+print('yes' if any(a['key']=='$K1' and '__bridge_test__' in a['tags'] for a in d['annotations']) else 'no')")"
+    check "the same batch again creates nothing" "existing" \
+      "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+        -d "{\"annotations\":[$GOOD]}" "$ANNURL" | slots)"
+    MIXED="{\"annotations\":[
+      $(ann "$ANNOTATE_PDF_KEY" "$(newkey)" underline '#5fb236' 00000\|000000\|00000 "$RECT"),
+      $(ann "$ANNOTATE_PDF_KEY" "$(newkey)" ink '#5fb236' 00000\|000000\|00000 "$RECT"),
+      $(ann "${NOT_PDF_KEY:-ZZZZ9999}" "$(newkey)" highlight '#5fb236' 00000\|000000\|00000 "$RECT"),
+      $(ann "$ANNOTATE_PDF_KEY" "$(newkey)" highlight '#5fb236' 00000\|000000\|00000 "$RECT")]}"
+    check "neighbours of a refusal are still created" \
+      "created,bad_type,$([ -n "$NOT_PDF_KEY" ] && echo not_a_pdf || echo not_found),created" \
+      "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+        -d "$MIXED" "$ANNURL" | slots)"
+    echo "        (delete the '__bridge_test__' highlights from that PDF when you are done)"
+  else
+    skipped "creating a real highlight" "set ANNOTATE_PDF_KEY (a throwaway PDF) and ANNOTATE_ITEM_KEY (its parent)"
+  fi
+else
+  check "creating without write -> writes_disabled" "writes_disabled" \
+    "$(body -X POST -H "Origin: $ORIGIN" "${auth[@]}" -H "Content-Type: application/json" \
+      -d "{\"annotations\":[$(ann ZZZZ9999 "$(newkey)" highlight '#ffd400' 00000\|000000\|00000 "$RECT")]}" \
+      "$ANNURL" | grep -o 'writes_disabled' | head -1)"
 fi
 
 echo "== attachment file (FILES) =="
