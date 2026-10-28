@@ -7,8 +7,10 @@ beta.py
 docs.sh
 readme.sh
 upload.sh
+deploy.sh
 merge.sh
 node_modules/
 zn@alefa.net
 build/
 .claude.md
+.claude/

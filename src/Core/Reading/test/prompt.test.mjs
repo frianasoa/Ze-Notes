@@ -11,8 +11,17 @@ async function load(file) {
   const { code } = transformSync(source, { loader: "ts", format: "esm", target: "es2022" });
   return import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 }
-const { chunks, composeComment, parseColumns, parseProposals, saysNothing, systemPrompt, userMessage } =
-  await load("../prompt.ts");
+const {
+  chunks,
+  composeComment,
+  isWholeArray,
+  parseColumns,
+  parseProposals,
+  saysNothing,
+  splitPart,
+  systemPrompt,
+  userMessage,
+} = await load("../prompt.ts");
 const { pageText } = await load("../locate.ts");
 
 test("columns are what the person typed, tidied", () => {
@@ -99,4 +108,24 @@ test("characters become text with spaces and line breaks where the boxes say", (
   const chars = [ch("a", 0, 100), ch("b", 5, 100), ch("c", 15, 100), ch("d", 0, 80)];
   assert.equal(pageText(chars), "ab c\nd");
   assert.equal(pageText([{ ...ch("a", 0, 100), spaceAfter: true }, ch("b", 5, 100)]), "a b");
+});
+
+test("a cut-off part splits at page boundaries; a single page does not", () => {
+  const pages = [0, 1, 2, 3].map((i) => ({ pageIndex: i, label: String(i + 1), text: "x".repeat(30) }));
+  const [whole] = chunks(pages);
+  const halves = splitPart(whole, pages);
+  assert.ok(halves.length >= 2);
+  assert.equal(halves[0].first, 0);
+  assert.equal(halves[halves.length - 1].last, 3);
+  for (let i = 1; i < halves.length; i++) assert.equal(halves[i].first, halves[i - 1].last + 1);
+  const [one] = chunks(pages.slice(2, 3));
+  assert.deepEqual(splitPart(one, pages), [one]);
+});
+
+test("an answer is whole only when its array closes", () => {
+  assert.equal(isWholeArray('```json\n[{"quote": "a"}]\n```'), true);
+  assert.equal(isWholeArray('[{"quote": "a"}, {"quote": "b'), false);
+  assert.equal(isWholeArray('[{"quote": "a"}, {"quote": "b"'), false);
+  assert.equal(isWholeArray("undefined"), false);
+  assert.equal(isWholeArray(""), false);
 });

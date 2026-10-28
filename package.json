@@ -1,6 +1,6 @@
 {
   "name": "Ze Notes",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Manage your notes in Zotero",
   "homepage": "https://github.com/frianasoa/zn#readme",
   "bugs": {
@@ -24,7 +24,7 @@
   "main": "app/chrome/core/engine.js",
   "scripts": {
     "test": "node app/chrome/core/engine.js",
-    "build": "node ./commands/build.mjs && node ./commands/postbuild.mjs",
+    "build": "node ./commands/build.mjs && node ./commands/postbuild.mjs  && python make.py",
     "dev": "node ./commands/dev.mjs && node ./commands/postbuild.mjs",
     "lint": "eslint src",
     "format": "prettier --write \"src/**/*.{ts,tsx}\""

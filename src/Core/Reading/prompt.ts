@@ -155,6 +155,32 @@ export function chunks(
 }
 
 /**
+ * A part in two (or three), at page boundaries near the middle, for a request whose answer was
+ * cut off: half the text asks for half the answer. A part of one page cannot be split, and comes
+ * back alone.
+ */
+export function splitPart(
+  part: Chunk,
+  pages: Array<{ pageIndex: number; label: string; text: string }>,
+): Chunk[] {
+  const inside = pages.filter((p) => p.pageIndex >= part.first && p.pageIndex <= part.last);
+  if (inside.length < 2) return [part];
+  return chunks(inside, Math.ceil(part.text.length / 2));
+}
+
+/** True when the answer holds a JSON array that arrived whole, its closing bracket included. */
+export function isWholeArray(answer: string): boolean {
+  const start = answer.indexOf("[");
+  const end = answer.lastIndexOf("]");
+  if (start < 0 || end <= start) return false;
+  try {
+    return Array.isArray(JSON.parse(answer.slice(start, end + 1)));
+  } catch {
+    return false;
+  }
+}
+
+/**
  * The proposals in a model's answer. The answer is meant to be a bare JSON array, but models wrap
  * it in prose or a code fence often enough that the array is cut out of whatever surrounds it.
  * Anything that is not an object with a non-empty quote is dropped; a column the model invented

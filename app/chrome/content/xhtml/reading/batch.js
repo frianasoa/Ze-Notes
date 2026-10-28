@@ -228,6 +228,31 @@
     r.review.hidden = found === 0;
   }
 
+  const countText = (n, paper) => (n > 0 ? n.toLocaleString() : paper.why ? "" : "?");
+
+  /**
+   * The words Zotero had not counted, filled in one paper at a time once the list is shown: the
+   * controller has Zotero index the PDF, then counts. It waits while papers are being read, so the
+   * two do not take turns on the same PDF worker.
+   */
+  async function countMissing() {
+    for (const r of rows.values()) {
+      if (r.paper.why || r.paper.words > 0) continue;
+      while (running) await new Promise((resolve) => window.setTimeout(resolve, 1000));
+      r.wordsCell.textContent = "…";
+      try {
+        const counts = await io.count(r.paper.itemID);
+        if (counts && counts.words > 0) r.paper.words = counts.words;
+        if (counts && counts.pages > 0) r.paper.pages = counts.pages;
+      } catch (e) {
+        // Left as "?": the paper can still be read.
+      }
+      r.pagesCell.textContent = countText(r.paper.pages, r.paper);
+      r.wordsCell.textContent = countText(r.paper.words, r.paper);
+      updateButtons();
+    }
+  }
+
   /**
    * A row. Ticked as it was last left for this collection, else, the first time, every paper with
    * a PDF that has not been read yet.
@@ -242,16 +267,17 @@
     });
     const lastCell = el("td");
     const review = el("button", { type: "button", textContent: "Review" });
-    const count = (n) => (n > 0 ? n.toLocaleString() : paper.why ? "" : "?");
+    const pagesCell = el("td", { className: "pages", textContent: countText(paper.pages, paper) });
+    const wordsCell = el("td", { className: "pages", textContent: countText(paper.words, paper) });
     const tr = el("tr", { className: paper.why ? "unavailable" : "" }, [
       el("td", {}, [check]),
       el("td", {}, [el("span", { textContent: paper.label }), el("span", { className: "title", textContent: paper.title })]),
-      el("td", { className: "pages", textContent: count(paper.pages) }),
-      el("td", { className: "pages", textContent: count(paper.words) }),
+      pagesCell,
+      wordsCell,
       lastCell,
       el("td", {}, [review]),
     ]);
-    const r = { paper, check, lastCell, review, tr };
+    const r = { paper, check, lastCell, review, tr, pagesCell, wordsCell };
     review.addEventListener("click", () => {
       io.review(paper.itemID).catch((e) => {
         $("status").textContent = `Could not open it for review: ${e && e.message ? e.message : e}`;
@@ -276,6 +302,7 @@
       const withPdf = papers.filter((p) => !p.why).length;
       $("status").textContent = `${papers.length} paper${papers.length === 1 ? "" : "s"}, ${withPdf} with a PDF.`;
       updateButtons();
+      countMissing();
     })
     .catch((e) => {
       $("status").textContent = `The papers could not be listed: ${e && e.message ? e.message : e}`;
@@ -325,6 +352,10 @@
             r.check.checked = false;
             rememberTicksSoon();
             if (outcome.row) {
+              // Counted here while the list was open, the words are not in the fresh row when
+              // Zotero's index still has none.
+              if (!(outcome.row.words > 0)) outcome.row.words = r.paper.words;
+              if (!(outcome.row.pages > 0)) outcome.row.pages = r.paper.pages;
               r.paper = outcome.row;
               showLast(r, outcome.row);
             }

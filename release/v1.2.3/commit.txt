@@ -1,0 +1,19 @@
+Added bulk delete to reading passes, fixed cut-off answers and Claude
+
+Reading pass:
+- Saved highlights can be ticked and deleted together from the PDF,
+  only while "Allow editing saved highlights" is on
+- Added "Select all shown" to tick every proposal the filter shows
+- Answers cut off by the token limit are asked again in halves, by page
+- Problems are reported by page instead of part number
+
+Batch reading:
+- Missing word counts are filled in after Zotero indexes the PDF
+
+Claude:
+- Default max tokens raised from 1024 to 16000, as thinking counts
+- Only text blocks are kept as the answer; thinking is ignored
+- Clear error when the token limit is reached before any answer
+
+Release:
+- Version 1.2.3; npm run build now runs make.py

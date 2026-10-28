@@ -292,7 +292,10 @@
     }
   }
 
-  $("allow-edit").addEventListener("change", () => rows.forEach(paintRow));
+  $("allow-edit").addEventListener("change", () => {
+    rows.forEach(paintRow);
+    updateButtons();
+  });
 
   let rowCount = 0;
   function columnChoice(current) {
@@ -327,11 +330,12 @@
     r.quote.style.borderLeftColor = colour;
     r.li.classList.toggle("saved", r.saved && !editing);
     r.li.classList.toggle("deleted", r.deleted);
-    r.check.disabled = r.saved;
-    if (r.saved) r.check.checked = true;
     const locked = r.saved && !editing;
     r.column.setDisabled(locked);
     r.comment.disabled = locked;
+    // A saved highlight is ticked only to delete it, so only while editing is on.
+    r.check.disabled = locked;
+    if (locked) r.check.checked = false;
     // "Go to" is always there; changing or deleting a saved highlight only while editing is on.
     r.update.hidden = !(r.saved && editing);
     r.remove.hidden = !(r.saved && editing);
@@ -348,7 +352,9 @@
     rows = [];
     $("found").replaceChildren();
     opened.items.forEach((item, index) => {
-      const check = el("input", { type: "checkbox", checked: item.checked });
+      // A tick selects a row for the action below: Save for one not in Zotero (ticked as it was
+      // left), Delete for a saved one (never ticked on opening, so a delete is always chosen).
+      const check = el("input", { type: "checkbox", checked: !opened.saved[index] && item.checked });
       const swatch = el("span", { className: "swatch" });
       const column = columnChoice(item.column);
       const comment = el("textarea", { rows: 2, value: item.comment });
@@ -488,8 +494,25 @@
     const n = rows.filter((r) => !r.saved && r.check.checked).length;
     $("save").disabled = n === 0 || running;
     $("save").textContent = n === 1 ? "Save 1 highlight to Zotero" : `Save ${n} highlights to Zotero`;
+    const d = rows.filter((r) => r.saved && r.check.checked).length;
+    $("delete").hidden = d === 0;
+    $("delete").disabled = running;
+    $("delete").textContent = d === 1 ? "Delete 1 highlight from the PDF" : `Delete ${d} highlights from the PDF`;
     applyFilter();
+    const shown = rows.filter((r) => !r.li.hidden && !r.check.disabled);
+    const ticked = shown.filter((r) => r.check.checked).length;
+    $("select-all").checked = shown.length > 0 && ticked === shown.length;
+    $("select-all").indeterminate = ticked > 0 && ticked < shown.length;
+    $("select-all").disabled = shown.length === 0;
   }
+
+  // What the filter shows, all ticked or none: "Saved", then this, then Delete clears a PDF
+  // (saved highlights are tickable only while editing is on).
+  $("select-all").addEventListener("change", () => {
+    for (const r of rows) if (!r.li.hidden && !r.check.disabled) r.check.checked = $("select-all").checked;
+    rememberSoon();
+    updateButtons();
+  });
 
   async function editRow(r) {
     r.update.disabled = true;
@@ -505,21 +528,51 @@
     paintRow(r);
   }
 
-  async function removeRow(r) {
+  function removeRow(r) {
     if (!window.confirm("Delete this highlight from the PDF? It stays in this pass, and can be added again.")) return;
-    const result = await io.remove(pass.id, r.index);
-    if (result.ok) {
-      r.saved = false;
-      r.deleted = true;
-      r.check.checked = false;
-      $("result").textContent = "Deleted from the PDF.";
-      loadPasses(pass.id);
-    } else {
-      $("result").textContent = `Not deleted: ${result.message || result.error}`;
-    }
-    paintRow(r);
-    updateButtons();
+    deleteRows([r]);
   }
+
+  /** Deletes the rows' highlights from the PDF; the proposals stay, ready to be added again. */
+  async function deleteRows(chosen) {
+    $("delete").disabled = true;
+    $("result").textContent = "Deleting…";
+    try {
+      const results = await io.remove(pass.id, chosen.map((r) => r.index));
+      let deleted = 0;
+      const refused = [];
+      results.forEach((res, i) => {
+        const r = chosen[i];
+        if (res && res.ok) {
+          deleted += 1;
+          r.saved = false;
+          r.deleted = true;
+          r.check.checked = false;
+          paintRow(r);
+        } else if (res) {
+          refused.push(res.message || res.error);
+        }
+      });
+      $("result").textContent =
+        `Deleted ${plural(deleted, "highlight")} from the PDF.` +
+        (refused.length ? ` ${refused.length} not deleted: ${refused[0]}` : "");
+      loadPasses(pass.id);
+    } catch (e) {
+      $("result").textContent = `Nothing was deleted: ${reason(e)}`;
+    } finally {
+      updateButtons();
+    }
+  }
+
+  $("delete").addEventListener("click", () => {
+    const chosen = rows.filter((r) => r.saved && r.check.checked);
+    if (chosen.length === 0) return;
+    const question =
+      `Delete ${plural(chosen.length, "highlight")} from the PDF? ` +
+      "They stay in this pass, and can be added again.";
+    if (!window.confirm(question)) return;
+    deleteRows(chosen);
+  });
 
   // This PDF's passes, newest open, so nothing a run cost is ever lost.
   loadPasses().catch(() => {});
@@ -580,6 +633,8 @@
           saved += 1;
           r.saved = true;
           r.deleted = false;
+          // Saved, it leaves the selection: ticked, it would be offered for deleting.
+          r.check.checked = false;
           r.savedColumn = r.column.value();
           r.savedComment = r.comment.value.trim();
           paintRow(r);

@@ -7,8 +7,8 @@
  */
 import type { Located } from "./locate";
 import { locate } from "./locate";
-import type { CommentOptions, Proposal } from "./prompt";
-import { chunks, parseProposals, saysNothing, systemPrompt, userMessage } from "./prompt";
+import type { Chunk, CommentOptions, Proposal } from "./prompt";
+import { chunks, isWholeArray, parseProposals, saysNothing, splitPart, systemPrompt, userMessage } from "./prompt";
 import type { ReadPage } from "./text";
 
 /** Zotero's eight highlight colours. Each column takes the next, in the order the columns are given. */
@@ -50,28 +50,46 @@ export async function runPass(options: {
   comment: CommentOptions;
   onProgress?: (done: number, total: number) => void;
 }): Promise<PassResult> {
-  const parts = chunks(options.pages);
+  // The parts still to ask; one whose answer is cut off goes back in, split in two.
+  const queue = chunks(options.pages);
+  let done = 0;
   const result: PassResult = { found: [], missing: [], problems: [] };
   const seen = new Set<string>();
   const system = systemPrompt(options.columns, options.comment);
+  const label = (i: number): string => options.pages[i]?.label ?? String(i + 1);
+  const where = (part: Chunk): string =>
+    part.first === part.last ? `Page ${label(part.first)}` : `Pages ${label(part.first)}–${label(part.last)}`;
 
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i]!;
+  while (queue.length > 0) {
+    const part = queue.shift()!;
     let answer: string;
     try {
       answer = await options.ask(system, userMessage(options.instruction, options.columns, part));
     } catch (e) {
-      result.problems.push(`Part ${i + 1}: ${String((e as Error)?.message ?? e)}`);
-      options.onProgress?.(i + 1, parts.length);
+      // A provider's refusal (a rejected key, a rate limit) is not helped by asking in halves.
+      result.problems.push(`${where(part)}: ${String((e as Error)?.message ?? e)}`);
+      done += 1;
+      options.onProgress?.(done, done + queue.length);
       continue;
+    }
+
+    // An answer cut off (most often by the AI's token limit) is asked again in halves, each with
+    // the whole limit; what did arrive is left for the halves to find again, so nothing is doubled.
+    if (!saysNothing(answer) && !isWholeArray(answer)) {
+      const pieces = splitPart(part, options.pages);
+      if (pieces.length > 1) {
+        queue.unshift(...pieces);
+        options.onProgress?.(done, done + queue.length);
+        continue;
+      }
     }
 
     const proposals = parseProposals(answer);
     // Nothing readable in an answer that was not "[]" is said, never passed off as "nothing found".
     if (proposals.length === 0 && !saysNothing(answer)) {
       result.problems.push(
-        `Part ${i + 1}: the AI's answer could not be read as a list of passages. It may have been cut off; ` +
-          "fewer columns, or a higher maximum of tokens for this AI in Ze-Notes' settings, can help.",
+        `${where(part)}: the AI's answer could not be read as a list of passages, even for a single page. ` +
+          "Fewer columns, or a higher maximum of tokens for this AI in Ze-Notes' settings, can help.",
       );
     }
 
@@ -96,7 +114,8 @@ export async function runPass(options: {
         sortIndex: sortIndexOf(located, options.pages[located.pageIndex]?.viewBox ?? [0, 0, 0, 0]),
       });
     }
-    options.onProgress?.(i + 1, parts.length);
+    done += 1;
+    options.onProgress?.(done, done + queue.length);
   }
 
   result.found.sort((a, b) => a.located.pageIndex - b.located.pageIndex || a.located.offset - b.located.offset);

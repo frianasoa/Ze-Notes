@@ -81,8 +81,11 @@ export interface ReadingController {
   save(id: string, chosen: Array<{ index: number; column: string; comment: string }>): Promise<SlotResult[]>;
   /** Changes a saved highlight's column and comment in Zotero. */
   edit(id: string, index: number, change: { column: string; comment: string }): Promise<EditResult>;
-  /** Deletes a saved highlight from the PDF; the proposal stays, to be added again. */
-  remove(id: string, index: number): Promise<EditResult>;
+  /**
+   * Deletes saved highlights from the PDF, by their place in the pass, one result each; the
+   * proposals stay, to be added again.
+   */
+  remove(id: string, indexes: number[]): Promise<EditResult[]>;
   /** Scrolls the PDF to a proposal: its highlight when saved, else its place on the page. */
   goTo(id: string, index: number): Promise<void>;
   /** The saved settings, any PDF's to use. */
@@ -233,21 +236,24 @@ function controllerFor(reader: any): ReadingController {
       }
       return result;
     },
-    async remove(id, index) {
+    async remove(id, indexes) {
       const run = await passById(id);
-      const item = run?.items[index];
-      if (!run || !item) return { ok: false, error: "not_found", message: "That proposal is not there any more." };
-      const result = await deleteAnnotation(libraryID, attachment.key, item.found.key);
-      if (result.ok) {
-        await keep({
-          ...run,
-          items: run.items.map((it, i) =>
-            // A new key at once, so adding it again never reuses the one Zotero deleted.
-            i === index ? { ...it, savedOnce: true, checked: false, found: { ...it.found, key: newKey() } } : it,
-          ),
-        });
+      const gone: EditResult = { ok: false, error: "not_found", message: "That proposal is not there any more." };
+      if (!run) return indexes.map(() => gone);
+      const items = [...run.items];
+      const results: EditResult[] = [];
+      for (const index of indexes) {
+        const item = items[index];
+        const result = item ? await deleteAnnotation(libraryID, attachment.key, item.found.key) : gone;
+        // A new key at once, so adding it again never reuses the one Zotero deleted.
+        if (item && result.ok) {
+          items[index] = { ...item, savedOnce: true, checked: false, found: { ...item.found, key: newKey() } };
+        }
+        results.push(result);
       }
-      return result;
+      // Kept once, after all of them, with every one that was deleted marked so.
+      await keep({ ...run, items });
+      return results;
     },
     async goTo(id, index) {
       const run = await passById(id);

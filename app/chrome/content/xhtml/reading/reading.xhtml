@@ -111,6 +111,7 @@
       </div>
     </div>
     <div class="toolbar">
+      <label class="switch"><input id="select-all" type="checkbox" /> Select all shown</label>
       <div id="filter" class="choices" role="radiogroup" aria-label="Show"></div>
       <label class="switch"><input id="allow-edit" type="checkbox" /> Allow editing saved highlights</label>
     </div>
@@ -129,6 +130,7 @@
 
   <footer>
     <button id="save" type="button" class="primary" disabled="disabled">Save to Zotero</button>
+    <button id="delete" type="button" hidden="hidden">Delete from the PDF</button>
     <button id="close" type="button">Close</button>
     <span id="result" role="status"></span>
   </footer>

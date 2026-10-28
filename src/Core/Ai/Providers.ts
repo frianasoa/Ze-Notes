@@ -126,11 +126,23 @@ const configs: Record<string, zty.AiProviderConfig> = {
     }),
     payload: ({ model, system, usercontents, maxtoken }) => ({
       model,
-      max_tokens: maxtoken > 0 ? maxtoken : 1024,
+      // Thinking counts against this limit, and current models (Haiku 5.5, Opus 5.5…) think by
+      // default: at 1024 the thinking alone could use it all, leaving no answer.
+      max_tokens: maxtoken > 0 ? maxtoken : 16000,
       system: system,
       messages: [{ role: "user", content: usercontents.join("\n\n") }],
     }),
-    format: (data: any) => data.content.map((e: any) => e.text),
+    format: (data: any) => {
+      // A model that thinks answers with `thinking` blocks before the text; only the text is the answer.
+      const texts = (data.content ?? []).filter((e: any) => e.type === "text").map((e: any) => e.text);
+      if (texts.length === 0 && data.stop_reason === "max_tokens") {
+        throw new Error(
+          `Claude used all the tokens it was allowed (${data.usage?.output_tokens ?? "?"}, its thinking included) ` +
+            "before answering. Raise its maximum of tokens in Ze-Notes' settings.",
+        );
+      }
+      return texts;
+    },
     modelsurl: () => "https://api.anthropic.com/v1/models",
     modelsheaders: (apikey) => ({
       "x-api-key": apikey,

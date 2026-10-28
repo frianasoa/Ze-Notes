@@ -1,0 +1,2 @@
+base=v1.2.2
+fingerprint=e51e14eed4ef

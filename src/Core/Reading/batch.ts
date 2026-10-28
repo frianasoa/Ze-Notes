@@ -46,6 +46,8 @@ export interface BatchController {
   /** Which folds were open, kept between openings. */
   layout: typeof layout;
   papers(): Promise<PaperRow[]>;
+  /** A paper's page and word counts, its PDF indexed by Zotero first when it was not; null without a PDF. */
+  count(itemID: number): Promise<{ pages: number | null; words: number | null } | null>;
   /** The papers ticked when this collection (or selection) was last open here; null the first time. */
   ticked(): Promise<number[] | null>;
   rememberTicked(itemIDs: number[]): Promise<void>;
@@ -118,6 +120,29 @@ async function wordCountOf(attachment: any): Promise<number | null> {
   }
 }
 
+/**
+ * The words of a PDF Zotero has not indexed yet: Zotero is asked to index it now (what it does by
+ * itself when a file is added, and what its full-text search uses), and the words are read from
+ * that index. When Zotero still keeps no text for it, the PDF worker extracts the text to count.
+ */
+async function indexAndCount(attachment: any): Promise<number | null> {
+  try {
+    const fulltext = (Zotero as any).Fulltext ?? (Zotero as any).FullText;
+    await fulltext?.indexItems?.([attachment.id], { ignoreErrors: true });
+  } catch {
+    // Not indexed; the worker below.
+  }
+  const words = await wordCountOf(attachment);
+  if (words) return words;
+  try {
+    const result = await (Zotero as any).PDFWorker.getFullText(attachment.id, null);
+    const n = String(result?.text ?? "").split(/\s+/).filter(Boolean).length;
+    return n > 0 ? n : null;
+  } catch {
+    return null;
+  }
+}
+
 async function rowFor(item: any): Promise<PaperRow> {
   const row: PaperRow = {
     itemID: item.id,
@@ -175,6 +200,12 @@ function controllerFor(title: string, scope: string, items: any[]): BatchControl
       const rows: PaperRow[] = [];
       for (const item of items) rows.push(await rowFor(item));
       return rows;
+    },
+    async count(itemID) {
+      const attachment: any = await byID.get(itemID)?.getBestAttachment?.();
+      if (!attachment?.isPDFAttachment?.() || !(await attachment.fileExists())) return null;
+      const words = (await wordCountOf(attachment)) ?? (await indexAndCount(attachment));
+      return { pages: await pageCountOf(attachment.id), words };
     },
     async ticked() {
       try {
